@@ -60,7 +60,22 @@ body {
         margin-top: 20px;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         position: relative;
+        color: white;
+        text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     }
+
+        .login-container .pet-details a {
+            color: yellow;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
+
+        .login-container .pet-details a:link {
+            color: yellow;
+        }
+
+        .login-container .pet-details a:hover {
+            color: darkorange;
+        }
 
 .pets-grid {
     display: grid;
@@ -86,7 +101,7 @@ body {
 
     .pet-card.selected {
         border-color: #4CAF50;
-        background: rgba(76, 175, 80, 0.1);
+        background: rgba(76, 175, 80, 0.9);
     }
 
 .pet-avatar {
@@ -233,6 +248,7 @@ body {
     margin-top: 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     position: relative;
+    text-shadow: -1px -1px 0 #FFF, 1px -1px 0 #FFF, -1px 1px 0 #FFF, 1px 1px 0 #FFF;
 }
 
     .pet-details-close {
@@ -266,9 +282,13 @@ body {
     border-bottom: 1px dotted #ccc;
 }
 
+    .detail-row span {
+
+    }
+
 .detail-label {
     font-weight: bold;
-    color: #2c5aa0;
+    color: black;
 }
 
 @keyframes bounce {
