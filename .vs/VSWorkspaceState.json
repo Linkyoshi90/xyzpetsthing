@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\css",
-    "\\js"
+    "\\assets",
+    "\\assets\\css",
+    "\\pages"
   ],
+  "SelectedNode": "\\index.php",
   "PreviewInSolutionExplorer": false
 }
