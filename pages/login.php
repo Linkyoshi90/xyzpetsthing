@@ -1,5 +1,10 @@
 <?php
 if($_SERVER['REQUEST_METHOD']==='POST'){
+    if(isset($_POST['action']) && $_POST['action']==='temp'){
+    temp_login();
+    header('Location: ?pg=main');
+    exit;
+  }
   $email=trim($_POST['email']??''); $pass=$_POST['pass']??'';
   if(isset($_POST['action']) && $_POST['action']==='register'){
     $user=trim($_POST['username']??'');
@@ -28,4 +33,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <input type="hidden" name="action" value="register">
     <button>Create</button>
   </form>
+    <form method="post">
+      <input type="hidden" name="action" value="temp">
+      <button>Continue as temp user</button>
+    </form>
 </div>

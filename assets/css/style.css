@@ -1,11 +1,28 @@
 :root {
-    --ink: #0E1726;
-    --muted: #5b6b84;
-    --bg: #ECF2FA;
-    --glass-bg: rgba(255,255,255,.65);
-    --shadow: 0 8px 30px rgba(30,134,255,.12);
     --radius: 16px;
 }
+
+    :root[data-theme="light"] {
+        --ink: #0E1726;
+        --muted: #5b6b84;
+        --bg: linear-gradient(#F6F8FC,#ECF2FA);
+        --glass-bg: rgba(255,255,255,.65);
+        --shadow: 0 8px 30px rgba(30,134,255,.12);
+        --bubble1: rgba(30,134,255,.25);
+        --bubble2: rgba(152,210,255,.2);
+        --bubble3: rgba(255,255,255,.15);
+    }
+
+    :root[data-theme="dark"] {
+        --ink: #ECF2FA;
+        --muted: #8d9bb5;
+        --bg: linear-gradient(#0E1726,#152238);
+        --glass-bg: rgba(20,30,45,.6);
+        --shadow: 0 8px 30px rgba(0,0,0,.5);
+        --bubble1: rgba(30,134,255,.3);
+        --bubble2: rgba(80,120,200,.25);
+        --bubble3: rgba(255,255,255,.1);
+    }
 
 * {
     box-sizing: border-box
@@ -15,7 +32,26 @@ body {
     margin: 0;
     font-family: Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
     color: var(--ink);
-    background: linear-gradient(#F6F8FC,#ECF2FA)
+    background: var(--bg);
+}
+
+    body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(circle at 20% 20%, var(--bubble1) 0, transparent 60%), radial-gradient(circle at 80% 30%, var(--bubble2) 0, transparent 70%), radial-gradient(circle at 40% 80%, var(--bubble3) 0, transparent 70%);
+        animation: bubbles 40s linear infinite;
+    }
+
+@keyframes bubbles {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-2000px);
+    }
 }
 
 a {
@@ -30,7 +66,10 @@ a {
 .container {
     max-width: 1100px;
     margin: 40px auto;
-    padding: 0 16px
+    padding: 0 16px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius);
 }
 
 .nav {
@@ -45,6 +84,12 @@ a {
     padding: 10px 16px;
     border-bottom: 1px solid #fff;
     box-shadow: var(--shadow)
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
     .nav nav a {
@@ -78,7 +123,9 @@ a {
     border-radius: var(--radius);
     padding: 16px;
     border: 1px solid #fff;
-    box-shadow: var(--shadow)
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--shadow);
 }
 
 .glass {

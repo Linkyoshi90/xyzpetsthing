@@ -20,4 +20,7 @@ function register($email,$username,$pass){
   q("INSERT INTO users(email,username,pass_hash) VALUES(?,?,?)",[$email,$username,$hash]);
   return login($email,$pass);
 }
+function temp_login(){
+  $_SESSION['user'] = ['id'=>0,'username'=>'temp'];
+}
 function logout(){ $_SESSION=[]; session_destroy(); }
