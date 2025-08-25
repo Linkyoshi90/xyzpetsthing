@@ -15,6 +15,7 @@
       <a href="?pg=create_pet">Create</a>
       <a href="?pg=inventory">Inventory</a>
       <a href="?pg=map">Map</a>
+      <a href="?pg=vote">Vote</a>
       <a href="?pg=logout">Logout</a>
     </nav>
     <span class="who">hi, <?= htmlspecialchars($u['username']) ?></span>
