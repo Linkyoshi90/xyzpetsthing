@@ -38,6 +38,8 @@
     <form id="submitForm" action="submit.php" method="post" hidden></form>
   </div>
 
+  <button id="toTopBtn" class="btn return-top" type="button">Return to top</button>
+
   <!-- Your source data: paste/edit freely. Lines with “–” (en dash) are regions; lines with “name:” are groups. -->
   <script id="source" type="text/plain">
 Auronia – Aegia Aeterna (AA)
@@ -491,6 +493,7 @@ Pishtaco: 1, 2, 3, 4, 5
   const copyBtn = $('#copyBtn');
   const form = $('#submitForm');
   const summaryText = $('#summaryText');
+  const toTopBtn = $('#toTopBtn');
 
   // Default artwork image for every base (change this later per-base if desired)
   const IMAGE_BASE = 'images/vote/';
@@ -668,6 +671,10 @@ Pishtaco: 1, 2, 3, 4, 5
   copyBtn.addEventListener('click', async () => {
     const payload = form.querySelector('[name="selection_json"]').value;
     try{ await navigator.clipboard.writeText(payload); copyBtn.textContent='Copied!'; setTimeout(()=>copyBtn.textContent='Copy JSON', 1400);}catch(e){ alert('Copy failed. Export JSON instead.'); }
+  });
+
+  toTopBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   submitBtn.addEventListener('click', () => {

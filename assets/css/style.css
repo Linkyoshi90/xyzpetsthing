@@ -322,6 +322,20 @@ ul.tight {
             font-weight: 700;
         }
 
+/* Floating return-to-top button */
+.return-top {
+    position: fixed;
+    bottom: 20px;
+    right: calc((100% - 1100px) / 2 + 20px);
+    z-index: 1000;
+}
+
+@media (max-width: 1120px) {
+    .return-top {
+        right: 20px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .vote-app .option {
         transition: none;
