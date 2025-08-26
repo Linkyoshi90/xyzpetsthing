@@ -35,6 +35,7 @@ body {
     font-family: Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;
     color: var(--ink);
     background: var(--bg);
+    overflow-x: hidden;
 }
 
     body::before {
@@ -171,4 +172,158 @@ input, select {
 ul.tight {
     margin: 0;
     padding-left: 18px
+}
+
+/* Vote page styles */
+.vote-app {
+    padding: 18px;
+    border-radius: 24px;
+    background: var(--glass-bg);
+    border: 1px solid #fff;
+    box-shadow: var(--shadow);
+}
+
+    .vote-app header {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 8px 6px 18px;
+    }
+
+    .vote-app .title {
+        font-weight: 800;
+        letter-spacing: .2px;
+        line-height: 1.1;
+        margin: 0;
+    }
+
+    .vote-app .toolbar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .vote-app .btn.good {
+        background: #16a34a;
+    }
+
+    .vote-app .btn.warn {
+        background: #f59e0b;
+    }
+
+    .vote-app .btn:disabled {
+        opacity: .6;
+        cursor: not-allowed;
+    }
+
+    .vote-app .progress {
+        font-size: 14px;
+        color: var(--muted);
+    }
+
+    .vote-app .region {
+        margin: 18px 6px;
+        padding: 14px 12px 4px;
+        border-radius: 18px;
+        border: 1px solid #fff;
+        background: var(--glass-bg);
+        box-shadow: var(--shadow);
+    }
+
+        .vote-app .region h2 {
+            margin: 4px 2px 10px;
+            font-weight: 800;
+            font-size: clamp(18px,2.2vw,22px);
+        }
+
+    .vote-app .group {
+        padding: 10px 8px 12px;
+        border-radius: 14px;
+        transition: background .25s ease;
+    }
+
+        .vote-app .group:hover {
+            background: rgba(255,255,255,.45);
+        }
+
+    .vote-app .art {
+        display: block;
+        width: min(420px,100%);
+        height: auto;
+        object-fit: cover;
+        margin: 6px 2px 12px;
+        border-radius: 16px;
+        border: 1px solid #fff;
+        background: var(--glass-bg);
+    }
+
+    .vote-app .options {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .vote-app .option {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 9px 12px;
+        border-radius: 999px;
+        background: var(--glass-bg);
+        border: 1px solid #cde8ff;
+        color: var(--ink);
+        font-weight: 700;
+        letter-spacing: .2px;
+        cursor: pointer;
+        user-select: none;
+        min-height: 36px;
+        transition: transform .06s ease, box-shadow .15s ease, background .2s ease;
+        outline: none;
+    }
+
+        .vote-app .option:hover {
+            transform: translateY(-1px);
+        }
+
+        .vote-app .option[aria-checked="true"] {
+            background: #b6f1ff;
+            border-color: #9ae8ff;
+            box-shadow: 0 10px 26px rgba(34,211,238,.28), inset 0 1px 0 rgba(255,255,255,.9);
+        }
+
+        .vote-app .option:focus-visible {
+            box-shadow: 0 0 0 3px rgba(34,211,238,.5), 0 6px 16px rgba(34,211,238,.25);
+        }
+
+    .vote-app .summary {
+        position: sticky;
+        bottom: 10px;
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        align-items: center;
+        padding-top: 10px;
+    }
+
+    .vote-app .mini {
+        font-size: 12px;
+        color: var(--muted);
+    }
+
+    .vote-app details.howto {
+        margin: 10px 6px 0;
+    }
+
+        .vote-app details.howto summary {
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+@media (prefers-reduced-motion: reduce) {
+    .vote-app .option {
+        transition: none;
+    }
 }

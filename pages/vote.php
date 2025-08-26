@@ -1,119 +1,5 @@
-﻿<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Creature Name Picker</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="stylesheet" href="assets/css/style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
-  <style>
-    :root{
-      --bg1:#b7e3ff; --bg2:#e1f6ff; --bg3:#e3ffe5; --glass:rgba(255,255,255,.55);
-      --ink:#0b1733; --muted:#4b5563; --accent:#00c2ff; --accent2:#22d3ee; --ok:#16a34a; --warn:#f59e0b;
-      --chip:#f0f9ff; --chipBorder:#cde8ff; --chipInk:#0b1733;
-    }
-    html,body{height:100%;}
-    body{
-      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; color:var(--ink);
-      background: radial-gradient(1200px 900px at 10% -10%, #a7f3d0 0%, transparent 60%),
-                  radial-gradient(900px 700px at 110% 10%, #bae6fd 0%, transparent 60%),
-                  linear-gradient(135deg,var(--bg1),var(--bg2) 40%,var(--bg3));
-      background-attachment: fixed;
-      overflow-y:auto;
-    }
-
-    /* Floating bubbles for a Frutiger‑Aero vibe */
-    .bubble{ position:fixed; border-radius:50%; filter: blur(0.3px) saturate(120%);
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(255,255,255,.35) 60%, rgba(255,255,255,.05) 70%),
-                  radial-gradient(circle at 70% 70%, rgba(255,255,255,.6), rgba(255,255,255,.1) 60%);
-      box-shadow: inset 0 1px 2px rgba(255,255,255,.6), inset 0 -6px 12px rgba(0,0,0,.08);
-      mix-blend-mode: screen; pointer-events:none; animation: drift var(--d, 46s) linear infinite;
-      opacity: .5;
-    }
-    @keyframes drift { from { transform: translateY(0) translateX(0);} to { transform: translateY(-120vh) translateX(10vw);} }
-
-    .app{ max-width:1100px; margin: clamp(16px,3vw,32px) auto; padding: 18px;
-      backdrop-filter: blur(14px) saturate(120%);
-      -webkit-backdrop-filter: blur(14px) saturate(120%);
-      background: var(--glass);
-      border: 1px solid rgba(255,255,255,.6);
-      border-radius: 24px; box-shadow: 0 20px 60px rgba(15, 23, 42, .12), inset 0 1px 0 rgba(255,255,255,.5);
-    }
-
-    header{
-      display:flex; gap:16px; align-items:center; justify-content:space-between; flex-wrap:wrap; padding: 8px 6px 18px;
-    }
-    .title{
-      font-weight:800; letter-spacing:.2px; line-height:1.1; margin:0;
-      background: linear-gradient(90deg,#0ea5e9, #10b981 50%, #22d3ee);
-      -webkit-background-clip:text; background-clip:text; color:transparent; font-size: clamp(24px, 3vw, 36px);
-      text-shadow: 0 1px 0 rgba(255,255,255,.35);
-    }
-    .toolbar{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-    .select, .btn{ appearance:none; border:1px solid rgba(255,255,255,.7); background: linear-gradient(#ffffffaa,#ffffff77);
-      box-shadow: 0 6px 20px rgba(2,132,199,.18), inset 0 1px 0 rgba(255,255,255,.7);
-      padding: 10px 14px; border-radius: 14px; font-weight:600; cursor:pointer; color:var(--ink);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    }
-    .btn.primary{ background: linear-gradient(180deg, #baf1ff, #8ee7ff); border-color:#b6ecff; }
-    .btn.good{ background: linear-gradient(180deg, #baf7c1, #7ae38a); border-color:#bbf0c0; }
-    .btn.warn{ background: linear-gradient(180deg, #ffeab5, #ffd08a); border-color:#ffe4b8; }
-    .btn:disabled{ opacity:.6; cursor:not-allowed; }
-
-    .progress{ font-size: 14px; color:var(--muted); }
-
-    .region{ margin: 18px 6px; padding: 14px 12px 4px; border-radius: 18px; border:1px solid rgba(255,255,255,.7);
-      background: linear-gradient(180deg,#ffffffaa,#ffffff66);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 8px 24px rgba(2,132,199,.12);
-    }
-    .region h2{ margin:4px 2px 10px; font-weight:800; font-size: clamp(18px,2.2vw,22px); }
-
-    .group{ padding:10px 8px 12px; border-radius: 14px; transition: background .25s ease; }
-    .group:hover{ background: rgba(255,255,255,.45); }
-    /* Artwork image under each base name */
-    .art{ display:block; width:min(420px,100%); height: auto; object-fit:cover;
-      margin:6px 2px 12px; border-radius:16px; border:1px solid rgba(255,255,255,.75);
-      background: linear-gradient(180deg,#ffffff,#f5fbff);
-      box-shadow: 0 10px 30px rgba(2,132,199,.18), inset 0 1px 0 rgba(255,255,255,.8);
-    }
-
-    .options{ display:flex; flex-wrap:wrap; gap:10px; }
-    .option{ display:inline-flex; align-items:center; justify-content:center; padding:9px 12px; border-radius: 999px;
-      background: linear-gradient(180deg,#f8fcff,#ecf7ff); border:1px solid var(--chipBorder); color:var(--chipInk);
-      box-shadow: 0 6px 18px rgba(14,165,233,.15), inset 0 1px 0 rgba(255,255,255,.7);
-      font-weight:700; letter-spacing:.2px; cursor:pointer; user-select:none; min-height: 36px;
-      transition: transform .06s ease, box-shadow .15s ease, background .2s ease; outline:none;
-    }
-    .option:hover{ transform: translateY(-1px); }
-    .option[aria-checked="true"]{
-      background: linear-gradient(180deg,#b6f1ff,#7ae7ff); border-color:#9ae8ff;
-      box-shadow: 0 10px 26px rgba(34,211,238,.28), inset 0 1px 0 rgba(255,255,255,.9);
-    }
-    .option:focus-visible{ box-shadow: 0 0 0 3px rgba(34,211,238,.5), 0 6px 16px rgba(34,211,238,.25); }
-
-    .summary{ position: sticky; bottom: 10px; display:flex; gap:10px; justify-content:flex-end; align-items:center; padding-top:10px; }
-
-    .mini{ font-size:12px; color:var(--muted); }
-
-    details.howto{ margin: 10px 6px 0; }
-    details.howto summary{ cursor:pointer; font-weight:700; }
-
-    @media (prefers-reduced-motion: reduce){
-      .bubble{ display:none; }
-      .option{ transition:none; }
-    }
-  </style>
-</head>
-<body>
-  <!-- Ambient bubbles -->
-  <div class="bubble" style="--d:52s; width:220px; height:220px; left:5vw; bottom:-20vh;"></div>
-  <div class="bubble" style="--d:64s; width:320px; height:320px; left:25vw; bottom:-25vh;"></div>
-  <div class="bubble" style="--d:58s; width:180px; height:180px; left:70vw; bottom:-18vh;"></div>
-  <div class="bubble" style="--d:70s; width:260px; height:260px; left:85vw; bottom:-22vh;"></div>
-
-  <main class="app" id="app" aria-live="polite">
+﻿﻿<?php require_login(); ?>
+<div class="vote-app" aria-live="polite">
     <header>
       <h1 class="title">Creature Name Picker</h1>
       <div class="toolbar">
@@ -150,7 +36,7 @@
 
     <!-- Hidden HTML form that will be populated and submitted -->
     <form id="submitForm" action="submit.php" method="post" hidden></form>
-  </main>
+  </div>
 
   <!-- Your source data: paste/edit freely. Lines with “–” (en dash) are regions; lines with “name:” are groups. -->
   <script id="source" type="text/plain">
@@ -632,7 +518,10 @@ Pishtaco: 1, 2, 3, 4, 5
   jump.addEventListener('change', () => {
     const id = 'region-' + jump.value;
     const target = document.getElementById(id);
-    if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+    if(target){
+      target.open = true;
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+    }
   });
 
   // Selection state (persisted)
@@ -675,12 +564,14 @@ Pishtaco: 1, 2, 3, 4, 5
   const META = {};
 
   // Render regions + groups
-  for(const r of regions){
-    const sec = document.createElement('section');
-    sec.className='region'; sec.id = 'region-' + r.slug;
-    const h2 = document.createElement('h2');
-    h2.innerHTML = `<strong>${r.name}</strong>`;
-    sec.appendChild(h2);
+  regions.forEach((r, i) => {
+    const sec = document.createElement('details');
+    sec.className = 'region';
+    sec.id = 'region-' + r.slug;
+    if(i === 0) sec.open = true;
+    const summary = document.createElement('summary');
+    summary.innerHTML = `<strong>${r.name}</strong>`;
+    sec.appendChild(summary);
 
     for(const g of r.groups){
       const key = slug(r.name) + '__' + slug(g.base);
@@ -743,7 +634,7 @@ Pishtaco: 1, 2, 3, 4, 5
     }
 
     regionsEl.appendChild(sec);
-  }
+  });
 
   function markSelected(btn, container){
     $$('.option', container).forEach(el=>el.setAttribute('aria-checked','false'));
@@ -788,5 +679,3 @@ Pishtaco: 1, 2, 3, 4, 5
   rebuildForm();
   updateProgress();
   </script>
-</body>
-</html>
