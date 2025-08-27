@@ -74,7 +74,7 @@ Harpy: Galeshriek, Talonette, Harpixa, Skreeva, Vireen
 
 Automaton: Clockwerk, Gearlin, Automa, Cognibot, Brassoul
 
-Auronia – Nornheim
+Auronia – Nornheim (NH)
 
 Draugr: Barrowmar, Grimwake, Frostrevenant, Drowger, Coldwight
 
@@ -84,7 +84,7 @@ Ratatoskr: Gossquirrel, Rattasker, Skytattle, Runaskip, Nibblenut
 
 Valkyrie: Valyra, Shieldra, Wingyr, Skymaiden, Einheris
 
-Auronia – Bretonreach
+Auronia – Bretonreach (BR)
 
 Banshee: Keenera, Mourna, Sidhecall, Cryrae, Wailis
 
@@ -110,7 +110,7 @@ Gremlin: Gremlit, Tinkerimp, Sprungle, Clanksqueak, Mischiv
 
 Wyvern: Wyverna, Wingserp, Skyrake, Glairex, Galevyr
 
-Auronia – Rheinland
+Auronia – Rheinland (RL)
 
 Angel: Serapha, Haloria, Lumiel, Aurafin, Cherubis
 
@@ -138,7 +138,7 @@ Salamander: Flamander, Sizzlenewt, Pyromander, Embertail, Ignivern
 
 Phoenix: Igniph, Fenyx, Ashflare, Embercrest, Rebornix
 
-Auronia – Rodinian Tsardom
+Auronia – Rodinian Tsardom (RT)
 
 Kikimora: Kikima, Moranette, Broomwitch, Kikiwife, Cronekin
 
@@ -152,7 +152,7 @@ Vodyanoy: Vodyak, Pondgrim, Marshbeard, Rillgob, Drownard
 
 Alkonost: Alkonya, Joysong, Blissbird, Halcyra, Sunchant
 
-Borealia – URB
+Borealia – United free Republic of Borealia (URB)
 
 Lich: Grimarch, Phylax, Soulbind, Mortivus, Boneward
 
@@ -162,7 +162,7 @@ Lizardman: Lacerto, Saurlet, Geckru, Drakshed, Scalekin
 
 Mothman: Umbramoth, Noctemoth, Lampryth, Dreadwing, Eyelume
 
-Borealia – STAP
+Borealia – Sovereign Tribes of the Ancestral Plains (STAP)
 
 Thunderbird: Stormwing, Skylash, Thundara, Boomfeather, Astrapin
 
@@ -176,7 +176,7 @@ Trickster Raven: Trickrave, Quipwing, Cawjax, Jestcorvid, Prankrook
 
 Kachina: Kachiri, Cloudancer, Maskway, Hopispirit, Rainson
 
-Dawnmarch – LDK
+Dawnmarch – Lotus-Dragon Kingdom (LDK)
 
 Jiang-Shi: Stiffwalker, Jiangpo, Coinseal, Hopseng, Qinghop
 
@@ -200,7 +200,7 @@ White Tiger: Baihuan, Frostclaw, Whitera, Palepride, Ivoryfang
 
 Black Turtle: Noctorto, UmbraChel, Serpshell, Northguard, Darkcarap
 
-Dawnmarch – Baharamandal
+Dawnmarch – Baharamandal (BM)
 
 Apsara: Padmara, Apsalia, Celindra, Nritiya, Skyraas
 
@@ -214,7 +214,7 @@ Gandharva: Gandharo, Songriva, Ragalor, Cloudharp, Aerialute
 
 Vetala: Vetalisk, Gravebind, Nightpriest, Hollowji, Cadawit
 
-Dawnmarch – Yamanokubo
+Dawnmarch – Yamanokubo (YK)
 
 Kitsune: Kitsumi, Ninevix, Foxyre, Hoshikits, Kitsel
 
@@ -238,7 +238,7 @@ Kamaitachi: Weaslash, Galeasel, Sickleto, Kamawea, Cutcurrent
 
 Yuki-Onna: Yukiro, Glacelle, Frostrae, Cryoveil, Snowhime
 
-Gulfbelt – Xochimex
+Gulfbelt – Xochimex (XM)
 
 La Llorona: Weepbelle, Marimourn, Canalcry, Noxmadre, Riverwail
 
@@ -252,7 +252,7 @@ Charro Negro: Nightrider, Sombrablack, Charro Noct, CoalCab, Catrinero
 
 La Mano Peluda: Pilohand, Peluman, Furrygrasp, Hairclutch, Palmpelt, Unmannedhand
 
-Gulfbelt – ESD
+Gulfbelt – Eagle Serpent Dominion (ESD)
 
 Quetzalcoatl: Quetzala, Plumecoil, Featherserp, Quetza, Skyscale
 
@@ -262,7 +262,7 @@ Cipactli: Cipac, Crocprime, Mawdelta, Primacroc, Jagjaw
 
 Ocelot: Oceluna, Selvacat, Spotblade, Ocelin, Nightrosette
 
-Gulfbelt – IE
+Gulfbelt – Itzam Empire (IE)
 
 Alux: Aluxi, Fieldling, Milpafae, Aluxobit, Plotkin
 
@@ -278,7 +278,7 @@ Tapir: Tapiri, Snoutback, Dorsnork, Taproot, Palmtree
 
 Macaw: Macara, Scarletwing, Palettail, Araflare, Macawra
 
-Moana Crown – SRL
+Moana Crown – Spice Route League (SRL)
 
 Crab girl: Kanikina, Pinchette, Shellina, Reefclara, Coconella
 
@@ -292,7 +292,7 @@ Nightmarcher: Nightmarch, Drumstride, Pathwraith, Torchline, Ghostfile
 
 Adaro: Adarow, Brineblade, Cyclonfin, Stormmer, Spearfish
 
-Orienthem – CC
+Orienthem – Crescent Caliphate (CC)
 
 Genie: Djinna, Wishra, Lampheer, Jinnari, Aetherif
 
@@ -310,7 +310,7 @@ Roc: Rocara, Skymass, Taloroc, Sunlift, Stratoshrike
 
 Nasnas: Nasni, Halflurch, Splitling, Crookstride, Onehalf
 
-Orienthem – Hammurabia
+Orienthem – Hammurabia (HR)
 
 Girtablilu: Scorpitar, Stingward, Akrabuin, Ziggaur, Biluguard
 
@@ -328,7 +328,7 @@ Fennec: Fennix, Dunesqueak, Earflare, Sandfen, Vulpetta
 
 Caracal: Caraclaw, Desertlyn, Karaquik, Tuftstrike, Earblade
 
-Orienthem – ESL
+Orienthem – Eretz-Shalem League (ESL)
 
 Golem: Clayward, Golim, Shamirite, Seferim, Emetron
 
@@ -342,7 +342,7 @@ Behemoth: Behemax, Earthbulk, Deepbrute, Landlevi, Terraox
 
 Lilith: Lilanis, Nightael, Moonkiss, Lilistra, Umbrama
 
-Saharene – Kemet
+Saharene – Kemet (KM)
 
 Anubis: Duati, Jackalakh, Anupet, Embalord, Khepwolf
 
@@ -362,9 +362,9 @@ Serpopard: Serpop, Pardsnake, Neckcoil, Spotcoil, Serpopard
 
 Uraeus: Uraelia, Browflame, Diademserp, Royalcoil, Cobreris
 
-Spinosaur: 1, 2, 3, 4, 5
+Spinosaur: Spinosurge, Sailjaw, Rivensail, Marshsaur, Spindrake
 
-Tundria – Sila Council
+Tundria – Sila Council (SC)
 
 Amarok: Amarokh, Frostfang, Glaciwulf, Tundrahound, Snowmara
 
@@ -376,75 +376,79 @@ Keelut: Keelusk, Barehound, Slickpaw, Nightcur, Skinwolf
 
 Ijiraq: Ijirak, Shiftling, Miragekin, Maskstag, Lostwalker
 
-Penguin: 1, 2, 3, 4, 5, Pengwing
+Penguin: Pengwing, Chillquin, Tuxlide, Frostwaddle, Glacupen, Pengwing
 
-Caribou: 1, 2, 3, 4, 5
+Caribou: Caribolt, Tundrabo, Rangivel, Velvetine, Snowrack
 
-Walrus: 1, 2, 3, 4, 5
+Walrus: Walrumble, Tuskurrent, Brinewhisk, Icewal, Blubtusk
 
-Uluru – RSC
+Uluru – Red Sun Commonwealth (RSC)
 
-Drop Bear: 1, 2, 3, 4, 5
+Drop Bear: Dropkoal, Eucapounce, Plummko, Branchdrop, Sneakkoal
 
-Sea Turtle: 1, 2, 3, 4, 5
+Sea Turtle: Seashield, Chelomar, Tiderunner, Shellvoy, Oceleon
 
-Australovenator: 1, 2, 3, 4, 5
+Australovenator: Australash, Banjorap, Bushclaw, Redtalon, Novaraptor
 
-Platypus: 1, 2, 3, 4, 5
+Platypus: Platypup, Billabub, Ornipod, Spurling, Puddleplat
 
-Emu: 1, 2, 3, 4, 5
+Emu: Emuzoom, Dromach, Plumezu, Strideru, Emuprise
 
-Min-Min Lights: 1, 2, 3, 4, 5
+Min-Min Lights: Minminn, Outglow, Dunespark, Bushglint, Wispstray
 
-Hoop Snake: 1, 2, 3, 4, 5
+Hoop Snake: Hoopcoil, Ringadder, Wheelserp, Ouroloop, Rollasp
 
-Kangaroo: 1, 2, 3, 4, 5
+Kangaroo: Pouchpunch, Boomaroo, Skipslam, Marsupow, Roojack
 
-Uluru – Yara Nations
+Uluru – Yara Nations (YN)
 
 Bunyip: Billabellow, Bunyara, Marshmurm, Bogboon, Creeklurker
 
-Rainbow Serpent: 1, 2, 3, 4, 5
+Rainbow Serpent: Prismcoil, Spectracoil, Arcudra, Raincoil, Chromanaga
 
-Mimi spirit: 1, 2, 3, 4, 5
+Mimi spirit: Miminee, EchoMimi, Paintwisp, Rockscribe, Slimi
 
-Croc-Man: 1, 2, 3, 4, 5
+Croc-Man: Crocborne, Scalewalker, Caimanox, Brinegait, Reptanth
 
-Nargun: 1, 2, 3, 4, 5
+Nargun: Rocknarg, Basalurk, Cavergast, Stonewarden, Gloomglen
 
-Tiddalik: 1, 2, 3, 4, 5
+Tiddalik: Tiddalick, Floodfrog, Gorgegulp, Swellhop, Drysip
 
-Yara-ma-yha-who: 1, 2, 3, 4, 5
+Yara-ma-yha-who: Yarahoo, Figdropper, Treeperch, Redgrin, Yaramite
 
-Verdania – Gran Columbia
+Verdania – Gran Columbia (GC)
 
-Curupira: 1, 2, 3, 4, 5
+Curupira: Curupix, Backheel, Foresttrix, Trailwisp, Heelturn
 
-Mapinguari: 1, 2, 3, 4, 5
+Mapinguari: Mapingraw, Selvalurk, Mawpingu, Junglemaw, Slothgrim
 
-El Silbon: 1, 2, 3, 4, 5
+Toucan: Beakazon, Toucolor, Tropibeak, Aracara, Fruitcrest
 
-La Tunda: 1, 2, 3, 4, 5
+Piranha: Razorfin, Snapshoal, Pirabite, Gnashna, Sawgill
 
-Pombero: 1, 2, 3, 4, 5
+Capybara: Capybuddy, Floatbara, Capycurrent, Marshcavy, Chillbara
 
-Encantado: 1, 2, 3, 4, 5
+Armadillo: Rolladillo, Shellbur, Dillotank, Cactillo, Armaterra
 
-Chullachaqui: 1, 2, 3, 4, 5
+Ant-eater: Myrmunch, Tongolong, Anteasy, Sipant, Tamanduo
 
-Verdania – SIE
+Verdania – Sapa Inti Empire (SIE)
 
-Amaru: 1, 2, 3, 4, 5
+Fishman: Gillborn, Brinewalker, Neridon, Finstrider, Surfkin
 
-Apu: 1, 2, 3, 4, 5
+Argentinosaurus: Argentitan, Pampadon, Colossaur, Platarex, Titanpamp
 
-Supay: 1, 2, 3, 4, 5
+Amaru: Amarusa, Twincoil, Serpentupa, Stormamar, Andecoil
 
-Ukuku: 1, 2, 3, 4, 5
+Apu: Apuguard, Peakward, Summiton, Mountadel, Andecrown
 
-Urcuchillay: 1, 2, 3, 4, 5
+Supay: Supaxa, Cavernox, Umbravax, Pitwarden, Abysses
 
-Pishtaco: 1, 2, 3, 4, 5
+Ypupiara: Ypupiro, Riverhar, Scalehand, Pupyara, Ypurana
+
+Urcuchillay: Chillama, Urcuchi, Llamastar, Skyllama, Constellama
+
+Pishtaco: Pishtaxa, Cordillon, Nightprow, Andesly, Dusktrader
 
   </script>
 
@@ -496,10 +500,12 @@ Pishtaco: 1, 2, 3, 4, 5
   const toTopBtn = $('#toTopBtn');
 
   // Default artwork image for every base (change this later per-base if desired)
-  const IMAGE_BASE = 'images/vote/';
+  const IMAGE_BASE = 'images/';
+  const IMAGE_GENDER = 'f';
+  const IMAGE_VARIANT = 'blue';
   const IMAGE_EXT = '.webp';
   const FALLBACK_IMAGE = 'images/tengu.webp';
-  const imageForBase = (base) => `${IMAGE_BASE}${slug(base)}${IMAGE_EXT}`;
+  const imageForBase = (base) => `${IMAGE_BASE}${slug(base)}_${IMAGE_GENDER}_${IMAGE_VARIANT}${IMAGE_EXT}`;
 
   const raw = $('#source').textContent; // keep diacritics
   const parsed = parseSource(raw);
