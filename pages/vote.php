@@ -1,4 +1,16 @@
-﻿﻿<?php require_login(); ?>
+﻿<?php
+require_login();
+// Build a list of available gender/variant combinations per creature
+$image_variants = [];
+foreach (glob(__DIR__ . '/../images/*_*_*.webp') as $file) {
+    $name = basename($file, '.webp');
+    if (preg_match('/^(.*)_([mf])_(.+)$/', $name, $m)) {
+        $slug = $m[1];
+        $combo = $m[2] . '_' . $m[3];
+        $image_variants[$slug][] = $combo;
+    }
+}
+?>
 <div class="vote-app" aria-live="polite">
     <header>
       <h1 class="title">Creature Name Picker</h1>
@@ -501,11 +513,20 @@ Pishtaco: Pishtaxa, Cordillon, Nightprow, Andesly, Dusktrader
 
   // Default artwork image for every base (change this later per-base if desired)
   const IMAGE_BASE = 'images/';
-  const IMAGE_GENDER = 'f';
-  const IMAGE_VARIANT = 'blue';
+  const DEFAULT_GENDER = 'f';
+  const DEFAULT_VARIANT = 'blue';
   const IMAGE_EXT = '.webp';
   const FALLBACK_IMAGE = 'images/tengu.webp';
-  const imageForBase = (base) => `${IMAGE_BASE}${slug(base)}_${IMAGE_GENDER}_${IMAGE_VARIANT}${IMAGE_EXT}`;
+  const IMAGE_VARIANTS = <?= json_encode($image_variants) ?>;
+  const imageForBase = (base) => {
+    const sb = slug(base);
+    const opts = IMAGE_VARIANTS[sb];
+    if (opts && opts.length) {
+      const pick = opts[Math.floor(Math.random() * opts.length)];
+      return `${IMAGE_BASE}${sb}_${pick}${IMAGE_EXT}`;
+    }
+    return `${IMAGE_BASE}${sb}_${DEFAULT_GENDER}_${DEFAULT_VARIANT}${IMAGE_EXT}`;
+  };
 
   const raw = $('#source').textContent; // keep diacritics
   const parsed = parseSource(raw);

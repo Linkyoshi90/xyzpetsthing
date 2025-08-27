@@ -259,6 +259,7 @@ ul.tight {
         border-radius: 16px;
         border: 1px solid #fff;
         background: var(--glass-bg);
+        transition: opacity 0.5s;
     }
 
     .vote-app .options {
