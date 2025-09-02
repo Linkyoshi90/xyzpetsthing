@@ -522,14 +522,13 @@ Pishtaco: Pishtaxa, Cordillon, Nightprow, Andesly, Dusktrader
   const IMAGE_EXT = '.webp';
   const FALLBACK_IMAGE = 'images/tengu.webp';
   const IMAGE_VARIANTS = <?= json_encode($image_variants) ?>;
-  const imageForBase = (base) => {
+  const variantsFor = (base) => {
     const sb = slug(base);
     const opts = IMAGE_VARIANTS[sb];
-    if (opts && opts.length) {
-      const pick = opts[Math.floor(Math.random() * opts.length)];
-      return `${IMAGE_BASE}${sb}_${pick}${IMAGE_EXT}`;
-    }
-    return `${IMAGE_BASE}${sb}_${DEFAULT_GENDER}_${DEFAULT_VARIANT}${IMAGE_EXT}`;
+    return {
+      sb,
+      list: (opts && opts.length) ? opts : [`${DEFAULT_GENDER}_${DEFAULT_VARIANT}`]
+    };
   };
 
   const raw = $('#source').textContent; // keep diacritics
@@ -619,15 +618,44 @@ Pishtaco: Pishtaxa, Cordillon, Nightprow, Andesly, Dusktrader
       base.innerHTML = `<strong>${g.base}</strong>`;
       wrap.appendChild(base);
 
-      // artwork image per original/base name
+      // artwork image per original/base name with variant navigation
+      const { sb, list: variants } = variantsFor(g.base);
+      let vIndex = 0;
+
+      const artWrap = document.createElement('div');
+      artWrap.className = 'art-wrap';
+
+      const prev = document.createElement('button');
+      prev.type = 'button';
+      prev.className = 'nav prev';
+      prev.textContent = '\u25C0'; // ◀
+
+      const next = document.createElement('button');
+      next.type = 'button';
+      next.className = 'nav next';
+      next.textContent = '\u25B6'; // ▶
+
       const img = new Image();
-      img.src = imageForBase(g.base);
+      img.src = `${IMAGE_BASE}${sb}_${variants[vIndex]}${IMAGE_EXT}`;
       img.alt = `${g.base} artwork`;
       img.className = 'art';
       img.loading = 'lazy';
       img.decoding = 'async';
       img.onerror = () => { img.onerror = null; img.src = FALLBACK_IMAGE; };
-      wrap.appendChild(img);
+      prev.addEventListener('click', () => {
+        vIndex = (vIndex - 1 + variants.length) % variants.length;
+        img.src = `${IMAGE_BASE}${sb}_${variants[vIndex]}${IMAGE_EXT}`;
+      });
+
+      next.addEventListener('click', () => {
+        vIndex = (vIndex + 1) % variants.length;
+        img.src = `${IMAGE_BASE}${sb}_${variants[vIndex]}${IMAGE_EXT}`;
+      });
+
+      artWrap.appendChild(prev);
+      artWrap.appendChild(img);
+      artWrap.appendChild(next);
+      wrap.appendChild(artWrap);
 
       const opts = document.createElement('div');
       opts.className = 'options';

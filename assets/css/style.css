@@ -67,8 +67,10 @@ a {
 }
 
 .nav {
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
     z-index: 1000;
     backdrop-filter: blur(8px);
     background: var(--glass-bg);
@@ -304,16 +306,32 @@ ul.tight {
             background: rgba(255,255,255,.45);
         }
 
+    .vote-app .art-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 6px 2px 12px;
+        gap: 6px;
+    }
+
     .vote-app .art {
         display: block;
         width: min(420px,100%);
         height: auto;
         object-fit: cover;
-        margin: 6px 2px 12px;
+        margin: 0;
         border-radius: 16px;
         border: 1px solid #fff;
         background: var(--glass-bg);
         transition: opacity 0.5s;
+    }
+
+    .vote-app .nav {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        padding: 0 6px;
     }
 
     .vote-app .options {

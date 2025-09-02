@@ -9,7 +9,9 @@
 </head><body>
 <header class="nav">
   <div class="nav-left">
-    <img src="images/tengu_f_blue.webp" alt="Active pet" class="pet-thumb" />
+    <a href="?pg=<?= $u?'pet':'login' ?>">
+        <img src="images/tengu_f_blue.webp" alt="Active pet" class="pet-thumb" />
+    </a>
     <a href="?pg=<?= $u?'main':'login' ?>">
       <img src="images/np-logo-R.svg" alt="Harmontide" class="site-banner" />
     </a>
