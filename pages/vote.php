@@ -90,6 +90,8 @@ Auronia – Nornheim (NH)
 
 Draugr: Barrowmar, Grimwake, Frostrevenant, Drowger, Coldwight
 
+Squidkin: Riftkrak, Abyssant, Maelmaph, Tentacast, Deepclaw
+
 Kraken: Riftkrak, Abyssant, Maelmaph, Tentacast, Deepclaw
 
 Ratatoskr: Gossquirrel, Rattasker, Skytattle, Runaskip, Nibblenut
@@ -228,6 +230,8 @@ Vetala: Vetalisk, Gravebind, Nightpriest, Hollowji, Cadawit
 
 Dawnmarch – Yamanokubo (YK)
 
+Spider-Crab: Scrabber, Crabgantic, Scrooder, Kani, Kanigant
+
 Kitsune: Kitsumi, Ninevix, Foxyre, Hoshikits, Kitsel
 
 Akaname: Grimelick, Akalick, Scuzzume, Filthling, Sudsnap
@@ -292,7 +296,7 @@ Macaw: Macara, Scarletwing, Palettail, Araflare, Macawra
 
 Moana Crown – Spice Route League (SRL)
 
-Crab girl: Kanikina, Pinchette, Shellina, Reefclara, Coconella
+Crab man: Kanikina, Pinchette, Shellina, Reefclara, Coconella
 
 Taniwha: Taniwa, Reefward, Wakecoil, Gorgeguard, Riverjarl
 
@@ -314,7 +318,7 @@ Manticore: Scoroleon, Mantikra, Quillmaw, Tailspike, Manestryx
 
 Ifrit: Ifryx, Emberdjinn, Blazefrit, Ifraze, Cindershah
 
-Camel: Camelor, Dunalop, Humpset, Sandromed, Caravanx
+Camel: Emberdary, Dromablaze, Pyromedary, Flamelid, Scorchump, Camelor, Dunalop, Humpset, Sandromed, Caravanx, Flamel, Pyrodary, Geisedar, GEISEDAR MANN
 
 Ghoul: Ghulkin, Sandghast, Carozerk, Duneskulk, Gravegnaw
 

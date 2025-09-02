@@ -1,24 +1,35 @@
-﻿<?php $u = current_user(); ?>
+﻿﻿<?php $u = current_user(); ?>
 <!doctype html><html data-theme="light"><head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title><?= APP_NAME ?></title>
 <link rel="stylesheet" href="assets/css/style.css">
 <script defer src="assets/js/theme.js"></script>
+<script defer src="assets/js/user-menu.js"></script>
 </head><body>
 <header class="nav">
-  <a class="brand" href="?pg=<?= $u?'main':'login' ?>">Harmontide</a>
+  <div class="nav-left">
+    <img src="images/tengu_f_blue.webp" alt="Active pet" class="pet-thumb" />
+    <a href="?pg=<?= $u?'main':'login' ?>">
+      <img src="images/np-logo-R.svg" alt="Harmontide" class="site-banner" />
+    </a>
+  </div>
   <div class="nav-right">
-    <?php if($u): ?>
     <nav>
-      <a href="?pg=main">Pets</a>
-      <a href="?pg=create_pet">Create</a>
-      <a href="?pg=inventory">Inventory</a>
-      <a href="?pg=map">Map</a>
-      <a href="?pg=vote">Vote</a>
-      <a href="?pg=logout">Logout</a>
+      <a href="?pg=friends">👥 friends</a>
+      <a href="?pg=games">🎮 games</a>
+      <a href="?pg=map">🗺️ explore</a>
+      <a href="?pg=vote">🗳️ vote</a>
+      <a href="?pg=notifications" aria-label="notifications">🔔</a>
     </nav>
-    <span class="who">hi, <?= htmlspecialchars($u['username']) ?></span>
+    <?php if($u): ?>
+    <div class="user-menu">
+      <button id="user-menu-toggle" class="btn" type="button">🙂</button>
+      <ul id="user-menu" class="user-menu-list">
+        <a href="?pg=options">options</a>
+        <a href="?pg=logout">logout</a>
+      </ul>
+    </div>
     <?php endif; ?>
     <button id="theme-toggle" class="btn" type="button">🌓</button>
   </div>
