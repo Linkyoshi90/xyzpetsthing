@@ -21,7 +21,9 @@ if ($u) {
 <header class="nav">
     <div class="nav-left">
         <?php if($u): ?>
+        <a href="?pg=inventory">
             <span class="user-name"><?= htmlspecialchars($u['username']) ?></span>
+        </a>
         <a href="?pg=pet">
             <?php if($header_pet): ?>
                 <img src="<?= htmlspecialchars(pet_image_url($header_pet['species_name'], $header_pet['color_name'])) ?>" alt="Active pet" class="pet-thumb" />

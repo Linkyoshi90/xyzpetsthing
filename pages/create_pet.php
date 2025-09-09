@@ -1,16 +1,19 @@
 <?php require_login();
 $uid = current_user()['id'];
-$species = q("SELECT * FROM species ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+$species = q("SELECT species_id, species_name, base_hp, base_atk, base_def, base_init FROM pet_species ORDER BY species_name")
+    ->fetchAll(PDO::FETCH_ASSOC);
 if($_SERVER['REQUEST_METHOD']==='POST'){
   $sp = (int)($_POST['species_id'] ?? 0);
   $name = trim($_POST['name'] ?? '');
-  $row = q("SELECT * FROM species WHERE id=?",[$sp])->fetch(PDO::FETCH_ASSOC);
+  $row = q("SELECT species_id, species_name, base_hp, base_atk, base_def, base_init FROM pet_species WHERE species_id=?",[$sp])
+      ->fetch(PDO::FETCH_ASSOC);
   if($row && $name){
-    q("INSERT INTO pets(user_id,name,species_id,color,hp) VALUES(?,?,?,?,?)",
-      [$uid,$name,$sp,'default',$row['base_hp']]);
+    q("INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, level, experience, hp_current, atk, def, initiative)
+        VALUES (?,?,?,?,?,?,?,?,?,?)",
+      [$uid,$sp,$name,1,1,0,$row['base_hp'],$row['base_atk'],$row['base_def'],$row['base_init']]);
     // starter items
-    q("INSERT INTO user_items(user_id,item_id,qty) VALUES(?,?,1) ON DUPLICATE KEY UPDATE qty=qty+1",[$uid,1]);
-    q("INSERT INTO user_items(user_id,item_id,qty) VALUES(?,?,2) ON DUPLICATE KEY UPDATE qty=qty+2",[$uid,2]);
+    q("INSERT INTO user_inventory(user_id,item_id,quantity) VALUES(?,?,1) ON DUPLICATE KEY UPDATE quantity=quantity+1",[$uid,1]);
+    q("INSERT INTO user_inventory(user_id,item_id,quantity) VALUES(?,?,2) ON DUPLICATE KEY UPDATE quantity=quantity+2",[$uid,2]);
     header('Location: ?pg=main'); exit;
   }
   $err="Pick a species and name.";
@@ -22,9 +25,9 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   <label>Name <input name="name" required maxlength="40"></label>
   <label>Species
     <select name="species_id" required>
-      <option value="">— choose —</option>
+      <option value=""> choose </option>
       <?php foreach($species as $s): ?>
-        <option value="<?= $s['id'] ?>"><?= htmlspecialchars($s['name']) ?></option>
+        <option value="<?= $s['species_id'] ?>"><?= htmlspecialchars($s['species_name']) ?></option>
       <?php endforeach; ?>
     </select>
   </label>
