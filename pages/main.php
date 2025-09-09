@@ -5,7 +5,7 @@ $pets = get_user_pets($uid);
 ?>
 <h1>Your Pets</h1>
 <?php if(count($pets) < 4): ?>
-<a class="btn" href="?pg=create_pet">+ Create a pet</a>
+<a class="btn" href="?pg=create_pet">Create pet</a>
 <?php endif; ?>
 <div class="grid three">
 <?php foreach($pets as $p): ?>

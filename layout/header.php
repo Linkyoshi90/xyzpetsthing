@@ -1,4 +1,14 @@
-﻿﻿<?php $u = current_user(); ?>
+﻿<?php
+$u = current_user();
+$header_pet = null;
+if ($u) {
+    require_once __DIR__.'/../lib/pets.php';
+    $pets = get_user_pets($u['id']);
+    if ($pets) {
+        $header_pet = $pets[array_rand($pets)];
+    }
+}
+?>
 <!doctype html><html data-theme="light"><head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -13,7 +23,11 @@
         <?php if($u): ?>
             <span class="user-name"><?= htmlspecialchars($u['username']) ?></span>
         <a href="?pg=pet">
-            <img src="images/tengu_f_blue.webp" alt="Active pet" class="pet-thumb" />
+            <?php if($header_pet): ?>
+                <img src="<?= htmlspecialchars(pet_image_url($header_pet['species_name'], $header_pet['color_name'])) ?>" alt="Active pet" class="pet-thumb" />
+            <?php else: ?>
+                <img src="/assets/creatures/placeholder.png" alt="No pet" class="pet-thumb" />
+            <?php endif; ?>
         </a>
         <?php else: ?>
         <?php endif; ?>
