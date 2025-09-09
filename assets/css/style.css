@@ -147,6 +147,10 @@ a {
     border-radius: var(--radius);
 }
 
+    .site-banner.dark {
+        filter: invert(1);
+    }
+
 .brand {
     font-weight: 800
 }
@@ -326,12 +330,13 @@ ul.tight {
         transition: opacity 0.5s;
     }
 
-    .vote-app .nav {
+    .vote-app .variant-nav {
         background: none;
         border: none;
         font-size: 28px;
         cursor: pointer;
         padding: 0 6px;
+        color: var(--ink);
     }
 
     .vote-app .options {

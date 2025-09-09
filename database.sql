@@ -214,6 +214,14 @@ CREATE TABLE IF NOT EXISTS shop_transactions (
   CONSTRAINT fk_shoptx_currency FOREIGN KEY (currency_id) REFERENCES currencies(currency_id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS creature_name_votes (
+  user_id        BIGINT UNSIGNED NOT NULL,
+  selection_json JSON NOT NULL,
+  submitted_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id),
+  CONSTRAINT fk_namevote_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 ------------------------------------------------- 
 
 USE xyzpetsthing;
