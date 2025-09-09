@@ -9,7 +9,14 @@
 <script defer src="assets/js/currency.js"></script>
 </head><body>
 <header class="nav">
-  <div class="nav-left">
+    <div class="nav-left">
+        <?php if($u): ?>
+            <span class="user-name"><?= htmlspecialchars($u['username']) ?></span>
+        <a href="?pg=pet">
+            <img src="images/tengu_f_blue.webp" alt="Active pet" class="pet-thumb" />
+        </a>
+        <?php else: ?>
+        <?php endif; ?>
     <a href="?pg=<?= $u?'main':'login' ?>">
       <img src="images/np-logo-R.svg" alt="Harmontide" class="site-banner" />
     </a>
@@ -18,13 +25,6 @@
       <span class="currency cash">💰 <span id="cash-balance"><?= (int)($u['cash'] ?? 0) ?></span></span>
       <span class="currency gems">💎 <span id="gems-balance"><?= (int)($u['gems'] ?? 0) ?></span></span>
     </div>
-    <a href="?pg=pet">
-        <img src="images/tengu_f_blue.webp" alt="Active pet" class="pet-thumb" />
-    </a>
-    <?php else: ?>
-    <a href="?pg=login">
-        <img src="images/tengu_f_blue.webp" alt="Active pet" class="pet-thumb" />
-    </a>
     <?php endif; ?>
   </div>
   <div class="nav-right">

@@ -12,3 +12,4 @@ $balance = q('SELECT COALESCE(coins,0) FROM users WHERE id = ?', [$uid])->fetchC
 $_SESSION['user']['cash'] = (int)$balance;
 header('Content-Type: application/json');
 echo json_encode(['coins' => (int)$balance]);
+?>

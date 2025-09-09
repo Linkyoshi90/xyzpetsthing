@@ -121,6 +121,16 @@ a {
     gap: 16px;
 }
 
+.nav-center {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
 .currency-display {
     display: flex;
     align-items: center;
