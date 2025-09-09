@@ -121,6 +121,19 @@ a {
     gap: 16px;
 }
 
+.currency-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+    .currency-display .currency {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
 .nav-right nav {
     display: flex;
     align-items: center;

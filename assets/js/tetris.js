@@ -150,7 +150,14 @@ function gameOver() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ lines: totalLines })
-        }).finally(redirect);
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (window.updateCurrencyDisplay && data && typeof data === 'object') {
+                    window.updateCurrencyDisplay({ cash: data.coins });
+                }
+            })
+            .finally(redirect);
     } else {
         redirect();
     }
