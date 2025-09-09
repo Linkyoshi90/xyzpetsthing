@@ -4,8 +4,9 @@
     "\\assets",
     "\\assets\\css",
     "\\assets\\js",
+    "\\lib",
     "\\pages"
   ],
-  "SelectedNode": "\\auth.php",
+  "SelectedNode": "\\pages\\main.php",
   "PreviewInSolutionExplorer": false
 }

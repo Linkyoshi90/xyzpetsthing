@@ -1,15 +1,18 @@
 <?php require_login();
+require_once __DIR__.'/../lib/pets.php';
 $uid = current_user()['id'];
-$pets = q("SELECT p.*, s.name AS species, s.img FROM pets p JOIN species s ON s.id=p.species_id WHERE p.user_id=?",[$uid])->fetchAll(PDO::FETCH_ASSOC);
+$pets = get_user_pets($uid);
 ?>
 <h1>Your Pets</h1>
+<?php if(count($pets) < 4): ?>
 <a class="btn" href="?pg=create_pet">+ Create a pet</a>
+<?php endif; ?>
 <div class="grid three">
 <?php foreach($pets as $p): ?>
   <div class="card glass">
-    <img class="thumb" src="<?= htmlspecialchars($p['img'] ?: '/assets/creatures/placeholder.png') ?>" alt="">
-    <h3><?= htmlspecialchars($p['name']) ?> <small>(<?= htmlspecialchars($p['species']) ?>)</small></h3>
-    <p>HP <?= (int)$p['hp'] ?> · Happy <?= (int)$p['happiness'] ?> · Energy <?= (int)$p['energy'] ?></p>
+    <img class="thumb" src="<?= htmlspecialchars(pet_image_url($p['species_name'], $p['color_name'])) ?>" alt="">
+    <h3><?= htmlspecialchars($p['nickname'] ?: $p['species_name']) ?> <small>(<?= htmlspecialchars($p['species_name']) ?>)</small></h3>
+    <p>Level <?= (int)$p['level'] ?>  HP <?= (int)($p['hp_current'] ?? 0) ?></p>
   </div>
 <?php endforeach; ?>
 <?php if(!$pets): ?>
