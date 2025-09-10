@@ -2,7 +2,6 @@ const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 context.scale(20, 20);
 
-let totalLines = 0;
 let gameOverFlag = false;
 
 function arenaSweep() {
@@ -20,9 +19,6 @@ function arenaSweep() {
         player.score += rowCount * 10;
         rowCount *= 2;
         lines++;
-    }
-    if (lines) {
-        totalLines += lines;
     }
     updateScore();
     return lines;
@@ -144,17 +140,19 @@ function gameOver() {
     if (gameOverFlag) return;
     gameOverFlag = true;
     const submit = confirm('Submit score for rewards?');
-    const redirect = () => { window.location.href = 'index.php'; };
+    const redirect = () => { window.location.href = 'index.php?pg=games'; };
     if (submit) {
-        fetch('pages/tetris.php', {
+        fetch('score_exchange.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ lines: totalLines })
+            body: JSON.stringify({ game: 'tetris', score: player.score })
         })
             .then(r => r.json())
             .then(data => {
-                if (window.updateCurrencyDisplay && data && typeof data === 'object') {
-                    window.updateCurrencyDisplay({ cash: data.coins });
+                if (window.updateCurrencyDisplay && data && typeof data === 'object' && data.cash !== undefined) {
+                    window.updateCurrencyDisplay({ cash: data.cash });
+                } else if (data && data.error) {
+                    alert(data.error);
                 }
             })
             .finally(redirect);

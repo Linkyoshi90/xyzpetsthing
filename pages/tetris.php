@@ -19,5 +19,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script defer src="assets/js/tetris.js"></script>
 <h1>Tetris</h1>
 <canvas id="tetris" width="200" height="400"></canvas>
-    <p class="muted">Use W to rotate, A/D to move, S to drop.</p>
-    <div id="score">Score: <span id="scoreVal">0</span></div>
+<p class="muted">Use W to rotate, A/D to move, S to drop.</p>
+<div id="score">Score: <span id="scoreVal">0</span></div>

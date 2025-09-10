@@ -11,6 +11,7 @@ let score = 0;
 let level = 1;
 let enemyDir = 1;
 let bonusShip = null;
+let gameOverFlag = false;
 
 const keys = {};
 document.addEventListener('keydown', e => keys[e.code] = true);
@@ -72,6 +73,30 @@ function generateWave(lv) {
 
 generateWave(level);
 spawnBonusShip();
+function gameOver() {
+    if (gameOverFlag) return;
+    gameOverFlag = true;
+    const submit = confirm('Submit score for rewards?');
+    const redirect = () => { window.location.href = 'index.php?pg=games'; };
+    if (submit) {
+        fetch('score_exchange.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ game: 'galaxian', score })
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (window.updateCurrencyDisplay && data && typeof data === 'object' && data.cash !== undefined) {
+                    window.updateCurrencyDisplay({ cash: data.cash });
+                } else if (data && data.error) {
+                    alert(data.error);
+                }
+            })
+            .finally(redirect);
+    } else {
+        redirect();
+    }
+}
 
 function shoot() {
     if (activePower.type === 'spread') {
@@ -121,9 +146,8 @@ function update() {
                 enemyBullets.splice(i, 1);
                 continue;
             }
-            alert('Game over!');
-            reset();
-            break;
+            gameOver();
+            return;
         }
         if (b.y > canvas.height) enemyBullets.splice(i, 1);
     }
@@ -212,9 +236,8 @@ function update() {
     // enemy-player collisions
     for (const e of enemies) {
         if (isColliding(e, player) || e.y + e.h >= canvas.height) {
-            alert('Game over!');
-            reset();
-            break;
+            gameOver();
+            return;
         }
     }
 
