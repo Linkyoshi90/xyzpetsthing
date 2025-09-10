@@ -38,6 +38,17 @@ CREATE TABLE IF NOT EXISTS user_balances (
   CONSTRAINT fk_bal_currency FOREIGN KEY (currency_id) REFERENCES currencies(currency_id)
 ) ENGINE=InnoDB;
 
+-- Per-user balances
+CREATE TABLE IF NOT EXISTS user_bank (
+  user_id     BIGINT UNSIGNED NOT NULL,
+  currency_id TINYINT UNSIGNED NOT NULL,
+  balance     DECIMAL(14,2) NOT NULL DEFAULT 0,
+  interest    DECIMAL(14,2) NOT NULL DEFAULT 0,
+  PRIMARY KEY (user_id, currency_id),
+  CONSTRAINT fk_bank_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  CONSTRAINT fk_bank_currency FOREIGN KEY (currency_id) REFERENCES currencies(currency_id)
+) ENGINE=InnoDB;
+
 -- Ledger for auditing economy
 CREATE TABLE IF NOT EXISTS currency_ledger (
   ledger_id   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

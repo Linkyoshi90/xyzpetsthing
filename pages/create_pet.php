@@ -83,10 +83,6 @@ function slugify($str)
         <input name="name" required maxlength="40">
       </label>
 
-      <div class="gender">
-        <label><input type="radio" name="gender" value="f" checked> Female</label><label><input type="radio" name="gender" value="m"> Male</label>
-      </div>
-
       <button>Create</button>
     </div>
 

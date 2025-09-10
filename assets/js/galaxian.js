@@ -186,7 +186,7 @@ function update() {
         if (e.x <= 0 || e.x + e.w >= canvas.width) swap = true;
         if (level > 1) {
             const fireChance = Math.min((level - 1) * 0.003, 0.03);
-            if (Math.random() < fireChance) {
+            if (Math.random() < fireChance && enemyBullets.length < 10) {
                 enemyBullets.push({ x: e.x + e.w / 2 - 2, y: e.y + e.h, w: 4, h: 10, speed: 3 });
             }
         }
