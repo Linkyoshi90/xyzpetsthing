@@ -233,7 +233,7 @@ input, select {
 }
 
 .thumb {
-    width: 100%;
+    width: 40%;
     height: 160px;
     object-fit: contain
 }

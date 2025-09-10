@@ -6,7 +6,7 @@ $rows = q("SELECT i.item_name, ic.category_name, ui.quantity FROM user_inventory
 <div class="grid three">
 <?php foreach($rows as $r): ?>
   <div class="card glass">
-    <img class="icon" src="/assets/items/placeholder.png">
+    <img class="icon" src="images/items/<?= htmlspecialchars($r['item_name']) ?>.png">
     <h3><?= htmlspecialchars($r['item_name']) ?></h3>
     <p class="muted"><?= htmlspecialchars($r['category_name'] ?? '') ?>  x<?= (int)$r['quantity'] ?></p>
     <!-- future: Use item on a pet -->

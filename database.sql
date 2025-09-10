@@ -74,6 +74,7 @@ CREATE TABLE IF NOT EXISTS items (
   item_id           BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   item_name         VARCHAR(100) NOT NULL,
   item_description  TEXT NULL,
+  replenish         Int NOT NULL DEFAULT 1,
   base_price        DECIMAL(12,2) NULL,
   rarity_id         SMALLINT UNSIGNED NULL,
   category_id       SMALLINT UNSIGNED NULL,
@@ -251,20 +252,20 @@ INSERT INTO item_categories (category_name) VALUES
 ('Food'),('Weapon'),('Potion'),('Wearable'),('Paint'),('Misc');
 
 -- 5) Items
-INSERT INTO items (item_name, item_description, base_price, rarity_id, category_id, max_stack, tradable) VALUES
-('Berry','A juicy forest berry. Restores a little HP.',     5.00, 1, 1, 99, 1),
-('Healing Potion','Restores 50 HP.',                       50.00, 2, 3, 20, 1),
-('Iron Sword','A sturdy beginner blade.',                 200.00, 2, 2,  1, 1),
-('Wizard Hat','Stylish and pointy. Boosts magic.',        500.00, 3, 4,  1, 1),
-('Mana Elixir','Restores 40 MP.',                          75.00, 3, 3, 20, 1),
-('Red Paint','Paints your creature red.',               50000.00, 3, 5, 1, 1),
-('Blue Paint','Paints your creature blue.',             50000.00, 3, 5, 1, 1),
-('Yellow Paint','Paints your creature yellow.',         50000.00, 3, 5, 1, 1),
-('Green Paint','Paints your creature green.',           50000.00, 3, 5, 1, 1),
-('Purple Paint','Paints your creature purple.',         50000.00, 3, 5, 1, 1),
-('Black Paint','Paints your creature black.',         1000000.00, 4, 5, 1, 1),
-('Real Paintbrush','Paints your creature realistic.', 2005000.00, 5, 5, 1, 1),
-('Crystal Shard','A rare sparkling material.',           1200.00, 4, 6, 99, 1);
+INSERT INTO items (item_name, item_description, replenish, base_price, rarity_id, category_id, max_stack, tradable) VALUES
+('Berry','A juicy forest berry. Restores a little HP.', 5,           5.00, 1, 1, 99, 1),
+('Healing Potion','Restores 50 HP.', 50,                            50.00, 2, 3, 20, 1),
+('Iron Sword','A sturdy beginner blade.', 100,                     200.00, 2, 2,  1, 1),
+('Wizard Hat','Stylish and pointy. Boosts magic.', 20,             500.00, 3, 4,  1, 1),
+('Mana Elixir','Restores 40 MP.', 40,                               75.00, 3, 3, 20, 1),
+('Red Paint','Paints your creature red.', 10,                    50000.00, 3, 5,  1, 1),
+('Blue Paint','Paints your creature blue.', 10,                  50000.00, 3, 5,  1, 1),
+('Yellow Paint','Paints your creature yellow.', 10,              50000.00, 3, 5,  1, 1),
+('Green Paint','Paints your creature green.', 10,                50000.00, 3, 5,  1, 1),
+('Purple Paint','Paints your creature purple.', 10,              50000.00, 3, 5,  1, 1),
+('Black Paint','Paints your creature black.', 10,              1000000.00, 4, 5,  1, 1),
+('Real Paintbrush','Paints your creature realistic.', 10,      2005000.00, 5, 5,  1, 1),
+('Crystal Shard','A rare sparkling material.', 10,                1200.00, 4, 6, 99, 1);
 
 -- 6) Regions & species/colors
 INSERT INTO regions (region_name) VALUES

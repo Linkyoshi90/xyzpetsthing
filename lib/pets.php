@@ -15,9 +15,9 @@ function get_user_pets(int $user_id): array {
 function pet_image_url(string $species_name, ?string $color_name): string {
     $species_slug = strtolower(preg_replace('/[^a-z0-9]+/i', '_', $species_name));
     $color_slug = $color_name ? strtolower(preg_replace('/[^a-z0-9]+/i', '_', $color_name)) : '';
-    $path = "/images/{$species_slug}_f_{$color_slug}.webp";
-    if (!file_exists(__DIR__ . '/..' . $path)) {
-        return '/assets/creatures/placeholder.png';
+    $path = "images/{$species_slug}_f_{$color_slug}.webp";
+    if (!file_exists(__DIR__ . '/../' . $path)) {
+        return 'xyzpetsthing/images/tengu_f_blue.png';
     }
     return $path;
 }
