@@ -58,7 +58,7 @@ a {
     }
 
 .container {
-    max-width: 1100px;
+    max-width: 70%;
     margin: 100px auto;
     padding: 0 16px;
     background: var(--glass-bg);
@@ -443,3 +443,75 @@ ul.tight {
         transition: none;
     }
 }
+
+
+/* Create pet page */
+.pet-create {
+    display: flex;
+    gap: 20px;
+}
+
+.species-list {
+    width: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.species-option {
+    text-align: center;
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    padding: 4px;
+    cursor: pointer;
+}
+
+    .species-option.selected {
+        border-color: #000;
+    }
+
+    .species-option img {
+        width: 100%;
+        height: 100px;
+        object-fit: contain;
+    }
+
+.preview {
+    flex: 1;
+    text-align: center;
+}
+
+.preview-img {
+    width: 250px;
+    height: 250px;
+    object-fit: contain;
+}
+
+.color-selector {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.color-btn {
+    border: 1px solid #000;
+    color: #000;
+    padding: 4px 8px;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+    .color-btn.selected {
+        color: #fff;
+    }
+
+.stats {
+    width: 200px;
+}
+
+    .stats h3 {
+        text-align: center;
+    }

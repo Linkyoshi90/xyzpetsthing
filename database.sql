@@ -268,15 +268,69 @@ INSERT INTO items (item_name, item_description, base_price, rarity_id, category_
 
 -- 6) Regions & species/colors
 INSERT INTO regions (region_name) VALUES
-('Aegia Aeterna'), ('Nornheim'), ('Rheinland'), ('Rodinian Tsardom'), ('Lotus-Dragon Kingdom'), 
-('Baharamandal'), ('Yamanokubo'), ('Xochimex'), ('Eagle Serpent Dominion'), ('Itzam Empire'), 
-('Spice Route League'), ('Crescent Caliphate'), ('Hammurabia'), ('Eretz-Shalem League'), ('Kemet'), 
-('Sila Council'), ('Red Sun Commonwealth'), ('Yara Nations'), ('Gran Columbia'), ('Sapa Inti Empire');
+('Aegia Aeterna'), ('Nornheim'), ('Bretonreach'), ('Rheinland'), ('Rodinian Tsardom'), 
+('United free Republic of Borealia'), ('Sovereign Tribes of the Ancestral Plains'), 
+('Lotus-Dragon Kingdom'), ('Baharamandal'), ('Yamanokubo'), ('Xochimex'), 
+('Eagle Serpent Dominion'), ('Itzam Empire'), ('Spice Route League'), 
+('Crescent Caliphate'), ('Hammurabia'), ('Eretz-Shalem League'), ('Kemet'), 
+('Sila Council'), ('Red Sun Commonwealth'), ('Yara Nations'), ('Gran Columbia'), 
+('Sapa Inti Empire');
 
 INSERT INTO pet_species (species_name, region_id, base_hp, base_atk, base_def, base_init) VALUES
-('Test',  1, 8, 8, 5, 7),
-('Test2', 2, 12, 6, 7, 5),
-('Test3', 3, 7, 7, 5, 9);
+('Lamia',                   1,  8, 8, 5, 7),
+('Centaur',                 1, 12, 6, 7, 5),
+('Kraken',                  2, 12, 6, 7, 5),
+('Ratatoskr',               2, 12, 6, 7, 5),
+('Banshee',                 3, 12, 6, 7, 5),
+('Dullahan',                3, 12, 6, 7, 5),
+('Will-o-Wisp',             3, 12, 6, 7, 5),
+('Kelpie',                  3, 12, 6, 7, 5),
+('Angel',                   4, 12, 6, 7, 5),
+('Demon',                   4, 12, 6, 7, 5),
+('Succubus',                4, 12, 6, 7, 5),
+('Leshy',                   5, 12, 6, 7, 5),
+('Vodyanoy',                5, 12, 6, 7, 5),
+('Lich',                    6, 12, 6, 7, 5),
+('Jack-o-Lantern',          6, 12, 6, 7, 5),
+('Thunderbird',             7, 12, 6, 7, 5),
+('Horned Serpent Uktena',   7, 12, 6, 7, 5),
+('Jiang-Shi',               8, 12, 6, 7, 5),
+('Vermillion Bird',         8, 12, 6, 7, 5),
+('Gandharva',               9, 12, 6, 7, 5),
+('Naga',                    9, 12, 6, 7, 5),
+('Spider-Crab',            10, 12, 6, 7, 5),
+('Kitsune',                10, 12, 6, 7, 5),
+('Yuki-Onna',              10, 12, 6, 7, 5),
+('La Llorona',             11, 12, 6, 7, 5),
+('Chupacabra',             11, 12, 6, 7, 5),
+('Charro Negro',           11, 12, 6, 7, 5),
+('Quetzalcoatl',           12, 12, 6, 7, 5),
+('Ahuizotl',               13, 12, 6, 7, 5),
+('Cipactli',               13, 12, 6, 7, 5),
+('Ocelot',                 13, 12, 6, 7, 5),
+('Azureus',                14, 12, 6, 7, 5),
+('Tapir',                  14, 12, 6, 7, 5),
+('Crab man',               15, 12, 6, 7, 5),
+('Taniwha',                15, 12, 6, 7, 5),
+('Genie',                  16, 12, 6, 7, 5),
+('Bahamut',                16, 12, 6, 7, 5),
+('Girtablilu',             17, 12, 6, 7, 5),
+('Lamassu',                17, 12, 6, 7, 5),
+('Golem',                  18, 12, 6, 7, 5),
+('Dolphin',                18, 12, 6, 7, 5),
+('Anubis',                 19, 12, 6, 7, 5),
+('Wadjet',                 19, 12, 6, 7, 5),
+('Amarok',                 20, 12, 6, 7, 5),
+('Polar Bear',             20, 12, 6, 7, 5),
+('Drop Bear',              21, 12, 6, 7, 5),
+('Min-Min Lights',         21, 12, 6, 7, 5),
+('Bunyip',                 22, 12, 6, 7, 5),
+('Rainbow Serpent',        22, 12, 6, 7, 5),
+('Curupira',               23, 12, 6, 7, 5),
+('Capybara',               23, 12, 6, 7, 5),
+('Fishman',                24, 12, 6, 7, 5),
+('Argentinosaurus',        24, 12, 6, 7, 5),
+('Amaru',                  24, 12, 6, 7, 5);
 
 INSERT INTO pet_colors (color_name) VALUES
 ('Red'),('Blue'),('Green'),('Yellow'),('Purple'),('Black'),('Real');
@@ -333,3 +387,9 @@ WHERE user_id = 1 AND currency_id = 1;
 UPDATE shop_inventory
 SET stock = stock - 1
 WHERE shop_id = 1 AND item_id = 3;
+
+ALTER TABLE pet_instances
+  ADD COLUMN gender CHAR(1) NOT NULL DEFAULT 'f' AFTER initiative,
+  ADD COLUMN hunger TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER gender,
+  ADD COLUMN happiness TINYINT UNSIGNED NOT NULL DEFAULT 50 AFTER hunger,
+  ADD COLUMN intelligence INT UNSIGNED NOT NULL DEFAULT 0 AFTER happiness;
