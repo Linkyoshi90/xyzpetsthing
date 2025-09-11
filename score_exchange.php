@@ -9,8 +9,8 @@ $score = isset($data['score']) ? (int)$data['score'] : 0;
 $uid = current_user()['id'];
 
 $rates = [
-    'galaxian' => 0.5,
-    'tetris' => 1.2,
+    'gardeninvaderz' => 0.5,
+    'fruitstack' => 1.2,
 ];
 
 if (!isset($rates[$game]) || $score <= 0) {
