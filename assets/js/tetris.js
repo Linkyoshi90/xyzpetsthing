@@ -43,22 +43,11 @@ let messageTimer = 0;
 let messageSprite = null;
 
 function arenaSweep() {
-    let rowCount = 1;
-    let lines = 0;
     rowsToClear = [];
-    outer: for (let y = arena.length - 1; y >= 0; --y) {
-        for (let x = 0; x < arena[y].length; ++x) {
-            if (arena[y][x] === 0) {
-                continue outer;
-            }
+    for (let y = arena.length - 1; y >= 0; --y) {
+        if (arena[y].every(value => value !== 0)) {
+            rowsToClear.push(y);
         }
-        const row = arena.splice(y, 1)[0].fill(0);
-        arena.unshift(row);
-        ++y;
-        player.score += rowCount * 10;
-        rowCount *= 2;
-        lines++;
-        rowsToClear.push(y);
     }
     if (rowsToClear.length) {
         clearing = true;
@@ -166,10 +155,29 @@ function draw() {
         if (messageSprite) {
             const w = messageSprite.width / 20;
             const h = messageSprite.height / 20;
-            context.drawImage(messageSprite, 11, 8 - h, w, h);
+            const maxWidth = 4;
+            const scale = Math.min(maxWidth / w, 1);
+            context.drawImage(messageSprite, 11, 8 - h * scale, w * scale, h * scale);
         } else {
             context.fillText(message, 11, 8);
         }
+    }
+}
+
+function drawGrid() {
+    context.strokeStyle = '#444';
+    context.lineWidth = 0.05;
+    for (let x = 0; x <= 10; x++) {
+        context.beginPath();
+        context.moveTo(x, 0);
+        context.lineTo(x, arena.length);
+        context.stroke();
+    }
+    for (let y = 0; y <= arena.length; y++) {
+        context.beginPath();
+        context.moveTo(0, y);
+        context.lineTo(10, y);
+        context.stroke();
     }
 }
 

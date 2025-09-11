@@ -127,8 +127,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-08-25T15:17:41.464Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -141,8 +140,7 @@
               "ViewState": "AgIAAAkAAAAAAAAAAAAAADEAAAAkAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-08-25T15:18:14.545Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -155,8 +153,7 @@
               "ViewState": "AgIAANAAAAAAAAAAAAAvwOsAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-08-25T15:15:38.853Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -169,8 +166,7 @@
               "ViewState": "AgIAABcBAAAAAAAAAAAvwDIBAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-08-25T19:28:33.736Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -183,8 +179,7 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-09-09T21:54:27.082Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
@@ -196,8 +191,7 @@
               "RelativeToolTip": "pages\\bank.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-10T17:57:48.74Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-10T17:57:48.74Z"
             },
             {
               "$type": "Document",
@@ -209,8 +203,7 @@
               "RelativeToolTip": "lib\\bank.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-10T17:57:30.832Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-10T17:57:30.832Z"
             },
             {
               "$type": "Document",
@@ -222,8 +215,7 @@
               "RelativeToolTip": "score_exchange.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACMAAABsAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-10T13:53:38.31Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-10T13:53:38.31Z"
             },
             {
               "$type": "Document",
@@ -234,8 +226,7 @@
               "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\database.sql",
               "RelativeToolTip": "database.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2025-09-02T19:50:08.838Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T19:50:08.838Z"
             },
             {
               "$type": "Document",
@@ -247,8 +238,7 @@
               "RelativeToolTip": "assets\\css\\galaxian.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-02T13:39:18.618Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T13:39:18.618Z"
             },
             {
               "$type": "Document",
@@ -260,8 +250,7 @@
               "RelativeToolTip": "assets\\js\\galaxian.js",
               "ViewState": "AgIAAKMAAAAAAAAAAAAgwLsAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-02T13:39:00.509Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T13:39:00.509Z"
             },
             {
               "$type": "Document",
@@ -273,8 +262,7 @@
               "RelativeToolTip": "pages\\games.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAABDAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-02T13:23:19.995Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T13:23:19.995Z"
             },
             {
               "$type": "Document",
@@ -286,8 +274,7 @@
               "RelativeToolTip": "assets\\js\\user-menu.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-02T11:49:51.688Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T11:49:51.688Z"
             },
             {
               "$type": "Document",
@@ -299,8 +286,7 @@
               "RelativeToolTip": "pages\\tetris.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-02T08:32:53.938Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T08:32:53.938Z"
             },
             {
               "$type": "Document",
@@ -310,7 +296,7 @@
               "RelativeDocumentMoniker": "assets\\js\\tetris.js",
               "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\tetris.js",
               "RelativeToolTip": "assets\\js\\tetris.js",
-              "ViewState": "AgIAAP0AAAAAAAAAAAAQwBsBAAAeAAAAAAAAAA==",
+              "ViewState": "AgIAAJIAAAAAAAAAAAAwwLQAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
               "WhenOpened": "2025-09-02T08:31:47.935Z",
               "EditorCaption": ""
@@ -325,8 +311,7 @@
               "RelativeToolTip": "assets\\css\\tetris.css",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
-              "WhenOpened": "2025-09-02T08:31:23.486Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T08:31:23.486Z"
             },
             {
               "$type": "Document",
@@ -338,8 +323,7 @@
               "RelativeToolTip": "assets\\js\\theme.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-08-25T19:34:27.901Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-25T19:34:27.901Z"
             },
             {
               "$type": "Document",
@@ -351,8 +335,7 @@
               "RelativeToolTip": "config.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-08-25T15:18:57.661Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-25T15:18:57.661Z"
             },
             {
               "$type": "Document",
@@ -364,8 +347,7 @@
               "RelativeToolTip": "pages\\main.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-08-25T15:16:58.655Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-25T15:16:58.655Z"
             },
             {
               "$type": "Document",
@@ -377,8 +359,7 @@
               "RelativeToolTip": "pages\\inventory.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAGAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-09T22:04:38.835Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T22:04:38.835Z"
             },
             {
               "$type": "Document",
@@ -390,8 +371,7 @@
               "RelativeToolTip": "pages\\create_pet.php",
               "ViewState": "AgIAADsAAAAAAAAAAAAvwFMAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-09T21:56:44.339Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T21:56:44.339Z"
             },
             {
               "$type": "Document",
@@ -403,8 +383,7 @@
               "RelativeToolTip": "pages\\galaxian.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-02T13:40:42.418Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T13:40:42.418Z"
             },
             {
               "$type": "Document",
@@ -416,8 +395,7 @@
               "RelativeToolTip": "lib\\pets.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAABSAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-09T14:22:08.969Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T14:22:08.969Z"
             },
             {
               "$type": "Document",
@@ -429,8 +407,7 @@
               "RelativeToolTip": "assets\\js\\currency.js",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAACAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
-              "WhenOpened": "2025-09-09T12:34:15.527Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T12:34:15.527Z"
             },
             {
               "$type": "Document",
@@ -442,8 +419,7 @@
               "RelativeToolTip": "db.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-08-25T15:18:46.247Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-25T15:18:46.247Z"
             },
             {
               "$type": "Document",
@@ -455,8 +431,7 @@
               "RelativeToolTip": "auth.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-08-25T15:18:25.881Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-25T15:18:25.881Z"
             }
           ]
         }
