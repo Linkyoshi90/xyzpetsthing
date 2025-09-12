@@ -100,6 +100,7 @@ function spawnBonusShip() {
 }
 
 function spawnClone() {
+    if (clones.length >= 3) return;
     const offset = 40 * (clones.length + 1);
     const dir = clones.length % 2 === 0 ? -1 : 1;
     clones.push({ x: player.x, y: player.y, w: player.w, h: player.h, offset: dir * offset });
@@ -253,6 +254,7 @@ function update() {
                 const bx = bonusShip.x + bonusShip.w / 2;
                 const by = bonusShip.y + bonusShip.h / 2;
                 bullets.splice(bi, 1);
+                for (const t in activePowers) activePowers[t] = 0;
                 activePowers.shield = 300;
                 enemies.forEach(e => score += e.value);
                 enemies = [];
@@ -319,6 +321,7 @@ function update() {
                 spawnClone();
             } else {
                 const duration = p.type === 'shield' ? 300 : 600;
+                for (const t in activePowers) activePowers[t] = 0;
                 activePowers[p.type] = duration;
                 playSound(powerSoundMap[p.type]);
             }

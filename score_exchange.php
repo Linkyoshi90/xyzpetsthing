@@ -11,6 +11,7 @@ $uid = current_user()['id'];
 $rates = [
     'gardeninvaderz' => 0.5,
     'fruitstack' => 1.2,
+    'runngunner' => 0.8,
 ];
 
 if (!isset($rates[$game]) || $score <= 0) {
