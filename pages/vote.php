@@ -1,6 +1,28 @@
 ﻿<?php
 require_login();
 
+// Determine which species are enabled
+$allowedSpecies = [];
+$file = __DIR__ . '/../available_creatures.txt';
+if (is_file($file)) {
+    foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#') {
+            continue;
+        }
+        $allowedSpecies[] = $line;
+    }
+}
+if ($allowedSpecies) {
+    $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+    $allowedSpecies = q(
+        "SELECT species_name FROM pet_species WHERE species_name IN ($placeholders)",
+        $allowedSpecies
+    )->fetchAll(PDO::FETCH_COLUMN);
+}
+function slugify($str) { return strtolower(preg_replace('/[^a-z0-9]+/i', '_', $str)); }
+$allowedSlugs = array_map('slugify', $allowedSpecies);
+
 // Handle vote submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $json = $_POST['selection_json'] ?? '[]';
@@ -25,6 +47,9 @@ foreach (glob(__DIR__ . '/../images/*_*_*.webp') as $file) {
         // Normalize the creature slug to lowercase so it matches the
         // front‑end slug() helper which also lowercases names.
         $slug = strtolower($m[1]);
+        if ($allowedSlugs && !in_array($slug, $allowedSlugs, true)) {
+            continue;
+        }
         $combo = $m[2] . '_' . $m[3];
         $image_variants[$slug][] = $combo;
     }
@@ -80,7 +105,7 @@ foreach (glob(__DIR__ . '/../images/*_*_*.webp') as $file) {
 Auronia – Aegia Aeterna (AA)
 Lamia: Lamoria, Serafemme, Nagaressa, Viperelle, Lamivra
 Centaur: Centara, Sagritar, Hoofkin, Bowmane, Tauriel
-#Charybdis: Riptara, Maelstrix, Vortessa, Gulpmire, Swirlgrim
+Charybdis: Riptara, Maelstrix, Vortessa, Gulpmire, Swirlgrim
 #Pegasus: Skysteed, Pegara, Nimbuscolt, Aetherfilly, Wingstall
 #Arachne: Silkatrix, Arachnea, Loomspinner, Weblira, Threadessa
 #Cyclops: Unoculus, Monocleus, Eyeclast, Cycloidon, Oneyx
@@ -362,6 +387,7 @@ Amaru: Amarusa, Twincoil, Serpentupa, Stormamar, Andecoil
   const IMAGE_EXT = '.webp';
   const FALLBACK_IMAGE = 'images/tengu.webp';
   const IMAGE_VARIANTS = <?= json_encode($image_variants) ?>;
+  const AVAILABLE_SPECIES = <?= json_encode($allowedSlugs) ?>;
   const variantsFor = (base) => {
     const sb = slug(base);
     const opts = IMAGE_VARIANTS[sb];
@@ -373,14 +399,17 @@ Amaru: Amarusa, Twincoil, Serpentupa, Stormamar, Andecoil
 
   const raw = $('#source').textContent; // keep diacritics
   const parsed = parseSource(raw);
+  const allowed = new Set(AVAILABLE_SPECIES);
+  const filtered = parsed.filter(item => item.type !== 'group' || allowed.has(slug(item.base)));
 
   // Group by region
   const regions = [];
   let current=null;
-  for(const item of parsed){
+  for(const item of filtered){
     if(item.type==='region'){ current = { name:item.region, slug: slug(item.region), groups:[] }; regions.push(current); }
     else if(item.type==='group' && current){ current.groups.push(item); }
   }
+  const regionsFiltered = regions.filter(r => r.groups.length);
 
   // Build jump menu
   for(const r of regions){
@@ -401,7 +430,7 @@ Amaru: Amarusa, Twincoil, Serpentupa, Stormamar, Andecoil
   const STATE_KEY = 'namepicker_selections_v1';
   let state = JSON.parse(localStorage.getItem(STATE_KEY) || '{}'); // key => choice
 
-  const totalGroups = regions.reduce((n,r)=>n + r.groups.length, 0);
+  const totalGroups = regionsFiltered.reduce((n,r)=>n + r.groups.length, 0);
   function selectedCount(){ return Object.keys(state).length; }
   function updateProgress(){
     const left = totalGroups - selectedCount();
@@ -437,7 +466,7 @@ Amaru: Amarusa, Twincoil, Serpentupa, Stormamar, Andecoil
   const META = {};
 
   // Render regions + groups
-  regions.forEach((r, i) => {
+  regionsFiltered.forEach((r, i) => {
     const sec = document.createElement('details');
     sec.className = 'region';
     sec.id = 'region-' + r.slug;

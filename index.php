@@ -2,7 +2,7 @@
 require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 $pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
-$allowed = ['login','register','logout','main','pet','create_pet','inventory','map','vote','games','fruitstack','garden-invaderz','bank'];
+$allowed = ['login','register','logout','main','pet','create_pet','inventory','map','vote','games','fruitstack','garden-invaderz','friends','bank'];
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
 }

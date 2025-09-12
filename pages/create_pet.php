@@ -1,9 +1,29 @@
 <?php require_login();
 $uid = current_user()['id'];
 
-$species = q(
-    "SELECT species_id, species_name, base_hp, base_atk, base_def, base_init FROM pet_species ORDER BY species_name"
-)->fetchAll(PDO::FETCH_ASSOC);
+// Load list of enabled species from file
+$allowedSpecies = [];
+$file = __DIR__ . '/../available_creatures.txt';
+if (is_file($file)) {
+    foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+        $line = trim($line);
+        if ($line === '' || $line[0] === '#') {
+            continue;
+        }
+        $allowedSpecies[] = $line;
+    }
+}
+
+if ($allowedSpecies) {
+    $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+    $species = q(
+        "SELECT species_id, species_name, base_hp, base_atk, base_def, base_init FROM pet_species " .
+        "WHERE species_name IN ($placeholders) ORDER BY species_name",
+        $allowedSpecies
+    )->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $species = [];
+}
 
 // Map of available colors
 $colors = [1 => 'red', 2 => 'blue', 3 => 'green', 4 => 'yellow', 5 => 'purple'];

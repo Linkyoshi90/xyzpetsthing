@@ -6,7 +6,8 @@ let bullets = [];
 let enemyBullets = [];
 let enemies = [];
 let powerups = [];
-let activePower = { type: null, timer: 0 };
+let activePowers = { rapid: 0, spread: 0, shield: 0 };
+let clones = [];
 let score = 0;
 let level = 1;
 let enemyDir = 1;
@@ -44,7 +45,8 @@ const sprites = {
     powerup: {
         rapid: loadImage('images/games/powerupmachinegun.png'),
         spread: loadImage('images/games/powerup3shot.png'),
-        shield: loadImage('images/games/powerupshield.png')
+        shield: loadImage('images/games/powerupshield.png'),
+        clone: loadImage('images/games/powerupclone.png')
     }
 };
 
@@ -72,8 +74,8 @@ function isColliding(a, b) {
 const ENEMY_TYPES = {
     green: { hp: 1, color: 'green', value: 10 },
     blue: { hp: 2, color: 'blue', value: 20 },
-    red: { hp: 5, color: 'red', value: 50 },
-    purple: { hp: 10, color: 'purple', value: 100 }
+    red: { hp: 3, color: 'red', value: 30 },
+    purple: { hp: 5, color: 'purple', value: 50 }
 };
 
 function randomEnemyType(lv) {
@@ -87,7 +89,7 @@ function randomEnemyType(lv) {
 }
 
 function spawnPowerUp(x, y) {
-    const types = ['rapid', 'spread', 'shield'];
+    const types = ['rapid', 'spread', 'shield', 'clone'];
     const type = types[Math.floor(Math.random() * types.length)];
     powerups.push({ x: x - 7, y: y - 7, w: 14, h: 14, type, speed: 2 });
 }
@@ -95,6 +97,12 @@ function spawnPowerUp(x, y) {
 function spawnBonusShip() {
     bonusShip = { x: -40, y: 20, w: 40, h: 20, speed: 2, baseY: 20, jerkTimer: 0 };
     playSound(sounds.specialship);
+}
+
+function spawnClone() {
+    const offset = 40 * (clones.length + 1);
+    const dir = clones.length % 2 === 0 ? -1 : 1;
+    clones.push({ x: player.x, y: player.y, w: player.w, h: player.h, offset: dir * offset });
 }
 
 function generateWave(lv) {
@@ -147,14 +155,19 @@ function gameOver() {
     }
 }
 
-function shoot() {
-    if (activePower.type === 'spread') {
-        bullets.push({ x: player.x + player.w / 2 - 10, y: player.y, w: 4, h: 10, speed: 6 });
-        bullets.push({ x: player.x + player.w / 2 - 2, y: player.y, w: 4, h: 10, speed: 6 });
-        bullets.push({ x: player.x + player.w / 2 + 6, y: player.y, w: 4, h: 10, speed: 6 });
+function fireFrom(entity) {
+    if (activePowers.spread > 0) {
+        bullets.push({ x: entity.x + entity.w / 2 - 10, y: entity.y, w: 4, h: 10, speed: 6 });
+        bullets.push({ x: entity.x + entity.w / 2 - 2, y: entity.y, w: 4, h: 10, speed: 6 });
+        bullets.push({ x: entity.x + entity.w / 2 + 6, y: entity.y, w: 4, h: 10, speed: 6 });
     } else {
-        bullets.push({ x: player.x + player.w / 2 - 2, y: player.y, w: 4, h: 10, speed: 6 });
+        bullets.push({ x: entity.x + entity.w / 2 - 2, y: entity.y, w: 4, h: 10, speed: 6 });
     }
+}
+
+function shoot() {
+    fireFrom(player);
+    clones.forEach(c => fireFrom(c));
     playSound(sounds.playerfire);
 }
 
@@ -165,7 +178,8 @@ function reset() {
     bullets = [];
     enemyBullets = [];
     powerups = [];
-    activePower = { type: null, timer: 0 };
+    activePowers = { rapid: 0, spread: 0, shield: 0 };
+    clones = [];
     player.x = canvas.width / 2 - player.w / 2;
     generateWave(level);
     spawnBonusShip();
@@ -176,11 +190,14 @@ function update() {
     if (keys.ArrowLeft) player.x -= player.speed;
     if (keys.ArrowRight) player.x += player.speed;
     player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
-
+    clones.forEach(c => {
+        c.x = player.x + c.offset;
+        c.y = player.y;
+    });
     // shooting
     if (keys.Space && player.cooldown <= 0) {
         shoot();
-        player.cooldown = activePower.type === 'rapid' ? 5 : 15;
+        player.cooldown = activePowers.rapid > 0 ? 5 : 15;
     }
     if (player.cooldown > 0) player.cooldown--;
 
@@ -192,7 +209,7 @@ function update() {
     for (let i = enemyBullets.length - 1; i >= 0; i--) {
         const b = enemyBullets[i];
         if (isColliding(b, player)) {
-            if (activePower.type === 'shield') {
+            if (activePowers.shield > 0) {
                 enemyBullets.splice(i, 1);
                 continue;
             }
@@ -200,6 +217,20 @@ function update() {
             gameOver();
             return;
         }
+        let hit = false;
+        for (let ci = clones.length - 1; ci >= 0; ci--) {
+            if (isColliding(b, clones[ci])) {
+                if (activePowers.shield > 0) {
+                    enemyBullets.splice(i, 1);
+                } else {
+                    clones.splice(ci, 1);
+                    enemyBullets.splice(i, 1);
+                }
+                hit = true;
+                break;
+            }
+        }
+        if (hit) continue;
         if (b.y > canvas.height) enemyBullets.splice(i, 1);
     }
 
@@ -222,7 +253,7 @@ function update() {
                 const bx = bonusShip.x + bonusShip.w / 2;
                 const by = bonusShip.y + bonusShip.h / 2;
                 bullets.splice(bi, 1);
-                activePower = { type: 'shield', timer: 300 };
+                activePowers.shield = 300;
                 enemies.forEach(e => score += e.value);
                 enemies = [];
                 enemyBullets = [];
@@ -277,20 +308,29 @@ function update() {
     for (let i = powerups.length - 1; i >= 0; i--) {
         const p = powerups[i];
         p.y += p.speed;
-        if (isColliding(p, player)) {
-            const duration = p.type === 'shield' ? 300 : 600;
-            activePower = { type: p.type, timer: duration };
-            playSound(powerSoundMap[p.type]);
+        let collected = isColliding(p, player);
+        if (!collected) {
+            for (const c of clones) {
+                if (isColliding(p, c)) { collected = true; break; }
+            }
+        }
+        if (collected) {
+            if (p.type === 'clone') {
+                spawnClone();
+            } else {
+                const duration = p.type === 'shield' ? 300 : 600;
+                activePowers[p.type] = duration;
+                playSound(powerSoundMap[p.type]);
+            }
             powerups.splice(i, 1);
         } else if (p.y > canvas.height) {
             powerups.splice(i, 1);
         }
     }
 
-    // active power timer
-    if (activePower.timer > 0) {
-        activePower.timer--;
-        if (activePower.timer === 0) activePower.type = null;
+    // active power timers
+    for (const type in activePowers) {
+        if (activePowers[type] > 0) activePowers[type]--;
     }
 
     // explosions
@@ -302,6 +342,11 @@ function update() {
         if (isColliding(e, player) || e.y + e.h >= canvas.height) {
             gameOver();
             return;
+        }
+        for (let ci = clones.length - 1; ci >= 0; ci--) {
+            if (isColliding(e, clones[ci])) {
+                clones.splice(ci, 1);
+            }
         }
     }
 
@@ -319,21 +364,27 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // player
+    // player and clones
     const playerSprite = sprites.player;
-    if (playerSprite && playerSprite.complete && !playerSprite._failed) {
-        ctx.drawImage(playerSprite, player.x, player.y, player.w, player.h);
-    } else {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(player.x, player.y, player.w, player.h);
-    }
+    const drawEntity = (ent) => {
+        if (playerSprite && playerSprite.complete && !playerSprite._failed) {
+            ctx.drawImage(playerSprite, ent.x, ent.y, ent.w, ent.h);
+        } else {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(ent.x, ent.y, ent.w, ent.h);
+        }
+    };
+    drawEntity(player);
+    clones.forEach(c => drawEntity(c));
 
-    if (activePower.type === 'shield') {
+    if (activePowers.shield > 0) {
         ctx.strokeStyle = 'magenta';
         ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(player.x + player.w / 2, player.y + player.h / 2, player.w, 0, Math.PI * 2);
-        ctx.stroke();
+        [player, ...clones].forEach(ent => {
+            ctx.beginPath();
+            ctx.arc(ent.x + ent.w / 2, ent.y + ent.h / 2, ent.w, 0, Math.PI * 2);
+            ctx.stroke();
+        });
     }
 
     // bullets
@@ -389,12 +440,18 @@ function draw() {
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('3', p.x + p.w / 2, p.y + p.h / 2);
-        } else {
+        } else if (p.type === 'shield') {
             ctx.fillStyle = 'magenta';
             ctx.font = '16px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             ctx.fillText('S', p.x + p.w / 2, p.y + p.h / 2);
+        } else {
+            ctx.fillStyle = 'white';
+            ctx.font = '16px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('C', p.x + p.w / 2, p.y + p.h / 2);
         }
     });
 
