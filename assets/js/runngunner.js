@@ -1,5 +1,6 @@
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
+const scoreincrease = 10
 
 // Utility loaders with fallbacks
 function loadImage(src) {
@@ -46,7 +47,7 @@ const terrain = [[], [], []]; // segments per lane
 const tileWidth = 120;
 let scroll = 0;
 
-const player = { x: 100, y: 0, w: 30, h: 40, lane: 1, cooldown: 0, weapon: 'normal', ammo: 0, invincible: 0 };
+const player = { x: 100, y: 0, w: 30, h: 40, lane: 1, cooldown: 0, weapon: 'normal', ammo: 0, invincible: 0, lives: 3 };
 player.y = laneYs[player.lane] - player.h;
 
 let bullets = [];
@@ -57,6 +58,15 @@ let flames = [];
 let score = 0;
 let gameOverFlag = false;
 let enemyTimer = 120;
+
+function hitPlayer() {
+    if (player.invincible > 0) return;
+    player.lives--;
+    player.invincible = 60;
+    if (player.lives <= 0) {
+        gameOver();
+    }
+}
 
 const keys = {};
 window.addEventListener('keydown', e => keys[e.code] = true);
@@ -246,12 +256,13 @@ function update() {
 
     // update enemy bullets
     enemyBullets.forEach(b => { b.x += b.dx; b.y += b.dy; });
-    enemyBullets = enemyBullets.filter(b => b.x + b.w > scroll && b.x - scroll < canvas.width);
+    enemyBullets = enemyBullets.filter(b => b.x + b.w > scroll && b.x - scroll < canvas.width && !b._remove);
 
     // update powerups
     powerups = powerups.filter(p => p.x + p.w > scroll);
 
     // collisions
+    const playerRect = { x: scroll + player.x, y: player.y, w: player.w, h: player.h };
     for (const b of bullets) {
         for (const e of enemies) {
             if (isColliding({ x: b.x, y: b.y, w: b.w, h: b.h }, e)) {
@@ -259,7 +270,7 @@ function update() {
                 if (!b.penetrate) b._remove = true;
                 if (e.hp <= 0) {
                     e._remove = true;
-                    score += 100;
+                    score += scoreincrease;
                     if (Math.random() < 0.1) spawnPowerup(e.x, e.y + 10);
                 }
             }
@@ -281,19 +292,21 @@ function update() {
     enemies = enemies.filter(e => !e._remove);
 
     for (const b of enemyBullets) {
-        if (isColliding({ x: b.x, y: b.y, w: b.w, h: b.h }, player) && player.invincible <= 0) {
-            gameOver();
+        if (isColliding({ x: b.x, y: b.y, w: b.w, h: b.h }, playerRect)) {
+            hitPlayer();
+            b._remove = true;
         }
     }
 
     for (const e of enemies) {
-        if (isColliding(e, player) && player.invincible <= 0) {
-            gameOver();
+        if (isColliding(e, playerRect)) {
+            hitPlayer();
+            e._remove = true;
         }
     }
 
     for (const p of powerups) {
-        if (isColliding(p, player)) {
+        if (isColliding(p, playerRect)) {
             applyPower(p.type);
             p._remove = true;
         }
@@ -403,6 +416,8 @@ function draw() {
     }
 
     document.getElementById('scoreVal').textContent = score;
+    const livesEl = document.getElementById('livesVal');
+    if (livesEl) livesEl.textContent = player.lives;
 }
 
 // init terrain

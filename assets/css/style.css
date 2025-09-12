@@ -60,7 +60,7 @@ a {
 .container {
     max-width: 70%;
     margin: 100px auto;
-    padding: 0 16px;
+    padding: 0 16px 16px 16px;
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
     border-radius: var(--radius);

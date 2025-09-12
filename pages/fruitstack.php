@@ -17,6 +17,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <link rel="stylesheet" href="assets/css/fruitstack.css">
 <script defer src="assets/js/fruitstack.js"></script>
-<h1>fruitstack</h1>
+<h1>Fruitstack</h1>
 <canvas id="fruitstack" width="300" height="400"></canvas>
 <p class="muted">Use W to rotate, A/D to move, S to drop.</p>

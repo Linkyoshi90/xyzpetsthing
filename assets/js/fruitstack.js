@@ -38,6 +38,17 @@ const lineClearSound = new Audio('assets/sfx/fruitlineclear.wav');
 const bgm = new Audio('assets/music/fruitbgm.wav');
 bgm.loop = true;
 let bgmStarted = false;
+const muteButton = document.getElementById('bgm-toggle');
+if (muteButton) {
+    muteButton.addEventListener('click', () => {
+        if (!bgmStarted) {
+            bgm.play();
+            bgmStarted = true;
+        }
+        bgm.muted = !bgm.muted;
+        muteButton.textContent = bgm.muted ? 'Unmute BGM' : 'Mute BGM';
+    });
+}
 let gameOverFlag = false;
 let clearing = false;
 let rowsToClear = [];
