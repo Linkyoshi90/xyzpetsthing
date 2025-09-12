@@ -45,7 +45,6 @@ if ($u) {
   </div>
   <div class="nav-right">
     <nav>
-      <a href="?pg=friends">👥 friends</a>
       <a href="?pg=games">🎮 games</a>
       <a href="?pg=bank">🏦 bank</a>
       <a href="?pg=map">🗺️ explore</a>
@@ -56,8 +55,9 @@ if ($u) {
     <div class="user-menu">
       <button id="user-menu-toggle" class="btn" type="button">🙂</button>
       <ul id="user-menu" class="user-menu-list">
-        <a href="?pg=options">options</a>
-        <a href="?pg=logout">logout</a>
+        <a href="?pg=friends">👥 friends</a>
+        <a href="?pg=options">🔧 options</a>
+        <a href="?pg=logout">🚪 logout</a>
       </ul>
     </div>
     <?php endif; ?>

@@ -35,14 +35,79 @@ for (const [key, file] of Object.entries(praiseFiles)) {
 const rotateSound = new Audio('assets/sfx/fruitrotate.wav');
 const placeSound = new Audio('assets/sfx/fruitplace.wav');
 const lineClearSound = new Audio('assets/sfx/fruitlineclear.wav');
-const bgm = new Audio('assets/music/fruitbgm.wav');
-bgm.loop = true;
+const bgmSources = [];
+const bgm = new Audio();
+let bgmIndex = 0;
 let bgmStarted = false;
+
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+async function ensurePlaylistLoaded() {
+    if (bgmSources.length) return;
+    for (let i = 1; ; i++) {
+        const src = `assets/music/fruitbgm${i}.wav`;
+        try {
+            const res = await fetch(src, { method: 'HEAD' });
+            if (!res.ok) break;
+            bgmSources.push(src);
+        } catch {
+            break;
+        }
+    }
+    if (bgmSources.length) {
+        bgm.src = bgmSources[0];
+    }
+}
+
+bgm.addEventListener('ended', () => {
+    bgmIndex++;
+    if (bgmIndex >= bgmSources.length) {
+        bgmIndex = 0;
+        shuffle(bgmSources);
+    }
+    bgm.src = bgmSources[bgmIndex];
+    bgm.play();
+});
+
+ensurePlaylistLoaded();
+let bgmTrack = 1;
+const maxBgmTracks = 100;
+
+function loadBgm() {
+    bgm.src = `assets/music/fruitbgm${bgmTrack}.wav`;
+}
+
+function playBgm() {
+    loadBgm();
+    bgm.play().catch(() => {});
+}
+
+bgm.addEventListener('ended', () => {
+    bgmTrack++;
+    if (bgmTrack > maxBgmTracks) {
+        bgmTrack = 1;
+    }
+    playBgm();
+});
+
+bgm.addEventListener('error', () => {
+    if (bgmTrack !== 1) {
+        bgmTrack = 1;
+        playBgm();
+    }
+});
 const muteButton = document.getElementById('bgm-toggle');
 if (muteButton) {
-    muteButton.addEventListener('click', () => {
+    muteButton.addEventListener('click', async () => {
+        await ensurePlaylistLoaded();
+        if (!bgmSources.length) return;
         if (!bgmStarted) {
-            bgm.play();
+            playBgm();
             bgmStarted = true;
         }
         bgm.muted = !bgm.muted;
@@ -383,10 +448,13 @@ const player = {
 
 let nextPiece = createPiece(randomPiece());
 
-document.addEventListener('keydown', event => {
+document.addEventListener('keydown', async event => {
     if (!bgmStarted) {
-        bgm.play();
-        bgmStarted = true;
+        await ensurePlaylistLoaded();
+        if (bgmSources.length) {
+            bgm.play();
+            bgmStarted = true;
+        }
     }
     if (event.key === 'a' || event.key === 'A') {
         playerMove(-1);
