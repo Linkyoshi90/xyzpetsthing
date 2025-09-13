@@ -108,7 +108,19 @@ function generateLane(lane) {
 
 function spawnEnemy() {
     const lane = Math.floor(Math.random() * 3);
-    const enemy = { x: scroll + canvas.width + rand(0, 200), lane, y: laneYs[lane] - 40, w: 30, h: 40, hp: 1, shoot: rand(60, 180) };
+    const level = Math.floor(score / 200);
+    const hp = 1 + level;
+    const dropChance = Math.min(0.1 + level * 0.05, 0.5);
+    const enemy = {
+        x: scroll + canvas.width + rand(0, 200),
+        lane,
+        y: laneYs[lane] - 40,
+        w: 30,
+        h: 40,
+        hp,
+        dropChance,
+        shoot: rand(60, 180)
+    };
     enemies.push(enemy);
 }
 
@@ -271,7 +283,8 @@ function update() {
                 if (e.hp <= 0) {
                     e._remove = true;
                     score += scoreincrease;
-                    if (Math.random() < 0.1) spawnPowerup(e.x, e.y + 10);
+                    const chance = e.dropChance || 0.1;
+                    if (Math.random() < chance) spawnPowerup(e.x, e.y + 10);
                 }
             }
         }
@@ -285,7 +298,8 @@ function update() {
             if (isColliding(flameRect, e)) {
                 e._remove = true;
                 score += 100;
-                if (Math.random() < 0.1) spawnPowerup(e.x, e.y + 10);
+                const chance = e.dropChance || 0.1;
+                if (Math.random() < chance) spawnPowerup(e.x, e.y + 10);
             }
         }
     }

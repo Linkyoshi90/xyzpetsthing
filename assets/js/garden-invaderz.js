@@ -12,6 +12,7 @@ let score = 0;
 let level = 1;
 let enemyDir = 1;
 let bonusShip = null;
+let bonusShipTimer = 0;
 let gameOverFlag = false;
 let explosions = [];
 
@@ -99,6 +100,11 @@ function spawnBonusShip() {
     playSound(sounds.specialship);
 }
 
+function scheduleBonusShip() {
+    bonusShipTimer = 300 + Math.random() * 300;
+}
+
+
 function spawnClone() {
     if (clones.length >= 3) return;
     const offset = 40 * (clones.length + 1);
@@ -130,7 +136,7 @@ function generateWave(lv) {
 }
 
 generateWave(level);
-spawnBonusShip();
+scheduleBonusShip();
 function gameOver() {
     if (gameOverFlag) return;
     gameOverFlag = true;
@@ -181,9 +187,11 @@ function reset() {
     powerups = [];
     activePowers = { rapid: 0, spread: 0, shield: 0 };
     clones = [];
+    bonusShip = null;
+    bonusShipTimer = 0;
     player.x = canvas.width / 2 - player.w / 2;
     generateWave(level);
-    spawnBonusShip();
+    scheduleBonusShip();
 }
 
 function update() {
@@ -233,6 +241,11 @@ function update() {
         }
         if (hit) continue;
         if (b.y > canvas.height) enemyBullets.splice(i, 1);
+    }
+
+    if (!bonusShip && bonusShipTimer > 0) {
+        bonusShipTimer--;
+        if (bonusShipTimer <= 0) spawnBonusShip();
     }
 
     // bonus ship movement
@@ -357,7 +370,8 @@ function update() {
     if (enemies.length === 0) {
         level++;
         generateWave(level);
-        spawnBonusShip();
+        bonusShip = null;
+        scheduleBonusShip();
     }
 
     draw();
