@@ -5,9 +5,10 @@
     "\\assets\\css",
     "\\assets\\js",
     "\\assets\\music",
+    "\\layout",
     "\\lib",
     "\\pages"
   ],
-  "SelectedNode": "\\assets\\js\\fruitstack.js",
+  "SelectedNode": "\\assets\\js\\bubbles.js",
   "PreviewInSolutionExplorer": false
 }

@@ -17,6 +17,7 @@ if ($u) {
 <script defer src="assets/js/theme.js"></script>
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>
+<script defer src="assets/js/bubbles.js"></script>
 </head><body>
 <header class="nav">
     <div class="nav-left">

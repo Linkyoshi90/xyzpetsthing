@@ -38,15 +38,12 @@ body {
     overflow-x: hidden;
 }
 
-    body::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        background: radial-gradient(circle at 20% 20%, var(--bubble1) 0 60%, transparent 60%), 
-            radial-gradient(circle at 80% 30%, var(--bubble2) 0 70%, transparent 70%), 
-            radial-gradient(circle at 40% 80%, var(--bubble3) 0 70%, transparent 70%);
-    }
+#bubble-canvas {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
 
 a {
     color: #1E86FF;
