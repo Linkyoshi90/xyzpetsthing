@@ -17,7 +17,15 @@ if ($u) {
 <script defer src="assets/js/theme.js"></script>
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>
+<?php
+$game_pages = ['fruitstack', 'garden-invaderz', 'runngunner'];
+if (!in_array($pg ?? '', $game_pages)):
+?>
+<?php if($pg === 'map'): ?>
+<script defer src="assets/js/world-map.js"></script>
+<?php endif; ?>
 <script defer src="assets/js/bubbles.js"></script>
+<?php endif; ?>
 </head><body>
 <header class="nav">
     <div class="nav-left">
@@ -65,4 +73,4 @@ if ($u) {
     <button id="theme-toggle" class="btn" type="button">🌓</button>
   </div>
 </header>
-<main class="container">
+<main class="container <?= ($pg === 'map') ? 'map-container' : '' ?>">

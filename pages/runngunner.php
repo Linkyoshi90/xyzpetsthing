@@ -1,4 +1,3 @@
-?>
 <link rel="stylesheet" href="assets/css/runngunner.css">
 <script defer src="assets/js/runngunner.js"></script>
 <h1>Run n Gunner</h1>
