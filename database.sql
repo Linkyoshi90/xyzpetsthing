@@ -28,6 +28,14 @@ CREATE TABLE IF NOT EXISTS currencies (
   UNIQUE KEY uq_currency_code (currency_code)
 ) ENGINE=InnoDB;
 
+-- Wheel of Fate spin tracking
+CREATE TABLE IF NOT EXISTS wheel_of_fate_spins (
+  user_id      BIGINT UNSIGNED NOT NULL,
+  last_spin_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id),
+  CONSTRAINT fk_wheel_spin_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS user_friends (
   connection_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id BIGINT UNSIGNED NOT NULL,

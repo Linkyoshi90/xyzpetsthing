@@ -8,6 +8,28 @@
         return 1 - Math.pow(1 - t, 3);
     }
 
+    function sanitizeNumber(value) {
+        var num = Number(value);
+        if (!Number.isFinite(num) || num <= 0) {
+            return 0;
+        }
+        return Math.floor(num);
+    }
+
+    function formatDuration(seconds) {
+        var total = Math.max(0, Math.floor(Number(seconds) || 0));
+        var hours = Math.floor(total / 3600);
+        var minutes = Math.floor((total % 3600) / 60);
+        var secs = total % 60;
+        var pad = function (num) {
+            return String(num).padStart(2, '0');
+        };
+        if (hours > 0) {
+            return pad(hours) + ':' + pad(minutes) + ':' + pad(secs);
+        }
+        return pad(minutes) + ':' + pad(secs);
+    }
+
     function getTextColor(hex) {
         if (typeof hex !== 'string') {
             return '#0f172a';
@@ -48,10 +70,12 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        var state = (typeof window.WHEEL_OF_FATE_STATE === 'object' && window.WHEEL_OF_FATE_STATE) ? window.WHEEL_OF_FATE_STATE : {};
         var segments = Array.isArray(window.WHEEL_OF_FATE_SEGMENTS) ? window.WHEEL_OF_FATE_SEGMENTS : [];
         var canvas = document.getElementById('wheel-canvas');
         var spinButton = document.getElementById('spin-button');
         var timerElement = document.getElementById('spin-timer');
+        var cooldownElement = document.getElementById('spin-cooldown');
         var resultElement = document.getElementById('spin-result');
 
         if (!canvas || !spinButton || !timerElement || !resultElement || !segments.length) {
@@ -67,8 +91,75 @@
         var radius = Math.min(centerX, centerY) - 8;
         var currentRotation = 0;
         var spinning = false;
-        var countdownInterval = null;
+        var spinCountdownInterval = null;
+        var cooldownInterval = null;
         var colors = ['#f94144', '#f3722c', '#f8961e', '#f9844a', '#f9c74f', '#90be6d', '#43aa8b', '#577590', '#277da1', '#4d908e', '#bc4749', '#ef476f'];
+        var defaultCooldownSeconds = sanitizeNumber(state.cooldownSeconds);
+        var cooldownRemaining = sanitizeNumber(state.cooldownRemaining);
+        var lastPointerSegment = 0;
+        var audioCtx = null;
+        var audioDisabled = false;
+
+        function ensureAudioContext() {
+            if (audioDisabled) {
+                return null;
+            }
+            var AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
+            if (!AudioContextConstructor) {
+                audioDisabled = true;
+                return null;
+            }
+            if (!audioCtx) {
+                try {
+                    audioCtx = new AudioContextConstructor();
+                } catch (error) {
+                    audioDisabled = true;
+                    return null;
+                }
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume().catch(function () { /* ignored */ });
+            }
+            return audioCtx;
+        }
+
+        function playClickSound() {
+            if (audioDisabled) {
+                return;
+            }
+            var context = ensureAudioContext();
+            if (!context) {
+                return;
+            }
+            try {
+                var oscillator = context.createOscillator();
+                var gainNode = context.createGain();
+                oscillator.type = 'square';
+                oscillator.frequency.setValueAtTime(750, context.currentTime);
+                gainNode.gain.setValueAtTime(0.0001, context.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.08, context.currentTime + 0.001);
+                gainNode.gain.exponentialRampToValueAtTime(0.0001, context.currentTime + 0.08);
+                oscillator.connect(gainNode);
+                gainNode.connect(context.destination);
+                oscillator.start();
+                oscillator.stop(context.currentTime + 0.09);
+            } catch (error) {
+                audioDisabled = true;
+            }
+        }
+
+        function getPointerSegmentIndex(rotation) {
+            var normalized = normalizeAngle(rotation);
+            var rawIndex = Math.floor(((normalized + arc / 2) / arc)) % totalSegments;
+            return (totalSegments - rawIndex) % totalSegments;
+        }
+
+        function updateSpinButtonState() {
+            if (!spinButton) {
+                return;
+            }
+            spinButton.disabled = spinning || cooldownRemaining > 0;
+        }
 
         function drawWheel(rotation) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -111,22 +202,35 @@
             ctx.stroke();
         }
 
-        function resetTimerDisplay() {
+        function resetSpinTimerDisplay() {
             if (timerElement) {
                 timerElement.textContent = '--';
             }
         }
 
-        function startCountdown(seconds) {
-            if (!timerElement) return;
-            clearInterval(countdownInterval);
-            var remaining = seconds;
+        function clearSpinCountdown() {
+            if (spinCountdownInterval) {
+                clearInterval(spinCountdownInterval);
+                spinCountdownInterval = null;
+            }
+        }
+
+        function startSpinCountdown(seconds) {
+            if (!timerElement) {
+                return;
+            }
+            var duration = sanitizeNumber(seconds);
+            clearSpinCountdown();
+            if (duration <= 0) {
+                timerElement.textContent = '0';
+                return;
+            }
+            var remaining = duration;
             timerElement.textContent = String(remaining);
-            countdownInterval = setInterval(function () {
+            spinCountdownInterval = setInterval(function () {
                 remaining -= 1;
                 if (remaining <= 0) {
-                    clearInterval(countdownInterval);
-                    countdownInterval = null;
+                    clearSpinCountdown();
                     timerElement.textContent = '0';
                 } else {
                     timerElement.textContent = String(remaining);
@@ -134,11 +238,40 @@
             }, 1000);
         }
 
-        function finishSpin(reward, balances) {
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                countdownInterval = null;
+        function setCooldown(seconds) {
+            var sanitized = sanitizeNumber(seconds);
+            cooldownRemaining = sanitized;
+            if (cooldownInterval) {
+                clearInterval(cooldownInterval);
+                cooldownInterval = null;
             }
+            if (cooldownElement) {
+                if (sanitized > 0) {
+                    cooldownElement.textContent = formatDuration(sanitized);
+                } else {
+                    cooldownElement.textContent = 'Ready';
+                }
+            }
+            updateSpinButtonState();
+            if (sanitized > 0) {
+                cooldownInterval = setInterval(function () {
+                    cooldownRemaining = Math.max(0, cooldownRemaining - 1);
+                    if (cooldownRemaining <= 0) {
+                        clearInterval(cooldownInterval);
+                        cooldownInterval = null;
+                        if (cooldownElement) {
+                            cooldownElement.textContent = 'Ready';
+                        }
+                        updateSpinButtonState();
+                    } else if (cooldownElement) {
+                        cooldownElement.textContent = formatDuration(cooldownRemaining);
+                    }
+                }, 1000);
+            }
+        }
+
+        function finishSpin(reward, balances, cooldownSeconds) {
+            clearSpinCountdown();
             if (timerElement) {
                 timerElement.textContent = '0';
             }
@@ -156,13 +289,34 @@
             if (balances && typeof window.updateCurrencyDisplay === 'function') {
                 window.updateCurrencyDisplay(balances);
             }
-            if (spinButton) {
-                spinButton.disabled = false;
-            }
             spinning = false;
+            var finalCooldown = sanitizeNumber(typeof cooldownSeconds === 'undefined' ? defaultCooldownSeconds : cooldownSeconds);
+            if (!finalCooldown && !cooldownSeconds && defaultCooldownSeconds) {
+                finalCooldown = defaultCooldownSeconds;
+            }
+            setCooldown(finalCooldown);
         }
 
-        function startSpinAnimation(targetIndex, reward, balances) {
+        function handleError(message, cooldownSeconds, balances) {
+            clearSpinCountdown();
+            resetSpinTimerDisplay();
+            if (resultElement) {
+                resultElement.classList.remove('success');
+                resultElement.classList.add('error');
+                resultElement.textContent = message;
+            }
+            if (balances && typeof window.updateCurrencyDisplay === 'function') {
+                window.updateCurrencyDisplay(balances);
+            }
+            spinning = false;
+            if (cooldownSeconds !== null && typeof cooldownSeconds !== 'undefined') {
+                setCooldown(cooldownSeconds);
+            } else {
+                updateSpinButtonState();
+            }
+        }
+
+        function startSpinAnimation(targetIndex, reward, balances, cooldownSeconds) {
             var startRotation = currentRotation;
             var desired = normalizeAngle(-targetIndex * arc);
             var current = normalizeAngle(startRotation);
@@ -176,6 +330,7 @@
             var targetRotation = startRotation + spinAmount;
             var duration = 10000;
             var startTime = performance.now();
+            lastPointerSegment = getPointerSegmentIndex(startRotation);
 
             function step(now) {
                 var elapsed = now - startTime;
@@ -183,45 +338,43 @@
                 var eased = easeOutCubic(progress);
                 currentRotation = startRotation + spinAmount * eased;
                 drawWheel(currentRotation);
+                var pointerSegment = getPointerSegmentIndex(currentRotation);
+                if (pointerSegment !== lastPointerSegment) {
+                    playClickSound();
+                    lastPointerSegment = pointerSegment;
+                }
                 if (progress < 1) {
                     requestAnimationFrame(step);
                 } else {
                     currentRotation = normalizeAngle(targetRotation);
                     drawWheel(currentRotation);
-                    finishSpin(reward, balances);
+                    lastPointerSegment = getPointerSegmentIndex(currentRotation);
+                    finishSpin(reward, balances, cooldownSeconds);
                 }
             }
 
             requestAnimationFrame(step);
         }
 
-        function handleError(message) {
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-                countdownInterval = null;
-            }
-            if (resultElement) {
-                resultElement.classList.remove('success');
-                resultElement.classList.add('error');
-                resultElement.textContent = message;
-            }
-            if (spinButton) {
-                spinButton.disabled = false;
-            }
-            resetTimerDisplay();
-            spinning = false;
-        }
-
         drawWheel(currentRotation);
-        resetTimerDisplay();
+        lastPointerSegment = getPointerSegmentIndex(currentRotation);
+        resetSpinTimerDisplay();
+        setCooldown(cooldownRemaining);
 
         spinButton.addEventListener('click', function () {
-            if (spinning) return;
+            if (spinning || cooldownRemaining > 0) {
+                return;
+            }
             spinning = true;
-            resultElement.textContent = '';
-            resultElement.classList.remove('success', 'error');
-            spinButton.disabled = true;
-            timerElement.textContent = '...';
+            updateSpinButtonState();
+            if (resultElement) {
+                resultElement.textContent = '';
+                resultElement.classList.remove('success', 'error');
+            }
+            ensureAudioContext();
+            if (timerElement) {
+                timerElement.textContent = '...';
+            }
 
             fetch('index.php?pg=wheel-of-fate', {
                 method: 'POST',
@@ -241,17 +394,30 @@
                 .then(function (payload) {
                     if (!payload.ok || !payload.data || !payload.data.success) {
                         var errorMessage = (payload.data && payload.data.error) ? payload.data.error : 'Spin failed. Please try again.';
-                        throw new Error(errorMessage);
+                        var error = new Error(errorMessage);
+                        if (payload.data && typeof payload.data.cooldownRemaining !== 'undefined') {
+                            error.cooldownRemaining = payload.data.cooldownRemaining;
+                        }
+                        if (payload.data && payload.data.balances) {
+                            error.balances = payload.data.balances;
+                        }
+                        throw error;
                     }
                     var data = payload.data;
                     if (typeof data.segmentIndex !== 'number' || data.segmentIndex < 0 || data.segmentIndex >= segments.length) {
                         throw new Error('Invalid spin result received.');
                     }
-                    startCountdown(10);
-                    startSpinAnimation(data.segmentIndex, data.reward || null, data.balances || null);
+                    var cooldownSeconds = sanitizeNumber(data.cooldownRemaining);
+                    if (!cooldownSeconds && defaultCooldownSeconds) {
+                        cooldownSeconds = defaultCooldownSeconds;
+                    }
+                    startSpinCountdown(10);
+                    startSpinAnimation(data.segmentIndex, data.reward || null, data.balances || null, cooldownSeconds);
                 })
                 .catch(function (err) {
-                    handleError(err && err.message ? err.message : 'Unable to spin the wheel right now.');
+                    var cooldownSeconds = (err && typeof err.cooldownRemaining !== 'undefined') ? err.cooldownRemaining : null;
+                    var balances = err && err.balances ? err.balances : null;
+                    handleError(err && err.message ? err.message : 'Unable to spin the wheel right now.', cooldownSeconds, balances);
                 });
         });
     });

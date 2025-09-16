@@ -6,6 +6,8 @@ const WHEEL_OF_FATE_CURRENCY_ID = 1;
 const WHEEL_OF_FATE_MIN_CASH = 200;
 const WHEEL_OF_FATE_MAX_CASH = 1000;
 const WHEEL_OF_FATE_ITEM_LIMIT = 6;
+const WHEEL_OF_FATE_SPIN_COST = 500;
+const WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS = 86400;
 
 function wheel_of_fate_segments_data(): array {
     $items = q("SELECT item_id, item_name FROM items ORDER BY item_id ASC LIMIT ".WHEEL_OF_FATE_ITEM_LIMIT)->fetchAll(PDO::FETCH_ASSOC);
@@ -70,7 +72,28 @@ function wheel_of_fate_segments_data(): array {
     ];
 }
 
+function wheel_of_fate_remaining_cooldown(?string $timestamp): int {
+    if (!$timestamp) {
+        return 0;
+    }
+
+    $lastSpin = strtotime($timestamp);
+    if ($lastSpin === false) {
+        return 0;
+    }
+
+    $elapsed = time() - $lastSpin;
+    if ($elapsed < 0) {
+        $elapsed = 0;
+    }
+
+    $remaining = WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS - $elapsed;
+    return $remaining > 0 ? (int)$remaining : 0;
+}
+
 $wheelData = wheel_of_fate_segments_data();
+
+$uid = current_user()['id'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
@@ -81,10 +104,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $uid = current_user()['id'];
     $segments = $wheelData['segments'];
 
     try {
+        $pdo = db();
+        $pdo->beginTransaction();
+
+        $balanceStmt = $pdo->prepare('SELECT balance FROM user_balances WHERE user_id = ? AND currency_id = ? FOR UPDATE');
+        $balanceStmt->execute([$uid, WHEEL_OF_FATE_CURRENCY_ID]);
+        $balanceRow = $balanceStmt->fetch(PDO::FETCH_ASSOC);
+        $currentBalance = $balanceRow ? (float)$balanceRow['balance'] : 0.0;
+        if ($currentBalance < WHEEL_OF_FATE_SPIN_COST) {
+            $pdo->rollBack();
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'You need '.number_format(WHEEL_OF_FATE_SPIN_COST).' Cash to spin the wheel.',
+                'cooldownRemaining' => 0,
+            ]);
+            exit;
+        }
+
+        $cooldownStmt = $pdo->prepare('SELECT last_spin_at FROM wheel_of_fate_spins WHERE user_id = ? FOR UPDATE');
+        $cooldownStmt->execute([$uid]);
+        $cooldownRow = $cooldownStmt->fetch(PDO::FETCH_ASSOC);
+        $cooldownRemaining = 0;
+        if ($cooldownRow && isset($cooldownRow['last_spin_at'])) {
+            $cooldownRemaining = wheel_of_fate_remaining_cooldown($cooldownRow['last_spin_at']);
+        }
+        if ($cooldownRemaining > 0) {
+            $pdo->rollBack();
+            http_response_code(429);
+            echo json_encode([
+                'success' => false,
+                'error' => 'The wheel is cooling down. Please try again later.',
+                'cooldownRemaining' => $cooldownRemaining,
+            ]);
+            exit;
+        }
+
+        $deductStmt = $pdo->prepare('UPDATE user_balances SET balance = balance - ? WHERE user_id = ? AND currency_id = ?');
+        $deductStmt->execute([WHEEL_OF_FATE_SPIN_COST, $uid, WHEEL_OF_FATE_CURRENCY_ID]);
+        if ($deductStmt->rowCount() === 0) {
+            $pdo->rollBack();
+            http_response_code(400);
+            echo json_encode([
+                'success' => false,
+                'error' => 'You need '.number_format(WHEEL_OF_FATE_SPIN_COST).' Cash to spin the wheel.',
+                'cooldownRemaining' => 0,
+            ]);
+            exit;
+        }
+
+        $ledgerStmt = $pdo->prepare('INSERT INTO currency_ledger (user_id, currency_id, amount_delta, reason, metadata) VALUES (?,?,?,?,?)');
+        $ledgerStmt->execute([
+            $uid,
+            WHEEL_OF_FATE_CURRENCY_ID,
+            -WHEEL_OF_FATE_SPIN_COST,
+            'wheel_of_fate_spin',
+            json_encode(['cost' => WHEEL_OF_FATE_SPIN_COST]),
+        ]);
+
+        $spinLogStmt = $pdo->prepare('INSERT INTO wheel_of_fate_spins (user_id, last_spin_at) VALUES (?, NOW()) ON DUPLICATE KEY UPDATE last_spin_at = VALUES(last_spin_at)');
+        $spinLogStmt->execute([$uid]);
+
         $segmentIndex = random_int(0, count($segments) - 1);
         $segment = $segments[$segmentIndex];
         $reward = [
@@ -94,26 +177,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($segment['type'] === 'currency') {
             $amount = (int)$segment['amount'];
-            q(
-                "INSERT INTO user_balances (user_id, currency_id, balance) VALUES (?, ?, ?)\n                 ON DUPLICATE KEY UPDATE balance = balance + VALUES(balance)",
-                [$uid, WHEEL_OF_FATE_CURRENCY_ID, $amount]
-            );
-            q(
-                "INSERT INTO currency_ledger (user_id, currency_id, amount_delta, reason, metadata) VALUES (?,?,?,?,?)",
-                [$uid, WHEEL_OF_FATE_CURRENCY_ID, $amount, 'wheel_of_fate', json_encode(['type' => 'currency', 'amount' => $amount])]
-            );
+            $currencyStmt = $pdo->prepare('INSERT INTO user_balances (user_id, currency_id, balance) VALUES (?, ?, ?)\n                 ON DUPLICATE KEY UPDATE balance = balance + VALUES(balance)');
+            $currencyStmt->execute([$uid, WHEEL_OF_FATE_CURRENCY_ID, $amount]);
+            $ledgerStmt->execute([
+                $uid,
+                WHEEL_OF_FATE_CURRENCY_ID,
+                $amount,
+                'wheel_of_fate',
+                json_encode(['type' => 'currency', 'amount' => $amount]),
+            ]);
             $reward['amount'] = $amount;
         } elseif ($segment['type'] === 'item') {
             $itemId = (int)$segment['item_id'];
-            q(
-                "INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)\n                 ON DUPLICATE KEY UPDATE quantity = quantity + 1",
-                [$uid, $itemId]
-            );
+            $itemStmt = $pdo->prepare('INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)\n                 ON DUPLICATE KEY UPDATE quantity = quantity + 1');
+            $itemStmt->execute([$uid, $itemId]);
             $reward['itemId'] = $itemId;
         }
 
+        $pdo->commit();
+
         $balanceRows = q(
-            "SELECT currency_id, balance FROM user_balances WHERE user_id = ? AND currency_id IN (1,2)",
+            'SELECT currency_id, balance FROM user_balances WHERE user_id = ? AND currency_id IN (1,2)',
             [$uid]
         )->fetchAll(PDO::FETCH_ASSOC);
 
@@ -136,14 +220,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'segmentIndex' => $segmentIndex,
             'reward' => $reward,
             'balances' => $balances,
+            'cooldownRemaining' => WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS,
         ]);
     } catch (Throwable $e) {
+        if (isset($pdo) && $pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Unable to complete spin.']);
     }
     exit;
 }
-
+$cooldownRemaining = 0;
+try {
+    $cooldownRow = q('SELECT last_spin_at FROM wheel_of_fate_spins WHERE user_id = ?', [$uid])->fetch(PDO::FETCH_ASSOC);
+    if ($cooldownRow && isset($cooldownRow['last_spin_at'])) {
+        $cooldownRemaining = wheel_of_fate_remaining_cooldown($cooldownRow['last_spin_at']);
+    }
+} catch (Throwable $ignored) {
+    $cooldownRemaining = 0;
+}
 $segments = $wheelData['segments'];
 $itemCount = $wheelData['item_count'];
 $currencySlots = $wheelData['currency_slots'];
@@ -151,6 +247,11 @@ $currencySlots = $wheelData['currency_slots'];
 <link rel="stylesheet" href="assets/css/wheel-of-fate.css">
 <script>
 window.WHEEL_OF_FATE_SEGMENTS = <?= json_encode($segments, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+window.WHEEL_OF_FATE_STATE = <?= json_encode([
+    'cost' => WHEEL_OF_FATE_SPIN_COST,
+    'cooldownSeconds' => WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS,
+    'cooldownRemaining' => $cooldownRemaining,
+], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
 </script>
 <script defer src="assets/js/wheel-of-fate.js"></script>
 
@@ -165,6 +266,8 @@ window.WHEEL_OF_FATE_SEGMENTS = <?= json_encode($segments, JSON_UNESCAPED_UNICOD
     </div>
     <div class="wheel-controls">
         <button id="spin-button" class="btn primary">Spin the Wheel</button>
+        <div class="spin-cost muted">Cost: <?= number_format(WHEEL_OF_FATE_SPIN_COST) ?> Cash</div>
+        <div class="spin-cooldown muted">Next spin in: <span id="spin-cooldown"><?= $cooldownRemaining > 0 ? gmdate('H:i:s', $cooldownRemaining) : 'Ready' ?></span></div>
         <div class="spin-timer muted">Stopping in: <span id="spin-timer">--</span>s</div>
         <div id="spin-result" class="spin-result muted" role="status"></div>
         <h2 class="prize-heading">Today's segments</h2>
