@@ -21,4 +21,8 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
     <h3>Run n Gunner</h3>
     <a class="btn" href="?pg=runngunner">Play</a>
   </div>
+  <div class="card glass">
+    <h3>Wanted Alive</h3>
+    <a class="btn" href="?pg=wanted-alive">Play</a>
+  </div>
 </div>
