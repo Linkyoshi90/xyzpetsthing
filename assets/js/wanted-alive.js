@@ -5,6 +5,7 @@
     const board = document.getElementById('hunt-board');
     const startButton = document.getElementById('hunt-start');
     const roundInfo = document.getElementById('hunt-round');
+    const scoreDisplay = document.getElementById('hunt-score');
     const statusText = document.getElementById('hunt-status');
     const wantedImage = document.getElementById('wanted-image');
     const wantedName = document.getElementById('wanted-name');
@@ -28,23 +29,33 @@
         if (timerLabel) {
             timerLabel.textContent = '--:--';
         }
+        if (timerProgress) {
+            timerProgress.style.width = '0%';
+        }
+        if (scoreDisplay) {
+            scoreDisplay.textContent = 'Score: 0.0';
+        }
         return;
     }
 
-    const selectedVariants = {};
-    creatureNames.forEach(function (name) {
-        const choices = variants[name];
-        selectedVariants[name] = choices[Math.floor(Math.random() * choices.length)];
-    });
+    let stageNumber = 0;
+    let state = 'ready';
+    let stageDuration = 0;
+    let timeRemaining = 0;
+    let stageActive = false;
+    let timerInterval = null;
+    let animationFrameId = null;
+    let lastFrameTime = null;
+    let movers = [];
+    let totalScore = 0;
+    let hasSubmittedScore = false;
+    let stageVariants = {};
+    let targetName = '';
+    let targetImage = '';
 
-    const targetName = creatureNames[Math.floor(Math.random() * creatureNames.length)];
-    const targetImage = selectedVariants[targetName];
-
-    wantedImage.src = targetImage;
-    wantedImage.alt = targetName + ' portrait';
-    if (wantedName) {
-        wantedName.textContent = targetName;
-    }
+    startButton.textContent = 'Start Hunt';
+    roundInfo.textContent = 'Stage 0';
+    statusText.textContent = 'Press start to begin the endless chase.';
     if (timerLabel) {
         timerLabel.textContent = '--:--';
     }
@@ -58,69 +69,62 @@
         { total: 12, duration: 60, speed: 60, diagonal: true }
     ];
 
-    const totalRounds = rounds.length;
-    let currentRoundIndex = -1;
-    let roundDuration = 0;
-    let timerInterval = null;
-    let timeRemaining = 0;
-    let roundActive = false;
-    let animationFrameId = null;
-    let lastFrameTime = null;
-    let movers = [];
-    let state = 'ready'; // ready, playing, next, restart
-
-    startButton.textContent = 'Start Hunt';
-    roundInfo.textContent = 'Round 0 / ' + totalRounds;
-    statusText.textContent = 'Press start to begin the chase.';
+    resetStageVariants();
+    pickTarget();
+    updateScoreDisplay();
 
     startButton.addEventListener('click', function () {
         if (state === 'ready' || state === 'restart') {
             startGame();
         } else if (state === 'next') {
-            startNextRound();
+            startNextStage();
         }
     });
 
     function startGame() {
         cleanupRound();
         state = 'playing';
-        currentRoundIndex = -1;
-        roundInfo.textContent = 'Round 0 / ' + totalRounds;
-        statusText.textContent = 'Spot ' + targetName + ' before time runs out!';
+        stageNumber = 0;
+        totalScore = 0;
+        hasSubmittedScore = false;
+        updateScoreDisplay();
+        statusText.textContent = 'Bank the leftover seconds to earn rewards.';
         startButton.disabled = true;
         startButton.textContent = 'Hunting...';
-        showOverlay('Round 1', 900);
-        setTimeout(function () {
-            startRound(0);
+        showOverlay('Stage 1', 900);
+        window.setTimeout(function () {
+            startStage(1);
         }, 900);
     }
 
-    function startNextRound() {
+    function startNextStage() {
         state = 'playing';
         startButton.disabled = true;
         startButton.textContent = 'Hunting...';
-        showOverlay('Round ' + (currentRoundIndex + 2), 900);
-        setTimeout(function () {
-            startRound(currentRoundIndex + 1);
+        showOverlay('Stage ' + (stageNumber + 1), 900);
+        window.setTimeout(function () {
+            startStage(stageNumber + 1);
         }, 900);
     }
 
-    function startRound(index) {
+    function startStage(nextStage) {
         cleanupRound();
-        currentRoundIndex = index;
-        const round = rounds[index];
-        roundDuration = round.duration;
-        roundInfo.textContent = 'Round ' + (index + 1) + ' / ' + totalRounds;
-        timeRemaining = round.duration;
+        stageNumber = nextStage;
+        resetStageVariants();
+        pickTarget();
+        const config = getStageConfig(stageNumber);
+        stageDuration = config.duration;
+        timeRemaining = config.duration;
+        roundInfo.textContent = 'Stage ' + stageNumber;
         updateTimerDisplay();
 
-        const participants = buildParticipants(round.total);
+        const participants = buildParticipants(config.total);
         const tokens = placeParticipants(participants);
-        configureMovement(tokens, round);
+        configureMovement(tokens, config);
 
-        roundActive = true;
+        stageActive = true;
         state = 'playing';
-        statusText.textContent = 'Find ' + targetName + ' before ' + formatTime(round.duration) + ' expires!';
+        statusText.textContent = 'Stage ' + stageNumber + ': Find ' + targetName + ' before time runs out!';
 
         if (timerInterval) {
             clearInterval(timerInterval);
@@ -132,22 +136,47 @@
                 updateTimerDisplay();
                 clearInterval(timerInterval);
                 timerInterval = null;
-                onTimeUp();
+                triggerGameOver();
             } else {
                 updateTimerDisplay();
             }
         }, 100);
     }
 
+    function getStageConfig(stage) {
+        const baseDuration = 25;
+        const duration = Math.max(6, baseDuration - (stage - 1) * 1.4);
+        let total;
+        if (creatureNames.length <= 1) {
+            total = creatureNames.length;
+        } else {
+            total = Math.min(creatureNames.length, Math.max(2, Math.floor(4 + (stage - 1) * 0.75)));
+        }
+        const speed = stage <= 1 ? 0 : Math.min(180, 20 + (stage - 2) * 12);
+        const diagonal = stage >= 4;
+        return { total: total, duration: duration, speed: speed, diagonal: diagonal };
+    }
+
     function buildParticipants(total) {
         const participants = [];
+        if (!targetName) {
+            return participants;
+        }
+        const neededDecoys = Math.max(0, (total || 0) - 1);
         const pool = creatureNames.filter(function (name) {
             return name !== targetName;
         });
-        const shuffled = shuffle(pool.slice());
-        const neededDecoys = Math.min(total - 1, shuffled.length);
-        for (let i = 0; i < neededDecoys; i += 1) {
-            participants.push({ name: shuffled[i], target: false });
+        if (pool.length > 0 && neededDecoys > 0) {
+            const bag = shuffle(pool.slice());
+            let index = 0;
+            while (participants.length < neededDecoys) {
+                if (index >= bag.length) {
+                    index = 0;
+                    shuffle(bag);
+                }
+                participants.push({ name: bag[index], target: false });
+                index += 1;
+            }
         }
         participants.push({ name: targetName, target: true });
         return shuffle(participants);
@@ -166,9 +195,12 @@
         participants.forEach(function (participant) {
             const token = document.createElement('img');
             token.className = 'creature-token';
-            token.src = selectedVariants[participant.name];
-            token.alt = participant.name + ' portrait';
-            token.setAttribute('data-name', participant.name);
+            const imgSrc = getImageFor(participant.name);
+            if (imgSrc) {
+                token.src = imgSrc;
+            }
+            token.alt = (participant.name || 'Creature') + ' portrait';
+            token.setAttribute('data-name', participant.name || '');
             if (participant.target) {
                 token.setAttribute('data-target', 'true');
             }
@@ -187,7 +219,8 @@
                 attempts += 1;
             } while (
                 attempts < 50 &&
-                ((poster && pos.x + tokenWidth > restrictedX && pos.y < restrictedY) || overlapsExisting(tokens, pos.x, pos.y, tokenWidth, tokenHeight))
+                ((poster && pos.x + tokenWidth > restrictedX && pos.y < restrictedY) ||
+                    overlapsExisting(tokens, pos.x, pos.y, tokenWidth, tokenHeight))
             );
 
             token.style.left = pos.x + 'px';
@@ -213,15 +246,15 @@
         return tokens;
     }
 
-    function configureMovement(tokens, round) {
+    function configureMovement(tokens, config) {
         movers = [];
-        if (!round || round.speed <= 0) {
+        if (!config || config.speed <= 0) {
             stopMovement();
             return;
         }
 
-        const maxSpeed = round.speed;
-        const diagonal = !!round.diagonal;
+        const maxSpeed = config.speed;
+        const diagonal = !!config.diagonal;
         movers = tokens.map(function (token) {
             const baseVy = (Math.random() * 0.6 + 0.4) * maxSpeed;
             const vx = diagonal ? (Math.random() - 0.5) * maxSpeed : (Math.random() < 0.35 ? (Math.random() - 0.5) * maxSpeed * 0.4 : 0);
@@ -245,7 +278,7 @@
     }
 
     function stepMovement(timestamp) {
-        if (!roundActive) {
+        if (!stageActive) {
             animationFrameId = null;
             return;
         }
@@ -287,23 +320,23 @@
     }
 
     function onTargetClick(event) {
-        if (!roundActive) {
+        if (!stageActive) {
             return;
         }
-        roundActive = false;
+        stageActive = false;
         const el = event.currentTarget;
         el.classList.add('found');
-        celebrateSuccess();
+        endStageSuccess();
     }
 
     function onDecoyClick(event) {
-        if (!roundActive) {
+        if (!stageActive) {
             return;
         }
         const el = event.currentTarget;
         const name = el.getAttribute('data-name') || 'That one';
         el.classList.remove('wrong');
-        void el.offsetWidth; // restart animation
+        void el.offsetWidth;
         el.classList.add('wrong');
         statusText.textContent = name + ' is not the one on the poster!';
         window.setTimeout(function () {
@@ -311,43 +344,45 @@
         }, 400);
     }
 
-    function celebrateSuccess() {
+    function endStageSuccess() {
+        stopMovement();
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        const earned = Math.max(0, timeRemaining);
+        const displayEarned = Math.round(earned * 10) / 10;
+        totalScore += earned;
+        timeRemaining = 0;
+        updateTimerDisplay();
+        updateScoreDisplay();
+
+        statusText.textContent =
+            'Stage ' + stageNumber + ' cleared! Banked ' + displayEarned.toFixed(1) + ' seconds. Total: ' + totalScore.toFixed(1) + '.';
+        showOverlay('+' + displayEarned.toFixed(1) + 's', 1200);
+
+        state = 'next';
+        startButton.disabled = false;
+        startButton.textContent = 'Next stage';
+        startButton.focus();
+    }
+
+    function triggerGameOver() {
+        stageActive = false;
         stopMovement();
         if (timerInterval) {
             clearInterval(timerInterval);
             timerInterval = null;
         }
         updateTimerDisplay();
-
-        if (currentRoundIndex === totalRounds - 1) {
-            statusText.textContent = 'You tracked down ' + targetName + ' in every round!';
-            showOverlay('All rounds cleared!', 1500);
-            state = 'restart';
-            startButton.disabled = false;
-            startButton.textContent = 'Play again';
-            startButton.focus();
-        } else {
-            statusText.textContent = 'Great eye! Get ready for the next round.';
-            showOverlay('Nice find!', 1200);
-            state = 'next';
-            startButton.disabled = false;
-            startButton.textContent = 'Next round';
-            startButton.focus();
-        }
-    }
-
-    function onTimeUp() {
-        if (!roundActive) {
-            return;
-        }
-        roundActive = false;
-        stopMovement();
-        statusText.textContent = 'Time\'s up! ' + targetName + ' slipped away.';
-        showOverlay('Time\'s up!', 1500);
+        const baseMessage = targetName ? "Time's up! " + targetName + ' slipped away.' : "Time's up! The target slipped away.";
+        statusText.textContent = baseMessage;
+        showOverlay("Time's up!", 1500);
         state = 'restart';
         startButton.disabled = false;
         startButton.textContent = 'Try again';
         startButton.focus();
+        promptScoreSubmission(baseMessage);
     }
 
     function stopMovement() {
@@ -360,7 +395,7 @@
     }
 
     function cleanupRound() {
-        roundActive = false;
+        stageActive = false;
         stopMovement();
         if (timerInterval) {
             clearInterval(timerInterval);
@@ -384,8 +419,14 @@
             timerLabel.textContent = formatTime(timeRemaining);
         }
         if (timerProgress) {
-            const fraction = roundDuration > 0 ? Math.max(0, Math.min(1, timeRemaining / roundDuration)) : 0;
+            const fraction = stageDuration > 0 ? Math.max(0, Math.min(1, timeRemaining / stageDuration)) : 0;
             timerProgress.style.width = fraction * 100 + '%';
+        }
+    }
+
+    function updateScoreDisplay() {
+        if (scoreDisplay) {
+            scoreDisplay.textContent = 'Score: ' + totalScore.toFixed(1);
         }
     }
 
@@ -397,6 +438,93 @@
         const minutes = Math.floor(totalSeconds / 60);
         const seconds = totalSeconds % 60;
         return minutes + ':' + String(seconds).padStart(2, '0');
+    }
+
+    function promptScoreSubmission(baseMessage) {
+        if (hasSubmittedScore) {
+            return;
+        }
+        const finalScore = Math.max(0, Math.round(totalScore));
+        hasSubmittedScore = true;
+        if (!finalScore) {
+            return;
+        }
+        const submit = window.confirm('Submit your score of ' + finalScore + ' to exchange for rewards?');
+        if (!submit) {
+            return;
+        }
+        fetch('score_exchange.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ game: 'wantedalive', score: finalScore })
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (!data) {
+                    return;
+                }
+                if (data.error) {
+                    window.alert(data.error);
+                    if (statusText) {
+                        statusText.textContent = baseMessage + ' (Exchange failed.)';
+                    }
+                    return;
+                }
+                if (typeof data.cash !== 'undefined' && window.updateCurrencyDisplay) {
+                    window.updateCurrencyDisplay({ cash: data.cash });
+                }
+                if (statusText) {
+                    statusText.textContent = baseMessage + ' Score exchanged for rewards!';
+                }
+            })
+            .catch(function () {
+                window.alert('Unable to submit score right now.');
+            });
+    }
+
+    function resetStageVariants() {
+        stageVariants = {};
+    }
+
+    function getImageFor(name) {
+        if (!name) {
+            return '';
+        }
+        if (!stageVariants[name]) {
+            const choices = variants[name];
+            if (Array.isArray(choices) && choices.length > 0) {
+                stageVariants[name] = choices[Math.floor(Math.random() * choices.length)];
+            } else {
+                stageVariants[name] = '';
+            }
+        }
+        return stageVariants[name];
+    }
+
+    function pickTarget() {
+        if (creatureNames.length === 0) {
+            targetName = '';
+            targetImage = '';
+            return;
+        }
+        const available = creatureNames.filter(function (name) {
+            return !!getImageFor(name);
+        });
+        if (available.length > 0) {
+            targetName = available[Math.floor(Math.random() * available.length)];
+        } else {
+            targetName = creatureNames[0];
+        }
+        targetImage = getImageFor(targetName);
+        if (wantedImage) {
+            wantedImage.src = targetImage || '';
+            wantedImage.alt = (targetName ? targetName : 'Wanted creature') + ' portrait';
+        }
+        if (wantedName) {
+            wantedName.textContent = targetName || '';
+        }
     }
 
     function overlapsExisting(existing, x, y, width, height) {

@@ -18,7 +18,7 @@ if ($u) {
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>
 <?php
-$game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive'];
+$game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive', 'blackjack', 'wheel-of-fate'];
 if (!in_array($pg ?? '', $game_pages)):
 ?>
 <?php if($pg === 'map'): ?>

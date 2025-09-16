@@ -64,7 +64,7 @@ window.wantedAliveData = <?php echo json_encode(['variants' => $creature_variant
 <script defer src="assets/js/wanted-alive.js"></script>
 <div class="wanted-alive-wrapper">
   <h1>Wanted Alive</h1>
-  <p class="hunt-subtitle">Study the wanted poster and spot the creature before the timer runs out.</p>
+  <p class="hunt-subtitle">Study the wanted poster, spot the creature before the timer runs out, and bank the leftover seconds.</p>
   <div class="hunt-board" id="hunt-board">
     <div class="wanted-poster">
       <p class="wanted-title">WANTED</p>
@@ -78,8 +78,9 @@ window.wantedAliveData = <?php echo json_encode(['variants' => $creature_variant
     <div class="hunt-overlay hidden" id="hunt-overlay"><span></span></div>
   </div>
   <div class="hunt-controls">
-    <p class="hunt-round-info" id="hunt-round">Round 0 / 3</p>
-    <p class="hunt-status" id="hunt-status">Press start to begin the chase.</p>
+    <p class="hunt-round-info" id="hunt-round">Stage 0</p>
+    <p class="hunt-score" id="hunt-score">Score: 0.0</p>
+    <p class="hunt-status" id="hunt-status">Press start to begin the endless chase.</p>
     <button class="btn" type="button" id="hunt-start">Start Hunt</button>
   </div>
 </div>
