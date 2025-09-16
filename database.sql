@@ -296,15 +296,13 @@ INSERT INTO items (item_name, item_description, replenish, base_price, rarity_id
 ('Real Paintbrush','Paints your creature realistic.', 10,      2005000.00, 5, 5,  1, 1),
 ('Crystal Shard','A rare sparkling material.', 10,                1200.00, 4, 6, 99, 1);
 
--- 6) Regions & species/colors
 INSERT INTO regions (region_name) VALUES
-('Aegia Aeterna'), ('Nornheim'), ('Bretonreach'), ('Rheinland'), ('Rodinian Tsardom'), 
-('United free Republic of Borealia'), ('Sovereign Tribes of the Ancestral Plains'), 
-('Lotus-Dragon Kingdom'), ('Baharamandal'), ('Yamanokubo'), ('Xochimex'), 
-('Eagle Serpent Dominion'), ('Itzam Empire'), ('Spice Route League'), 
-('Crescent Caliphate'), ('Hammurabia'), ('Eretz-Shalem League'), ('Kemet'), 
-('Sila Council'), ('Red Sun Commonwealth'), ('Yara Nations'), ('Gran Columbia'), 
-('Sapa Inti Empire');
+('Aegia Aeterna'), ('Baharamandal'), ('Bretonreach'), ('Crescent Caliphate'), 
+('Eagle Serpent Dominion'), ('Eretz-Shalem League'), ('Gran Columbia'), ('Hammurabia'), 
+('Itzam Empire'), ('Kemet'), ('Lotus-Dragon Kingdom'), ('Nornheim'), ('Red Sun Commonwealth'), 
+('Rheinland'), ('Rodinian Tsardom'), ('Sapa Inti Empire'), ('Sila Council'), 
+('Sovereign Tribes of the Ancestral Plains'), ('Spice Route League'), 
+('United free Republic of Borealia'), ('Xochimex'), ('Yamanokubo'), ('Yara Nations');
 
 INSERT INTO pet_species (species_name, region_id, base_hp, base_atk, base_def, base_init) VALUES
 ('Adaro',14,8,8,5,9),

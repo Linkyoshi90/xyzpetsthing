@@ -6,5 +6,5 @@
     <area target="" alt="Nornheim" title="Nornheim" href="index.php?pg=nornheim" coords="201,8,232,144,262,147,269,168,302,167,302,188,381,237,397,263,445,229,457,157,465,75,468,11" shape="poly">
     <area target="" alt="Bretonreach" title="Bretonreach" href="index.php?pg=bretonreach" coords="391,276,374,235,340,219,301,194,296,168,267,172,254,151,224,144,138,197,34,230,5,336,3,369,13,380,53,328,70,323,95,335,130,343,156,343,171,360,182,372,207,380,238,385,263,398,333,387,379,325" shape="poly">
     <area target="" alt="Rheinland" title="Rheinland" href="index.php?pg=rheinland" coords="312,403,252,401,184,377,161,356,122,349,64,327,19,380,4,450,9,522,30,521,32,505,48,489,64,492,125,497,139,483,176,492,229,508,245,516,260,538,287,541,395,488,416,440,378,397" shape="poly">
-    <area target="" alt="Aegia Aeterna" title="Aegia Aeterna" href="index.php?pg=aegia_aeterna" coords="285,562,248,533,224,508,145,492,120,503,80,498,42,504,11,536,20,576,25,688,78,706,156,715,219,688" shape="poly">
+    <area target="" alt="Aegia Aeterna" title="Aegia Aeterna" href="index.php?pg=aa" coords="285,562,248,533,224,508,145,492,120,503,80,498,42,504,11,536,20,576,25,688,78,706,156,715,219,688" shape="poly">
 </map>

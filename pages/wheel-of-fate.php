@@ -3,11 +3,11 @@ require_once __DIR__.'/../auth.php';
 require_login();
 
 const WHEEL_OF_FATE_CURRENCY_ID = 1;
-const WHEEL_OF_FATE_MIN_CASH = 200;
+const WHEEL_OF_FATE_MIN_CASH = 400;
 const WHEEL_OF_FATE_MAX_CASH = 1000;
 const WHEEL_OF_FATE_ITEM_LIMIT = 6;
 const WHEEL_OF_FATE_SPIN_COST = 500;
-const WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS = 86400;
+const WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS = 7200;
 
 function wheel_of_fate_segments_data(): array {
     $items = q("SELECT item_id, item_name FROM items ORDER BY item_id ASC LIMIT ".WHEEL_OF_FATE_ITEM_LIMIT)->fetchAll(PDO::FETCH_ASSOC);
@@ -26,8 +26,8 @@ function wheel_of_fate_segments_data(): array {
     }
 
     $currencyAmounts = $currencySlotCount === 3
-        ? [200, 600, 1000]
-        : [200, 400, 700, 1000];
+        ? [400, 600, 1000]
+        : [400, 500, 700, 1000];
 
     $currencySegments = array_map(static function (int $amount): array {
         return [
@@ -177,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($segment['type'] === 'currency') {
             $amount = (int)$segment['amount'];
-            $currencyStmt = $pdo->prepare('INSERT INTO user_balances (user_id, currency_id, balance) VALUES (?, ?, ?)\n                 ON DUPLICATE KEY UPDATE balance = balance + VALUES(balance)');
+            $currencyStmt = $pdo->prepare('INSERT INTO user_balances (user_id, currency_id, balance) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE balance = balance + VALUES(balance)');
             $currencyStmt->execute([$uid, WHEEL_OF_FATE_CURRENCY_ID, $amount]);
             $ledgerStmt->execute([
                 $uid,
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $reward['amount'] = $amount;
         } elseif ($segment['type'] === 'item') {
             $itemId = (int)$segment['item_id'];
-            $itemStmt = $pdo->prepare('INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)\n                 ON DUPLICATE KEY UPDATE quantity = quantity + 1');
+            $itemStmt = $pdo->prepare('INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE quantity = quantity + 1');
             $itemStmt->execute([$uid, $itemId]);
             $reward['itemId'] = $itemId;
         }

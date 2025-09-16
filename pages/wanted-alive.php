@@ -2,7 +2,7 @@
 require_once __DIR__.'/../auth.php';
 require_login();
 
-$creatures_file = __DIR__.'/../available_creatures.txt';
+$creatures_file = __DIR__.'/../data-readonly/available_creatures.txt';
 $images_dir = __DIR__.'/../images';
 
 function hunt_slugify(string $name): string {

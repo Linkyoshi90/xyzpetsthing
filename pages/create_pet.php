@@ -3,7 +3,7 @@ $uid = current_user()['id'];
 
 // Load list of enabled species from file
 $allowedSpecies = [];
-$file = __DIR__ . '/../available_creatures.txt';
+$file = __DIR__ . '/../data-readonly/available_creatures.txt';
 if (is_file($file)) {
     foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
         $line = trim($line);

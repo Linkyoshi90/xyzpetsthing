@@ -12,7 +12,7 @@ $rates = [
     'gardeninvaderz' => 0.5,
     'fruitstack' => 1.2,
     'runngunner' => 0.8,
-    'wantedalive' => 0.75,
+    'wantedalive' => 5,
 ];
 
 if (!isset($rates[$game]) || $score <= 0) {
