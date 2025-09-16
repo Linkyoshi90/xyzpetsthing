@@ -523,7 +523,5 @@ ul.tight {
 
 .world-map {
     display: block;
-    width: 1680px;
-    height: 1038px;
     object-fit: contain;
 }

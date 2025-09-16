@@ -26,6 +26,10 @@ if($pg === 'bank' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   header('Location: index.php?pg=bank');
   exit;
 }
+if($pg === 'wheel-of-fate' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require __DIR__.'/pages/wheel-of-fate.php';
+  exit;
+}
 if($pg === 'blackjack' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/blackjack_action.php';
