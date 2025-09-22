@@ -33,4 +33,8 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
     <h3>Wheel of Fate</h3>
     <a class="btn" href="?pg=wheel-of-fate">Spin</a>
   </div>
+  <div class="card glass">
+    <h3>Paddle Panic</h3>
+    <a class="btn" href="?pg=paddle-panic">Play</a>
+  </div>
 </div>

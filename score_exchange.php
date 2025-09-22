@@ -13,6 +13,7 @@ $rates = [
     'fruitstack' => 1.2,
     'runngunner' => 0.8,
     'wantedalive' => 5,
+    'paddlepanic' => 0.9,
 ];
 
 if (!isset($rates[$game]) || $score <= 0) {

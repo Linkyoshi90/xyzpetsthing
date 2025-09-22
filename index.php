@@ -4,8 +4,9 @@ require_once __DIR__.'/lib/bank.php';
 $pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
 $allowed = ['login','register','logout','main','pet','create_pet','inventory',
     'map','vote','games','friends','bank',
+    // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
-    'wanted-alive','blackjack',
+    'wanted-alive','blackjack','paddle-panic',
     // Continents
     'auronia','borealia','dawnmarch','gulfbelt','moana_crown',
     'orienthem','saharene','tundria','uluru','verdania',

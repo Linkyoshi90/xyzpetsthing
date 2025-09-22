@@ -5,10 +5,9 @@
     "\\assets\\css",
     "\\assets\\js",
     "\\assets\\music",
-    "\\layout",
-    "\\lib",
+    "\\data-readonly",
+    "\\old",
     "\\pages"
   ],
-  "SelectedNode": "\\pages\\wheel-of-fate.php",
   "PreviewInSolutionExplorer": false
 }
