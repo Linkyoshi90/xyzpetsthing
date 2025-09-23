@@ -2,6 +2,7 @@
 <script defer src="assets/js/paddle-panic.js"></script>
 <h1>Paddle Panic</h1>
 <canvas id="pong" width="900" height="540"></canvas>
+<div id="modifierNotice" aria-live="assertive" aria-atomic="true"></div>
 <div class="hud">
     <div>Score: <span id="scoreVal">0</span></div>
     <div>Hits: <span id="hitVal">0</span></div>

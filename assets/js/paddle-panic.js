@@ -32,6 +32,7 @@ const missLimitEl = document.getElementById('missLimitVal');
 const upgradeEl = document.getElementById('upgradeProgress');
 const finalScoreEl = document.getElementById('finalScoreVal');
 const gameOverNotice = document.getElementById('gameOverNotice');
+const modifierNotice = document.getElementById('modifierNotice');
 
 const upgradeTypes = [
     'multiball',
@@ -57,6 +58,18 @@ const upgradeVisuals = {
     miss_limit_down: { color: 'rgba(190, 24, 93, 0.9)', label: 'L-' }
 };
 
+const upgradeNames = {
+    multiball: 'Multiball',
+    paddle_size_up: 'Paddle Size Up',
+    paddle_size_down: 'Paddle Size Down',
+    paddle_speed_up: 'Paddle Speed Up',
+    paddle_speed_down: 'Paddle Speed Down',
+    ball_speed_up: 'Ball Speed Up',
+    ball_speed_down: 'Ball Speed Down',
+    miss_limit_up: 'Miss Limit Up',
+    miss_limit_down: 'Miss Limit Down'
+};
+
 const keys = {};
 document.addEventListener('keydown', e => {
     keys[e.code] = true;
@@ -65,6 +78,8 @@ document.addEventListener('keydown', e => {
     }
 });
 document.addEventListener('keyup', e => keys[e.code] = false);
+
+let modifierTimeout = null;
 
 function spawnBall(direction = -1, isOriginal = true) {
     const baseSpeed = 4 + Math.random() * 1.5;
@@ -97,6 +112,7 @@ function spawnUpgrade() {
 }
 
 function applyUpgrade(upgrade) {
+    announceModifier(upgrade.type);
     if (upgrade.type === 'multiball') {
         const clones = [];
         balls.forEach(ball => {
@@ -200,6 +216,24 @@ function updateHUD() {
     upgradeEl.textContent = upgrades.length > 0 ? 'Ready!' : hitsUntilUpgrade;
 }
 
+function announceModifier(type) {
+    if (!modifierNotice) {
+        return;
+    }
+    const label = upgradeNames[type] || 'Upgrade';
+    modifierNotice.textContent = label;
+    modifierNotice.classList.remove('show');
+    // Force reflow so the animation can restart when collecting modifiers rapidly
+    void modifierNotice.offsetWidth;
+    modifierNotice.classList.add('show');
+    if (modifierTimeout) {
+        clearTimeout(modifierTimeout);
+    }
+    modifierTimeout = setTimeout(() => {
+        modifierNotice.classList.remove('show');
+    }, 1600);
+}
+
 function reset() {
     balls = [];
     upgrades = [];
@@ -215,6 +249,14 @@ function reset() {
     paddle.h = 120;
     paddle.y = canvas.height / 2 - paddle.h / 2;
     clampPaddlePosition();
+    if (modifierTimeout) {
+        clearTimeout(modifierTimeout);
+        modifierTimeout = null;
+    }
+    if (modifierNotice) {
+        modifierNotice.classList.remove('show');
+        modifierNotice.textContent = '';
+    }
     updateHUD();
     spawnBall(-1, true);
 }
