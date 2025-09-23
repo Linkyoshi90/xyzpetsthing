@@ -7,7 +7,10 @@ const paddle = {
     w: 18,
     h: 120,
     speed: 6,
-    maxHeight: canvas.height * 0.85
+    maxHeight: canvas.height * 0.85,
+    minHeight: 60,
+    minSpeed: 3,
+    maxSpeed: 12
 };
 
 let balls = [];
@@ -18,13 +21,41 @@ let misses = 0;
 let hitsUntilUpgrade = 5;
 let gameOver = false;
 let lastSpawn = 0;
+let missLimit = 10;
+let sizeUpgradeCount = 0;
+let ballSpeedMultiplier = 1;
 
 const scoreEl = document.getElementById('scoreVal');
 const hitEl = document.getElementById('hitVal');
 const missEl = document.getElementById('missVal');
+const missLimitEl = document.getElementById('missLimitVal');
 const upgradeEl = document.getElementById('upgradeProgress');
 const finalScoreEl = document.getElementById('finalScoreVal');
 const gameOverNotice = document.getElementById('gameOverNotice');
+
+const upgradeTypes = [
+    'multiball',
+    'paddle_size_up',
+    'paddle_size_down',
+    'paddle_speed_up',
+    'paddle_speed_down',
+    'ball_speed_up',
+    'ball_speed_down',
+    'miss_limit_up',
+    'miss_limit_down'
+];
+
+const upgradeVisuals = {
+    multiball: { color: 'rgba(244, 114, 182, 0.9)', label: '×2' },
+    paddle_size_up: { color: 'rgba(34, 197, 94, 0.9)', label: 'P+' },
+    paddle_size_down: { color: 'rgba(220, 38, 38, 0.9)', label: 'P-' },
+    paddle_speed_up: { color: 'rgba(59, 130, 246, 0.9)', label: 'S+' },
+    paddle_speed_down: { color: 'rgba(30, 64, 175, 0.9)', label: 'S-' },
+    ball_speed_up: { color: 'rgba(250, 204, 21, 0.9)', label: 'B+' },
+    ball_speed_down: { color: 'rgba(202, 138, 4, 0.9)', label: 'B-' },
+    miss_limit_up: { color: 'rgba(236, 72, 153, 0.9)', label: 'L+' },
+    miss_limit_down: { color: 'rgba(190, 24, 93, 0.9)', label: 'L-' }
+};
 
 const keys = {};
 document.addEventListener('keydown', e => {
@@ -35,23 +66,26 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('keyup', e => keys[e.code] = false);
 
-function spawnBall(direction = -1) {
+function spawnBall(direction = -1, isOriginal = true) {
     const baseSpeed = 4 + Math.random() * 1.5;
     const angle = Math.random() * Math.PI / 3 - Math.PI / 6;
-    const speedX = Math.cos(angle) * baseSpeed * direction;
-    const speedY = Math.sin(angle) * baseSpeed;
+    const speed = baseSpeed * ballSpeedMultiplier;
+    const speedX = Math.cos(angle) * speed * direction;
+    const speedY = Math.sin(angle) * speed;
     balls.push({
         x: canvas.width - 80,
         y: Math.random() * (canvas.height - 160) + 80,
         vx: speedX,
         vy: speedY,
-        radius: 10
+        radius: 10,
+        baseSpeed,
+        isOriginal
     });
     lastSpawn = performance.now();
 }
 
 function spawnUpgrade() {
-    const type = Math.random() < 0.5 ? 'multiball' : 'paddle';
+    const type = upgradeTypes[Math.floor(Math.random() * upgradeTypes.length)];
     upgrades.push({
         x: canvas.width - 40,
         y: Math.random() * (canvas.height - 60) + 30,
@@ -66,26 +100,103 @@ function applyUpgrade(upgrade) {
     if (upgrade.type === 'multiball') {
         const clones = [];
         balls.forEach(ball => {
-            const speed = Math.hypot(ball.vx, ball.vy);
             const newAngle = Math.atan2(ball.vy, ball.vx) + (Math.random() * 0.6 - 0.3);
+            const baseSpeed = ball.baseSpeed;
+            const speed = baseSpeed * ballSpeedMultiplier;
             clones.push({
                 x: ball.x,
                 y: ball.y,
                 vx: Math.cos(newAngle) * speed,
                 vy: Math.sin(newAngle) * speed,
-                radius: ball.radius
+                radius: ball.radius,
+                baseSpeed,
+                isOriginal: false
             });
         });
         balls.push(...clones);
-    } else if (upgrade.type === 'paddle') {
-        paddle.h = Math.min(paddle.h * 1.3, paddle.maxHeight);
+        return;
     }
+
+    if (upgrade.type === 'paddle_size_up') {
+        const oldHeight = paddle.h;
+        const newHeight = Math.min(paddle.h * 1.3, paddle.maxHeight);
+        if (sizeUpgradeCount < 3 && newHeight > oldHeight + 0.5) {
+            paddle.h = newHeight;
+            sizeUpgradeCount += 1;
+            repositionPaddleAfterResize(oldHeight);
+        } else {
+            score += 15;
+        }
+        return;
+    }
+
+    if (upgrade.type === 'paddle_size_down') {
+        const oldHeight = paddle.h;
+        const newHeight = Math.max(paddle.h * 0.8, paddle.minHeight);
+        if (newHeight < oldHeight - 0.5) {
+            paddle.h = newHeight;
+            sizeUpgradeCount = Math.max(0, sizeUpgradeCount - 1);
+            repositionPaddleAfterResize(oldHeight);
+        }
+        return;
+    }
+
+    if (upgrade.type === 'paddle_speed_up') {
+        paddle.speed = Math.min(paddle.speed + 1, paddle.maxSpeed);
+        return;
+    }
+
+    if (upgrade.type === 'paddle_speed_down') {
+        paddle.speed = Math.max(paddle.speed - 1, paddle.minSpeed);
+        return;
+    }
+
+    if (upgrade.type === 'ball_speed_up') {
+        ballSpeedMultiplier = Math.min(ballSpeedMultiplier + 0.15, 2.5);
+        updateBallSpeeds();
+        return;
+    }
+
+    if (upgrade.type === 'ball_speed_down') {
+        ballSpeedMultiplier = Math.max(ballSpeedMultiplier - 0.15, 0.5);
+        updateBallSpeeds();
+        return;
+    }
+
+    if (upgrade.type === 'miss_limit_up') {
+        missLimit = Math.min(missLimit + 2, 20);
+        return;
+    }
+
+    if (upgrade.type === 'miss_limit_down') {
+        missLimit = Math.max(missLimit - 1, 3);
+        if (misses >= missLimit) {
+            endGame();
+        }
+        return;
+    }
+}
+
+function updateBallSpeeds() {
+    balls.forEach(ball => {
+        const angle = Math.atan2(ball.vy, ball.vx);
+        const speed = ball.baseSpeed * ballSpeedMultiplier;
+        ball.vx = Math.cos(angle) * speed;
+        ball.vy = Math.sin(angle) * speed;
+    });
+}
+
+function repositionPaddleAfterResize(previousHeight) {
+    const center = paddle.y + previousHeight / 2;
+    paddle.y = center - paddle.h / 2;
+    clampPaddlePosition();
 }
 
 function updateHUD() {
     scoreEl.textContent = Math.floor(score);
     hitEl.textContent = hits;
     missEl.textContent = misses;
+    missLimitEl.textContent = missLimit;
     upgradeEl.textContent = upgrades.length > 0 ? 'Ready!' : hitsUntilUpgrade;
 }
 
@@ -97,10 +208,15 @@ function reset() {
     misses = 0;
     hitsUntilUpgrade = 5;
     gameOver = false;
+    missLimit = 10;
+    sizeUpgradeCount = 0;
+    ballSpeedMultiplier = 1;
+    paddle.speed = 6;
     paddle.h = 120;
     paddle.y = canvas.height / 2 - paddle.h / 2;
+    clampPaddlePosition();
     updateHUD();
-    spawnBall(-1);
+    spawnBall(-1, true);
 }
 
 function endGame() {
@@ -108,7 +224,7 @@ function endGame() {
     gameOver = true;
     finalScoreEl.textContent = Math.floor(score);
     gameOverNotice.classList.add('show');
-    const submit = confirm(`You let through 10 balls! Submit score of ${Math.floor(score)}?`);
+    const submit = confirm(`You let through ${missLimit} balls! Submit score of ${Math.floor(score)}?`);
     const redirect = () => { window.location.href = 'index.php?pg=games'; };
     if (submit) {
         fetch('score_exchange.php', {
@@ -130,6 +246,13 @@ function endGame() {
     }
 }
 
+function clampPaddlePosition() {
+    if (paddle.y < 10) paddle.y = 10;
+    if (paddle.y + paddle.h > canvas.height - 10) {
+        paddle.y = canvas.height - 10 - paddle.h;
+    }
+}
+
 function handlePaddleMovement() {
     if (keys.KeyW || keys.ArrowUp) {
         paddle.y -= paddle.speed;
@@ -137,19 +260,25 @@ function handlePaddleMovement() {
     if (keys.KeyS || keys.ArrowDown) {
         paddle.y += paddle.speed;
     }
-    if (paddle.y < 10) paddle.y = 10;
-    if (paddle.y + paddle.h > canvas.height - 10) {
-        paddle.y = canvas.height - 10 - paddle.h;
-    }
+    clampPaddlePosition();
 }
 
 function registerMiss(index) {
-    if (index >= 0 && index < balls.length) {
-        balls.splice(index, 1);
+    if (index < 0 || index >= balls.length) {
+        return;
     }
+    const [missedBall] = balls.splice(index, 1);
+    if (!missedBall) {
+        return;
+    }
+    if (!missedBall.isOriginal) {
+        updateHUD();
+        return;
+    }
+    balls = [];
     misses += 1;
     updateHUD();
-    if (misses >= 10) {
+    if (misses >= missLimit) {
         endGame();
     }
 }
@@ -176,15 +305,15 @@ function handleBallPhysics(ball, index) {
         if (ball.y + ball.radius >= paddle.y && ball.y - ball.radius <= paddle.y + paddle.h) {
             const offset = (ball.y - (paddle.y + paddle.h / 2)) / (paddle.h / 2);
             const bounceAngle = offset * (Math.PI / 3);
-            const speed = Math.hypot(ball.vx, ball.vy) * 1.1;
+            const speed = ball.baseSpeed * ballSpeedMultiplier;
             ball.vx = Math.cos(bounceAngle) * speed;
             ball.vy = Math.sin(bounceAngle) * speed;
-            if (ball.vx < 0.5) {
+            if (ball.vx < 0) {
                 ball.vx = Math.abs(ball.vx);
             }
             ball.x = paddle.x + paddle.w + ball.radius + 1;
             hits += 1;
-            score += Math.max(100, Math.round(speed * 15));
+            score += 1;
             hitsUntilUpgrade -= 1;
             if (hitsUntilUpgrade <= 0) {
                 hitsUntilUpgrade = 5;
@@ -240,8 +369,13 @@ function drawCourt() {
 
     balls.forEach(ball => {
         const gradient = ctx.createRadialGradient(ball.x - 3, ball.y - 3, 2, ball.x, ball.y, ball.radius);
-        gradient.addColorStop(0, '#f8fafc');
-        gradient.addColorStop(1, '#38bdf8');
+        if (ball.isOriginal) {
+            gradient.addColorStop(0, 'rgba(220, 252, 231, 0.95)');
+            gradient.addColorStop(1, 'rgba(22, 163, 74, 0.9)');
+        } else {
+            gradient.addColorStop(0, 'rgba(254, 249, 195, 0.95)');
+            gradient.addColorStop(1, 'rgba(250, 204, 21, 0.8)');
+        }
         ctx.fillStyle = gradient;
         ctx.beginPath();
         ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -249,13 +383,14 @@ function drawCourt() {
     });
 
     upgrades.forEach(up => {
-        ctx.fillStyle = up.type === 'multiball' ? 'rgba(244, 114, 182, 0.9)' : 'rgba(34, 197, 94, 0.9)';
+        const visual = upgradeVisuals[up.type] || { color: 'rgba(148, 163, 184, 0.9)', label: '?' };
+        ctx.fillStyle = visual.color;
         ctx.fillRect(up.x, up.y, up.w, up.h);
         ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
         ctx.font = '16px sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText(up.type === 'multiball' ? '×2' : '+', up.x + up.w / 2, up.y + up.h / 2);
+        ctx.fillText(visual.label, up.x + up.w / 2, up.y + up.h / 2);
     });
 }
 
@@ -263,11 +398,15 @@ function gameLoop() {
     if (!gameOver) {
         handlePaddleMovement();
         for (let i = balls.length - 1; i >= 0; i--) {
-            handleBallPhysics(balls[i], i);
+            const ball = balls[i];
+            if (!ball) {
+                continue;
+            }
+            handleBallPhysics(ball, i);
         }
         updateUpgrades();
         if (balls.length === 0 && !gameOver && performance.now() - lastSpawn > 300) {
-            spawnBall(-1);
+            spawnBall(-1, true);
         }
     }
     drawCourt();
