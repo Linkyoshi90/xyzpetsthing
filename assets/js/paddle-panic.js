@@ -47,7 +47,7 @@ const upgradeTypes = [
 ];
 
 const upgradeVisuals = {
-    multiball: { color: 'rgba(244, 114, 182, 0.9)', label: '×2' },
+    multiball: { color: 'rgba(244, 114, 182, 0.9)', label: 'x2' },
     paddle_size_up: { color: 'rgba(34, 197, 94, 0.9)', label: 'P+' },
     paddle_size_down: { color: 'rgba(220, 38, 38, 0.9)', label: 'P-' },
     paddle_speed_up: { color: 'rgba(59, 130, 246, 0.9)', label: 'S+' },
@@ -71,6 +71,103 @@ const upgradeNames = {
 };
 
 const keys = {};
+let audioCtx = null;
+let masterGain = null;
+
+function initAudioContext(forceResume = false) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) {
+        return null;
+    }
+
+    if (!audioCtx) {
+        audioCtx = new AudioContextClass();
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = 0.18;
+        masterGain.connect(audioCtx.destination);
+    }
+
+    if (forceResume && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+
+    return audioCtx;
+}
+
+function resumeAudioOnInteraction() {
+    const ctx = initAudioContext(true);
+    if (ctx && ctx.state === 'running') {
+        window.removeEventListener('pointerdown', resumeAudioOnInteraction);
+        window.removeEventListener('keydown', resumeAudioOnInteraction);
+    }
+}
+
+window.addEventListener('pointerdown', resumeAudioOnInteraction);
+window.addEventListener('keydown', resumeAudioOnInteraction);
+
+function createTone({ type = 'sine', startFrequency, endFrequency, duration = 0.2, gainPeak = 0.2 }) {
+    const ctx = initAudioContext();
+    if (!ctx || !masterGain || !startFrequency) {
+        return;
+    }
+
+    const oscillator = ctx.createOscillator();
+    const gainNode = ctx.createGain();
+
+    oscillator.type = type;
+    const now = ctx.currentTime;
+    oscillator.frequency.setValueAtTime(startFrequency, now);
+    if (endFrequency && endFrequency !== startFrequency) {
+        oscillator.frequency.exponentialRampToValueAtTime(Math.max(endFrequency, 1), now + duration);
+    }
+
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.exponentialRampToValueAtTime(Math.max(gainPeak, 0.0001), now + 0.015);
+    gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+    oscillator.connect(gainNode);
+    gainNode.connect(masterGain);
+
+    oscillator.start(now);
+    oscillator.stop(now + duration);
+}
+
+function playHitSound() {
+    createTone({
+        type: 'square',
+        startFrequency: 420,
+        endFrequency: 760,
+        duration: 0.18,
+        gainPeak: 0.22
+    });
+}
+
+function playMissSound() {
+    createTone({
+        type: 'sawtooth',
+        startFrequency: 180,
+        endFrequency: 90,
+        duration: 0.4,
+        gainPeak: 0.28
+    });
+}
+
+function playUpgradeSound() {
+    createTone({
+        type: 'triangle',
+        startFrequency: 520,
+        endFrequency: 680,
+        duration: 0.25,
+        gainPeak: 0.24
+    });
+    createTone({
+        type: 'sine',
+        startFrequency: 780,
+        endFrequency: 1040,
+        duration: 0.22,
+        gainPeak: 0.18
+    });
+}
 document.addEventListener('keydown', e => {
     keys[e.code] = true;
     if (['ArrowUp', 'ArrowDown', 'KeyW', 'KeyS'].includes(e.code)) {
@@ -113,6 +210,7 @@ function spawnUpgrade() {
 
 function applyUpgrade(upgrade) {
     announceModifier(upgrade.type);
+    playUpgradeSound();
     if (upgrade.type === 'multiball') {
         const clones = [];
         balls.forEach(ball => {
@@ -318,6 +416,7 @@ function registerMiss(index) {
         return;
     }
     balls = [];
+    playMissSound();
     misses += 1;
     updateHUD();
     if (misses >= missLimit) {
@@ -354,6 +453,7 @@ function handleBallPhysics(ball, index) {
                 ball.vx = Math.abs(ball.vx);
             }
             ball.x = paddle.x + paddle.w + ball.radius + 1;
+            playHitSound();
             hits += 1;
             score += 1;
             hitsUntilUpgrade -= 1;
