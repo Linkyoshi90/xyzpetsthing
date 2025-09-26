@@ -3,6 +3,15 @@
 <section id="heliadora">
   <h2>Heliadora - <em>"Gift of the Sun"</em></h2>
 
+  <!-- Section for map -->
+
+  
+  <div class="card glass">
+    <h3>Explore the abandoned ruins of Heliadora</h3>
+    <p class="muted">Try to find your way around the old ruins of this ancient capital.</p>
+    <a class="btn" href="?pg=adventure">Begin</a>
+  </div>
+
   <p><strong>Heliadora</strong> is the antique capital of democracy in Aegia Aeterna-marble forums, vow-stones that hum under your palm, 
   and boulevards laid to a ruler's line. The old stories say the city was founded where a sunbeam struck the sea and turned to stone; 
   the people have kept those stones <em>meticulously</em> ever since. Mistreat a monument and you'll learn how quickly a smile becomes a 

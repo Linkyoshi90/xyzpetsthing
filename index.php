@@ -16,6 +16,13 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory',
     'ie','Kemet','ldk','nornheim','rsc',
     'rheinland','rt','sie','sc',
     'stap','srl',
+    'urb','xochimex','yamanokubo','yn',
+    // country subsections
+    'aa','baharamandal','bretonreach','cc',
+    'esd','esl','gc','hammurabia',
+    'ie','Kemet','ldk','nornheim','rsc',
+    'rheinland','rt','sie','sc',
+    'stap','srl',
     'urb','xochimex','yamanokubo','yn'];
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
