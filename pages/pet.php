@@ -1,4 +1,4 @@
-<?php require_login();
+﻿<?php require_login();
 require_once __DIR__.'/../lib/pets.php';
 $uid = current_user()['id'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'feed') {
@@ -18,18 +18,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'feed'
         } else {
             q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
         }
+        header('Location: ?pg=pet&id=' . $pet_id);
+        exit;
+    } elseif ($action === 'heal') {
+        $pet_id = (int)($_POST['pet_id'] ?? 0);
+        $item_id = (int)($_POST['item_id'] ?? 0);
+        $row = q(
+            "SELECT ui.quantity, i.replenish FROM user_inventory ui"
+            . " JOIN items i ON i.item_id = ui.item_id"
+            . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+            . " WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Potion'",
+            [$uid, $item_id]
+        )->fetch(PDO::FETCH_ASSOC);
+        if ($row && (int)$row['quantity'] > 0) {
+            $healing = max(0, (int)$row['replenish']);
+            if ($healing > 0) {
+                q(
+                    "UPDATE pet_instances SET hp_current = IF(hp_max IS NULL, hp_current + ?, LEAST(hp_max, hp_current + ?)) WHERE pet_instance_id = ? AND owner_user_id = ?",
+                    [$healing, $healing, $pet_id, $uid]
+                );
+            }
+            if ((int)$row['quantity'] > 1) {
+                q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+            } else {
+                q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+            }
+        }
+        header('Location: ?pg=pet&id=' . $pet_id);
+        exit;
     }
-    header('Location: ?pg=pet&id=' . $pet_id);
-    exit;
 }
 $pets = get_user_pets($uid);
 $food_items = q(
-    "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui
-     JOIN items i ON i.item_id = ui.item_id
-     LEFT JOIN item_categories ic ON ic.category_id = i.category_id
-     WHERE ui.user_id = ? AND ic.category_name = 'Food'",
+    "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui"
+    . " JOIN items i ON i.item_id = ui.item_id"
+    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+    . " WHERE ui.user_id = ? AND ic.category_name = 'Food'",
     [$uid]
 )->fetchAll(PDO::FETCH_ASSOC);
+$healing_items = q(
+    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
+    . " JOIN items i ON i.item_id = ui.item_id"
+    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+    . " WHERE ui.user_id = ? AND ic.category_name = 'Potion'",
+    [$uid]
+)->fetchAll(PDO::FETCH_ASSOC);
+
 $pet = null;
 $pid = isset($_GET['id']) ? (int)$_GET['id'] : null;
 if ($pid) {
@@ -59,7 +93,8 @@ if (!$pet && $pets) {
       <p>Color: <?= htmlspecialchars($pet['color_name'] ?? 'None') ?></p>
       <p>Gender: <?= htmlspecialchars($pet['gender']) ?></p>
       <p>Level: <?= (int)$pet['level'] ?></p>
-      <p>HP: <?= (int)($pet['hp_current'] ?? 0) ?></p>
+      <p>HP: <?= (int)($pet['hp_current'] ?? 0) ?> / <?= (int)($pet['hp_max'] ?? ($pet['hp_current'] ?? 0)) ?></p>
+      <p>Sickness: <?= !empty($pet['sickness']) ? '😷 Unwell' : '✅ Healthy' ?></p>
       <p>Hunger: <?= (int)$pet['hunger'] ?></p>
       <p>Happiness: <?= (int)$pet['happiness'] ?></p>
       <div class="actions">
@@ -70,6 +105,7 @@ if (!$pet && $pets) {
         <button class="close">Close</button>
       </div>
       <div class="feed-form" style="display:none;">
+        <?php if ($food_items): ?>
         <form method="post">
           <input type="hidden" name="action" value="feed">
           <input type="hidden" name="pet_id" value="<?= (int)$pet['pet_instance_id'] ?>">
@@ -80,6 +116,25 @@ if (!$pet && $pets) {
           </select>
           <button type="submit">Feed to <?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></button>
         </form>
+        <?php else: ?>
+          <p>You do not have any food items.</p>
+        <?php endif; ?>
+      </div>
+      <div class="heal-form" style="display:none;">
+        <?php if ($healing_items): ?>
+        <form method="post">
+          <input type="hidden" name="action" value="heal">
+          <input type="hidden" name="pet_id" value="<?= (int)$pet['pet_instance_id'] ?>">
+          <select name="item_id">
+            <?php foreach ($healing_items as $item): ?>
+              <option value="<?= (int)$item['item_id'] ?>"><?= htmlspecialchars($item['item_name']) ?> (heals <?= (int)$item['replenish'] ?> HP, x<?= (int)$item['quantity'] ?>)</option>
+            <?php endforeach; ?>
+          </select>
+          <button type="submit">Heal <?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></button>
+        </form>
+        <?php else: ?>
+          <p>No healing items available.</p>
+        <?php endif; ?>
       </div>
     </div>
   </div>
@@ -90,6 +145,12 @@ document.querySelectorAll('.show-details').forEach(btn => {
   btn.addEventListener('click', () => {
     const details = document.getElementById('pet-' + btn.dataset.id);
     if (details) details.style.display = 'block';
+  });
+});
+document.querySelectorAll('.pet-details .actions .heal').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const form = btn.closest('.pet-details').querySelector('.heal-form');
+    if (form) form.style.display = 'block';
   });
 });
 document.querySelectorAll('.pet-details .close').forEach(btn => {
@@ -104,7 +165,7 @@ document.querySelectorAll('.pet-details .actions .feed').forEach(btn => {
   });
 });
 document.querySelectorAll('.pet-details .actions button').forEach(btn => {
-  if (!btn.classList.contains('close') && !btn.classList.contains('feed')) {
+  if (!btn.classList.contains('close') && !btn.classList.contains('feed') && !btn.classList.contains('heal')) {
     btn.addEventListener('click', () => alert('Not implemented'));
   }
 });

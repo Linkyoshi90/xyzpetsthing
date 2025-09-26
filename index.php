@@ -18,7 +18,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory',
     'stap','srl',
     'urb','xochimex','yamanokubo','yn',
     // country subsections
-    'aa','baharamandal','bretonreach','cc',
+    'aa-adventure','baharamandal','bretonreach','cc',
     'esd','esl','gc','hammurabia',
     'ie','Kemet','ldk','nornheim','rsc',
     'rheinland','rt','sie','sc',

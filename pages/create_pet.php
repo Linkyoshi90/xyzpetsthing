@@ -41,9 +41,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($row && $name && isset($colors[$color])) {
         q(
-            "INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, gender, level, experience, hp_current, atk, def, initiative)"
-            . " VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-            [$uid, $sp, $name, $color, $gender, 1, 0, $row['base_hp'], $row['base_atk'], $row['base_def'], $row['base_init']]
+            "INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, gender, level, experience, hp_current, hp_max, atk, def, initiative)"
+            . " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+            [$uid, $sp, $name, $color, $gender, 1, 0, $row['base_hp'], $row['base_hp'], $row['base_atk'], $row['base_def'], $row['base_init']]
         );
         // starter items
         q(

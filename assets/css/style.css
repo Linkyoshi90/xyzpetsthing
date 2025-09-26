@@ -615,3 +615,44 @@ ul.tight {
     display: block;
     object-fit: contain;
 }
+
+.random-event-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(14, 23, 38, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 24px;
+}
+
+.random-event-modal {
+    position: relative;
+    max-width: 420px;
+    width: min(100%, 420px);
+    background: var(--glass-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 24px;
+    color: var(--ink);
+}
+
+    .random-event-modal h2 {
+        margin-top: 0;
+    }
+
+    .random-event-modal ul {
+        padding-left: 20px;
+    }
+
+.random-event-close {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font-size: 1.2rem;
+    cursor: pointer;
+}

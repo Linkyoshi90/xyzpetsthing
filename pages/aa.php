@@ -9,7 +9,7 @@
   <div class="card glass">
     <h3>Explore the abandoned ruins of Heliadora</h3>
     <p class="muted">Try to find your way around the old ruins of this ancient capital.</p>
-    <a class="btn" href="?pg=adventure">Begin</a>
+    <a class="btn" href="?pg=aa-adventure">Begin</a>
   </div>
 
   <p><strong>Heliadora</strong> is the antique capital of democracy in Aegia Aeterna-marble forums, vow-stones that hum under your palm, 

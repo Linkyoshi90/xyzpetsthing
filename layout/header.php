@@ -1,12 +1,15 @@
 ﻿<?php
 $u = current_user();
 $header_pet = null;
+$random_event = null;
 if ($u) {
     require_once __DIR__.'/../lib/pets.php';
+    require_once __DIR__.'/../lib/random_events.php';
     $pets = get_user_pets($u['id']);
     if ($pets) {
         $header_pet = $pets[array_rand($pets)];
     }
+    $random_event = maybe_trigger_random_event($u);
 }
 ?>
 <!doctype html><html data-theme="light"><head>
@@ -73,4 +76,39 @@ if (!in_array($pg ?? '', $game_pages)):
     <button id="theme-toggle" class="btn" type="button">🌓</button>
   </div>
 </header>
+<?php if(!empty($random_event)): ?>
+<div class="random-event-overlay" id="random-event-overlay" role="dialog" aria-modal="true">
+  <div class="random-event-modal">
+    <button type="button" class="random-event-close" aria-label="Close event">✕</button>
+    <h2><?= htmlspecialchars($random_event['title']) ?></h2>
+    <p><?= nl2br(htmlspecialchars($random_event['message'])) ?></p>
+    <?php if (!empty($random_event['details'])): ?>
+    <ul>
+      <?php foreach ($random_event['details'] as $detail): ?>
+      <li><?= htmlspecialchars($detail) ?></li>
+      <?php endforeach; ?>
+    </ul>
+    <?php endif; ?>
+  </div>
+</div>
+<script>
+window.addEventListener('DOMContentLoaded', function () {
+  const overlay = document.getElementById('random-event-overlay');
+  if (!overlay) return;
+  const closeBtn = overlay.querySelector('.random-event-close');
+  const dismiss = () => overlay.remove();
+  if (closeBtn) closeBtn.addEventListener('click', dismiss);
+  overlay.addEventListener('click', (ev) => {
+    if (ev.target === overlay) {
+      dismiss();
+    }
+  });
+  <?php if (!empty($random_event['balances'])): ?>
+  if (typeof window.updateCurrencyDisplay === 'function') {
+    window.updateCurrencyDisplay(<?= json_encode($random_event['balances']) ?>);
+  }
+  <?php endif; ?>
+});
+</script>
+<?php endif; ?>
 <main class="container <?= ($pg === 'map') ? 'map-container' : '' ?>">

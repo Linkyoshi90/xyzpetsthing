@@ -13,7 +13,7 @@ $pets = get_user_pets($uid);
   <div class="card glass">
     <img class="thumb" src="<?= htmlspecialchars(pet_image_url($p['species_name'], $p['color_name'])) ?>" alt="">
     <h3><?= htmlspecialchars($p['nickname'] ?: $p['species_name']) ?> <small>(<?= htmlspecialchars($p['species_name']) ?>)</small></h3>
-    <p>Level <?= (int)$p['level'] ?>  HP <?= (int)($p['hp_current'] ?? 0) ?></p>
+    <p>Level <?= (int)$p['level'] ?>  HP <?= (int)($p['hp_current'] ?? 0) ?> / <?= (int)($p['hp_max'] ?? ($p['hp_current'] ?? 0)) ?></p>
   </div>
 <?php endforeach; ?>
 <?php if(!$pets): ?>

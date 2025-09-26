@@ -183,6 +183,7 @@ CREATE TABLE IF NOT EXISTS pet_instances (
   level           INT UNSIGNED NOT NULL DEFAULT 1,
   experience      INT UNSIGNED NOT NULL DEFAULT 0,
   hp_current      INT NULL,  -- nullable => derive from base/level if NULL
+  hp_max          INT NULL,
   atk             INT NULL,
   def             INT NULL,
   initiative      INT NULL,
@@ -507,10 +508,10 @@ INSERT INTO shop_inventory (shop_id, item_id, price, stock) VALUES
 (3, 12, 5200000.00, 1);     -- Real Paintbrush (you don’t have “Ghost Paintbrush”)
 
 -- 8) Player-owned pets
-INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, level, experience, hp_current, atk, def, initiative) VALUES
-(1,1,'Ember',  1, 5, 120, 40, 12, 7, 3),
-(2,2,'Splash', 2, 3,  40, 35, 8, 12, 8),
-(3,3,'Gale',   3, 7, 300, 42, 9, 15, 2);
+INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, level, experience, hp_current, hp_max, atk, def, initiative) VALUES
+(1,1,'Ember',  1, 5, 120, 40, 40, 12, 7, 3),
+(2,2,'Splash', 2, 3,  40, 35, 35, 8, 12, 8),
+(3,3,'Gale',   3, 7, 300, 42, 42, 9, 15, 2);
 
 -- 9) Player inventories (stackables)
 INSERT INTO user_inventory (user_id, item_id, quantity) VALUES
@@ -548,4 +549,11 @@ ALTER TABLE pet_instances
   ADD COLUMN gender CHAR(1) NOT NULL DEFAULT 'f' AFTER initiative,
   ADD COLUMN hunger TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER gender,
   ADD COLUMN happiness TINYINT UNSIGNED NOT NULL DEFAULT 50 AFTER hunger,
-  ADD COLUMN intelligence INT UNSIGNED NOT NULL DEFAULT 0 AFTER happiness;
+  ADD COLUMN intelligence INT UNSIGNED NOT NULL DEFAULT 0 AFTER happiness,
+  ADD COLUMN sickness TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER intelligence,
+  ADD COLUMN hp_max INT NULL AFTER hp_current;
+
+UPDATE pet_instances
+   SET hp_max = COALESCE(hp_max, hp_current),
+       hp_current = LEAST(COALESCE(hp_max, hp_current), hp_current)
+ WHERE hp_current IS NOT NULL;

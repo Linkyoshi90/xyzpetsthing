@@ -3,11 +3,22 @@ require_once __DIR__.'/../db.php';
 
 function get_user_pets(int $user_id): array {
     return q(
-        "SELECT pi.pet_instance_id, pi.nickname, pi.level, pi.hp_current, pi.gender, pi.hunger, pi.happiness, pi.intelligence, ps.species_name, pc.color_name
-         FROM pet_instances pi
-         JOIN pet_species ps ON ps.species_id = pi.species_id
-         LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
-         WHERE pi.owner_user_id = ?",
+        "SELECT pi.pet_instance_id,
+                pi.nickname,
+                pi.level,
+                pi.hp_current,
+                pi.hp_max,
+                pi.gender,
+                pi.hunger,
+                pi.happiness,
+                pi.intelligence,
+                pi.sickness,
+                ps.species_name,
+                pc.color_name
+           FROM pet_instances pi
+           JOIN pet_species ps ON ps.species_id = pi.species_id
+           LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
+          WHERE pi.owner_user_id = ?",
         [$user_id]
     )->fetchAll(PDO::FETCH_ASSOC);
 }

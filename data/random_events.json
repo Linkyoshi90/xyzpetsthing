@@ -1,0 +1,88 @@
+[
+  {
+    "id": "coin_purse",
+    "title": "Shiny Surprise",
+    "message": "You almost trip over a weathered purse half-buried in the dirt.",
+    "effects": [
+      {
+        "type": "currency",
+        "currency": "DOSH",
+        "amount": 75
+      }
+    ],
+    "weight": 12
+  },
+  {
+    "id": "helpful_trader",
+    "title": "Grateful Trader",
+    "message": "A traveling trader thanks you for pointing out a shortcut and presses a gift into your hands.",
+    "effects": [
+      {
+        "type": "item",
+        "item_id": 2,
+        "quantity": 1
+      }
+    ],
+    "weight": 8
+  },
+  {
+    "id": "hidden_trap",
+    "title": "Snare Trap",
+    "message": "A concealed snare whips out of the underbrush, lashing at your lead companion!",
+    "effects": [
+      {
+        "type": "pet_damage",
+        "scope": "single",
+        "amount": 12,
+        "apply_sickness": true
+      }
+    ],
+    "weight": 6
+  },
+  {
+    "id": "sand_storm",
+    "title": "Sudden Sandstorm",
+    "message": "A wall of grit sweeps across the path, battering everyone in your party.",
+    "effects": [
+      {
+        "type": "pet_damage",
+        "scope": "party",
+        "amount": 8
+      }
+    ],
+    "weight": 5
+  },
+  {
+    "id": "book_fairy",
+    "title": "Visit from the Book Fairy",
+    "message": "A shimmering book fairy alights on a nearby shoulder and shares a secret.",
+    "effects": [
+      {
+        "type": "pet_stat",
+        "scope": "single",
+        "stat": "intelligence",
+        "delta": 1
+      }
+    ],
+    "weight": 7
+  },
+  {
+    "id": "gloom_mist",
+    "title": "Chilling Mist",
+    "message": "A cold mist settles over the trail, sapping enthusiasm from your companions.",
+    "effects": [
+      {
+        "type": "pet_stat",
+        "scope": "party",
+        "stat": "happiness",
+        "delta": -2
+      },
+      {
+        "type": "sickness",
+        "scope": "party",
+        "value": 1
+      }
+    ],
+    "weight": 4
+  }
+]
