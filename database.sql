@@ -285,6 +285,10 @@ INSERT INTO item_categories (category_name) VALUES
 INSERT INTO items (item_name, item_description, replenish, base_price, rarity_id, category_id, max_stack, tradable) VALUES
 ('Berry','A juicy forest berry. Restores a little HP.', 5,           5.00, 1, 1, 99, 1),
 ('Healing Potion','Restores 50 HP.', 50,                            50.00, 2, 3, 20, 1),
+('First Aid Spray','Made from herbs growing near a city 
+with some sort of procyonid as their town mascot. 
+Heals 200 HP.', 50,                                                250.00, 2, 3, 20, 1),
+('Flu Shot','Heals flu-ridden mosnters.', 50,                      550.00, 2, 3, 20, 1),
 ('Iron Sword','A sturdy beginner blade.', 100,                     200.00, 2, 2,  1, 1),
 ('Wizard Hat','Stylish and pointy. Boosts magic.', 20,             500.00, 3, 4,  1, 1),
 ('Mana Elixir','Restores 40 MP.', 40,                               75.00, 3, 3, 20, 1),
@@ -501,10 +505,12 @@ INSERT INTO shops (shop_name, region_id, is_npc, restock_every_minutes, last_res
 INSERT INTO shop_inventory (shop_id, item_id, price, stock) VALUES
 (1, 1,   NULL,     NULL),   -- Berry (infinite, base price)
 (1, 2,   45.00,    50),     -- Healing Potion
-(1, 3,  220.00,     2),     -- Iron Sword
-(2, 5,   80.00,    40),     -- Mana Elixir   (was 6)
-(2, 13, 1300.00,    5),     -- Crystal Shard (was 7)
-(2, 4,  600.00,     3),     -- Wizard Hat
+(1, 3,   45.00,    50),     -- First aid spray
+(1, 4,   45.00,    50),     -- Flu Shot
+(1, 5,  220.00,     2),     -- Iron Sword
+(2, 7,   80.00,    40),     -- Mana Elixir   (was 6)
+(2, 15, 1300.00,    5),     -- Crystal Shard (was 7)
+(2, 6,  600.00,     3),     -- Wizard Hat
 (3, 12, 5200000.00, 1);     -- Real Paintbrush (you don’t have “Ghost Paintbrush”)
 
 -- 8) Player-owned pets

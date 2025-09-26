@@ -1,13 +1,13 @@
 {
   "ExpandedNodes": [
     "",
-    "\\assets",
     "\\assets\\css",
     "\\assets\\js",
     "\\assets\\music",
-    "\\data-readonly",
+    "\\data",
     "\\old",
     "\\pages"
   ],
+  "SelectedNode": "\\score_exchange.php",
   "PreviewInSolutionExplorer": false
 }
