@@ -43,7 +43,7 @@ $friends = q("SELECT uf.connection_id, CASE WHEN uf.user_id = ? THEN uf.friend_i
             <details class="card glass">
                 <summary><?= htmlspecialchars($f['username']) ?></summary>
                 <p></p>
-                <a class="btn disabled" href="#">Message</a>
+                <a class="btn" target="_blank" rel="noopener" href="?pg=user-chat&friend=<?= (int)$f['friend_id'] ?>">Message</a>
                 <a class="btn disabled" href="#">Gift</a>
                 <a class="btn disabled" href="#">Pets</a>
                 <a class="btn disabled" href="#">Player Auctions</a>

@@ -7,7 +7,7 @@ $images_dir = __DIR__.'/../images';
 
 function hunt_slugify(string $name): string {
     $slug = strtolower($name);
-    $slug = str_replace([' ', '-', '–', '—'], '_', $slug);
+    $slug = str_replace([' ', '-', '-', '-'], '_', $slug);
     $slug = str_replace(["'", '’', '“', '”'], '', $slug);
     $slug = preg_replace('/[^a-z0-9_]/', '', $slug);
     $slug = preg_replace('/_+/', '_', $slug);

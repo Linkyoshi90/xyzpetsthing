@@ -19,12 +19,12 @@
   </div>
 </section>
 
-<!-- (1) Local-time gate: allow only 20:00–20:59 local time -->
+<!-- (1) Local-time gate: allow only 20:00-20:59 local time -->
 <script>
   (function gateAdventureByLocalTime() {
     const now = new Date();
     const hour = now.getHours();
-    const allowed = (hour === 20); // 20:00–20:59
+    const allowed = (hour === 20); // 20:00-20:59
 
     if (!allowed) {
       window.__ADVENTURE_LOCKED__ = true;
@@ -56,7 +56,7 @@
           <p style="margin: 0 0 .5rem 0;">
             It's currently <strong>${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong> for you.
           </p>
-          <p class="muted" style="margin: 0;">(The gate follows your device’s clock.)</p>
+          <p class="muted" style="margin: 0;">(The gate follows your device's clock.)</p>
           <br>
           <a class="btn" href="?pg=aa">Back to Heliodora</a>
         </div>
@@ -78,7 +78,7 @@
       "body": [
         "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Sythria of the Long Sun, a lamia oracle\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Sythria watches from the ruins.</figcaption></figure></div>",
         "You crest a dune to find the tumbled arches of Heliodora, a city once mirrored in gold. Heat shimmers where streets used to be.",
-        "Among the fallen columns, a shape coils and straightens—an old lamia with eyes like coins left too long in the sea."
+        "Among the fallen columns, a shape coils and straightens-an old lamia with eyes like coins left too long in the sea."
       ],
       "choices": [
         { "text": "Greet the lamia", "target": "lamia-hello" },
@@ -91,7 +91,7 @@
       "body": [
         "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Portrait of Sythria, the lamia oracle\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Sythria of the Long Sun</figcaption></figure></div>",
         "She names herself Sythria of the Long Sun. Her voice is a sand-soft rattle. 'Treasure sleeps below the catacombs,' she says, 'but the city remembers who takes and who returns.'",
-        "She taps a bronze token against your palm—warm, thrumming with a tiny heartbeat."
+        "She taps a bronze token against your palm-warm, thrumming with a tiny heartbeat."
       ],
       "choices": [
         { "text": "Ask about the token", "target": "sun-token" },
@@ -115,7 +115,7 @@
       "title": "Outer Rim of Ruins",
       "body": [
         "Wind fingers through cracked mosaics. Jackal-birds flit between lintels. You find two paths: a collapsed atrium with a glinting ladder, and a dry aqueduct tunneled by roots.",
-        "Faint singing rises from below—too slow for wind, too fast for stone."
+        "Faint singing rises from below-too slow for wind, too fast for stone."
       ],
       "choices": [
         { "text": "Descend the atrium ladder", "target": "gatehouse" },
@@ -208,7 +208,7 @@
     "echo-hall": {
       "title": "Hall of Echoes",
       "body": [
-        "Every sound returns wrong—brighter, braver. A pedestal holds a cracked bowl. An inscription reads: 'Fill with what you won’t miss.'",
+        "Every sound returns wrong-brighter, braver. A pedestal holds a cracked bowl. An inscription reads: 'Fill with what you won't miss.'",
         "The echoes chant: 'Coin! Song! Breath!'"
       ],
       "choices": [
@@ -233,7 +233,7 @@
       "title": "Sunless Vault",
       "body": [
         "Dark like velvet. Your token becomes a soft lantern, revealing a chamber of mirrored sand. In its center: a casket wrapped in sun-cloth.",
-        "Reflections show you taking it… and you leaving it."
+        "Reflections show you taking it... and you leaving it."
       ],
       "choices": [
         { "text": "Open the casket", "target": "casket-open" },
@@ -244,7 +244,7 @@
     "service-way": {
       "title": "Service Way",
       "body": [
-        "Narrow ducts stitched with forgotten rope. You find a maintenance sigil shaped like a spiral sun—the same as your token.",
+        "Narrow ducts stitched with forgotten rope. You find a maintenance sigil shaped like a spiral sun-the same as your token.",
         "A hatch drops toward distant singing."
       ],
       "choices": [
@@ -299,7 +299,7 @@
     "miscount": {
       "title": "Miscounted",
       "body": [
-        "You claim spotless pockets. The sentinel’s abaci eyes whirl, clacking to a stop.",
+        "You claim spotless pockets. The sentinel's abaci eyes whirl, clacking to a stop.",
         "'Error detected.' A pit yawns."
       ],
       "eject": true,
@@ -322,7 +322,7 @@
     "choir-chamber": {
       "title": "Chamber of the Last Choir",
       "body": [
-        "Statues of lamia, mouths open in silent hymn. Sythria’s younger face is among them.",
+        "Statues of lamia, mouths open in silent hymn. Sythria's younger face is among them.",
         "A pedestal offers a shell trumpet and a ribbon of sun-cloth."
       ],
       "choices": [
@@ -345,7 +345,7 @@
     "trumpet": {
       "title": "Voice Borrowed",
       "body": [
-        "You raise the shell trumpet; it sings Sythria’s hymn for you, clear and bright.",
+        "You raise the shell trumpet; it sings Sythria's hymn for you, clear and bright.",
         "Some doors open to borrowed voices."
       ],
       "reward": { "itemId": "shell_trumpet", "label": "Shell Trumpet" },
@@ -379,8 +379,8 @@
     "casket-open": {
       "title": "The Heart of Heliodora",
       "body": [
-        "Inside rests a mirror of hammered gold, small enough for a pocket, heavy as a promise. In its surface you see Sythria’s eyes… and your own, a little brighter.",
-        "The chamber trembles, not angry—awake."
+        "Inside rests a mirror of hammered gold, small enough for a pocket, heavy as a promise. In its surface you see Sythria's eyes... and your own, a little brighter.",
+        "The chamber trembles, not angry-awake."
       ],
       "reward": { "itemId": "heliodora_mirror", "label": "Heliodora Mirror" },
       "choices": [
@@ -402,7 +402,7 @@
     "casket-swap": {
       "title": "Fair Exchange",
       "body": [
-        "You place the ribbon—your promise, your song, or your coin—on the casket. The mirror rises, weightless now, and the chamber purrs.",
+        "You place the ribbon-your promise, your song, or your coin-on the casket. The mirror rises, weightless now, and the chamber purrs.",
         "A script etches itself along the wall: 'Returned in kind, carried in light.'"
       ],
       "choices": [
@@ -437,7 +437,7 @@
     "hub": {
       "title": "Back to the City Hub",
       "body": [
-        "Your travelogue updates with sun-etched script. The lamia’s token dims—or gleams—according to the choices you made.",
+        "Your travelogue updates with sun-etched script. The lamia's token dims-or gleams-according to the choices you made.",
         "Heliodora is quieter now, but not done with you."
       ],
       "choices": [

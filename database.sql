@@ -46,6 +46,19 @@ CREATE TABLE IF NOT EXISTS user_friends (
   CONSTRAINT fk_friend_friend FOREIGN KEY (friend_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS user_direct_messages (
+  message_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  sender_id BIGINT UNSIGNED NOT NULL,
+  recipient_id BIGINT UNSIGNED NOT NULL,
+  message_ciphertext TEXT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (message_id),
+  KEY ix_dm_participants (sender_id, recipient_id, created_at),
+  KEY ix_dm_recipient_sender (recipient_id, sender_id, created_at),
+  CONSTRAINT fk_dm_sender FOREIGN KEY (sender_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  CONSTRAINT fk_dm_recipient FOREIGN KEY (recipient_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Per-user balances
 CREATE TABLE IF NOT EXISTS user_balances (
   user_id     BIGINT UNSIGNED NOT NULL,

@@ -8,4 +8,5 @@ define('APP_NAME','Harmontide');
 define('CURR1', '');
 define('CURR2', '');
 define('USERNAME', '');
+define('CHAT_ENCRYPTION_KEY', 'SECRET_kagi');
 session_start();

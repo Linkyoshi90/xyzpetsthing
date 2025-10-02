@@ -184,9 +184,9 @@ function handle_event_item_effect(int $user_id, array $effect)
     );
     $absQty = abs($quantity);
     if ($quantity > 0) {
-        return sprintf('You receive %d× %s.', $absQty, $item['item_name']);
+        return sprintf('You receive %dx %s.', $absQty, $item['item_name']);
     }
-    return sprintf('%d× %s disappear from your pack.', $absQty, $item['item_name']);
+    return sprintf('%dx %s disappear from your pack.', $absQty, $item['item_name']);
 }
 
 function handle_event_pet_damage_effect(int $user_id, array $effect)
