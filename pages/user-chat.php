@@ -60,7 +60,7 @@ $messages = $activeFriendId ? get_conversation($uid, $activeFriendId, 200) : [];
             <p class="chat-history-empty">No messages yet. Say hello!</p>
             <?php endif; ?>
         </div>
-        <form class="chat-form" id="chat-form" method="post" action="/user_chat_action.php" autocomplete="off">
+        <form class="chat-form" id="chat-form" method="post" action="user_chat_action.php" autocomplete="off">
             <input type="hidden" name="action" value="send">
             <input type="hidden" name="friend_id" value="<?= (int)$activeFriendId ?>" id="chat-friend-id">
             <label for="chat-input" class="sr-only">Type your message</label>

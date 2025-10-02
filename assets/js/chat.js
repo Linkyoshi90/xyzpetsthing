@@ -35,6 +35,33 @@
         }
     }
 
+    function sanitizeErrorMessage(message) {
+        if (!message) return '';
+        const div = document.createElement('div');
+        div.innerHTML = message;
+        return div.textContent || div.innerText || '';
+    }
+
+    function buildErrorMessage(prefix, detail) {
+        const cleanDetail = sanitizeErrorMessage(detail);
+        if (!cleanDetail) {
+            return prefix;
+        }
+        return `${prefix} ${cleanDetail}`.trim();
+    }
+
+    async function readJsonResponse(response) {
+        const text = await response.text();
+        if (!text) {
+            return { payload: null, raw: '' };
+        }
+        try {
+            return { payload: JSON.parse(text), raw: text };
+        } catch (error) {
+            return { payload: null, raw: text };
+        }
+    }
+
     function renderMessages(historyEl, messages) {
         if (!historyEl) return;
         historyEl.innerHTML = '';
@@ -100,16 +127,16 @@
                 fetch(`user_chat_action.php?action=fetch&friend_id=${encodeURIComponent(friendId)}`, {
                     credentials: 'same-origin',
                 })
-                    .then((response) => response.json())
-                    .then((payload) => {
-                        if (!payload.ok) {
-                            showError(panel, payload.error || 'Unable to load messages.');
-                            return;
+                    .then(async (response) => {
+                        const { payload, raw } = await readJsonResponse(response);
+                        if (!payload || !payload.ok) {
+                            const detail = (payload && payload.error) || raw || `Server responded with status ${response.status}`;
+                            throw new Error(detail);
                         }
                         renderMessages(historyEl, payload.messages);
                     })
-                    .catch(() => {
-                        showError(panel, 'Unable to load messages.');
+                    .catch((error) => {
+                        showError(panel, buildErrorMessage('Unable to load messages.', error.message));
                     });
             });
         });
@@ -144,17 +171,17 @@
                     body: formData,
                     credentials: 'same-origin',
                 })
-                    .then((response) => response.json())
-                    .then((payload) => {
-                        if (!payload.ok) {
-                            showError(panel, payload.error || 'Failed to send message.');
-                            return;
+                    .then(async (response) => {
+                        const { payload, raw } = await readJsonResponse(response);
+                        if (!payload || !payload.ok) {
+                            const detail = (payload && payload.error) || raw || `Server responded with status ${response.status}`;
+                            throw new Error(detail);
                         }
                         textarea.value = '';
                         appendMessage(historyEl, payload.message);
                     })
-                    .catch(() => {
-                        showError(panel, 'Failed to send message.');
+                    .catch((error) => {
+                        showError(panel, buildErrorMessage('Failed to send message.', error.message));
                     });
             });
         }
