@@ -21,6 +21,33 @@ if ($u) {
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>
 <?php
+$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+$appRoot = realpath(__DIR__.'/..');
+$basePath = '';
+if ($documentRoot && $appRoot) {
+    $normalizedRoot = str_replace('\\', '/', realpath($documentRoot));
+    $normalizedApp = str_replace('\\', '/', $appRoot);
+    if ($normalizedRoot && strncmp($normalizedApp, $normalizedRoot, strlen($normalizedRoot)) === 0) {
+        $relative = trim(substr($normalizedApp, strlen($normalizedRoot)), '/');
+        $basePath = $relative === '' ? '' : '/'.$relative;
+    }
+}
+if ($basePath === '') {
+    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+    $scriptDir = str_replace('\\', '/', rtrim(dirname($scriptName), '/'));
+    if ($scriptDir !== '' && $scriptDir !== '.') {
+        $basePath = $scriptDir;
+    }
+}
+$chatActionPath = ($basePath === '') ? '/user_chat_action.php' : $basePath.'/user_chat_action.php';
+$GLOBALS['app_chat_action_path'] = $chatActionPath;
+?>
+<script>
+    window.appPaths = Object.assign({}, window.appPaths, {
+        chatAction: <?= json_encode($chatActionPath, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
+    });
+</script>
+<?php
 $game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'wheel-of-fate'];
 if (!in_array($pg ?? '', $game_pages)):
 ?>

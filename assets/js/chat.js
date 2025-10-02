@@ -1,5 +1,26 @@
-
 (function () {
+
+    function resolveChatActionBase() {
+        const globalPath = window.appPaths && window.appPaths.chatAction;
+        if (globalPath) {
+            return globalPath;
+        }
+        return 'user_chat_action.php';
+    }
+
+    function buildFetchUrl(friendId) {
+        const base = resolveChatActionBase();
+        try {
+            const url = new URL(base, window.location.origin);
+            url.searchParams.set('action', 'fetch');
+            url.searchParams.set('friend_id', friendId);
+            return url.toString();
+        } catch (error) {
+            const separator = base.includes('?') ? '&' : '?';
+            return `${base}${separator}action=fetch&friend_id=${encodeURIComponent(friendId)}`;
+        }
+    }
+
     function scrollHistory(historyEl) {
         if (!historyEl) return;
         historyEl.scrollTop = historyEl.scrollHeight;
@@ -124,7 +145,7 @@
                 }
                 showError(panel, '');
 
-                fetch(`user_chat_action.php?action=fetch&friend_id=${encodeURIComponent(friendId)}`, {
+                fetch(buildFetchUrl(friendId), {
                     credentials: 'same-origin',
                 })
                     .then(async (response) => {
