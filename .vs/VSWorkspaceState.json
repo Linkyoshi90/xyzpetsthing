@@ -1,11 +1,12 @@
 {
   "ExpandedNodes": [
     "",
+    "\\assets",
+    "\\assets\\js",
     "\\data",
-    "\\lib",
     "\\old",
     "\\pages"
   ],
-  "SelectedNode": "\\lib\\random_events.php",
+  "SelectedNode": "\\pages\\user-chat.php",
   "PreviewInSolutionExplorer": false
 }

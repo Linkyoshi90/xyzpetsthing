@@ -3,16 +3,52 @@
   "WorkspaceRootPath": "D:\\wamp64\\www\\xyzpetsthing\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\pages\\user-chat.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:pages\\user-chat.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\layout\\header.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:layout\\header.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\chat.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\js\\chat.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\database.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:database.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\user_chat_action.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:user_chat_action.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\pages\\friends.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:pages\\friends.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\lib\\chat.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:lib\\chat.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\index.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\config.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:config.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\assets\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\lib\\random_events.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:lib\\random_events.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\pages\\aa-adventure.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:pages\\aa-adventure.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\database.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:database.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\pages\\pet.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -31,24 +67,12 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:lib\\pets.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\layout\\header.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:layout\\header.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\data\\random_events.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:data\\random_events.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\assets\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\pages\\aa.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:pages\\aa.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\index.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:index.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\adventure.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
@@ -99,10 +123,6 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\js\\theme.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\pages\\friends.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:pages\\friends.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\lib\\bank.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:lib\\bank.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
     },
@@ -123,12 +143,12 @@
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\js\\currency.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\config.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:config.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\user-menu.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\js\\user-menu.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\wamp64\\www\\xyzpetsthing\\database.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:database.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
     }
   ],
   "DocumentGroupContainers": [
@@ -142,33 +162,35 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 7,
               "Title": "index.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\index.php",
               "RelativeDocumentMoniker": "index.php",
               "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\index.php",
               "RelativeToolTip": "index.php",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAA2AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-08-25T15:17:41.464Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "header.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\layout\\header.php",
               "RelativeDocumentMoniker": "layout\\header.php",
               "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\layout\\header.php",
               "RelativeToolTip": "layout\\header.php",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAswE0AAAAJAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-08-25T15:18:14.545Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 27,
               "Title": "vote.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\vote.php",
               "RelativeDocumentMoniker": "pages\\vote.php",
@@ -177,12 +199,11 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAA4AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
               "WhenOpened": "2025-08-25T19:28:33.736Z",
-              "IsPinned": true,
-              "EditorCaption": ""
+              "IsPinned": true
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 26,
               "Title": "available_creatures.txt",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\data-readonly\\available_creatures.txt",
               "RelativeDocumentMoniker": "data-readonly\\available_creatures.txt",
@@ -201,26 +222,27 @@
               "RelativeDocumentMoniker": "assets\\css\\style.css",
               "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\assets\\css\\style.css",
               "RelativeToolTip": "assets\\css\\style.css",
-              "ViewState": "AgIAAF0CAAAAAAAAAAAswGkCAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFoBAAAAAAAAAAAswIsBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
               "WhenOpened": "2025-08-25T15:15:38.853Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "database.sql",
+              "DocumentIndex": 3,
+              "Title": "database.sql ",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\database.sql",
               "RelativeDocumentMoniker": "database.sql",
-              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\database.sql",
-              "RelativeToolTip": "database.sql",
+              "ToolTip": "database.sql ",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
               "WhenOpened": "2025-09-02T19:50:08.838Z",
-              "IsPinned": true
+              "IsPinned": true,
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 25,
               "Title": "country-names.txt",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\data-readonly\\country-names.txt",
               "RelativeDocumentMoniker": "data-readonly\\country-names.txt",
@@ -233,7 +255,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 24,
               "Title": "city-names.txt",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\data-readonly\\city-names.txt",
               "RelativeDocumentMoniker": "data-readonly\\city-names.txt",
@@ -242,24 +264,63 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2025-09-16T22:12:34.929Z",
-              "IsPinned": true,
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "user_chat_action.php",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\user_chat_action.php",
+              "RelativeDocumentMoniker": "user_chat_action.php",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\user_chat_action.php",
+              "RelativeToolTip": "user_chat_action.php",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAswEIAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2025-10-02T11:44:04.416Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "pet.php",
-              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\pet.php",
-              "RelativeDocumentMoniker": "pages\\pet.php",
-              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\pages\\pet.php",
-              "RelativeToolTip": "pages\\pet.php",
-              "ViewState": "AgIAAHkAAAAAAAAAAAAswJgAAAArAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "user-chat.php",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\user-chat.php",
+              "RelativeDocumentMoniker": "pages\\user-chat.php",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\pages\\user-chat.php",
+              "RelativeToolTip": "pages\\user-chat.php",
+              "ViewState": "AgIAADYAAAAAAAAAAAAAAEcAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-26T13:24:48.396Z"
+              "WhenOpened": "2025-10-02T11:43:40.729Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 6,
+              "Title": "chat.php",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\lib\\chat.php",
+              "RelativeDocumentMoniker": "lib\\chat.php",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\lib\\chat.php",
+              "RelativeToolTip": "lib\\chat.php",
+              "ViewState": "AgIAAEQAAAAAAAAAAAAswHcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2025-10-02T11:42:51.451Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "chat.js",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\chat.js",
+              "RelativeDocumentMoniker": "assets\\js\\chat.js",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\chat.js",
+              "RelativeToolTip": "assets\\js\\chat.js",
+              "ViewState": "AgIAAIsAAAAAAAAAAADwv5MAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-10-02T11:40:34.163Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "random_events.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\lib\\random_events.php",
               "RelativeDocumentMoniker": "lib\\random_events.php",
@@ -272,32 +333,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "random_events.json",
-              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\data\\random_events.json",
-              "RelativeDocumentMoniker": "data\\random_events.json",
-              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\data\\random_events.json",
-              "RelativeToolTip": "data\\random_events.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-09-26T13:17:33.624Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "aa-adventure.php",
-              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\aa-adventure.php",
-              "RelativeDocumentMoniker": "pages\\aa-adventure.php",
-              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\pages\\aa-adventure.php",
-              "RelativeToolTip": "pages\\aa-adventure.php",
-              "ViewState": "AgIAANEAAAAAAAAAAAAvwOsAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-26T09:57:55.13Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 18,
               "Title": "adventure.js",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\adventure.js",
               "RelativeDocumentMoniker": "assets\\js\\adventure.js",
@@ -309,7 +345,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 19,
               "Title": "paddle-panic.js",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\paddle-panic.js",
               "RelativeDocumentMoniker": "assets\\js\\paddle-panic.js",
@@ -321,7 +357,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 17,
               "Title": "aa.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\aa.php",
               "RelativeDocumentMoniker": "pages\\aa.php",
@@ -329,12 +365,11 @@
               "RelativeToolTip": "pages\\aa.php",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAABbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-16T22:42:34.208Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-16T22:42:34.208Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 14,
               "Title": "create_pet.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\create_pet.php",
               "RelativeDocumentMoniker": "pages\\create_pet.php",
@@ -346,7 +381,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 13,
               "Title": "main.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\main.php",
               "RelativeDocumentMoniker": "pages\\main.php",
@@ -358,7 +393,69 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 8,
+              "Title": "config.php",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\config.php",
+              "RelativeDocumentMoniker": "config.php",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\config.php",
+              "RelativeToolTip": "config.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2025-08-25T15:18:57.661Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "friends.php",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\friends.php",
+              "RelativeDocumentMoniker": "pages\\friends.php",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\pages\\friends.php",
+              "RelativeToolTip": "pages\\friends.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAC0AAACBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2025-09-12T08:37:54.597Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "aa-adventure.php",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\aa-adventure.php",
+              "RelativeDocumentMoniker": "pages\\aa-adventure.php",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\pages\\aa-adventure.php",
+              "RelativeToolTip": "pages\\aa-adventure.php",
+              "ViewState": "AgIAANEAAAAAAAAAAAAvwOsAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2025-09-26T09:57:55.13Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "random_events.json",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\data\\random_events.json",
+              "RelativeDocumentMoniker": "data\\random_events.json",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\data\\random_events.json",
+              "RelativeToolTip": "data\\random_events.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-09-26T13:17:33.624Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "pet.php",
+              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\pet.php",
+              "RelativeDocumentMoniker": "pages\\pet.php",
+              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\pages\\pet.php",
+              "RelativeToolTip": "pages\\pet.php",
+              "ViewState": "AgIAAHkAAAAAAAAAAAAswJgAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
+              "WhenOpened": "2025-09-26T13:24:48.396Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
               "Title": "paddle-panic.css",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\assets\\css\\paddle-panic.css",
               "RelativeDocumentMoniker": "assets\\css\\paddle-panic.css",
@@ -370,7 +467,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "pets.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\lib\\pets.php",
               "RelativeDocumentMoniker": "lib\\pets.php",
@@ -382,7 +479,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 20,
               "Title": "paddle-panic.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\paddle-panic.php",
               "RelativeDocumentMoniker": "pages\\paddle-panic.php",
@@ -394,7 +491,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 22,
               "Title": "score_exchange.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\score_exchange.php",
               "RelativeDocumentMoniker": "score_exchange.php",
@@ -406,7 +503,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 23,
               "Title": "games.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\games.php",
               "RelativeDocumentMoniker": "pages\\games.php",
@@ -418,7 +515,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 35,
               "Title": "user-menu.js",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\user-menu.js",
               "RelativeDocumentMoniker": "assets\\js\\user-menu.js",
@@ -430,7 +527,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 28,
               "Title": "footer.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\layout\\footer.php",
               "RelativeDocumentMoniker": "layout\\footer.php",
@@ -442,19 +539,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "friends.php",
-              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\friends.php",
-              "RelativeDocumentMoniker": "pages\\friends.php",
-              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\pages\\friends.php",
-              "RelativeToolTip": "pages\\friends.php",
-              "ViewState": "AgIAAB8AAAAAAAAAAAAswCwAAAAXAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-09-12T08:37:54.597Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 29,
               "Title": "theme.js",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\theme.js",
               "RelativeDocumentMoniker": "assets\\js\\theme.js",
@@ -467,18 +552,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 30,
-              "Title": "config.php",
-              "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\config.php",
-              "RelativeDocumentMoniker": "config.php",
-              "ToolTip": "D:\\wamp64\\www\\xyzpetsthing\\config.php",
-              "RelativeToolTip": "config.php",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002338|",
-              "WhenOpened": "2025-08-25T15:18:57.661Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
               "Title": "bank.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\lib\\bank.php",
               "RelativeDocumentMoniker": "lib\\bank.php",
@@ -490,7 +563,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 31,
               "Title": "bank.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\bank.php",
               "RelativeDocumentMoniker": "pages\\bank.php",
@@ -502,7 +575,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 32,
               "Title": "inventory.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\pages\\inventory.php",
               "RelativeDocumentMoniker": "pages\\inventory.php",
@@ -514,7 +587,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 34,
               "Title": "currency.js",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\assets\\js\\currency.js",
               "RelativeDocumentMoniker": "assets\\js\\currency.js",
@@ -526,7 +599,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 33,
               "Title": "auth.php",
               "DocumentMoniker": "D:\\wamp64\\www\\xyzpetsthing\\auth.php",
               "RelativeDocumentMoniker": "auth.php",
