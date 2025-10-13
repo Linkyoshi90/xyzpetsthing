@@ -67,7 +67,7 @@
     <li><strong>On the steps:</strong> never sit on roped stairs; those are reserved for witnesses and elders.</li>
     <li><strong>Festival nights:</strong> the Aegis Causeways chime at "pride peak." When they do, cheer softly or the Ward will "invite" you to help 
     scrub mosaics at sunrise.</li>
-    <li><strong>Prices:</strong> tourist strips run 5-10× normal. Ask for a <em>civic cut</em>-some vendors honor it if you can name the current 
+    <li><strong>Prices:</strong> tourist strips run 5-10x normal. Ask for a <em>civic cut</em>-some vendors honor it if you can name the current 
     Speaker.</li>
   </ul>
 

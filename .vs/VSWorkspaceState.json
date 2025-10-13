@@ -2,12 +2,14 @@
   "ExpandedNodes": [
     "",
     "\\assets",
+    "\\assets\\css",
     "\\assets\\js",
     "\\data",
+    "\\layout",
     "\\lib",
     "\\old",
     "\\pages"
   ],
-  "SelectedNode": "\\lib\\pets.php",
+  "SelectedNode": "\\database.sql",
   "PreviewInSolutionExplorer": false
 }

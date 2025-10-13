@@ -2,10 +2,41 @@
 require_once __DIR__.'/../auth.php';
 require_login();
 
-if (!isset($_SESSION['sudoku_state']) || !is_array($_SESSION['sudoku_state'])) {
+$uid = current_user()['id'];
+$today = date('Y-m-d');
+
+$dailyRow = q(
+    'SELECT difficulty_percent, base_score, final_score, completed_at FROM daily_sudoku_runs WHERE user_id = ? AND run_date = ?',
+    [$uid, $today]
+)->fetch(PDO::FETCH_ASSOC);
+
+if (!$dailyRow) {
+    $difficultyPercent = random_int(1, 100);
+    q(
+        'INSERT INTO daily_sudoku_runs (user_id, run_date, difficulty_percent) VALUES (?, ?, ?)',
+        [$uid, $today, $difficultyPercent]
+    );
+    $dailyRow = [
+        'difficulty_percent' => $difficultyPercent,
+        'base_score' => 0,
+        'final_score' => 0,
+        'completed_at' => null,
+    ];
+}
+
+$difficultyPercent = (int)$dailyRow['difficulty_percent'];
+$storedBaseScore = isset($dailyRow['base_score']) ? (int)$dailyRow['base_score'] : 0;
+$storedFinalScore = isset($dailyRow['final_score']) ? (int)$dailyRow['final_score'] : 0;
+$dailyCompleted = !empty($dailyRow['completed_at']);
+
+if (!isset($_SESSION['sudoku_state'])
+    || !is_array($_SESSION['sudoku_state'])
+    || ($_SESSION['sudoku_state']['run_date'] ?? null) !== $today) {
     $_SESSION['sudoku_state'] = [
+        'run_date' => $today,
+        'difficulty_percent' => $difficultyPercent,
         'level' => 1,
-        'score' => 0,
+        'score' => $dailyCompleted ? $storedBaseScore : 0,
         'correct_total' => 0,
         'incorrect_total' => 0,
         'board' => null,
@@ -13,12 +44,52 @@ if (!isset($_SESSION['sudoku_state']) || !is_array($_SESSION['sudoku_state'])) {
         'givens' => null,
         'last_result' => null,
         'last_message' => null,
-        'game_over' => false,
-        'quit_stats' => null,
+        'game_over' => $dailyCompleted,
+        'daily_completed' => $dailyCompleted,
+        'quit_stats' => $dailyCompleted ? [
+            'total' => 0,
+            'correct' => 0,
+            'incorrect' => 0,
+            'accuracy' => 0,
+            'false_ratio' => 0,
+            'score' => $storedFinalScore,
+            'base_score' => $storedBaseScore,
+            'final_score' => $storedFinalScore,
+            'difficulty_percent' => $difficultyPercent,
+            'converted' => false,
+        ] : null,
     ];
 }
 
 $state =& $_SESSION['sudoku_state'];
+$state['run_date'] = $today;
+$state['difficulty_percent'] = $difficultyPercent;
+if (!isset($state['daily_completed'])) {
+    $state['daily_completed'] = $dailyCompleted;
+}
+
+if ($dailyCompleted) {
+    $state['score'] = $storedBaseScore;
+    $state['game_over'] = true;
+    $state['daily_completed'] = true;
+    $state['board'] = null;
+    $state['solution'] = null;
+    $state['givens'] = null;
+    $quitStats = $state['quit_stats'] ?? [];
+    $quitStats['score'] = $storedFinalScore;
+    $quitStats['base_score'] = $storedBaseScore;
+    $quitStats['final_score'] = $storedFinalScore;
+    $quitStats['difficulty_percent'] = $difficultyPercent;
+    $quitStats['total'] = $quitStats['total'] ?? 0;
+    $quitStats['correct'] = $quitStats['correct'] ?? 0;
+    $quitStats['incorrect'] = $quitStats['incorrect'] ?? 0;
+    $quitStats['accuracy'] = $quitStats['accuracy'] ?? 0;
+    $quitStats['false_ratio'] = $quitStats['false_ratio'] ?? 0;
+    if (!isset($quitStats['converted'])) {
+        $quitStats['converted'] = false;
+    }
+    $state['quit_stats'] = $quitStats;
+}
 
 function sudoku_is_safe(array $board, int $row, int $col, int $num): bool {
     for ($i = 0; $i < 9; $i++) {
@@ -162,6 +233,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     if ($action === 'quit') {
+        if (!empty($state['daily_completed'])) {
+            $state['last_message'] = 'Sudoku can only be completed once per day. Come back tomorrow for a new puzzle.';
+            header('Location: index.php?pg=sudoku');
+            exit;
+        }
         $total = $state['correct_total'] + $state['incorrect_total'];
         if ($total <= 0) {
             $state['last_message'] = 'You need to finish at least one level before ending the run.';
@@ -170,18 +246,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($falseRatio < 0.5) {
                 $state['game_over'] = true;
                 $accuracy = $total > 0 ? round(($state['correct_total'] / $total) * 100, 1) : 0;
+                $baseScore = $state['score'];
+                $finalDifficulty = (int)$state['difficulty_percent'];
+                $finalScore = $baseScore * $finalDifficulty;
+                $state['score'] = $baseScore;
                 $state['quit_stats'] = [
                     'total' => $total,
                     'correct' => $state['correct_total'],
                     'incorrect' => $state['incorrect_total'],
                     'accuracy' => $accuracy,
                     'false_ratio' => $falseRatio,
-                    'score' => $state['score'],
+                    'score' => $finalScore,
+                    'base_score' => $baseScore,
+                    'final_score' => $finalScore,
+                    'difficulty_percent' => $finalDifficulty,
                     'converted' => $state['quit_stats']['converted'] ?? false,
                 ];
                 $state['board'] = null;
                 $state['solution'] = null;
                 $state['givens'] = null;
+                $state['daily_completed'] = true;
+                q(
+                    'UPDATE daily_sudoku_runs SET base_score = ?, final_score = ?, completed_at = NOW() WHERE user_id = ? AND run_date = ?',
+                    [$baseScore, $finalScore, $uid, $today]
+                );
             } else {
                 $state['last_message'] = 'Too many incorrect answers to finish the run. Keep practicing!';
             }
@@ -190,23 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     if ($action === 'restart') {
-        $_SESSION['sudoku_state'] = [
-            'level' => 1,
-            'score' => 0,
-            'correct_total' => 0,
-            'incorrect_total' => 0,
-            'board' => null,
-            'solution' => null,
-            'givens' => null,
-            'last_result' => null,
-            'last_message' => null,
-            'game_over' => false,
-            'quit_stats' => null,
-        ];
-        $levelData = sudoku_build_level($_SESSION['sudoku_state']['level']);
-        $_SESSION['sudoku_state']['board'] = $levelData['board'];
-        $_SESSION['sudoku_state']['solution'] = $levelData['solution'];
-        $_SESSION['sudoku_state']['givens'] = $levelData['givens'];
+        $state['last_message'] = 'Sudoku is limited to one run per day. A new puzzle will be available tomorrow.';
         header('Location: index.php?pg=sudoku');
         exit;
     }
@@ -225,10 +297,22 @@ $quitStats = $state['quit_stats'] ?? null;
 $board = $state['board'];
 $givens = $state['givens'];
 $level = $state['level'];
+$dailyDifficulty = (int)($state['difficulty_percent'] ?? $difficultyPercent);
+$baseScoreDisplay = $gameOver && is_array($quitStats) && array_key_exists('base_score', $quitStats)
+    ? (int)$quitStats['base_score']
+    : (int)$state['score'];
+$finalScoreDisplay = $gameOver && is_array($quitStats) && array_key_exists('final_score', $quitStats)
+    ? (int)$quitStats['final_score']
+    : $baseScoreDisplay * $dailyDifficulty;
+$hasDetailedStats = is_array($quitStats) && !empty($quitStats['total']);
 ?>
 <link rel="stylesheet" href="assets/css/sudoku.css">
 <script defer src="assets/js/sudoku.js"></script>
 <h1>Sudoku Sprint</h1>
+<div class="sudoku-daily-info">
+  <p><strong>Today's difficulty:</strong> <?php echo htmlspecialchars((string)$dailyDifficulty); ?>%</p>
+  <p class="muted">Final score = Base score x Difficulty = <?php echo htmlspecialchars(number_format($baseScoreDisplay)); ?> x <?php echo htmlspecialchars((string)$dailyDifficulty); ?> = <?php echo htmlspecialchars(number_format($finalScoreDisplay)); ?></p>
+</div>
 <?php if ($lastResult): ?>
   <div class="sudoku-result">
     <h2>Level <?php echo htmlspecialchars((string)$lastResult['level']); ?> complete</h2>
@@ -263,23 +347,25 @@ $level = $state['level'];
     <h2>Game Over</h2>
     <p>Your final performance:</p>
     <ul>
-      <li>Score earned: <strong><?php echo htmlspecialchars((string)$quitStats['score']); ?></strong></li>
-      <li>Correct answers: <?php echo htmlspecialchars((string)$quitStats['correct']); ?></li>
-      <li>Incorrect answers: <?php echo htmlspecialchars((string)$quitStats['incorrect']); ?></li>
-      <li>Accuracy: <?php echo htmlspecialchars((string)$quitStats['accuracy']); ?>%</li>
+      <li>Base score: <strong><?php echo htmlspecialchars(number_format((int)($quitStats['base_score'] ?? 0))); ?></strong></li>
+      <li>Difficulty multiplier: <?php echo htmlspecialchars((string)($quitStats['difficulty_percent'] ?? $dailyDifficulty)); ?>x (<?php echo htmlspecialchars((string)($quitStats['difficulty_percent'] ?? $dailyDifficulty)); ?>%)</li>
+      <li>Final score: <strong><?php echo htmlspecialchars(number_format((int)($quitStats['final_score'] ?? $quitStats['score'] ?? 0))); ?></strong></li>
+      <?php if ($hasDetailedStats): ?>
+        <li>Correct answers: <?php echo htmlspecialchars((string)($quitStats['correct'] ?? 0)); ?></li>
+        <li>Incorrect answers: <?php echo htmlspecialchars((string)($quitStats['incorrect'] ?? 0)); ?></li>
+        <li>Accuracy: <?php echo htmlspecialchars((string)($quitStats['accuracy'] ?? 0)); ?>%</li>
+      <?php endif; ?>
     </ul>
-    <?php if (empty($quitStats['converted']) && $quitStats['score'] > 0): ?>
-      <button class="btn" data-sudoku-exchange data-score="<?php echo htmlspecialchars((string)$quitStats['score']); ?>">Convert score</button>
+    <?php $finalScoreForExchange = (int)($quitStats['final_score'] ?? $quitStats['score'] ?? 0); ?>
+    <?php if (empty($quitStats['converted']) && $finalScoreForExchange > 0): ?>
+      <button class="btn" data-sudoku-exchange data-score="<?php echo htmlspecialchars((string)$finalScoreForExchange); ?>">Convert score</button>
       <div class="exchange-status" role="status"></div>
     <?php elseif (!empty($quitStats['converted'])): ?>
       <p class="muted">Score already converted. Enjoy your rewards!</p>
     <?php else: ?>
       <p class="muted">No score to convert this time.</p>
     <?php endif; ?>
-    <form method="post" class="sudoku-actions" style="margin-top:1.5rem;">
-      <input type="hidden" name="action" value="restart">
-      <button type="submit" class="btn primary">Play again</button>
-    </form>
+    <p class="muted" style="margin-top:1.5rem;">Come back tomorrow for a new Sudoku challenge.</p>
   </div>
 <?php elseif (!$gameOver && is_array($board) && is_array($givens)): ?>
   <div class="sudoku-wrapper">

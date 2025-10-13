@@ -127,6 +127,25 @@
     max-width: 460px;
 }
 
+.sudoku-daily-info {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    max-width: 520px;
+    margin: 1rem 0 1.5rem;
+}
+
+    .sudoku-daily-info p {
+        margin: 0;
+    }
+
+        .sudoku-daily-info p + p {
+            margin-top: 0.4rem;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
 .sudoku-wrapper .info-panel {
     display: grid;
     gap: 1rem;

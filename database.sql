@@ -36,6 +36,17 @@ CREATE TABLE IF NOT EXISTS wheel_of_fate_spins (
   CONSTRAINT fk_wheel_spin_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS daily_sudoku_runs (
+  user_id            BIGINT UNSIGNED NOT NULL,
+  run_date           DATE NOT NULL,
+  difficulty_percent TINYINT UNSIGNED NOT NULL,
+  base_score         INT UNSIGNED NOT NULL DEFAULT 0,
+  final_score        INT UNSIGNED NOT NULL DEFAULT 0,
+  completed_at       DATETIME NULL,
+  PRIMARY KEY (user_id, run_date),
+  CONSTRAINT fk_daily_sudoku_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 CREATE TABLE IF NOT EXISTS user_friends (
   connection_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
   user_id BIGINT UNSIGNED NOT NULL,
