@@ -14,6 +14,7 @@ $rates = [
     'runngunner' => 0.8,
     'wantedalive' => 5,
     'paddlepanic' => 0.9,
+    'sudoku' => 0.8,
 ];
 
 if (!isset($rates[$game]) || $score <= 0) {
