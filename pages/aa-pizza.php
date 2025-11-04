@@ -94,6 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
         exit;
     }
 
+    $user = current_user();
+    $uid = isset($user['id']) ? (int) $user['id'] : 0;
+    if ($uid <= 0) {
+        echo json_encode(['ok' => false, 'error' => 'You must be signed in to place an order.']);
+        exit;
+    }
+
     $orderItems = [];
     $total = 0.0;
 
@@ -125,7 +132,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
             $orderItems[$itemId] = [
                 'item_id' => $itemId,
                 'name' => $item['name'],
-                'price' => $item['price'],
                 'quantity' => $quantity,
             ];
         }
@@ -135,25 +141,84 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
         echo json_encode(['ok' => false, 'error' => 'Your cart is empty.']);
         exit;
     }
+    $pdo = db();
+    $updatedStock = [];
 
-    foreach ($orderItems as &$orderItem) {
-        $itemId = $orderItem['item_id'];
-        $inventoryItem = $inventoryById[$itemId];
-        $maxStock = $inventoryItem['stock'];
-        if ($maxStock !== null && $orderItem['quantity'] > $maxStock) {
-            $orderItem['quantity'] = $maxStock;
+    try {
+        $pdo->beginTransaction();
+
+        foreach ($orderItems as $itemId => &$orderItem) {
+            $stmt = $pdo->prepare(
+                'SELECT si.stock, si.price, i.base_price\n'
+                .'FROM shop_inventory si\n'
+                .'JOIN items i ON i.item_id = si.item_id\n'
+                .'WHERE si.shop_id = ? AND si.item_id = ? FOR UPDATE'
+            );
+            $stmt->execute([$shopId, $itemId]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$row) {
+                throw new RuntimeException('One of the items is no longer available. Please refresh and try again.');
+            }
+
+            $price = $row['price'];
+            if ($price === null) {
+                $price = $row['base_price'];
+            }
+            $price = (float) $price;
+            $orderItem['price'] = round($price, 2);
+
+            $quantity = $orderItem['quantity'];
+            $stock = $row['stock'];
+            $stock = $stock === null ? null : (int) $stock;
+
+            if ($stock !== null) {
+                if ($quantity > $stock) {
+                    throw new RuntimeException(sprintf('Only %d × %s remain in stock.', $stock, $orderItem['name']));
+                }
+                $newStock = $stock - $quantity;
+                $updateStmt = $pdo->prepare('UPDATE shop_inventory SET stock = ? WHERE shop_id = ? AND item_id = ?');
+                $updateStmt->execute([$newStock, $shopId, $itemId]);
+            } else {
+                $newStock = null;
+            }
+
+            $invStmt = $pdo->prepare(
+                'INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, ?) '
+                .'ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)'
+            );
+            $invStmt->execute([$uid, $itemId, $quantity]);
+
+            $lineTotal = round($orderItem['price'] * $quantity, 2);
+            $orderItem['line_total'] = $lineTotal;
+            $total += $lineTotal;
+            $updatedStock[$itemId] = $newStock;
         }
-        $lineTotal = $orderItem['quantity'] * $orderItem['price'];
-        $orderItem['line_total'] = $lineTotal;
-        $total += $lineTotal;
+        unset($orderItem);
+
+        $pdo->commit();
+    } catch (Throwable $err) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        $errorMessage = $err instanceof RuntimeException
+            ? $err->getMessage()
+            : 'We could not finalize your order. Please try again.';
+        echo json_encode(['ok' => false, 'error' => $errorMessage]);
+        exit;
     }
-    unset($orderItem);
+
+    $stockPayload = [];
+    foreach ($updatedStock as $itemId => $stockValue) {
+        $stockPayload[$itemId] = $stockValue === null ? null : (int) $stockValue;
+    }
 
     echo json_encode([
         'ok' => true,
         'message' => 'Order prepared! Please proceed to the counter to finalize payment.',
         'items' => array_values($orderItems),
-        'total' => $total,
+        'total' => round($total, 2),
+        'stock' => $stockPayload,
     ]);
     exit;
 }
@@ -260,6 +325,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
       maximumFractionDigits: 2
     });
   };
+
+  function updateMenuButtonStock(itemId, stock) {
+    const key = String(itemId);
+    const item = itemMap.get(key);
+    if (item) {
+      item.stock = stock == null ? null : Number(stock);
+    }
+
+    const button = menuButtons.find(btn => btn.dataset.itemId === key);
+    if (!button) {
+      return;
+    }
+
+    const normalizedStock = stock == null ? null : Number(stock);
+    const stockLabel = button.querySelector('.pizza-item-stock');
+
+    if (normalizedStock == null || Number.isNaN(normalizedStock)) {
+      button.dataset.stock = '';
+      button.disabled = false;
+      button.classList.remove('is-sold-out');
+      button.removeAttribute('aria-disabled');
+      if (stockLabel) {
+        stockLabel.textContent = 'Stock: plentiful';
+        stockLabel.classList.remove('sold-out');
+      }
+      return;
+    }
+
+    button.dataset.stock = String(normalizedStock);
+    const isSoldOut = normalizedStock <= 0;
+    button.disabled = isSoldOut;
+    button.classList.toggle('is-sold-out', isSoldOut);
+    if (isSoldOut) {
+      button.setAttribute('aria-disabled', 'true');
+    } else {
+      button.removeAttribute('aria-disabled');
+    }
+
+    if (stockLabel) {
+      if (isSoldOut) {
+        stockLabel.textContent = 'Sold out';
+        stockLabel.classList.add('sold-out');
+      } else {
+        stockLabel.textContent = `Stock: ${normalizedStock}`;
+        stockLabel.classList.remove('sold-out');
+      }
+    }
+  }
 
   function updateCartUI() {
     cartList.innerHTML = '';
@@ -437,12 +550,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
         return;
       }
 
+      if (data.stock && typeof data.stock === 'object') {
+        Object.entries(data.stock).forEach(([itemId, stockValue]) => {
+          updateMenuButtonStock(itemId, stockValue);
+        });
+      }
+
       cartStatus.textContent = `${data.message} Total: ${formatPrice(data.total)} denars.`;
       cart.clear();
       updateCartUI();
     } catch (err) {
       console.error(err);
-      cartStatus.textContent = 'A kitchen gremlin intercepted the order. Please try again.';
+      let message = 'A kitchen gremlin intercepted the order. Please try again.';
+      if (err instanceof Error && err.message) {
+        message = err.message;
+      }
+      cartStatus.textContent = message;
       cartBuyBtn.disabled = false;
     }
   });
