@@ -2,14 +2,20 @@
 <h1>Aegia Aeterna - Heliadora </h1>
 <section id="heliadora">
   <h2>Heliadora - <em>"Gift of the Sun"</em></h2>
-
-  <!-- Section for map -->
+  
+  <img src="images/harmontide-aa.webp" alt="World map" usemap="#worldmap" class="world-map" width="100%"/>
 
   
   <div class="card glass">
     <h3>Explore the abandoned ruins of Heliadora</h3>
     <p class="muted">Try to find your way around the old ruins of this ancient capital.</p>
     <a class="btn" href="?pg=aa-adventure">Begin</a>
+  </div>
+
+  <div class="card glass">
+    <h3>Pizzeria Sol Invicta</h3>
+    <p class="muted">Brick-fired pies, sun-braised olives, and red sauce argued over by civic poets.</p>
+    <a class="btn" href="?pg=aa-pizza">Enter</a>
   </div>
 
   <p><strong>Heliadora</strong> is the antique capital of democracy in Aegia Aeterna-marble forums, vow-stones that hum under your palm, 

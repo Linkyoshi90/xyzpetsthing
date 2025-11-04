@@ -408,6 +408,18 @@ a {
     cursor: pointer
 }
 
+    .btn.ghost {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid rgba(30, 134, 255, 0.4);
+        box-shadow: none;
+    }
+
+        .btn.ghost:hover,
+        .btn.ghost:focus {
+            background: rgba(30, 134, 255, 0.08);
+        }
+
 input, select {
     width: 100%;
     padding: 10px;
@@ -846,4 +858,221 @@ ul.tight {
     color: inherit;
     font-size: 1.2rem;
     cursor: pointer;
+}
+
+
+.pizza-shop {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pizza-shop__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 960px) {
+    .pizza-shop__layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pizza-shop__menu,
+.pizza-cart {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.pizza-menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+}
+
+.pizza-item-card {
+    display: block;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    border: 2px solid transparent;
+    border-radius: var(--radius);
+    padding: 12px;
+    cursor: pointer;
+    transition: border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+
+    .pizza-item-card:hover,
+    .pizza-item-card:focus {
+        border-color: rgba(30, 134, 255, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(17, 40, 80, 0.12);
+    }
+
+    .pizza-item-card.selected {
+        border-color: rgba(30, 134, 255, 0.8);
+        box-shadow: 0 0 0 3px rgba(30, 134, 255, 0.15);
+    }
+
+    .pizza-item-card.is-sold-out {
+        opacity: 0.55;
+        cursor: not-allowed;
+        filter: grayscale(0.4);
+    }
+
+        .pizza-item-card.is-sold-out:hover,
+        .pizza-item-card.is-sold-out:focus {
+            transform: none;
+            border-color: rgba(30, 30, 30, 0.15);
+            box-shadow: none;
+        }
+
+    .pizza-item-card figure {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: center;
+        text-align: center;
+    }
+
+.pizza-item-thumb {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: calc(var(--radius) - 4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+    .pizza-item-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+.pizza-item-stock {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+    .pizza-item-stock.sold-out {
+        color: #d64545;
+        font-weight: 600;
+    }
+
+.pizza-cart {
+    position: sticky;
+    top: 110px;
+    max-height: calc(100vh - 140px);
+}
+
+@media (max-width: 960px) {
+    .pizza-cart {
+        position: static;
+        max-height: none;
+    }
+}
+
+.pizza-cart__body {
+    flex: 1;
+    min-height: 200px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.pizza-cart__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pizza-cart__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: rgba(30, 134, 255, 0.08);
+}
+
+.pizza-cart__item-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.pizza-cart__item-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qty-btn {
+    border: 1px solid rgba(30, 134, 255, 0.5);
+    background: rgba(255, 255, 255, 0.8);
+    color: var(--ink);
+    border-radius: 999px;
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+}
+
+.qty-remove {
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+    .qty-remove:hover,
+    .qty-remove:focus {
+        color: var(--ink);
+    }
+
+.qty-display {
+    min-width: 24px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.pizza-cart__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+.pizza-cart__actions {
+    display: flex;
+    gap: 12px;
+}
+
+    .pizza-cart__actions .btn {
+        flex: 1;
+    }
+
+.pizza-cart__footer {
+    border-top: 1px solid rgba(30, 134, 255, 0.18);
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pizza-cart__status {
+    min-height: 1.4em;
 }

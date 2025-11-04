@@ -18,12 +18,8 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory',
     'stap','srl',
     'urb','xochimex','yamanokubo','yn',
     // country subsections
-    'aa-adventure','baharamandal','bretonreach','cc',
-    'esd','esl','gc','hammurabia',
-    'ie','Kemet','ldk','nornheim','rsc',
-    'rheinland','rt','sie','sc',
-    'stap','srl',
-    'urb','xochimex','yamanokubo','yn'];
+    'aa-adventure','aa-pizza',
+];
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
 }

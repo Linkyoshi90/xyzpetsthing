@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Pizza Slice Placeholder</title>
+  <desc id="desc">Stylized illustration of a pizza slice.</desc>
+  <defs>
+    <linearGradient id="crust" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7c27c" />
+      <stop offset="100%" stop-color="#d8893b" />
+    </linearGradient>
+    <linearGradient id="cheese" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fff6b7" />
+      <stop offset="100%" stop-color="#ffd36b" />
+    </linearGradient>
+  </defs>
+  <rect width="160" height="160" rx="24" fill="#f5efe6" />
+  <g transform="translate(32 24)" stroke="#c66b2c" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 12c32-20 64-20 88 0l-44 96z" fill="url(#crust)" />
+    <path d="M20 28c24-14 48-14 66 0l-33 70z" fill="url(#cheese)" />
+    <circle cx="52" cy="48" r="8" fill="#d64545" />
+    <circle cx="36" cy="68" r="7" fill="#d64545" />
+    <circle cx="68" cy="70" r="7" fill="#d64545" />
+  </g>
+</svg>
