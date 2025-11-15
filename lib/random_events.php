@@ -3,7 +3,7 @@ require_once __DIR__.'/../db.php';
 require_once __DIR__.'/pets.php';
 
 const RANDOM_EVENT_FILE = __DIR__ . '/../data/random_events.json';
-const RANDOM_EVENT_CHANCE = 0.12; // 12% per page load
+const RANDOM_EVENT_CHANCE = 0.05; // x% per page load
 
 function random_event_catalog(): array
 {

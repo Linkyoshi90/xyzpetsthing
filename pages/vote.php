@@ -79,21 +79,6 @@ foreach (glob(__DIR__ . '/../images/*_*_*.webp') as $file) {
       <div class="mini" id="summaryText"></div>
     </div>
 
-    <details class="howto">
-      <summary>How this works (and how to hook up PHP)</summary>
-      <div class="mini">
-        <p>• Click exactly one suggested name per line. Your choices autosave in your browser.</p>
-        <p>• <strong>Submit</strong> posts to this page via a standard <code>POST</code> with two payload styles for convenience:
-        a PHP array <code>selection[region_slug][base_slug] = chosen</code> and a JSON string in <code>selection_json</code>.</p>
-        <pre><code>// Minimal PHP sketch (server‑side)
-// $json = $_POST['selection_json'] ?? '{}';
-// $data = json_decode($json, true);
-// // $data is [{region, base, choice, base_slug, region_slug}, ...]
-// // Write to MySQL here.
-</code></pre>
-      </div>
-    </details>
-
     <!-- Hidden HTML form that will be populated and submitted -->
     <form id="submitForm" action="?pg=vote" method="post" hidden></form>
   </div>
@@ -106,7 +91,7 @@ Auronia - Aegia Aeterna (AA)
 Lamia: Lamoria, Serafemme, Nagaressa, Viperelle, Lamivra
 Centaur: Centara, Sagritar, Hoofkin, Bowmane, Tauriel
 Charybdis: Riptara, Maelstrix, Vortessa, Gulpmire, Swirlgrim
-#Pegasus: Skysteed, Pegara, Nimbuscolt, Aetherfilly, Wingstall
+Pegasus: Skysteed, Pegara, Nimbuscolt, Aetherfilly, Wingstall
 #Arachne: Silkatrix, Arachnea, Loomspinner, Weblira, Threadessa
 #Cyclops: Unoculus, Monocleus, Eyeclast, Cycloidon, Oneyx
 #Dryad: Verdelle, Grovelet, Barknymph, Sylfae, Leafdry

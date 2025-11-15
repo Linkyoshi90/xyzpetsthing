@@ -681,7 +681,7 @@ ul.tight {
         }
 
         .vote-app .option[aria-checked="true"] {
-            background: #b6f1ff;
+            background: #b8ffb670;
             border-color: #9ae8ff;
             box-shadow: 0 10px 26px rgba(34,211,238,.28), inset 0 1px 0 rgba(255,255,255,.9);
         }
