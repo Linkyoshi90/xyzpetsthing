@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
         echo json_encode(shop_error_payload('Your cart is empty.', [
             'received_cart' => $_POST['cart'] ?? null,
         ]));
+        exit;
     }
 
     $user = current_user();
@@ -185,6 +186,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
 
   const cart = new Map();
 
+  function setStatus(message = '', context = null) {
+    const parts = [];
+    if (message) {
+      parts.push(message);
+    }
+    if (context != null) {
+      let detail = '';
+      if (typeof context === 'string') {
+        detail = context;
+      } else if (typeof context === 'object') {
+        try {
+          detail = JSON.stringify(context, null, 2);
+        } catch (err) {
+          detail = String(context);
+        }
+      } else {
+        detail = String(context);
+      }
+
+      if (detail) {
+        parts.push(`Details: ${detail}`);
+      }
+    }
+
+    cartStatus.textContent = parts.join('\n');
+  }
+
   const formatPrice = (value) => {
     return Number(value || 0).toLocaleString(undefined, {
       minimumFractionDigits: 2,
@@ -250,7 +278,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
       cartClearBtn.disabled = true;
       cartTotalEl.textContent = '0.00';
       menuButtons.forEach(btn => btn.classList.remove('selected'));
-      cartStatus.textContent = '';
+      setStatus('');
       return;
     }
 
@@ -295,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
     const item = itemMap.get(key);
     if (!item) return;
 
-    cartStatus.textContent = '';
+    setStatus('');
     const entry = cart.get(key) || { name: item.name, price: item.price, quantity: 0, stock: item.stock };
     const maxStock = entry.stock == null ? Infinity : entry.stock;
     const newQty = entry.quantity + delta;
@@ -307,7 +335,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
     }
 
     if (newQty > maxStock) {
-      cartStatus.textContent = `${entry.name} only has ${maxStock === Infinity ? 'plenty' : maxStock} remaining.`;
+      setStatus(`${entry.name} only has ${maxStock === Infinity ? 'plenty' : maxStock} remaining.`);
       return;
     }
 
@@ -323,7 +351,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
       if (btn.disabled) {
         const item = itemMap.get(itemId);
         if (item) {
-          cartStatus.textContent = `${item.name} is sold out today.`;
+          setStatus(`${item.name} is sold out today.`);
         }
         return;
       }
@@ -335,11 +363,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
       const item = itemMap.get(itemId);
       if (!item) return;
       if (item.stock === 0) {
-        cartStatus.textContent = `${item.name} is sold out today.`;
+        setStatus(`${item.name} is sold out today.`);
         return;
       }
       const stock = item.stock == null ? Infinity : item.stock;
-      cartStatus.textContent = '';
+      setStatus('');
       cart.set(itemId, {
         name: item.name,
         price: item.price,
@@ -369,7 +397,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
         adjustCart(itemId, -1);
         break;
       case 'remove':
-        cartStatus.textContent = '';
+        setStatus('');
         cart.delete(itemId);
         updateCartUI();
         break;
@@ -377,10 +405,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
   });
 
   cartClearBtn.addEventListener('click', () => {
-    cartStatus.textContent = '';
-    cart.clear();
-    updateCartUI();
-  });
+      setStatus('');
+      cart.clear();
+      updateCartUI();
+    });
 
   cartBuyBtn.addEventListener('click', async () => {
     if (cart.size === 0) return;
@@ -390,7 +418,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
     }));
 
     cartBuyBtn.disabled = true;
-    cartStatus.textContent = 'Sending your order to the kitchen…';
+    setStatus('Sending your order to the kitchen…');
 
     try {
       const formData = new FormData();
@@ -415,7 +443,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
           context: data.context || null,
           payload
         });
-        cartStatus.textContent = data.error || 'Could not process your order.';
+        setStatus(data.error || 'Could not process your order.', data.context || null);
         cartBuyBtn.disabled = false;
         return;
       }
@@ -426,7 +454,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
         });
       }
 
-      cartStatus.textContent = `${data.message} Total: ${formatPrice(data.total)} denars.`;
+      setStatus(`${data.message} Total: ${formatPrice(data.total)} denars.`);
       cart.clear();
       updateCartUI();
     } catch (err) {
@@ -438,7 +466,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
       if (err instanceof Error && err.message) {
         message = err.message;
       }
-      cartStatus.textContent = message;
+      setStatus(message, { payload });
       cartBuyBtn.disabled = false;
     }
   });
