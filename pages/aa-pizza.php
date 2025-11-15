@@ -1,224 +1,90 @@
 ﻿<?php
 require_login();
-require_once __DIR__.'/../db.php';
+require_once __DIR__.'/../lib/shops.php';
 
 $shopId = 4;
-$shop = q('SELECT shop_id, shop_name FROM shops WHERE shop_id = ?', [$shopId])->fetch(PDO::FETCH_ASSOC);
+$shop = shop_get($shopId) ?? ['shop_id' => $shopId, 'shop_name' => 'Pizzeria Sol Invicta'];
 
-function aa_pizza_find_item_image(string $name): string {
-    $baseDir = __DIR__.'/../images/items';
-    $fallback = 'pizzeria-placeholder.svg';
-    $extensions = ['png', 'webp', 'jpg', 'jpeg', 'gif', 'svg'];
-
-    $variants = [];
-    $candidates = [$name];
-    $lower = strtolower($name);
-    $candidates[] = $lower;
-    $noApos = str_replace("'", '', $name);
-    $candidates[] = $noApos;
-    $candidates[] = strtolower($noApos);
-
-    foreach ($candidates as $candidate) {
-        $candidate = trim($candidate);
-        if ($candidate === '') {
-            continue;
-        }
-        $withUnderscore = str_replace(' ', '_', $candidate);
-        $withDash = str_replace(' ', '-', $candidate);
-        $variants[] = $candidate;
-        $variants[] = $withUnderscore;
-        $variants[] = $withDash;
-    }
-
-    $variants[] = preg_replace('/[^a-z0-9]+/i', '-', strtolower($name));
-    $variants = array_values(array_unique(array_filter($variants, fn($v) => $v !== null && $v !== '')));
-
-    foreach ($variants as $variant) {
-        foreach ($extensions as $ext) {
-            $fileName = $variant.'.'.$ext;
-            $fullPath = $baseDir.'/'.$fileName;
-            if (is_file($fullPath)) {
-                return $fileName;
-            }
-        }
-    }
-
-    return $fallback;
-}
-
-$inventoryRows = q(
-    "SELECT si.item_id, si.price, si.stock, i.item_name, i.base_price, i.item_description\n"
-    ."FROM shop_inventory si\n"
-    ."JOIN items i ON i.item_id = si.item_id\n"
-    ."WHERE si.shop_id = ?\n"
-    ."ORDER BY i.item_name",
-    [$shopId]
-)->fetchAll(PDO::FETCH_ASSOC);
-
-$inventory = [];
-foreach ($inventoryRows as $row) {
-    $price = $row['price'];
-    if ($price === null) {
-        $price = $row['base_price'];
-    }
-    $price = (float) $price;
-    $stock = $row['stock'];
-    $stock = $stock === null ? null : (int) $stock;
-    $imageFile = aa_pizza_find_item_image($row['item_name']);
-    $inventory[] = [
-        'item_id' => (int) $row['item_id'],
-        'name' => $row['item_name'],
-        'price' => $price,
-        'stock' => $stock,
-        'description' => $row['item_description'],
-        'image' => 'images/items/'.rawurlencode($imageFile),
-    ];
-}
-
-$inventoryById = [];
-foreach ($inventory as $item) {
-    $inventoryById[$item['item_id']] = $item;
-}
+$inventory = shop_inventory($shopId);
+$inventoryById = shop_inventory_indexed($inventory);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'checkout') {
     header('Content-Type: application/json');
-    $cartPayload = json_decode($_POST['cart'] ?? '[]', true);
 
-    if (!is_array($cartPayload)) {
-        echo json_encode(['ok' => false, 'error' => 'Invalid cart payload.']);
+    if (!$inventoryById) {
+        echo json_encode(shop_error_payload('This shop has no stock available.', [
+            'shop_id' => $shopId,
+        ]));
         exit;
     }
 
-    if (!$inventoryById) {
-        echo json_encode(['ok' => false, 'error' => 'This shop has no stock available.']);
-        exit;
+    $cartPayload = shop_normalize_cart_payload($_POST['cart'] ?? []);
+
+    if (!$cartPayload) {
+        echo json_encode(shop_error_payload('Your cart is empty.', [
+            'received_cart' => $_POST['cart'] ?? null,
+        ]));
     }
 
     $user = current_user();
     $uid = isset($user['id']) ? (int) $user['id'] : 0;
-    if ($uid <= 0) {
-        echo json_encode(['ok' => false, 'error' => 'You must be signed in to place an order.']);
-        exit;
-    }
 
     $orderItems = [];
-    $total = 0.0;
-
     foreach ($cartPayload as $entry) {
-        if (!is_array($entry)) {
-            continue;
-        }
-        $itemId = isset($entry['item_id']) ? (int) $entry['item_id'] : 0;
-        $quantity = isset($entry['quantity']) ? (int) $entry['quantity'] : 0;
-        if ($itemId <= 0 || $quantity <= 0) {
-            continue;
-        }
+        $itemId = $entry['item_id'];
+        $quantity = $entry['quantity'];
         if (!isset($inventoryById[$itemId])) {
-            echo json_encode(['ok' => false, 'error' => 'One of the items is no longer sold here.']);
+            echo json_encode(shop_error_payload('One of the items is no longer sold here.', [
+                'item_id' => $itemId,
+                'shop_id' => $shopId,
+            ]));
             exit;
         }
         $item = $inventoryById[$itemId];
-        $maxStock = $item['stock'];
-        if ($maxStock !== null && $quantity > $maxStock) {
-            echo json_encode([
-                'ok' => false,
-                'error' => sprintf('You can only order up to %d × %s.', $maxStock, $item['name']),
-            ]);
-            exit;
-        }
         if (isset($orderItems[$itemId])) {
             $orderItems[$itemId]['quantity'] += $quantity;
         } else {
             $orderItems[$itemId] = [
                 'item_id' => $itemId,
-                'name' => $item['name'],
                 'quantity' => $quantity,
             ];
         }
-    }
 
-    if (!$orderItems) {
-        echo json_encode(['ok' => false, 'error' => 'Your cart is empty.']);
-        exit;
+        $maxStock = $item['stock'];
+        if ($maxStock !== null && $orderItems[$itemId]['quantity'] > $maxStock) {
+            echo json_encode(shop_error_payload(
+                sprintf('You can only order up to %d × %s.', $maxStock, $item['name']),
+                [
+                    'item_id' => $itemId,
+                    'requested' => $orderItems[$itemId]['quantity'],
+                    'available' => $maxStock,
+                ]
+            ));
+            exit;
+        }
     }
-    $pdo = db();
-    $updatedStock = [];
 
     try {
-        $pdo->beginTransaction();
-
-        foreach ($orderItems as $itemId => &$orderItem) {
-            $stmt = $pdo->prepare(
-                'SELECT si.stock, si.price, i.base_price\n'
-                .'FROM shop_inventory si\n'
-                .'JOIN items i ON i.item_id = si.item_id\n'
-                .'WHERE si.shop_id = ? AND si.item_id = ? FOR UPDATE'
-            );
-            $stmt->execute([$shopId, $itemId]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if (!$row) {
-                throw new RuntimeException('One of the items is no longer available. Please refresh and try again.');
-            }
-
-            $price = $row['price'];
-            if ($price === null) {
-                $price = $row['base_price'];
-            }
-            $price = (float) $price;
-            $orderItem['price'] = round($price, 2);
-
-            $quantity = $orderItem['quantity'];
-            $stock = $row['stock'];
-            $stock = $stock === null ? null : (int) $stock;
-
-            if ($stock !== null) {
-                if ($quantity > $stock) {
-                    throw new RuntimeException(sprintf('Only %d × %s remain in stock.', $stock, $orderItem['name']));
-                }
-                $newStock = $stock - $quantity;
-                $updateStmt = $pdo->prepare('UPDATE shop_inventory SET stock = ? WHERE shop_id = ? AND item_id = ?');
-                $updateStmt->execute([$newStock, $shopId, $itemId]);
-            } else {
-                $newStock = null;
-            }
-
-            $invStmt = $pdo->prepare(
-                'INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, ?) '
-                .'ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)'
-            );
-            $invStmt->execute([$uid, $itemId, $quantity]);
-
-            $lineTotal = round($orderItem['price'] * $quantity, 2);
-            $orderItem['line_total'] = $lineTotal;
-            $total += $lineTotal;
-            $updatedStock[$itemId] = $newStock;
-        }
-        unset($orderItem);
-
-        $pdo->commit();
+        $checkout = shop_checkout($shopId, $uid, array_values($orderItems));
     } catch (Throwable $err) {
-        if ($pdo->inTransaction()) {
-            $pdo->rollBack();
-        }
-        $errorMessage = $err instanceof RuntimeException
+        $message = $err instanceof RuntimeException
             ? $err->getMessage()
             : 'We could not finalize your order. Please try again.';
-        echo json_encode(['ok' => false, 'error' => $errorMessage]);
-        exit;
-    }
 
-    $stockPayload = [];
-    foreach ($updatedStock as $itemId => $stockValue) {
-        $stockPayload[$itemId] = $stockValue === null ? null : (int) $stockValue;
+    echo json_encode(shop_error_payload($message, [
+            'shop_id' => $shopId,
+            'user_id' => $uid,
+            'exception' => get_class($err),
+        ]));
+        exit;
     }
 
     echo json_encode([
         'ok' => true,
         'message' => 'Order prepared! Please proceed to the counter to finalize payment.',
-        'items' => array_values($orderItems),
-        'total' => round($total, 2),
-        'stock' => $stockPayload,
+        'items' => $checkout['items'],
+        'total' => $checkout['total'],
+        'stock' => $checkout['stock'],
     ]);
     exit;
 }
@@ -441,10 +307,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
     }
 
     if (newQty > maxStock) {
-      cartStatus.textContent = `Only ${maxStock} × ${entry.name} available.`;
-      entry.quantity = maxStock;
-      cart.set(key, entry);
-      updateCartUI();
+      cartStatus.textContent = `${entry.name} only has ${maxStock === Infinity ? 'plenty' : maxStock} remaining.`;
       return;
     }
 
@@ -530,13 +393,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
     cartStatus.textContent = 'Sending your order to the kitchen…';
 
     try {
+      const formData = new FormData();
+      formData.append('action', 'checkout');
+      payload.forEach((entry, index) => {
+        formData.append(`cart[${index}][item_id]`, String(entry.item_id));
+        formData.append(`cart[${index}][quantity]`, String(entry.quantity));
+      });
       const response = await fetch('', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          action: 'checkout',
-          cart: JSON.stringify(payload)
-        })
+        body: formData
       });
 
       if (!response.ok) {
@@ -545,6 +410,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
 
       const data = await response.json();
       if (!data.ok) {
+          console.error('Checkout error', {
+          message: data.error,
+          context: data.context || null,
+          payload
+        });
         cartStatus.textContent = data.error || 'Could not process your order.';
         cartBuyBtn.disabled = false;
         return;
@@ -560,7 +430,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
       cart.clear();
       updateCartUI();
     } catch (err) {
-      console.error(err);
+      console.error('Checkout request failed', {
+        error: err,
+        payload
+      });
       let message = 'A kitchen gremlin intercepted the order. Please try again.';
       if (err instanceof Error && err.message) {
         message = err.message;
