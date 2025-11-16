@@ -1,5 +1,12 @@
 :root {
     --radius: 16px;
+    --size-mode: 1;
+}
+
+@media (max-width: 720px) {
+    :root {
+        --size-mode: clamp(0.65, calc(100vw / 720), 1);
+    }
 }
 
 html[data-theme="light"] {
@@ -75,7 +82,7 @@ a {
     gap: 16px;
     align-items: center;
     justify-content: space-between;
-    padding: 10px 16px;
+    padding: calc(10px * var(--size-mode)) calc(16px * var(--size-mode));
     border-bottom: 1px solid #fff;
     box-shadow: var(--shadow)
 }
@@ -83,7 +90,7 @@ a {
 .nav-right {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: calc(16px * var(--size-mode));
 }
 
 .user-menu {
@@ -115,7 +122,7 @@ a {
 .nav-left {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: calc(16px * var(--size-mode));
 }
 
 .nav-center {
@@ -131,8 +138,9 @@ a {
 .currency-display {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: calc(8px * var(--size-mode));
     font-weight: 600;
+    font-size: calc(0.95rem * var(--size-mode));
 }
 
     .currency-display .currency {
@@ -144,7 +152,7 @@ a {
 .nav-right nav {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: calc(12px * var(--size-mode));
 }
 
     .nav-right nav a {
@@ -154,15 +162,15 @@ a {
     }
 
 .pet-thumb {
-    width: 50px;
-    height: 50px;
+    width: calc(50px * var(--size-mode));
+    height: calc(50px * var(--size-mode));
     object-fit: cover;
     object-position: center top;
     border-radius: 50%;
 }
 
 .site-banner {
-    height: 50px;
+    height: calc(50px * var(--size-mode));
     object-fit: cover;
     border-radius: var(--radius);
 }
@@ -192,6 +200,25 @@ a {
     .grid.two, .grid.three {
         grid-template-columns: 1fr
     }
+}
+
+@media (max-width: 640px) {
+    .nav {
+        flex-direction: column;
+        gap: calc(8px * var(--size-mode));
+        align-items: stretch;
+    }
+
+    .nav-left,
+    .nav-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+        .nav-right nav {
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
 }
 
 .card {
@@ -738,12 +765,12 @@ ul.tight {
 /* Create pet page */
 .pet-create {
     display: flex;
-    gap: 20px;
+    gap: calc(20px * var(--size-mode));
 }
 
 .species-list {
-    width: 200px;
-    max-height: 400px;
+    width: calc(200px * var(--size-mode));
+    max-height: calc(400px * var(--size-mode));
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -764,7 +791,7 @@ ul.tight {
 
     .species-option img {
         width: 100%;
-        height: 100px;
+        height: calc(100px * var(--size-mode));
         object-fit: contain;
     }
 
@@ -774,9 +801,10 @@ ul.tight {
 }
 
 .preview-img {
-    width: 250px;
-    height: 250px;
+    width: clamp(160px, calc(250px * var(--size-mode)), 250px);
+    height: clamp(160px, calc(250px * var(--size-mode)), 250px);
     object-fit: contain;
+    max-width: 70vw;
 }
 
 .color-selector {
@@ -799,12 +827,47 @@ ul.tight {
     }
 
 .stats {
-    width: 200px;
+    width: calc(200px * var(--size-mode));
 }
 
     .stats h3 {
         text-align: center;
     }
+
+@media (max-width: 800px) {
+    .pet-create {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .species-list {
+        width: 100%;
+        max-height: none;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .species-option {
+        flex: 1 1 120px;
+        max-width: 160px;
+    }
+
+    .stats {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .preview-img {
+        width: min(55vw, 180px);
+        height: min(55vw, 180px);
+    }
+
+    .color-selector {
+        flex-wrap: wrap;
+    }
+}
 
 .map-container {
     max-width: none;

@@ -1,4 +1,5 @@
 <?php require_login();
+require_once __DIR__.'/../lib/temp_user.php';
 $uid = current_user()['id'];
 
 // Load list of enabled species from file
@@ -40,20 +41,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     )->fetch(PDO::FETCH_ASSOC);
 
     if ($row && $name && isset($colors[$color])) {
-        q(
-            "INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, gender, level, experience, hp_current, hp_max, atk, def, initiative)"
-            . " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-            [$uid, $sp, $name, $color, $gender, 1, 0, $row['base_hp'], $row['base_hp'], $row['base_atk'], $row['base_def'], $row['base_init']]
-        );
-        // starter items
-        q(
-            "INSERT INTO user_inventory(user_id,item_id,quantity) VALUES(?,?,1) ON DUPLICATE KEY UPDATE quantity=quantity+1",
-            [$uid, 1]
-        );
-        q(
-            "INSERT INTO user_inventory(user_id,item_id,quantity) VALUES(?,?,2) ON DUPLICATE KEY UPDATE quantity=quantity+2",
-            [$uid, 2]
-        );
+        if ($uid === 0) {
+            $pet = [
+                'owner_user_id' => 0,
+                'species_id' => $row['species_id'],
+                'species_name' => $row['species_name'],
+                'nickname' => $name,
+                'color_id' => $color,
+                'color_name' => ucfirst($colors[$color]),
+                'gender' => $gender,
+                'level' => 1,
+                'experience' => 0,
+                'hp_current' => $row['base_hp'],
+                'hp_max' => $row['base_hp'],
+                'atk' => $row['base_atk'],
+                'def' => $row['base_def'],
+                'initiative' => $row['base_init'],
+                'hunger' => 0,
+                'happiness' => 0,
+                'intelligence' => 0,
+                'sickness' => 0,
+            ];
+            temp_user_add_pet($pet);
+            temp_user_add_inventory_item(1, 1);
+            temp_user_add_inventory_item(2, 2);
+        } else {
+            q(
+                "INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, gender, level, experience, hp_current, hp_max, atk, def, initiative)"
+                . " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+                [$uid, $sp, $name, $color, $gender, 1, 0, $row['base_hp'], $row['base_hp'], $row['base_atk'], $row['base_def'], $row['base_init']]
+            );
+            // starter items
+            q(
+                "INSERT INTO user_inventory(user_id,item_id,quantity) VALUES(?,?,1) ON DUPLICATE KEY UPDATE quantity=quantity+1",
+                [$uid, 1]
+            );
+            q(
+                "INSERT INTO user_inventory(user_id,item_id,quantity) VALUES(?,?,2) ON DUPLICATE KEY UPDATE quantity=quantity+2",
+                [$uid, 2]
+            );
+        }
         header('Location: ?pg=main');
         exit;
     }

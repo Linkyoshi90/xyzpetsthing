@@ -2,6 +2,30 @@
 require_once __DIR__.'/db.php';
 
 function current_user(){ return $_SESSION['user'] ?? null; }
+
+function is_temp_user(): bool {
+  $u = current_user();
+  return $u && (int)($u['id'] ?? -1) === 0;
+}
+
+function temp_user_default_store(): array {
+  return [
+    'next_pet_id' => 1,
+    'pets' => [],
+    'inventory' => [],
+    'balances' => ['cash' => 0.0, 'gems' => 0.0],
+    'score_exchange' => ['date' => date('Y-m-d'), 'count' => 0],
+    'bank' => ['has_account' => false, 'balance' => 0.0, 'interest' => 0],
+  ];
+}
+
+function &temp_user_data(): array {
+  if (!isset($_SESSION['temp_user_data']) || !is_array($_SESSION['temp_user_data'])) {
+    $_SESSION['temp_user_data'] = temp_user_default_store();
+  }
+  return $_SESSION['temp_user_data'];
+}
+
 function require_login(){
   if(!current_user()){ header('Location: ?pg=login'); exit; }
 }
@@ -42,6 +66,11 @@ function verify_password($pass,$hash){
   return hash('sha256',$pass,true) === $hash;
 }
 function temp_login(){
+  $_SESSION['temp_user_data'] = temp_user_default_store();
   $_SESSION['user'] = ['id'=>0,'username'=>'temp','cash'=>0,'gems'=>0];
 }
-function logout(){ $_SESSION=[]; session_destroy(); }
+
+function logout(){
+  $_SESSION=[];
+  session_destroy();
+}

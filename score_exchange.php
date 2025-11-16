@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/auth.php';
 require_login();
+require_once __DIR__.'/lib/temp_user.php';
 header('Content-Type: application/json');
 
 $data = json_decode(file_get_contents('php://input'), true) ?: [];
@@ -23,6 +24,21 @@ if (!isset($rates[$game]) || $score <= 0) {
     exit;
 }
 
+$amount = round($score * $rates[$game], 2);
+
+if ($uid === 0) {
+    temp_user_reset_score_counter_if_needed();
+    if (temp_user_score_counter() >= 3) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Daily exchange limit reached']);
+        exit;
+    }
+    temp_user_increment_score_counter();
+    $balance = temp_user_adjust_balance('cash', $amount);
+    echo json_encode(['cash' => $balance]);
+    exit;
+}
+
 $todayCount = q(
     "SELECT COUNT(*) FROM currency_ledger WHERE user_id = ? AND reason LIKE 'score_exchange_%' AND DATE(created_at) = CURDATE()",
     [$uid]
@@ -33,7 +49,6 @@ if ($todayCount >= 3) {
     exit;
 }
 
-$amount = round($score * $rates[$game], 2);
 q("INSERT INTO user_balances (user_id, currency_id, balance) VALUES (?,1,?) ON DUPLICATE KEY UPDATE balance = balance + VALUES(balance)",
   [$uid, $amount]);
 q(

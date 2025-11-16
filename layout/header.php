@@ -4,12 +4,14 @@ $header_pet = null;
 $random_event = null;
 if ($u) {
     require_once __DIR__.'/../lib/pets.php';
-    require_once __DIR__.'/../lib/random_events.php';
     $pets = get_user_pets($u['id']);
     if ($pets) {
         $header_pet = $pets[array_rand($pets)];
     }
-    $random_event = maybe_trigger_random_event($u);
+    if ((int)$u['id'] !== 0) {
+        require_once __DIR__.'/../lib/random_events.php';
+        $random_event = maybe_trigger_random_event($u);
+    }
 }
 ?>
 <!doctype html><html data-theme="light"><head>

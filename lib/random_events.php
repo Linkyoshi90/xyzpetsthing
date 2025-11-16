@@ -30,7 +30,7 @@ function random_event_catalog(): array
 function maybe_trigger_random_event(array $user): ?array
 {
     static $rolled = false;
-    if ($rolled || !$user) {
+    if ($rolled || !$user || (int)($user['id'] ?? 0) === 0) {
         return null;
     }
     $rolled = true;

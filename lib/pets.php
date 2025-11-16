@@ -1,7 +1,11 @@
 <?php
 require_once __DIR__.'/../db.php';
+require_once __DIR__.'/temp_user.php';
 
 function get_user_pets(int $user_id): array {
+    if ($user_id === 0) {
+        return temp_user_get_pets();
+    }
     return q(
         "SELECT pi.pet_instance_id,
                 pi.nickname,
