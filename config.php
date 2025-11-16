@@ -7,6 +7,9 @@ define('DB_PASS','KuronekoFTW90#'); // your password
 define('APP_NAME','Harmontide');
 define('CURR1', '');
 define('CURR2', '');
+define('APP_CURRENCY_CODE', 'DOSH');
+define('APP_CURRENCY_SHORT_NAME', 'Dosh');
+define('APP_CURRENCY_LONG_NAME', 'Cash-Dosh');
 define('USERNAME', '');
 define('CHAT_ENCRYPTION_KEY', 'SECRET_kagi');
 session_start();

@@ -159,7 +159,7 @@ function handle_event_currency_effect(int $user_id, array $effect, array &$balan
     $balances[$label] = $balance;
     $verb = $amount >= 0 ? 'gain' : 'lose';
     $absAmount = abs($amount);
-    $name = $currency === 'DOSH' ? 'coins' : 'gems';
+    $name = $currency === 'DOSH' ? APP_CURRENCY_LONG_NAME : 'gems';
     return sprintf('You %s %d %s.', $verb, $absAmount, $name);
 }
 

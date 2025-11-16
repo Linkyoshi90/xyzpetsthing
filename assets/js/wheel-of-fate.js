@@ -29,6 +29,9 @@
         }
         return pad(minutes) + ':' + pad(secs);
     }
+    function getCurrencyLongName() {
+        return (window.appCurrency && window.appCurrency.longName) || 'Cash-Dosh';
+    }
 
     function getTextColor(hex) {
         if (typeof hex !== 'string') {
@@ -279,7 +282,7 @@
                 resultElement.classList.remove('error');
                 resultElement.classList.add('success');
                 if (reward && reward.type === 'currency') {
-                    resultElement.textContent = 'You won ' + reward.amount + ' Cash!';
+                    resultElement.textContent = 'You won ' + reward.amount + ' ' + getCurrencyLongName() + '!';
                 } else if (reward && reward.type === 'item') {
                     resultElement.textContent = 'You won ' + reward.label + '!';
                 } else {

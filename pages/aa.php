@@ -26,7 +26,7 @@
   <p><strong>Heliadora</strong> is the antique capital of democracy in Aegia Aeterna-marble forums, vow-stones that hum under your palm, 
   and boulevards laid to a ruler's line. The old stories say the city was founded where a sunbeam struck the sea and turned to stone; 
   the people have kept those stones <em>meticulously</em> ever since. Mistreat a monument and you'll learn how quickly a smile becomes a 
-  summons-<strong>fines in the millions</strong> (denars, usually) are not a myth.</p>
+  summons-<strong>fines in the millions</strong> (<?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>, usually) are not a myth.</p>
 
   <p>The city's spirit is a braid of <strong>Aegian civic pride</strong> and a lively <strong>diaspora return</strong>: Aegians who grew 
   up across the ocean brought back street music, quick talk, and a fierce love of red sauce. You'll hear orators rehearsing in the 

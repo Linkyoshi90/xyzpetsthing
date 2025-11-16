@@ -14,12 +14,12 @@ $betValue = $state['bet'] > 0 ? $state['bet'] : 10;
 ?>
 <link rel="stylesheet" href="assets/css/blackjack.css">
 <h1>Blackjack</h1>
-<p class="muted">Beat the dealer without going over 21. The game only ends when you run out of cash.</p>
+<p class="muted">Beat the dealer without going over 21. The game only ends when you run out of <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>.</p>
 
 <div class="blackjack-info">
-    <div class="blackjack-balance">💰 Cash: <strong><?= (int)$cash_balance ?></strong></div>
+    <div class="blackjack-balance">💰 <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>: <strong><?= (int)$cash_balance ?></strong></div>
     <?php if ($state['bet'] > 0): ?>
-    <div class="blackjack-bet">Current bet: <?= (int)$state['bet'] ?></div>
+    <div class="blackjack-bet">Current bet: <?= (int)$state['bet'] ?> <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?></div>
     <?php endif; ?>
 </div>
 
@@ -88,7 +88,7 @@ $betValue = $state['bet'] > 0 ? $state['bet'] : 10;
         <button type="submit" class="btn">Deal</button>
     </form>
     <?php else: ?>
-    <div class="alert alert-error">You're out of cash. Better luck next time!</div>
+    <div class="alert alert-error">You're out of <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>. Better luck next time!</div>
     <?php endif; ?>
     <?php if ($state['status'] === 'round_over' && $cash_balance > 0): ?>
     <form method="post" action="index.php?pg=blackjack" class="reset-form">

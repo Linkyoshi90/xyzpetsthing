@@ -47,6 +47,11 @@ if($pg === 'blackjack' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require __DIR__.'/pages/blackjack_action.php';
   exit;
 }
+if($pg === 'aa-pizza' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/aa-pizza.php';
+  exit;
+}
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
 }

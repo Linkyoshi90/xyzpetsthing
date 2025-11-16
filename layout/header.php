@@ -47,6 +47,13 @@ $GLOBALS['app_chat_action_path'] = $chatActionPath;
         chatAction: <?= json_encode($chatActionPath, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
     });
 </script>
+<script>
+    window.appCurrency = Object.assign({}, window.appCurrency, {
+        code: <?= json_encode(APP_CURRENCY_CODE, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+        shortName: <?= json_encode(APP_CURRENCY_SHORT_NAME, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+        longName: <?= json_encode(APP_CURRENCY_LONG_NAME, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
+    });
+</script>
 <?php
 $game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'wheel-of-fate'];
 if (!in_array($pg ?? '', $game_pages)):

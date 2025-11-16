@@ -33,7 +33,7 @@ function wheel_of_fate_segments_data(): array {
         return [
             'type' => 'currency',
             'amount' => $amount,
-            'label' => number_format($amount).' Cash',
+            'label' => number_format($amount).' '.APP_CURRENCY_LONG_NAME,
         ];
     }, $currencyAmounts);
 
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             http_response_code(400);
             echo json_encode([
                 'success' => false,
-                'error' => 'You need '.number_format(WHEEL_OF_FATE_SPIN_COST).' Cash to spin the wheel.',
+                'error' => 'You need '.number_format(WHEEL_OF_FATE_SPIN_COST).' '.APP_CURRENCY_LONG_NAME.' to spin the wheel.',
                 'cooldownRemaining' => 0,
             ]);
             exit;
@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             http_response_code(400);
             echo json_encode([
                 'success' => false,
-                'error' => 'You need '.number_format(WHEEL_OF_FATE_SPIN_COST).' Cash to spin the wheel.',
+                'error' => 'You need '.number_format(WHEEL_OF_FATE_SPIN_COST).' '.APP_CURRENCY_LONG_NAME.' to spin the wheel.',
                 'cooldownRemaining' => 0,
             ]);
             exit;
@@ -256,8 +256,8 @@ window.WHEEL_OF_FATE_STATE = <?= json_encode([
 <script defer src="assets/js/wheel-of-fate.js"></script>
 
 <h1>Wheel of Fate</h1>
-<p class="muted">Spin the wheel to win between <?= WHEEL_OF_FATE_MIN_CASH ?> and <?= WHEEL_OF_FATE_MAX_CASH ?> Cash or snag one of <?= $itemCount ?> featured items.</p>
-<p class="muted small">The wheel is evenly divided across <?= count($segments) ?> prizes (<?= $itemCount ?> items, <?= $currencySlots ?> cash rewards).</p>
+<p class="muted">Spin the wheel to win between <?= WHEEL_OF_FATE_MIN_CASH ?> and <?= WHEEL_OF_FATE_MAX_CASH ?> <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?> or snag one of <?= $itemCount ?> featured items.</p>
+<p class="muted small">The wheel is evenly divided across <?= count($segments) ?> prizes (<?= $itemCount ?> items, <?= $currencySlots ?> <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?> rewards).</p>
 
 <div class="wheel-of-fate-layout">
     <div class="wheel-stage">
@@ -266,7 +266,7 @@ window.WHEEL_OF_FATE_STATE = <?= json_encode([
     </div>
     <div class="wheel-controls">
         <button id="spin-button" class="btn primary">Spin the Wheel</button>
-        <div class="spin-cost muted">Cost: <?= number_format(WHEEL_OF_FATE_SPIN_COST) ?> Cash</div>
+        <div class="spin-cost muted">Cost: <?= number_format(WHEEL_OF_FATE_SPIN_COST) ?> <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?></div>
         <div class="spin-cooldown muted">Next spin in: <span id="spin-cooldown"><?= $cooldownRemaining > 0 ? gmdate('H:i:s', $cooldownRemaining) : 'Ready' ?></span></div>
         <div class="spin-timer muted">Stopping in: <span id="spin-timer">--</span>s</div>
         <div id="spin-result" class="spin-result muted" role="status"></div>

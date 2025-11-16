@@ -1,3 +1,5 @@
+const getCurrencyLongName = () => (window.appCurrency && window.appCurrency.longName) || 'Cash-Dosh';
+
 document.addEventListener('DOMContentLoaded', () => {
     const exchangeBtn = document.querySelector('[data-sudoku-exchange]');
     if (exchangeBtn) {
@@ -24,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 const data = await res.json();
                 if (status) {
-                    status.textContent = `Score converted! New balance: ${data.cash}`;
+                    status.textContent = `Score converted! New ${getCurrencyLongName()} balance: ${data.cash}`;
                 }
                 exchangeBtn.textContent = 'Score submitted';
             } catch (err) {

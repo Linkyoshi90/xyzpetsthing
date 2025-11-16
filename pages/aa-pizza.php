@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
             </div>
             <figcaption>
               <strong><?= htmlspecialchars($item['name']) ?></strong>
-              <span class="muted"><?= $priceDisplay ?> denars</span>
+              <span class="muted"><?= $priceDisplay ?> <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?></span>
               <?php if ($stock !== null): ?>
               <span class="pizza-item-stock<?= $isSoldOut ? ' sold-out' : '' ?>">
                 <?php if ($isSoldOut): ?>Sold out<?php else: ?>Stock: <?= $stockLabel ?><?php endif; ?>
@@ -453,8 +453,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'check
           updateMenuButtonStock(itemId, stockValue);
         });
       }
-
-      setStatus(`${data.message} Total: ${formatPrice(data.total)} denars.`);
+      
+      const currencyLongName = (window.appCurrency && window.appCurrency.longName) || <?= json_encode(APP_CURRENCY_LONG_NAME, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+      setStatus(`${data.message} Total: ${formatPrice(data.total)} ${currencyLongName}.`);
       cart.clear();
       updateCartUI();
     } catch (err) {

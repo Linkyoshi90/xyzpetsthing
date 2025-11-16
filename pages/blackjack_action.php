@@ -17,12 +17,12 @@ switch ($action) {
         }
         $bet = isset($_POST['bet']) ? (int)$_POST['bet'] : 0;
         if ($bet < 1) {
-            $errors[] = 'Bet at least 1 coin to start.';
+            $errors[] = 'Bet at least 1 '.APP_CURRENCY_LONG_NAME.' to start.';
             break;
         }
         $balance = blackjack_get_cash_balance($uid);
         if ($bet > $balance) {
-            $errors[] = 'You do not have enough cash for that bet.';
+            $errors[] = 'You do not have enough '.APP_CURRENCY_LONG_NAME.' for that bet.';
             break;
         }
         $deck = blackjack_create_deck();

@@ -51,5 +51,5 @@
   <hr>
 
   <h3>Traveler’s Note</h3>
-  <p>Skeldgard does not care if you are important; it cares if you are <em>kept</em>. Keep your word, keep your boots by the door, keep a coin for the ferry-boy, keep a story for the night-do these and the city will keep you. Fail, and you may feel the law like a cold hand on the back of your neck, guiding you politely to the loom.</p>
+  <p>Skeldgard does not care if you are important; it cares if you are <em>kept</em>. Keep your word, keep your boots by the door, keep a <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?> coin for the ferry-boy, keep a story for the night-do these and the city will keep you. Fail, and you may feel the law like a cold hand on the back of your neck, guiding you politely to the loom.</p>
 </section>
