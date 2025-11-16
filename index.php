@@ -19,6 +19,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory',
     'urb','xochimex','yamanokubo','yn',
     // country subsections
     'aa-adventure','aa-pizza',
+    'aa-library',
 ];
 if(current_user()) {
   apply_daily_interest(current_user()['id']);

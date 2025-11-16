@@ -1,4 +1,7 @@
-<?php require_login(); ?>
+<?php
+require_login();
+require_once __DIR__.'/../lib/shops.php';
+?>
 <h1>Aegia Aeterna - Heliadora </h1>
 <section id="heliadora">
   <h2>Heliadora - <em>"Gift of the Sun"</em></h2>
@@ -18,9 +21,15 @@
   </div>
 
   <div class="card glass">
-    <h3>Pizzeria Sol Invicta</h3>
+    <h3><?= htmlspecialchars((shop_get(4)['shop_name'] ?? 'Pizzeria Sol Invicta')) ?></h3>
     <p class="muted">Brick-fired pies, sun-braised olives, and red sauce argued over by civic poets.</p>
     <a class="btn" href="?pg=aa-pizza">Enter</a>
+  </div>
+
+  <div class="card glass">
+    <h3><?= htmlspecialchars((shop_get(5)['shop_name'] ?? 'Library Annex')) ?></h3>
+    <p class="muted">A marble reading hall where scribes loan illuminated epics and civic treatises.</p>
+    <a class="btn" href="?pg=aa-library">Browse</a>
   </div>
 
   <p><strong>Heliadora</strong> is the antique capital of democracy in Aegia Aeterna-marble forums, vow-stones that hum under your palm, 
