@@ -288,8 +288,6 @@ INSERT INTO currencies (currency_code, display_name) VALUES
 
 -- 2) Users (store hash bytes via UNHEX(SHA2(...)))
 INSERT INTO users (username, email, password_hash) VALUES
-('alice','alice@example.com', UNHEX(SHA2('alicepw@#@#',256))),
-('bob','bob@example.com',   UNHEX(SHA2('bobpw@#@#',256))),
 ('cara','cara@example.com', UNHEX(SHA2('carapw@#@#',256)));
 
 -- 3) Starting balances
@@ -524,6 +522,9 @@ INSERT INTO pet_colors (color_name) VALUES
 INSERT INTO shops (shop_name, region_id, is_npc, restock_every_minutes, last_restok_at) VALUES
 ('Eternal General Store', 1, 1, 60,  NULL),
 ('Crescent Bazaar',       2, 1, 90,  NULL),
+('Rodian Emporium',       3, 1, 120, NULL),
+('Pizzeria Sol Invicta',  1, 1, 60, NULL),
+('Crescent Bazaar',       2, 1, 90, NULL),
 ('Rodian Emporium',       3, 1, 120, NULL);
 
 INSERT INTO shop_inventory (shop_id, item_id, price, stock) VALUES

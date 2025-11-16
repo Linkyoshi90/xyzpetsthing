@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_login();
 require_once __DIR__.'/../lib/shops.php';
 
