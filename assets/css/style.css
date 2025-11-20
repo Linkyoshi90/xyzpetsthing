@@ -1177,3 +1177,47 @@ ul.tight {
 .pizza-cart__status {
     min-height: 1.4em;
 }
+}
+/* Fishing minigame */
+.fishing-layout {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin: 16px auto 32px auto;
+}
+
+.fishing-wrapper {
+    display: flex;
+    gap: 10px;
+    background: #fff;
+    padding: 10px;
+    border: 4px solid #3b82f6;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    width: max-content;
+}
+
+#fishing-ui,
+#fishing-game {
+    border-radius: 4px;
+    display: block;
+}
+
+#fishing-ui {
+    background-color: #f0f9ff;
+    border: 2px solid #bae6fd;
+}
+
+#fishing-game {
+    background-color: #0ea5e9;
+    border: 2px solid #0284c7;
+    cursor: crosshair;
+}
+
+.fishing-instructions {
+    background: rgba(255,255,255,0.85);
+    padding: 8px 16px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
