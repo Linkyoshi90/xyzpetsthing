@@ -476,6 +476,44 @@ input, select {
     padding: 30px
 }
 
+.foot-status {
+    display: grid;
+    gap: 8px;
+    justify-items: center;
+}
+
+.foot-errors {
+    display: inline-flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    color: var(--muted);
+    max-width: 720px;
+    text-align: left;
+}
+
+    .foot-errors ul {
+        margin: 0;
+        padding-left: 18px;
+    }
+
+    .foot-errors li {
+        line-height: 1.4;
+    }
+
+.content-error {
+    margin: 18px 0;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #522a2a;
+    color: #f5dada;
+    border: 1px solid #b66b6b;
+}
+
+
 .muted {
     color: var(--muted)
 }

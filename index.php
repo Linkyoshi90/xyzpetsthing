@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__.'/lib/errors.php';
 require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 $pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
@@ -58,5 +59,12 @@ if(current_user()) {
 }
 if(!in_array($pg,$allowed)) $pg = 'login';
 include __DIR__.'/layout/header.php';
-include __DIR__.'/pages/'.$pg.'.php';
+
+try {
+  include __DIR__.'/pages/'.$pg.'.php';
+} catch (Throwable $e) {
+  app_add_error_from_exception($e, 'Page rendering failed:');
+  echo '<div class="content-error" role="alert">We ran into a problem loading this page. Please try again later.</div>';
+}
+
 include __DIR__.'/layout/footer.php';
