@@ -3,6 +3,7 @@
     const GAME_HEIGHT = 600;
     const UI_WIDTH = 200;
     const WATER_LEVEL = 100; // Y position where water starts
+    const FALLBACK_FISH_SIZE = 70;
 
     const KEYS = {
         W: false,
@@ -17,6 +18,8 @@
         REELING_UP: 2,
         GAME_OVER: 3
     };
+
+    const slugify = (str) => str.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 
     class FishingGame {
         constructor() {
@@ -37,10 +40,17 @@
             this.hook = { x: GAME_WIDTH / 2, y: 60, vy: 0, caughtFish: [] };
             this.fishes = [];
             this.particles = [];
-
-            this.images = {};
+            
+            this.creatures = [];
+            this.spritePool = [];
+            this.imageCache = new Map();
+            this.gameOverFlag = false;
+            this.exchangeButton = document.getElementById('fishing-exchange-btn');
+            this.exchangeStatus = document.getElementById('fishing-finish-status');
+            this.exchangeButton?.addEventListener('click', () => this.submitScore());
 
             this.bindInput();
+            this.loadCreatures();
             this.gameLoop();
         }
 
@@ -60,13 +70,131 @@
             });
         }
 
+        async loadCreatures() {
+            try {
+                const [nameRes, mapRes] = await Promise.all([
+                    fetch('data-readonly/available_creatures.txt'),
+                    fetch('assets/data/fishing_creatures.json')
+                ]);
+
+                if (!nameRes.ok || !mapRes.ok) return;
+
+                const names = (await nameRes.text())
+                    .split(/\r?\n/)
+                    .map(n => n.trim())
+                    .filter(Boolean);
+                const allowedSlugs = new Set(names.map(slugify));
+
+                const mapJson = await mapRes.json();
+                this.creatures = (mapJson.creatures || [])
+                    .filter(entry => allowedSlugs.has(entry.slug) && Array.isArray(entry.files))
+                    .map(entry => ({
+                        name: entry.name,
+                        slug: entry.slug,
+                        files: entry.files
+                    }));
+
+                this.spritePool = this.creatures.flatMap(creature =>
+                    creature.files.map(file => this.registerSprite(file, creature.name))
+                );
+
+                // Ensure any already-spawned fish pick up sprites once loaded
+                this.fishes.forEach(fish => {
+                    if (!fish.sprite) {
+                        const sprite = this.pickCreatureSprite();
+                        if (sprite) this.applySpriteToFish(fish, sprite);
+                    }
+                });
+            } catch (err) {
+                console.error('Failed to load fishing sprites', err);
+            }
+        }
+
+        registerSprite(file, creatureName) {
+            if (this.imageCache.has(file)) return this.imageCache.get(file);
+
+            const img = new Image();
+            const sprite = {
+                file,
+                name: creatureName,
+                img,
+                loaded: false,
+                width: FALLBACK_FISH_SIZE,
+                height: FALLBACK_FISH_SIZE
+            };
+
+            img.onload = () => {
+                sprite.loaded = true;
+                const { width, height } = this.getSpriteDimensions(img);
+                sprite.width = width;
+                sprite.height = height;
+            };
+            img.onerror = () => {
+                sprite.loaded = false;
+            };
+            img.src = `images/${file}`;
+
+            this.imageCache.set(file, sprite);
+            return sprite;
+        }
+
+        getSpriteDimensions(img) {
+            if (img && img.naturalWidth && img.naturalHeight) {
+                const aspect = img.naturalWidth / img.naturalHeight;
+                const height = Math.min(Math.max(FALLBACK_FISH_SIZE, 48), 96);
+                const width = Math.min(Math.max(height * aspect, 48), 140);
+                return { width, height };
+            }
+            return { width: FALLBACK_FISH_SIZE, height: FALLBACK_FISH_SIZE };
+        }
+
+        pickCreatureSprite() {
+            if (!this.spritePool.length) return null;
+            const idx = Math.floor(Math.random() * this.spritePool.length);
+            return this.spritePool[idx];
+        }
+
+        applySpriteToFish(fish, sprite) {
+            fish.sprite = sprite;
+            if (sprite.loaded) {
+                fish.width = sprite.width;
+                fish.height = sprite.height;
+            } else {
+                sprite.img.onload = () => {
+                    const { width, height } = this.getSpriteDimensions(sprite.img);
+                    sprite.width = width;
+                    sprite.height = height;
+                    fish.width = width;
+                    fish.height = height;
+                };
+            }
+        }
+
         startCast() {
+            if (this.state === STATE.GAME_OVER || this.gameOverFlag) return;
             if (!this.startTime) this.startTime = Date.now();
             this.bait--;
             this.state = STATE.CASTING_DOWN;
             this.hook.y = WATER_LEVEL + 10;
             this.hook.caughtFish = [];
             this.hook.vy = 2;
+        }
+        
+        endGame() {
+            if (this.gameOverFlag) return;
+            this.state = STATE.GAME_OVER;
+            this.gameOverFlag = true;
+            this.hook.caughtFish = [];
+            this.fishes = [];
+            this.cameraY = 0;
+
+            if (this.exchangeStatus) {
+                this.exchangeStatus.textContent = 'Out of bait! Submit your score to convert it to dosh.';
+            }
+            if (this.exchangeButton) {
+                this.exchangeButton.hidden = false;
+                this.exchangeButton.disabled = false;
+            }
         }
 
         createConfetti(x, y) {
@@ -92,18 +220,24 @@
 
             const direction = Math.random() > 0.5 ? 1 : -1;
             const startX = direction === 1 ? -100 : GAME_WIDTH + 100;
-
-            this.fishes.push({
+            
+            const fish = {
                 x: startX,
                 y: Math.max(spawnDepth, WATER_LEVEL + 50),
-                width: 40,
-                height: 25,
+                width: FALLBACK_FISH_SIZE,
+                height: FALLBACK_FISH_SIZE,
                 speed: (1 + Math.random() * 2) * direction,
                 type: Math.floor(Math.random() * 3),
                 isGold: isGold,
                 hasBait: hasBait,
-                caught: false
-            });
+                caught: false,
+                sprite: null
+            };
+
+            const sprite = this.pickCreatureSprite();
+            if (sprite) this.applySpriteToFish(fish, sprite);
+
+            this.fishes.push(fish);
         }
 
         update() {
@@ -113,6 +247,9 @@
                 const s = (totalSeconds % 60).toString().padStart(2, '0');
                 this.elapsedTime = `${m}:${s}`;
             }
+            if (!this.gameOverFlag && this.bait <= 0 && this.state === STATE.IDLE) {
+                this.endGame();
+            }
 
             for (let i = this.particles.length - 1; i >= 0; i--) {
                 let p = this.particles[i];
@@ -120,6 +257,10 @@
                 p.y += p.vy;
                 p.life -= 0.02;
                 if (p.life <= 0) this.particles.splice(i, 1);
+            }
+            if (this.state === STATE.GAME_OVER) {
+                this.cameraY = 0;
+                return;
             }
 
             if (this.state === STATE.IDLE) {
@@ -171,6 +312,15 @@
             const swimmingFishCount = this.fishes.filter(f => !f.caught).length;
             if (swimmingFishCount < 15) {
                 this.spawnFish();
+            }
+            
+            if (this.spritePool.length) {
+                this.fishes.forEach(fish => {
+                    if (!fish.sprite) {
+                        const sprite = this.pickCreatureSprite();
+                        if (sprite) this.applySpriteToFish(fish, sprite);
+                    }
+                });
             }
 
             for (let i = this.fishes.length - 1; i >= 0; i--) {
@@ -240,7 +390,7 @@
             this.state = STATE.IDLE;
 
             if (this.bait <= 0) {
-                // Game over handling could be added here
+                this.endGame();
             }
         }
 
@@ -285,6 +435,16 @@
             ctx.lineTo(UI_WIDTH/2, yPos + 50);
             ctx.arc(UI_WIDTH/2 - 10, yPos + 50, 10, 0, Math.PI, false);
             ctx.stroke();
+            
+            if (this.gameOverFlag) {
+                ctx.fillStyle = "#dc2626";
+                ctx.font = "bold 18px sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("Out of bait!", UI_WIDTH / 2, yPos + 90);
+                ctx.fillStyle = "#475569";
+                ctx.font = "14px sans-serif";
+                ctx.fillText("Submit your score", UI_WIDTH / 2, yPos + 112);
+            }
         }
 
         drawStatBox(ctx, x, y, label, value) {
@@ -395,42 +555,53 @@
             if (fish.speed < 0) {
                 ctx.scale(-1, 1);
             }
-
-            if (fish.isGold) {
-                ctx.shadowColor = "gold";
-                ctx.shadowBlur = 15;
+            
+            if (fish.sprite && fish.sprite.img) {
+                const drawWidth = fish.sprite.width || fish.width;
+                const drawHeight = fish.sprite.height || fish.height;
+                ctx.drawImage(
+                    fish.sprite.img,
+                    -drawWidth / 2,
+                    -drawHeight / 2,
+                    drawWidth,
+                    drawHeight
+                );
             } else {
-                ctx.shadowBlur = 0;
+                if (fish.isGold) {
+                    ctx.shadowColor = "gold";
+                    ctx.shadowBlur = 15;
+                } else {
+                    ctx.shadowBlur = 0;
+                }
+            
+                if (fish.type === 0) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#f87171";
+                if (fish.type === 1) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#4ade80";
+                if (fish.type === 2) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#c084fc";
+            
+                ctx.beginPath();
+                ctx.ellipse(0, 0, 20, 12, 0, 0, Math.PI * 2);
+                ctx.fill();
+            
+                ctx.beginPath();
+                ctx.moveTo(-15, 0);
+                ctx.lineTo(-30, -10);
+                ctx.lineTo(-30, 10);
+                ctx.fill();
+            
+                ctx.beginPath();
+                ctx.moveTo(0, -10);
+                ctx.lineTo(5, -18);
+                ctx.lineTo(10, -10);
+                ctx.fill();
+                ctx.fillStyle = "white";
+                ctx.beginPath();
+                ctx.arc(10, -3, 4, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = "black";
+                ctx.beginPath();
+                ctx.arc(11, -3, 2, 0, Math.PI*2);
+                ctx.fill();
             }
-
-            if (fish.type === 0) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#f87171";
-            if (fish.type === 1) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#4ade80";
-            if (fish.type === 2) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#c084fc";
-
-            ctx.beginPath();
-            ctx.ellipse(0, 0, 20, 12, 0, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(-15, 0);
-            ctx.lineTo(-30, -10);
-            ctx.lineTo(-30, 10);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.moveTo(0, -10);
-            ctx.lineTo(5, -18);
-            ctx.lineTo(10, -10);
-            ctx.fill();
-
-            ctx.fillStyle = "white";
-            ctx.beginPath();
-            ctx.arc(10, -3, 4, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = "black";
-            ctx.beginPath();
-            ctx.arc(11, -3, 2, 0, Math.PI*2);
-            ctx.fill();
 
             if (fish.hasBait) {
                 ctx.fillStyle = "white";
@@ -441,6 +612,45 @@
             }
 
             ctx.restore();
+        }
+        async submitScore() {
+            if (!this.exchangeButton) return;
+
+            this.exchangeButton.disabled = true;
+            if (this.exchangeStatus) {
+                this.exchangeStatus.textContent = 'Submitting score...';
+            }
+
+            try {
+                const response = await fetch('score_exchange.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ game: 'fishing', score: Math.max(0, Math.round(this.score)) })
+                });
+                const data = await response.json();
+
+                if (!response.ok || data.error) {
+                    const message = data?.error || 'Unable to submit score right now.';
+                    if (this.exchangeStatus) this.exchangeStatus.textContent = message;
+                    this.exchangeButton.disabled = false;
+                    return;
+                }
+
+                if (window.updateCurrencyDisplay && data.cash !== undefined) {
+                    window.updateCurrencyDisplay({ cash: data.cash });
+                }
+
+                if (this.exchangeStatus) {
+                    this.exchangeStatus.textContent = 'Score converted! Redirecting to score exchange...';
+                }
+
+                setTimeout(() => {
+                    window.location.href = '?pg=games';
+                }, 750);
+            } catch (err) {
+                if (this.exchangeStatus) this.exchangeStatus.textContent = 'Unable to submit score right now.';
+                this.exchangeButton.disabled = false;
+            }
         }
 
         gameLoop() {

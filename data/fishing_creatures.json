@@ -1,0 +1,754 @@
+{
+  "creatures": [
+    {
+      "name": "Ahuizotl",
+      "slug": "ahuizotl",
+      "files": [
+        "ahuizotl_f_8bit.webp",
+        "ahuizotl_f_blue.webp",
+        "ahuizotl_f_green.webp",
+        "ahuizotl_f_purple.webp",
+        "ahuizotl_f_red.webp",
+        "ahuizotl_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Amarok",
+      "slug": "amarok",
+      "files": [
+        "amarok_f_black.webp",
+        "amarok_f_blue.webp",
+        "amarok_f_green.webp",
+        "amarok_f_purple.webp",
+        "amarok_f_red.webp",
+        "amarok_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Amaru",
+      "slug": "amaru",
+      "files": [
+        "amaru_f_blue.webp",
+        "amaru_f_green.webp",
+        "amaru_f_purple.webp",
+        "amaru_f_red.webp",
+        "amaru_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Angel",
+      "slug": "angel",
+      "files": [
+        "angel_f_blue.webp",
+        "angel_f_fcamo.webp",
+        "angel_f_green.webp",
+        "angel_f_nude.webp",
+        "angel_f_purple.webp",
+        "angel_f_red.webp",
+        "angel_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Anubis",
+      "slug": "anubis",
+      "files": [
+        "anubis_f_black.webp",
+        "anubis_f_blue.webp",
+        "anubis_f_green.webp",
+        "anubis_f_nude.webp",
+        "anubis_f_purple.webp",
+        "anubis_f_red.webp",
+        "anubis_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Argentinosaurus",
+      "slug": "argentinosaurus",
+      "files": [
+        "argentinosaurus_f_blue.webp",
+        "argentinosaurus_f_green.webp",
+        "argentinosaurus_f_purple.webp",
+        "argentinosaurus_f_red.webp",
+        "argentinosaurus_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Azureus",
+      "slug": "azureus",
+      "files": [
+        "azureus_f_blue.webp",
+        "azureus_f_green.webp",
+        "azureus_f_purple.webp",
+        "azureus_f_realistic.webp",
+        "azureus_f_realistic2.webp",
+        "azureus_f_red.webp",
+        "azureus_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Bahamut",
+      "slug": "bahamut",
+      "files": [
+        "bahamut_f_blue.webp",
+        "bahamut_f_green.webp",
+        "bahamut_f_purple.webp",
+        "bahamut_f_red.webp",
+        "bahamut_f_scary.webp",
+        "bahamut_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Banshee",
+      "slug": "banshee",
+      "files": [
+        "banshee_f_blue.webp",
+        "banshee_f_green.webp",
+        "banshee_f_grey.webp",
+        "banshee_f_purple.webp",
+        "banshee_f_red.webp",
+        "banshee_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Black Turtle",
+      "slug": "black_turtle",
+      "files": [
+        "black_turtle_f_blue.webp",
+        "black_turtle_f_green.webp",
+        "black_turtle_f_purple.webp",
+        "black_turtle_f_red.webp",
+        "black_turtle_f_yellow.webp",
+        "black_turtle_m_blue.webp",
+        "black_turtle_m_red.webp"
+      ]
+    },
+    {
+      "name": "Bunyip",
+      "slug": "bunyip",
+      "files": [
+        "bunyip_f_blue.webp",
+        "bunyip_f_green.webp",
+        "bunyip_f_neon.webp",
+        "bunyip_f_purple.webp",
+        "bunyip_f_red.webp",
+        "bunyip_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Capybara",
+      "slug": "capybara",
+      "files": [
+        "capybara_f_blue.webp",
+        "capybara_f_brown.webp",
+        "capybara_f_green.webp",
+        "capybara_f_purple.webp",
+        "capybara_f_red.webp",
+        "capybara_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Centaur",
+      "slug": "centaur",
+      "files": [
+        "Centaur_f_maid.webp",
+        "centaur_f_8bit.webp",
+        "centaur_f_baby.webp",
+        "centaur_f_biscuit.webp",
+        "centaur_f_black.webp",
+        "centaur_f_blue.webp",
+        "centaur_f_brown.webp",
+        "centaur_f_burlap.webp",
+        "centaur_f_bw.webp",
+        "centaur_f_checkered.webp",
+        "centaur_f_chocolate.webp",
+        "centaur_f_christmas.webp",
+        "centaur_f_clouds.webp",
+        "centaur_f_ecchi.webp",
+        "centaur_f_eww.webp",
+        "centaur_f_fabric.webp",
+        "centaur_f_fairy.webp",
+        "centaur_f_fcam.webp",
+        "centaur_f_feral.webp",
+        "centaur_f_festival.webp",
+        "centaur_f_festival2.webp",
+        "centaur_f_fire.webp",
+        "centaur_f_giraffe.webp",
+        "centaur_f_gold.webp",
+        "centaur_f_green.webp",
+        "centaur_f_grey.webp",
+        "centaur_f_gummy.webp",
+        "centaur_f_gyaru.webp",
+        "centaur_f_hero.webp",
+        "centaur_f_ice.webp",
+        "centaur_f_icecream.webp",
+        "centaur_f_island.webp",
+        "centaur_f_jello.webp",
+        "centaur_f_milk.webp",
+        "centaur_f_muffin.webp",
+        "centaur_f_neon.webp",
+        "centaur_f_orange.webp",
+        "centaur_f_origami.webp",
+        "centaur_f_pencil.webp",
+        "centaur_f_pink.webp",
+        "centaur_f_plush.webp",
+        "centaur_f_plush2.webp",
+        "centaur_f_purple.webp",
+        "centaur_f_rainbow.webp",
+        "centaur_f_realistic.webp",
+        "centaur_f_red.webp",
+        "centaur_f_relic.webp",
+        "centaur_f_senator.webp",
+        "centaur_f_shadow.webp",
+        "centaur_f_silver.webp",
+        "centaur_f_snow.webp",
+        "centaur_f_split.webp",
+        "centaur_f_sponge.webp",
+        "centaur_f_strawberry.webp",
+        "centaur_f_sunburnt.webp",
+        "centaur_f_sunset.webp",
+        "centaur_f_thunder.webp",
+        "centaur_f_toy.webp",
+        "centaur_f_valentine.webp",
+        "centaur_f_white.webp",
+        "centaur_f_yellow.webp",
+        "centaur_f_zebra.webp",
+        "centaur_m_brown.webp"
+      ]
+    },
+    {
+      "name": "Charro Negro",
+      "slug": "charro_negro",
+      "files": [
+        "charro_negro_f_blue.webp",
+        "charro_negro_f_green.webp",
+        "charro_negro_f_purple.webp",
+        "charro_negro_f_purple2.webp",
+        "charro_negro_f_red.webp",
+        "charro_negro_f_yellow.webp",
+        "charro_negro_m_blue.webp"
+      ]
+    },
+    {
+      "name": "Chupacabra",
+      "slug": "chupacabra",
+      "files": [
+        "chupacabra_f_blue.webp",
+        "chupacabra_f_green.webp",
+        "chupacabra_f_purple.webp",
+        "chupacabra_f_red.webp",
+        "chupacabra_f_yellow.webp",
+        "chupacabra_m_blue.webp",
+        "chupacabra_m_fblue.webp"
+      ]
+    },
+    {
+      "name": "Cipactli",
+      "slug": "cipactli",
+      "files": [
+        "cipactli_f_blue.webp",
+        "cipactli_f_green.webp",
+        "cipactli_f_purple.webp",
+        "cipactli_f_red.webp",
+        "cipactli_f_yellow.webp",
+        "cipactli_m_blue.webp",
+        "cipactli_m_pencil.webp"
+      ]
+    },
+    {
+      "name": "Crab man",
+      "slug": "crab_man",
+      "files": [
+        "crab_man_f_blue.webp",
+        "crab_man_f_green.webp",
+        "crab_man_f_orange.webp",
+        "crab_man_f_purple.webp",
+        "crab_man_f_red.webp",
+        "crab_man_f_yellow.webp",
+        "crab_man_m_blue.webp"
+      ]
+    },
+    {
+      "name": "Curupira",
+      "slug": "curupira",
+      "files": [
+        "curupira_f_blue.webp",
+        "curupira_f_green.webp",
+        "curupira_f_purple.webp",
+        "curupira_f_red.webp",
+        "curupira_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Demon",
+      "slug": "demon",
+      "files": [
+        "demon_f_blue.webp",
+        "demon_f_fcamo.webp",
+        "demon_f_green.webp",
+        "demon_f_purple.webp",
+        "demon_f_red.webp",
+        "demon_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Dolphin",
+      "slug": "dolphin",
+      "files": [
+        "dolphin_f_blue.webp",
+        "dolphin_f_fairy.webp",
+        "dolphin_f_green.webp",
+        "dolphin_f_purple.webp",
+        "dolphin_f_red.webp",
+        "dolphin_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Drop Bear",
+      "slug": "drop_bear",
+      "files": [
+        "drop_bear_f_blue.webp",
+        "drop_bear_f_green.webp",
+        "drop_bear_f_grey.webp",
+        "drop_bear_f_purple.webp",
+        "drop_bear_f_red.webp",
+        "drop_bear_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Dullahan",
+      "slug": "dullahan",
+      "files": [
+        "dullahan_f_blue.webp",
+        "dullahan_f_green.webp",
+        "dullahan_f_plush.webp",
+        "dullahan_f_purple.webp",
+        "dullahan_f_red.webp",
+        "dullahan_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Fishman",
+      "slug": "fishman",
+      "files": [
+        "fishman_f_blue.webp",
+        "fishman_f_green.webp",
+        "fishman_f_purple.webp",
+        "fishman_f_red.webp",
+        "fishman_f_yellow.webp",
+        "fishman_m_blue.webp"
+      ]
+    },
+    {
+      "name": "Gandharva",
+      "slug": "gandharva",
+      "files": [
+        "gandharva_f_blue.webp",
+        "gandharva_f_green.webp",
+        "gandharva_f_purple.webp",
+        "gandharva_f_red.webp",
+        "gandharva_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Genie",
+      "slug": "genie",
+      "files": [
+        "genie_f_blue.webp",
+        "genie_f_fcamo.webp",
+        "genie_f_green.webp",
+        "genie_f_purple.webp",
+        "genie_f_red.webp",
+        "genie_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Girtablilu",
+      "slug": "girtablilu",
+      "files": [
+        "girtablilu_f_black.webp",
+        "girtablilu_f_blue.webp",
+        "girtablilu_f_green.webp",
+        "girtablilu_f_purple.webp",
+        "girtablilu_f_red.webp",
+        "girtablilu_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Golem",
+      "slug": "golem",
+      "files": [
+        "golem_f_blue.webp",
+        "golem_f_clay.webp",
+        "golem_f_green.webp",
+        "golem_f_island.webp",
+        "golem_f_purple.webp",
+        "golem_f_red.webp",
+        "golem_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Horned Serpent Uktena",
+      "slug": "horned_serpent_uktena",
+      "files": [
+        "horned_serpent_uktena_f_blue.webp",
+        "horned_serpent_uktena_f_feral.webp",
+        "horned_serpent_uktena_f_green.webp",
+        "horned_serpent_uktena_f_purple.webp",
+        "horned_serpent_uktena_f_red.webp",
+        "horned_serpent_uktena_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Jack-o-lantern",
+      "slug": "jack_o_lantern",
+      "files": [
+        "jack_o_lantern_f_blue.webp",
+        "jack_o_lantern_f_green.webp",
+        "jack_o_lantern_f_orange.webp",
+        "jack_o_lantern_f_purple.webp",
+        "jack_o_lantern_f_red.webp",
+        "jack_o_lantern_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Jiang-Shi",
+      "slug": "jiang_shi",
+      "files": [
+        "jiang_shi_f_blue.webp",
+        "jiang_shi_f_green.webp",
+        "jiang_shi_f_purple.webp",
+        "jiang_shi_f_red.webp",
+        "jiang_shi_f_split.webp",
+        "jiang_shi_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Kelpie",
+      "slug": "kelpie",
+      "files": [
+        "kelpie_f_blue.webp",
+        "kelpie_f_green.webp",
+        "kelpie_f_purple.webp",
+        "kelpie_f_red.webp",
+        "kelpie_f_sponge.webp",
+        "kelpie_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Kitsune",
+      "slug": "kitsune",
+      "files": [
+        "kitsune_f_baby.webp",
+        "kitsune_f_blue.webp",
+        "kitsune_f_fcamo.webp",
+        "kitsune_f_green.webp",
+        "kitsune_f_purple.webp",
+        "kitsune_f_red.webp",
+        "kitsune_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Kraken",
+      "slug": "kraken",
+      "files": [
+        "kraken_f_blue.webp",
+        "kraken_f_green.webp",
+        "kraken_f_purple.webp",
+        "kraken_f_red.webp",
+        "kraken_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "La Llorona",
+      "slug": "la_llorona",
+      "files": [
+        "la_llorona_f_blue.webp",
+        "la_llorona_f_fblue.webp",
+        "la_llorona_f_green.webp",
+        "la_llorona_f_purple.webp",
+        "la_llorona_f_red.webp",
+        "la_llorona_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Lamassu",
+      "slug": "lamassu",
+      "files": [
+        "lamassu_f_blue.webp",
+        "lamassu_f_green.webp",
+        "lamassu_f_purple.webp",
+        "lamassu_f_red.webp",
+        "lamassu_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Lamia",
+      "slug": "lamia",
+      "files": [
+        "lamia_f_8bit.webp",
+        "lamia_f_baby.webp",
+        "lamia_f_bikini.webp",
+        "lamia_f_biscuit.webp",
+        "lamia_f_black.webp",
+        "lamia_f_blackwhite.webp",
+        "lamia_f_blue.webp",
+        "lamia_f_brown.webp",
+        "lamia_f_burlap.webp",
+        "lamia_f_checkered.webp",
+        "lamia_f_chocolate.webp",
+        "lamia_f_christmas.webp",
+        "lamia_f_clouds.webp",
+        "lamia_f_coral.webp",
+        "lamia_f_ecchi.webp",
+        "lamia_f_eww.webp",
+        "lamia_f_fabric.webp",
+        "lamia_f_fairy.webp",
+        "lamia_f_fcam.webp",
+        "lamia_f_feral.webp",
+        "lamia_f_feral2.webp",
+        "lamia_f_festival.webp",
+        "lamia_f_festival2.webp",
+        "lamia_f_fire.webp",
+        "lamia_f_gold.webp",
+        "lamia_f_green.webp",
+        "lamia_f_grey.webp",
+        "lamia_f_gummy.webp",
+        "lamia_f_gyaru.webp",
+        "lamia_f_ice.webp",
+        "lamia_f_icecream.webp",
+        "lamia_f_island.webp",
+        "lamia_f_jello.webp",
+        "lamia_f_maid.webp",
+        "lamia_f_mge.webp",
+        "lamia_f_milk.webp",
+        "lamia_f_muffin.webp",
+        "lamia_f_neon.webp",
+        "lamia_f_oracle.webp",
+        "lamia_f_orange.webp",
+        "lamia_f_origami.webp",
+        "lamia_f_pencil.webp",
+        "lamia_f_pink.webp",
+        "lamia_f_plush.webp",
+        "lamia_f_purple.webp",
+        "lamia_f_python.webp",
+        "lamia_f_rainbow.webp",
+        "lamia_f_realistic.webp",
+        "lamia_f_red.webp",
+        "lamia_f_relic.webp",
+        "lamia_f_senator.webp",
+        "lamia_f_shadow.webp",
+        "lamia_f_silver.webp",
+        "lamia_f_snow.webp",
+        "lamia_f_split.webp",
+        "lamia_f_sponge.webp",
+        "lamia_f_strawberry.webp",
+        "lamia_f_sunburnt.webp",
+        "lamia_f_sunset.webp",
+        "lamia_f_thunder.webp",
+        "lamia_f_toy.webp",
+        "lamia_f_valentine.webp",
+        "lamia_f_white.webp",
+        "lamia_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Leshy",
+      "slug": "leshy",
+      "files": [
+        "leshy_f_blue.webp",
+        "leshy_f_blue2.webp",
+        "leshy_f_green.webp",
+        "leshy_f_purple.webp",
+        "leshy_f_red.webp",
+        "leshy_f_yellow.webp",
+        "leshy_m_blue.webp"
+      ]
+    },
+    {
+      "name": "Lich",
+      "slug": "lich",
+      "files": [
+        "lich_f_blue.webp",
+        "lich_f_green.webp",
+        "lich_f_purple.webp",
+        "lich_f_red.webp",
+        "lich_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Min-Min Lights",
+      "slug": "min_min_lights",
+      "files": [
+        "min_min_lights_f_blue.webp",
+        "min_min_lights_f_green.webp",
+        "min_min_lights_f_purple.webp",
+        "min_min_lights_f_red.webp",
+        "min_min_lights_f_white.webp",
+        "min_min_lights_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Naga",
+      "slug": "naga",
+      "files": [
+        "naga_f_blue.webp",
+        "naga_f_green.webp",
+        "naga_f_purple.webp",
+        "naga_f_red.webp",
+        "naga_f_yellow.webp",
+        "naga_m_blue.webp"
+      ]
+    },
+    {
+      "name": "Ocelot",
+      "slug": "ocelot",
+      "files": [
+        "ocelot_f_blue.webp",
+        "ocelot_f_green.webp",
+        "ocelot_f_purple.webp",
+        "ocelot_f_realistic.webp",
+        "ocelot_f_red.webp",
+        "ocelot_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Polar Bear",
+      "slug": "polar_bear",
+      "files": [
+        "polar_bear_f_blue.webp",
+        "polar_bear_f_green.webp",
+        "polar_bear_f_purple.webp",
+        "polar_bear_f_rblue.webp",
+        "polar_bear_f_red.webp",
+        "polar_bear_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Quetzalcoatl",
+      "slug": "quetzalcoatl",
+      "files": [
+        "quetzalcoatl_f_blue.webp",
+        "quetzalcoatl_f_green.webp",
+        "quetzalcoatl_f_purple.webp",
+        "quetzalcoatl_f_red.webp",
+        "quetzalcoatl_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Rainbow Serpent",
+      "slug": "rainbow_serpent",
+      "files": [
+        "rainbow_serpent_f_blue.webp",
+        "rainbow_serpent_f_green.webp",
+        "rainbow_serpent_f_purple.webp",
+        "rainbow_serpent_f_red.webp",
+        "rainbow_serpent_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Spider-Crab",
+      "slug": "spider_crab",
+      "files": [
+        "spider_crab_f_blue.webp",
+        "spider_crab_f_green.webp",
+        "spider_crab_f_purple.webp",
+        "spider_crab_f_red.webp",
+        "spider_crab_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Succubus",
+      "slug": "succubus",
+      "files": [
+        "succubus_f_blue.webp",
+        "succubus_f_green.webp",
+        "succubus_f_purple.webp",
+        "succubus_f_red.webp",
+        "succubus_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Taniwha",
+      "slug": "taniwha",
+      "files": [
+        "taniwha_f_blue.webp",
+        "taniwha_f_green.webp",
+        "taniwha_f_purple.webp",
+        "taniwha_f_red.webp",
+        "taniwha_f_water.webp",
+        "taniwha_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Tapir",
+      "slug": "tapir",
+      "files": [
+        "tapir_f_blue.webp",
+        "tapir_f_green.webp",
+        "tapir_f_purple.webp",
+        "tapir_f_red.webp",
+        "tapir_f_silver.webp",
+        "tapir_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Thunderbird",
+      "slug": "thunderbird",
+      "files": [
+        "thunderbird_f_blue.webp",
+        "thunderbird_f_green.webp",
+        "thunderbird_f_purple.webp",
+        "thunderbird_f_red.webp",
+        "thunderbird_f_regal.webp",
+        "thunderbird_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Vermillion Bird",
+      "slug": "vermillion_bird",
+      "files": [
+        "vermillion_bird_f_blue.webp",
+        "vermillion_bird_f_ero.webp",
+        "vermillion_bird_f_green.webp",
+        "vermillion_bird_f_purple.webp",
+        "vermillion_bird_f_red.webp",
+        "vermillion_bird_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Vodyanoy",
+      "slug": "vodyanoy",
+      "files": [
+        "vodyanoy_f_blue.webp",
+        "vodyanoy_f_green.webp",
+        "vodyanoy_f_purple.webp",
+        "vodyanoy_f_red.webp",
+        "vodyanoy_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Wadjet",
+      "slug": "wadjet",
+      "files": [
+        "wadjet_f_blue.webp",
+        "wadjet_f_green.webp",
+        "wadjet_f_purple.webp",
+        "wadjet_f_realistic.webp",
+        "wadjet_f_red.webp",
+        "wadjet_f_yellow.webp"
+      ]
+    },
+    {
+      "name": "Yuki-Onna",
+      "slug": "yuki_onna",
+      "files": [
+        "yuki_onna_f_blue.webp",
+        "yuki_onna_f_green.webp",
+        "yuki_onna_f_purple.webp",
+        "yuki_onna_f_red.webp",
+        "yuki_onna_f_sunset.webp",
+        "yuki_onna_f_yellow.webp"
+      ]
+    }
+  ]
+}
