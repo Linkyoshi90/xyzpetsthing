@@ -8,3 +8,27 @@
     <area target="" alt="Rheinland" title="Rheinland" href="index.php?pg=rheinland" coords="312,403,252,401,184,377,161,356,122,349,64,327,19,380,4,450,9,522,30,521,32,505,48,489,64,492,125,497,139,483,176,492,229,508,245,516,260,538,287,541,395,488,416,440,378,397" shape="poly">
     <area target="" alt="Aegia Aeterna" title="Aegia Aeterna" href="index.php?pg=aa" coords="285,562,248,533,224,508,145,492,120,503,80,498,42,504,11,536,20,576,25,688,78,706,156,715,219,688" shape="poly">
 </map>
+  
+  <div class="card glass">
+    <h3>Aegia Aeterna</h3>
+    <p class="muted">Pizza, Pasta, lotsa Ey's and O's.</p>
+    <a class="btn" href="?pg=aa">Explore</a>
+  </div>
+  
+  <div class="card glass">
+    <h3>Bretonreach</h3>
+    <p class="muted">Green hills, fog, bad weather, fish and chips.</p>
+    <a class="btn" href="?pg=aa">Explore</a>
+  </div>
+  
+  <div class="card glass">
+    <h3>Nornheim</h3>
+    <p class="muted">Snow, Aesir and war.</p>
+    <a class="btn" href="?pg=aa">Explore</a>
+  </div>
+  
+  <div class="card glass">
+    <h3>Rheinland</h3>
+    <p class="muted">Beer, Bratwurst and Oktoberfest.</p>
+    <a class="btn" href="?pg=aa">Explore</a>
+  </div>

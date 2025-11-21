@@ -19,6 +19,16 @@
         GAME_OVER: 3
     };
 
+    const SCRIPT_BASE = (() => {
+        if (document.currentScript?.src) return new URL('.', document.currentScript.src);
+        const fallback = Array.from(document.getElementsByTagName('script'))
+            .find(s => s.src && s.src.includes('fishing.js'))?.src;
+        return new URL('.', fallback || location.href);
+    })();
+    const IMAGE_BASE = new URL('../../images/', SCRIPT_BASE);
+    const AVAILABLE_CREATURES_URL = new URL('../../data-readonly/available_creatures.txt', SCRIPT_BASE);
+    const CREATURE_MAP_URL = new URL('../../data/fishing_creatures.json', SCRIPT_BASE);
+
     const slugify = (str) => str.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
 
     class FishingGame {
@@ -73,8 +83,8 @@
         async loadCreatures() {
             try {
                 const [nameRes, mapRes] = await Promise.all([
-                    fetch('data-readonly/available_creatures.txt'),
-                    fetch('assets/data/fishing_creatures.json')
+                    fetch(AVAILABLE_CREATURES_URL),
+                    fetch(CREATURE_MAP_URL)
                 ]);
 
                 if (!nameRes.ok || !mapRes.ok) return;
@@ -114,6 +124,7 @@
             if (this.imageCache.has(file)) return this.imageCache.get(file);
 
             const img = new Image();
+            const imgUrl = new URL(file, IMAGE_BASE).toString();
             const sprite = {
                 file,
                 name: creatureName,
@@ -131,8 +142,9 @@
             };
             img.onerror = () => {
                 sprite.loaded = false;
+                console.error(`Fishing sprite failed to load: ${imgUrl}`);
             };
-            img.src = `images/${file}`;
+            img.src = imgUrl;
 
             this.imageCache.set(file, sprite);
             return sprite;
@@ -559,48 +571,19 @@
             if (fish.sprite && fish.sprite.img) {
                 const drawWidth = fish.sprite.width || fish.width;
                 const drawHeight = fish.sprite.height || fish.height;
-                ctx.drawImage(
-                    fish.sprite.img,
-                    -drawWidth / 2,
-                    -drawHeight / 2,
-                    drawWidth,
-                    drawHeight
-                );
-            } else {
-                if (fish.isGold) {
-                    ctx.shadowColor = "gold";
-                    ctx.shadowBlur = 15;
+                if (fish.sprite.loaded) {
+                    ctx.drawImage(
+                        fish.sprite.img,
+                        -drawWidth / 2,
+                        -drawHeight / 2,
+                        drawWidth,
+                        drawHeight
+                    );
                 } else {
-                    ctx.shadowBlur = 0;
+                    this.drawFallbackFish(ctx, fish);
                 }
-            
-                if (fish.type === 0) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#f87171";
-                if (fish.type === 1) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#4ade80";
-                if (fish.type === 2) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#c084fc";
-            
-                ctx.beginPath();
-                ctx.ellipse(0, 0, 20, 12, 0, 0, Math.PI * 2);
-                ctx.fill();
-            
-                ctx.beginPath();
-                ctx.moveTo(-15, 0);
-                ctx.lineTo(-30, -10);
-                ctx.lineTo(-30, 10);
-                ctx.fill();
-            
-                ctx.beginPath();
-                ctx.moveTo(0, -10);
-                ctx.lineTo(5, -18);
-                ctx.lineTo(10, -10);
-                ctx.fill();
-                ctx.fillStyle = "white";
-                ctx.beginPath();
-                ctx.arc(10, -3, 4, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle = "black";
-                ctx.beginPath();
-                ctx.arc(11, -3, 2, 0, Math.PI*2);
-                ctx.fill();
+            } else {
+                this.drawFallbackFish(ctx, fish);
             }
 
             if (fish.hasBait) {
@@ -613,6 +596,46 @@
 
             ctx.restore();
         }
+
+
+
+        drawFallbackFish(ctx, fish) {
+            if (fish.isGold) {
+                ctx.shadowColor = "gold";
+                ctx.shadowBlur = 15;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+
+            if (fish.type === 0) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#f87171";
+            if (fish.type === 1) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#4ade80";
+            if (fish.type === 2) ctx.fillStyle = fish.isGold ? "#fcd34d" : "#c084fc";
+
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 20, 12, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(-15, 0);
+            ctx.lineTo(-30, -10);
+            ctx.lineTo(-30, 10);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.moveTo(0, -10);
+            ctx.lineTo(5, -18);
+            ctx.lineTo(10, -10);
+            ctx.fill();
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(10, -3, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "black";
+            ctx.beginPath();
+            ctx.arc(11, -3, 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
         async submitScore() {
             if (!this.exchangeButton) return;
 
