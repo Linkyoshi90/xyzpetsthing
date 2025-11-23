@@ -18,17 +18,17 @@
   <div class="card glass">
     <h3>Bretonreach</h3>
     <p class="muted">Green hills, fog, bad weather, fish and chips.</p>
-    <a class="btn" href="?pg=aa">Explore</a>
+    <a class="btn" href="?pg=bretonreach">Explore</a>
   </div>
   
   <div class="card glass">
     <h3>Nornheim</h3>
     <p class="muted">Snow, Aesir and war.</p>
-    <a class="btn" href="?pg=aa">Explore</a>
+    <a class="btn" href="?pg=nornheim">Explore</a>
   </div>
   
   <div class="card glass">
     <h3>Rheinland</h3>
     <p class="muted">Beer, Bratwurst and Oktoberfest.</p>
-    <a class="btn" href="?pg=aa">Explore</a>
+    <a class="btn" href="?pg=rheinland">Explore</a>
   </div>

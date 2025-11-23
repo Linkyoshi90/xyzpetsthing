@@ -114,7 +114,7 @@ Valkyrie: Valyra, Shieldra, Wingyr, Skymaiden, Einheris
 Auronia - Bretonreach (BR)
 Banshee: Keenera, Mourna, Sidhecall, Cryrae, Wailis
 Dullahan: Noctorider, Headlesser, Neckless, Corthorse, Dullahand
-Will-o-Wisp: Marshglow, Willo, Glimfloat, Fadelflame, Winkwisp
+Will o Wisp: Marshglow, Willo, Glimfloat, Fadelflame, Winkwisp
 Kelpie: Reedsteed, Mirehoof, Tidefoal, Kelpry, Bridlemare
 Pixi: Spriggle, Glimmerkin, Pipsprite, Pixelle, Sparkli
 Cait Sith: Catshee, Shadowpurr, Pookat, Caithsí, Wispwhisk

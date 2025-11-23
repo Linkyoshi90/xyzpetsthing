@@ -99,6 +99,33 @@ function shop_inventory(int $shopId): array
 }
 
 /**
+ * Fetch a read-only catalog of every item in the game with price and imagery.
+ */
+function shop_full_catalog(): array
+{
+    $rows = q(
+        "SELECT item_id, item_name, item_description, base_price\n"
+        ."FROM items\n"
+        ."ORDER BY item_name"
+    )->fetchAll(PDO::FETCH_ASSOC);
+
+    $catalog = [];
+    foreach ($rows as $row) {
+        $imageFile = shop_find_item_image($row['item_name']);
+        $catalog[] = [
+            'item_id' => (int) $row['item_id'],
+            'name' => $row['item_name'],
+            'price' => (float) $row['base_price'],
+            'stock' => null,
+            'description' => $row['item_description'],
+            'image' => 'images/items/'.rawurlencode($imageFile),
+        ];
+    }
+
+    return $catalog;
+}
+
+/**
  * Index inventory by item id for quick lookups.
  */
 function shop_inventory_indexed(array $inventory): array

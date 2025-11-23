@@ -8,6 +8,17 @@
   <map name="image-map">
    </map>
 
+  <div class="card glass">
+    <h3>Everything Store</h3>
+    <p class="muted">A catalog hall showing every item discovered so far—look, learn, but no buying.</p>
+    <a class="btn" href="?pg=br-everything-store">Browse</a>
+  </div>
+
+  <div class="card glass">
+    <h3>Back to Auronia</h3>
+    <a class="btn" href="?pg=auronia">Back</a>
+  </div>
+
   <p><strong>Avalore</strong> rises from green hills and river fog, a ring-walled capital where guest-right is law and songs count as currency. Half-timber lanes lean over cobbles, ivy climbs watchtowers, and way-bakers set out warm loaves before dawn so travelers leave the gates with crumbs and gratitude. In Bretonreach, hospitality is not a nicety. It is how the roads stay safe when the mists grow curious.</p>
 
   <p>The city lives at the seam of <strong>Celtic and old English lore</strong>: courts of oak and rowan, ballads that bargain with the weather, hearths that keep room for strangers and for the not-quite-mortal. The elders say Avalore was founded where a silver branch chimed over a spring. True or not, bells still hang at doorframes and ring when a lie tries to enter.</p>
