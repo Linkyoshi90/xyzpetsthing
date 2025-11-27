@@ -18,8 +18,10 @@ if (is_file($file)) {
 if ($allowedSpecies) {
     $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
     $species = q(
-        "SELECT species_id, species_name, base_hp, base_atk, base_def, base_init FROM pet_species " .
-        "WHERE species_name IN ($placeholders) ORDER BY species_name",
+        "SELECT ps.species_id, ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init, ps.region_id, r.region_name " .
+        "FROM pet_species ps " .
+        "LEFT JOIN regions r ON r.region_id = ps.region_id " .
+        "WHERE ps.species_name IN ($placeholders) ORDER BY ps.species_name",
         $allowedSpecies
     )->fetchAll(PDO::FETCH_ASSOC);
 } else {
@@ -36,7 +38,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gender = ($_POST['gender'] ?? 'f') === 'm' ? 'm' : 'f';
 
     $row = q(
-        "SELECT species_id, species_name, base_hp, base_atk, base_def, base_init FROM pet_species WHERE species_id=?",
+        "SELECT ps.species_id, ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init, ps.region_id, r.region_name " .
+        "FROM pet_species ps " .
+        "LEFT JOIN regions r ON r.region_id = ps.region_id " .
+        "WHERE ps.species_id=?",
         [$sp]
     )->fetch(PDO::FETCH_ASSOC);
 
@@ -61,6 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'happiness' => 0,
                 'intelligence' => 0,
                 'sickness' => 0,
+                'region_id' => $row['region_id'],
+                'region_name' => $row['region_name'],
             ];
             temp_user_add_pet($pet);
             temp_user_add_inventory_item(1, 1);
@@ -143,6 +150,7 @@ function slugify($str)
         <li>INIT: <span id="statInit">&nbsp;</span></li>
       </ul>
     </div>
+      <div class="home-region">Home region: <span id="statRegion">&nbsp;</span></div>
   </div>
 </form>
 
@@ -171,6 +179,8 @@ function updatePreview(){
   document.getElementById('statAtk').textContent = selectedSpecies.base_atk;
   document.getElementById('statDef').textContent = selectedSpecies.base_def;
   document.getElementById('statInit').textContent = selectedSpecies.base_init;
+  const regionLabel = selectedSpecies.region_name || (selectedSpecies.region_id ? `Region #${selectedSpecies.region_id}` : 'Unknown');
+  document.getElementById('statRegion').textContent = regionLabel;
 
   document.getElementById('species_id').value = selectedSpecies.species_id;
   document.getElementById('color_id').value = selectedColor;

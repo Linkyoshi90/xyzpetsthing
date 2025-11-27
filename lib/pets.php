@@ -8,7 +8,9 @@ function get_user_pets(int $user_id): array {
     }
     return q(
         "SELECT pi.pet_instance_id,
+                pi.species_id,
                 pi.nickname,
+                pi.color_id,
                 pi.level,
                 pi.hp_current,
                 pi.hp_max,
@@ -17,10 +19,13 @@ function get_user_pets(int $user_id): array {
                 pi.happiness,
                 pi.intelligence,
                 pi.sickness,
+                ps.region_id,
                 ps.species_name,
+                r.region_name,
                 pc.color_name
            FROM pet_instances pi
            JOIN pet_species ps ON ps.species_id = pi.species_id
+           LEFT JOIN regions r ON r.region_id = ps.region_id
            LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
           WHERE pi.owner_user_id = ?",
         [$user_id]

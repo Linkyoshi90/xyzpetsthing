@@ -32,3 +32,14 @@
     <p class="muted">Beer, Bratwurst and Oktoberfest.</p>
     <a class="btn" href="?pg=rheinland">Explore</a>
   </div>
+  
+  <div class="card glass">
+    <h3>Rodanian Tsardom</h3>
+    <p class="muted">Rural towns, castles and friendly people.</p>
+    <a class="btn" href="?pg=rt">Explore</a>
+  </div>
+  
+  <div class="card glass">
+    <h3>Back to world map</h3>
+    <a class="btn" href="?pg=map">Explore</a>
+  </div>
