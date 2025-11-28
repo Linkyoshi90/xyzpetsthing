@@ -1,3 +1,3 @@
 <?php
-$regionInitial = 'aa';
+$regionInitial = 'bm';
 require __DIR__.'/paint_shack_region.php';

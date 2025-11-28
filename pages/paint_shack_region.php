@@ -115,15 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paint_pet'])) {
         $messages['error'] = 'This pet is from a different region.';
     } else {
         $itemRow = q(
-            "SELECT ui.quantity, i.item_name FROM user_inventory ui "
+            "SELECT ui.quantity, i.item_name, i.category_id FROM user_inventory ui "
             . "JOIN items i ON i.item_id = ui.item_id "
-            . "LEFT JOIN item_categories ic ON ic.category_id = i.category_id "
-            . "WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Paint'",
+            . "WHERE ui.user_id = ? AND ui.item_id = ?",
             [$uid, $itemId]
         )->fetch(PDO::FETCH_ASSOC);
 
         if (!$itemRow) {
             $messages['error'] = 'That paint is not in your inventory.';
+        } elseif ((int)$itemRow['category_id'] !== (int)$paintCategoryId) {
+            $messages['error'] = 'That item is not a valid paint.';
         } elseif ((int)$itemRow['quantity'] <= 0) {
             $messages['error'] = 'You are out of that paint.';
         } else {
@@ -150,13 +151,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paint_pet'])) {
     }
 }
 
-$userPaints = q(
-    "SELECT ui.item_id, ui.quantity, i.item_name FROM user_inventory ui "
-    . "JOIN items i ON i.item_id = ui.item_id "
-    . "LEFT JOIN item_categories ic ON ic.category_id = i.category_id "
-    . "WHERE ui.user_id = ? AND ic.category_name = 'Paint'",
-    [$uid]
-)->fetchAll(PDO::FETCH_ASSOC);
+$userPaints = [];
+if ($paintCategoryId) {
+    $userInventory = q(
+        "SELECT ui.item_id, ui.quantity, i.item_name, i.category_id FROM user_inventory ui "
+        . "JOIN items i ON i.item_id = ui.item_id "
+        . "WHERE ui.user_id = ?",
+        [$uid]
+    )->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($userInventory as $item) {
+        if ((int)$item['category_id'] === (int)$paintCategoryId) {
+            $userPaints[] = $item;
+        }
+    }
+}
 
 $usablePaints = [];
 foreach ($userPaints as $paint) {
@@ -279,7 +288,7 @@ $previewImage = $previewPet ? pet_image_url($previewPet['species_name'], $previe
     const currentColor = pet.color || 'Blue';
     currentColorEl.textContent = currentColor;
     const targetColor = paint ? paint.color : currentColor;
-    newColorEl.textContent = paint ? paint.color : '—';
+    newColorEl.textContent = paint ? paint.color : '-';
 
     const speciesSlug = slugify(pet.species);
     const colorSlug = slugify(targetColor);
