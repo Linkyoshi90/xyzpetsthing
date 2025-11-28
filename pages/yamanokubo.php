@@ -7,6 +7,12 @@
 </map>
   
   <div class="card glass">
+    <h3>Paint Shack</h3>
+    <p class="muted">Here you can paint your Yamanokubo creatures.</p>
+    <a class="btn" href="?pg=ynk_paint_shack">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Dawnmarch</h3>
     <a class="btn" href="?pg=dawnmarch">Explore</a>
   </div>

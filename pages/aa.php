@@ -12,6 +12,12 @@ require_once __DIR__.'/../lib/shops.php';
     <area target="" alt="ruins" title="ruins" href="aa-adventure" coords="1127,12,1496,205" shape="rect">
     <area target="" alt="pizzaria" title="pizzaria" href="aa-pizza" coords="858,495,1320,883" shape="rect">
    </map>
+  
+  <div class="card glass">
+    <h3>Paint Shack</h3>
+    <p class="muted">Here you can paint your creatures from this region.</p>
+    <a class="btn" href="?pg=aa_paint_shack">Explore</a>
+  </div>
 
   
   <div class="card glass">

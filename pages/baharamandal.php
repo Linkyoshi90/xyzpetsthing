@@ -10,6 +10,12 @@ require_once __DIR__.'/../lib/shops.php';
 <img src="images/harmontide-padmanagara.webp" alt="World map" usemap="#worldmap" class="world-map" />
   <map name="image-map">
    </map>
+  
+  <div class="card glass">
+    <h3>Paint Shack</h3>
+    <p class="muted">Here you can paint your creatures from this region.</p>
+    <a class="btn" href="?pg=bm_paint_shack">Explore</a>
+  </div>
 
   <div class="card glass">
     <h3>Back to Dawnmarch</h3>

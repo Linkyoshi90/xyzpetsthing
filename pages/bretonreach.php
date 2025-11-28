@@ -7,10 +7,16 @@
 <img src="images/harmontide-avalore.webp" alt="World map" usemap="#worldmap" class="world-map" />
   <map name="image-map">
    </map>
+  
+  <div class="card glass">
+    <h3>Paint Shack</h3>
+    <p class="muted">Here you can paint your creatures from this region.</p>
+    <a class="btn" href="?pg=br_paint_shack">Explore</a>
+  </div>
 
   <div class="card glass">
     <h3>Everything Store</h3>
-    <p class="muted">A catalog hall showing every item discovered so far—look, learn, but no buying.</p>
+    <p class="muted">A catalog hall showing every item discovered so far-look, learn, but no buying.</p>
     <a class="btn" href="?pg=br-everything-store">Browse</a>
   </div>
 

@@ -7,6 +7,12 @@
 </map>
   
   <div class="card glass">
+    <h3>Paint Shack</h3>
+    <p class="muted">Here you can paint your creatures from this region.</p>
+    <a class="btn" href="?pg=sc_paint_shack">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Tundria</h3>
     <a class="btn" href="?pg=tundria">Explore</a>
   </div>

@@ -7,6 +7,12 @@
 </map>
   
   <div class="card glass">
+    <h3>Meridian Arc Paint Shack</h3>
+    <p class="muted">Here you can paint your URB creatures.</p>
+    <a class="btn" href="?pg=urb_paint_shack">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Borealia</h3>
     <a class="btn" href="?pg=borealia">Explore</a>
   </div>

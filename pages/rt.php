@@ -6,6 +6,12 @@
 </map>
   
   <div class="card glass">
+    <h3>Paint Shack</h3>
+    <p class="muted">Here you can paint your creatures from this region.</p>
+    <a class="btn" href="?pg=rt_paint_shack">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Auronia</h3>
     <a class="btn" href="?pg=auronia">Explore</a>
   </div>

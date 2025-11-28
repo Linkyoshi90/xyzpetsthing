@@ -24,7 +24,7 @@ $catalog = shop_full_catalog();
       <?php foreach ($catalog as $item): ?>
       <?php
         $priceDisplay = $item['price'] === null
-          ? '—'
+          ? '-'
           : number_format($item['price'], 2)." ".htmlspecialchars(APP_CURRENCY_LONG_NAME);
         $description = $item['description'] ?? '';
         $descriptionText = $description !== '' ? $description : 'No description provided yet.';

@@ -7,6 +7,12 @@
 </map>
   
   <div class="card glass">
+    <h3>Paint Shack</h3>
+    <p class="muted">Here you can paint your Yara Nations creatures.</p>
+    <a class="btn" href="?pg=stap_paint_shack">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Borealia</h3>
     <a class="btn" href="?pg=borealia">Explore</a>
   </div>
