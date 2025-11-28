@@ -16,3 +16,55 @@
     <h3>Back to world map</h3>
     <a class="btn" href="?pg=map">Explore</a>
   </div>
+
+  <section id="ansurah">
+  <h2>Ansurah - <em>"The Crescent Gate"</em></h2>
+
+  <p><strong>Ansurah</strong> crowns an old trade bend where caravan roads meet a wide river. Crescent walls catch first light; windtowers breathe cool air into lanes; blue and white tile calms the eye. Fountains stand at every quarter under the care of waqf endowments. In the Crescent Caliphate, law is the lamp and mercy the oil; in Ansurah both are kept trimmed by habit, not spectacle.</p>
+
+  <p>This is a 15th century city of books and bales. Jurists argue in shaded iwans, astronomers chart stars from rooftop terraces, and merchants tally saffron, indigo, leather, and glass in khans that ring at dusk with the sound of travel kettles. Calligraphers write verses that double as shop signs, and the muhtasib, the market steward, weighs honesty with the same care as grain.</p>
+
+  <hr>
+
+  <h3>Districts and Landmarks</h3>
+  <ul>
+    <li><strong>Qalb al Qanun</strong> - The Law Quarter. Madrasas, chancery halls, and a public loggia where verdicts are read after both sides share water from a brass cup. Ledgers of fines are posted weekly on tile boards.</li>
+    <li><strong>Souq al Hilal</strong> - The Crescent Market under high canvas. Copper, carpets, perfumes, spices, bookstalls, and a line of cup-bearers who keep travelers from bargaining on an empty throat.</li>
+    <li><strong>Dar al Qalam</strong> - House of the Pen. Scribes, binders, and illuminators. Commission a name-verse for your doorway; the master here will sand the ink while telling you three short laws of trade.</li>
+    <li><strong>Khan al Safar</strong> - Caravanserai of the Travelers. Stone court with stables, storerooms, prayer hall, and a fountain shaded by palms. Gates close at nightfall; late arrivals ring a brass bell and swear they bring no quarrels inside.</li>
+    <li><strong>Qanat Gardens</strong> - Gardens fed by hidden channels. Fig, pomegranate, and date; tiled benches and chess tables; a pavilion where children learn letters in the heat of the day.</li>
+    <li><strong>Towers of the Wind</strong> - A street of windcatchers that pour cool air into vaulted houses and bathhouses. Kites run from tower to tower when the north wind is kind.</li>
+    <li><strong>Bayt al Waqf</strong> - The Endowment House. Public registers of fountains, schools, and bread ovens funded by charity. Inspectors audit the loaves by weight, not by smile.</li>
+  </ul>
+
+  <hr>
+
+  <h3>Bath, Bread, and Bazaar</h3>
+  <p><strong>Begin with bread and dates.</strong> Flatbreads pulled hot from clay ovens, lentil soups, rice bright with saffron and nuts, lamb baked with herbs, and trays of sesame rings and honey sweets. The bathhouse culture is practical and kind: steam, scrub, tea, and news. Try the <strong>Crescent Coffee</strong>, cardamom-dark with a curl of orange peel, or cool off with <strong>sharbat</strong> of rose and mint. Street stalls near the main arches charge festival prices, 5 to 10 times the lane rate. Ask for the "waqf measure" and say you will tip the fountain fund; most sellers will smile and shave the number.</p>
+
+  <hr>
+
+  <h3>Order and Underlane</h3>
+  <p>Peace is kept by the <strong>Lamp Ward</strong>, a watch that prefers ledgers to cudgels. The muhtasib walks the souq at noon, testing weights and temper. Restitution is favored over shame, and fines often end as bread for the poor. Even so, Ansurah has its shadows. Travelers whisper of the <strong>Sand Scribes</strong>, caravan fixers who move letters and favors along dune roads for a quiet fee. They claim to be guardians of flow, not a racket. Each season the Lamp Ward audits their charity chest in public at Bayt al Waqf. In this city even a shadow must show a receipt.</p>
+
+  <hr>
+
+  <h3>Etiquette and Practicalities</h3>
+  <ul>
+    <li><strong>Water:</strong> accept a small cup when offered, sip, bless, and return with thanks. Do not waste fountain water. Children will correct you if you forget.</li>
+    <li><strong>Greetings:</strong> right hand to heart before words. Begin bargaining with a blessing, not a number. Laughter softens prices faster than thunder.</li>
+    <li><strong>Dress and shrines:</strong> cover shoulders and knees in the Law Quarter and temple courts. Remove shoes where mats begin. Do not step over a praying person.</li>
+    <li><strong>Markets:</strong> use a calm voice. If a stallkeeper will not name a price, they want a story or a sample, not coin.</li>
+    <li><strong>Siesta:</strong> honor the heat hour. The city hums again when shadows lengthen and lamps wake.</li>
+  </ul>
+
+  <hr>
+
+  <h3>Calendar and Belief</h3>
+  <p>Ansurah keeps the <strong>Night of Two Lamps</strong> when river-law and desert-verse are read by alternating voices and the courts and fountains are lit together. In high summer the <strong>Market of Kites</strong> runs strings like music between windtowers. On the <strong>Day of Ledgers</strong> the Lamp Ward posts the city accounts in Bayt al Waqf and schoolchildren paint lanterns to thank the endowments that feed and teach them.</p>
+
+  <hr>
+
+  <h3>Traveler's Note</h3>
+  <p>Ansurah is a city of measured light. Walk in shade without hurry, learn a blessing or two, and count mercy as part of the price. If you must overpay under the crescent arch, call it a donation to the lamps that make strangers feel like neighbors. The wind will remember you kindly.</p>
+</section>

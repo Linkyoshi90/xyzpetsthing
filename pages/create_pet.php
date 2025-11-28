@@ -148,9 +148,9 @@ function slugify($str)
         <li>ATK: <span id="statAtk">&nbsp;</span></li>
         <li>DEF: <span id="statDef">&nbsp;</span></li>
         <li>INIT: <span id="statInit">&nbsp;</span></li>
+        <li>Home region: <span id="statRegion">&nbsp;</span></li>
       </ul>
     </div>
-      <div class="home-region">Home region: <span id="statRegion">&nbsp;</span></div>
   </div>
 </form>
 
