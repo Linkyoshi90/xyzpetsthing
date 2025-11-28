@@ -15,7 +15,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory',
     // Countries
     'aa','baharamandal','bretonreach','cc',
     'esd','esl','fom','gc','hammurabia',
-    'ie','Kemet','ldk','nornheim','rsc',
+    'ie','kemet','ldk','nornheim','rsc',
     'rheinland','rt','sie','sc',
     'stap','srl',
     'urb','xochimex','yamanokubo','yn',
