@@ -15,7 +15,7 @@
   
   <div class="card glass">
     <h3>Frankenondermeer</h3>
-    <p class="muted">Koks, einen Haufen Koks.</p>
+    <p class="muted">Molen and Klompen, what else?</p>
     <a class="btn" href="?pg=fom">Explore</a>
   </div>
 

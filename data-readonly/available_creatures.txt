@@ -28,6 +28,9 @@ Golem
 Horned Serpent Uktena
 Jack-o-lantern
 Jiang-Shi
+Kangaroo
+Kappa
+Keelut
 Kelpie
 Kitsune
 Kraken
@@ -36,6 +39,7 @@ Lamassu
 Lamia
 Leshy
 Lich
+Lilith
 Min-Min Lights
 Naga
 Ocelot
