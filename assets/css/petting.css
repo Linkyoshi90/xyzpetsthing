@@ -1,0 +1,365 @@
+.petting-shell {
+    height: 80vh;
+    max-height: calc(100vh - 6rem);
+    background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.35), rgba(255,255,255,0)), linear-gradient(180deg, #8dd0ff 0%, #a2e1ff 40%, #d1f1ff 70%, #dfe6ff 100%);
+    border-radius: 18px;
+    border: 2px solid rgba(0,0,0,0.08);
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.12);
+}
+
+.petting-viewport {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.petting-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 55%, rgba(255,255,255,0.9) 100%);
+}
+
+.petting-floor-shadow {
+    position: absolute;
+    left: 50%;
+    bottom: 6%;
+    transform: translateX(-50%);
+    width: 160px;
+    height: 26px;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.05) 75%, rgba(0,0,0,0));
+    filter: blur(8px);
+    transition: width 0.4s ease, opacity 0.3s ease;
+}
+
+.petting-creature {
+    position: absolute;
+    bottom: 8%;
+    left: 45%;
+    transform: translateX(-50%);
+    width: 220px;
+    max-width: 40vw;
+    transition: transform 0.55s ease, opacity 0.55s ease, left 0.6s ease, bottom 0.6s ease;
+    image-rendering: auto;
+    z-index: 3;
+}
+
+    .petting-creature.offscreen {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .petting-creature.running {
+        animation: petting-bob 0.9s ease-in-out infinite;
+    }
+
+@keyframes petting-bob {
+    0%, 100% {
+        transform: translate(-50%, -2%);
+    }
+
+    50% {
+        transform: translate(-50%, -12%);
+    }
+}
+
+.inventory-toggle,
+.petting-switch-toggle {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    background: rgba(255,255,255,0.92);
+    border-radius: 14px;
+    border: 2px solid rgba(0,0,0,0.12);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(0,0,0,0.12);
+    z-index: 10;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .inventory-toggle:hover,
+    .petting-switch-toggle:hover {
+        transform: scale(1.03);
+        box-shadow: 0 12px 26px rgba(0,0,0,0.18);
+    }
+
+    .inventory-toggle img,
+    .petting-switch-toggle img {
+        width: 70%;
+        height: 70%;
+    }
+
+.inventory-toggle {
+    top: 16px;
+    left: 16px;
+}
+
+.petting-switch-toggle {
+    bottom: 16px;
+    left: 16px;
+}
+
+.banner {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px;
+    background: rgba(25, 35, 55, 0.7);
+    color: #f7fbff;
+    transform: translateY(-120%);
+    transition: transform 0.35s ease;
+    z-index: 9;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 10px 18px rgba(0,0,0,0.18);
+}
+
+    .banner.open {
+        transform: translateY(0);
+    }
+
+    .banner .items,
+    .banner .pet-strip {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+        .banner .items::-webkit-scrollbar,
+        .banner .pet-strip::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .banner .items::-webkit-scrollbar-thumb,
+        .banner .pet-strip::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.4);
+            border-radius: 6px;
+        }
+
+.banner-close {
+    margin-left: auto;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+    .banner-close img {
+        width: 70%;
+        height: 70%;
+    }
+
+.inventory-item,
+.petting-card {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 120px;
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    grid-template-areas: 'art name' 'art meta';
+    gap: 6px;
+    color: #f7fbff;
+    cursor: grab;
+}
+
+    .inventory-item:active {
+        cursor: grabbing;
+    }
+
+    .inventory-item img,
+    .petting-card img {
+        grid-area: art;
+        width: 48px;
+        height: 48px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+    }
+
+    .inventory-item .name,
+    .petting-card .name {
+        grid-area: name;
+        font-weight: 700;
+    }
+
+    .inventory-item .meta,
+    .petting-card .meta {
+        grid-area: meta;
+        opacity: 0.8;
+    }
+
+.petting-switcher {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(18, 28, 40, 0.8);
+    color: #f7fbff;
+    padding: 12px 18px;
+    transform: translateY(120%);
+    transition: transform 0.35s ease;
+    z-index: 9;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 -10px 18px rgba(0,0,0,0.18);
+}
+
+    .petting-switcher.open {
+        transform: translateY(0);
+    }
+
+.petting-card {
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.petting-prompt {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.9);
+    color: #142038;
+    padding: 14px 18px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    font-weight: 700;
+}
+
+.heart-burst {
+    position: absolute;
+    pointer-events: none;
+    display: flex;
+    gap: 6px;
+    animation: heart-rise 1.4s ease forwards;
+    z-index: 6;
+}
+
+    .heart-burst img {
+        width: 28px;
+        height: 28px;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.25));
+    }
+
+@keyframes heart-rise {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 10px) scale(0.5);
+    }
+
+    20% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -60px) scale(1.05);
+    }
+}
+
+.dust-cloud, .food-crumb, .floating-food {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.dust-cloud {
+    width: 48px;
+    height: 32px;
+    opacity: 0.9;
+    animation: dust-poof 0.7s ease-out forwards;
+}
+
+@keyframes dust-poof {
+    0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0.9;
+    }
+
+    100% {
+        transform: translateY(-20px) scale(1.3);
+        opacity: 0;
+    }
+}
+
+.food-crumb {
+    width: 10px;
+    height: 10px;
+    animation: crumb-fall 0.8s ease-out forwards;
+}
+
+@keyframes crumb-fall {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.8);
+    }
+}
+
+.floating-food {
+    width: 80px;
+    height: 80px;
+    animation: food-nibble 0.9s ease forwards;
+    transform-origin: center;
+}
+
+@keyframes food-nibble {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0;
+    }
+}
+
+.petting-info-bar {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    background: rgba(255,255,255,0.8);
+    color: #192338;
+    padding: 10px 14px;
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.12);
+    font-weight: 700;
+    z-index: 8;
+}
+
+    .petting-info-bar small {
+        display: block;
+        color: #51607a;
+        font-weight: 500;
+    }
+
+@media (max-width: 720px) {
+    .petting-shell {
+        height: 70vh;
+    }
+
+    .inventory-item, .petting-card {
+        min-width: 110px;
+    }
+
+    .petting-creature {
+        width: 180px;
+    }
+}

@@ -197,6 +197,17 @@ CREATE TABLE IF NOT EXISTS pet_colors (
   UNIQUE KEY uq_color_name (color_name)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS food_preferences (
+  food_pref_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  species_id   SMALLINT UNSIGNED NOT NULL,
+  item_id      BIGINT UNSIGNED NOT NULL,
+  like_scale   TINYINT UNSIGNED NOT NULL DEFAULT 2,
+  PRIMARY KEY (food_pref_id),
+  UNIQUE KEY uq_food_pref_species_item (species_id, item_id),
+  CONSTRAINT fk_food_pref_species FOREIGN KEY (species_id) REFERENCES pet_species(species_id) ON DELETE CASCADE,
+  CONSTRAINT fk_food_pref_item    FOREIGN KEY (item_id)    REFERENCES items(item_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Player-owned pets (instances)
 CREATE TABLE IF NOT EXISTS pet_instances (
   pet_instance_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,

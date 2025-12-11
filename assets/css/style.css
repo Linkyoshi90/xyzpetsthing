@@ -5,7 +5,7 @@
 
 @media (max-width: 720px) {
     :root {
-        --size-mode: clamp(0.65, calc(100vw / 720), 1);
+        --size-mode: clamp(0.55, calc(100vw / 720), 1);
     }
 }
 
@@ -205,8 +205,9 @@ a {
 @media (max-width: 640px) {
     .nav {
         flex-direction: column;
-        gap: calc(8px * var(--size-mode));
+        gap: calc(6px * var(--size-mode));
         align-items: stretch;
+        padding: calc(8px * var(--size-mode)) calc(12px * var(--size-mode));
     }
 
     .nav-left,
@@ -219,6 +220,10 @@ a {
             flex-wrap: wrap;
             justify-content: flex-end;
         }
+
+    .site-banner {
+        height: 36px;
+    }
 }
 
 .card {

@@ -19,6 +19,61 @@
   </div>
 </section>
 
+<!-- Local-time + daily gate: allow one visit between 08:00-19:59 local time -->
+<script>
+  (function gateLotusShrineVisit() {
+    const now = new Date();
+    const hour = now.getHours();
+    const allowed = hour >= 8 && hour < 20; // 08:00-19:59 local time
+
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const todayKey = today.toISOString().slice(0, 10);
+    const storageKey = 'ynk-adventure-last-visit';
+    const lastVisit = localStorage.getItem(storageKey);
+    const alreadyVisitedToday = lastVisit === todayKey;
+
+    if (allowed && !alreadyVisitedToday) {
+      localStorage.setItem(storageKey, todayKey);
+      return;
+    }
+
+    const section = document.querySelector('.adventure');
+    if (!section) return;
+
+    const overlay = document.createElement('div');
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.style.position = 'relative';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.textAlign = 'center';
+    overlay.style.padding = '1.5rem';
+
+    const windowClosed = !allowed;
+    const reason = windowClosed
+      ? 'The shrine is only open from 08:00 to 20:00 your local time.'
+      : 'You have already paid your respects today. Come back tomorrow for another blessing.';
+
+    overlay.innerHTML = `
+      <div class="card glass" style="max-width: 620px;">
+        <h2 style="margin-top: 0;">Shrine Door Is Closed</h2>
+        <p class="muted" style="margin: 0 0 .75rem 0;">${reason}</p>
+        <p style="margin: 0 0 1rem 0;">It's currently <strong>${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</strong> for you.</p>
+        <a class="btn" href="?pg=yamanokubo">Return to Yamanokubo</a>
+      </div>
+    `;
+
+    section.innerHTML = '';
+    section.appendChild(overlay);
+
+    setTimeout(() => {
+      window.location.href = '?pg=yamanokubo';
+    }, 2000);
+  })();
+</script>
+
+
 <script id="adventure-data" type="application/json">
 {
   "start": "torii-approach",
@@ -130,7 +185,7 @@
         "The city hums with small blessings when you make a habit of them."
       ],
       "choices": [
-        { "text": "Restart your shrine visit", "target": "torii-approach", "restart": true }
+        { "text": "Head back to Yamanokubo", "target": "torii-approach", "link": "?pg=yamanokubo" }
       ]
     }
   }
