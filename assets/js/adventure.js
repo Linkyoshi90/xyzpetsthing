@@ -51,6 +51,10 @@ if (!dataElement) {
                 button.type = 'button';
                 button.textContent = choice.text;
                 button.addEventListener('click', () => {
+                    if (choice.link) {
+                        window.location.href = choice.link;
+                        return;
+                    }
                     if (!choice.restart) {
                         history.push({
                             from: currentNodeId,

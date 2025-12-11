@@ -150,6 +150,14 @@ Alkonost: Alkonya, Joysong, Blissbird, Halcyra, Sunchant
 
 Borealia - United free Republic of Borealia (URB)
 Lich: Grimarch, Phylax, Soulbind, Mortivus, Boneward
+Mimic: 
+Jackalope: 
+Mad Hatter: 
+Death: 
+War: 
+Pestilence: 
+Fury: 
+Famine: 
 Jack-o-lantern: Pumpkith, Gourdlume, Wick-O, Lanternjack, Hollowkin
 Lizardman: Lacerto, Saurlet, Geckru, Drakshed, Scalekin
 Mothman: Umbramoth, Noctemoth, Lampryth, Dreadwing, Eyelume

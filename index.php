@@ -27,7 +27,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory',
     'ie_paint_shack','k_paint_shack','ldk_paint_shack','nh_paint_shack',
     'rsc_paint_shack','rl_paint_shack','rt_paint_shack','sie_paint_shack',
     'sc_paint_shack','stap_paint_shack','srl_paint_shack','urb_paint_shack',
-    'xm_paint_shack','ynk_paint_shack','yn_paint_shack',
+    'xm_paint_shack','ynk_paint_shack','ynk-adventure','yn_paint_shack',
 ];
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
