@@ -1,54 +1,78 @@
-﻿<?php require_login();
+<?php
+require_login();
 require_once __DIR__.'/../lib/pets.php';
+
 $uid = current_user()['id'];
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'feed') {
+$action = $_POST['action'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed_pet') {
+    header('Content-Type: application/json');
     $pet_id = (int)($_POST['pet_id'] ?? 0);
     $item_id = (int)($_POST['item_id'] ?? 0);
-    $row = q(
-        "SELECT ui.quantity, i.replenish FROM user_inventory ui
-         JOIN items i ON i.item_id = ui.item_id
-         LEFT JOIN item_categories ic ON ic.category_id = i.category_id
-         WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Food'",
-        [$uid, $item_id]
+
+    $pet = q(
+        "SELECT pet_instance_id, species_id FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$pet_id, $uid]
     )->fetch(PDO::FETCH_ASSOC);
-    if ($row && (int)$row['quantity'] > 0) {
-        q("UPDATE pet_instances SET hunger = GREATEST(0, hunger - ?) WHERE pet_instance_id = ? AND owner_user_id = ?", [$row['replenish'], $pet_id, $uid]);
-        if ((int)$row['quantity'] > 1) {
-            q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-        } else {
-            q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-        }
-        header('Location: ?pg=pet&id=' . $pet_id);
-        exit;
-    } elseif ($action === 'heal') {
-        $pet_id = (int)($_POST['pet_id'] ?? 0);
-        $item_id = (int)($_POST['item_id'] ?? 0);
-        $row = q(
-            "SELECT ui.quantity, i.replenish FROM user_inventory ui"
-            . " JOIN items i ON i.item_id = ui.item_id"
-            . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
-            . " WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Potion'",
-            [$uid, $item_id]
-        )->fetch(PDO::FETCH_ASSOC);
-        if ($row && (int)$row['quantity'] > 0) {
-            $healing = max(0, (int)$row['replenish']);
-            if ($healing > 0) {
-                q(
-                    "UPDATE pet_instances SET hp_current = IF(hp_max IS NULL, hp_current + ?, LEAST(hp_max, hp_current + ?)) WHERE pet_instance_id = ? AND owner_user_id = ?",
-                    [$healing, $healing, $pet_id, $uid]
-                );
-            }
-            if ((int)$row['quantity'] > 1) {
-                q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-            } else {
-                q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-            }
-        }
-        header('Location: ?pg=pet&id=' . $pet_id);
+
+    if (!$pet) {
+        echo json_encode(['ok' => false, 'message' => 'That pet is not available.']);
         exit;
     }
+
+    $row = q(
+        "SELECT ui.quantity, i.replenish FROM user_inventory ui"
+        . " JOIN items i ON i.item_id = ui.item_id"
+        . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+        . " WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Food'",
+        [$uid, $item_id]
+    )->fetch(PDO::FETCH_ASSOC);
+
+    if (!$row || (int)$row['quantity'] < 1) {
+        echo json_encode(['ok' => false, 'message' => 'No more of that item left.']);
+        exit;
+    }
+
+    $like = q(
+        "SELECT like_scale FROM food_preferences WHERE species_id = ? AND item_id = ?",
+        [$pet['species_id'], $item_id]
+    )->fetch(PDO::FETCH_ASSOC);
+
+    $like_scale = $like ? (int)$like['like_scale'] : 2;
+    $hearts = max(1, min(3, $like_scale));
+    $replenish = max(1, (int)($row['replenish'] ?? 1));
+
+    q(
+        "UPDATE pet_instances"
+        . "   SET hunger = GREATEST(0, hunger - ?),"
+        . "       happiness = LEAST(100, happiness + ?)"
+        . " WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$replenish, $hearts * 5, $pet_id, $uid]
+    );
+
+    if ((int)$row['quantity'] > 1) {
+        q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+        $remaining = (int)$row['quantity'] - 1;
+    } else {
+        q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+        $remaining = 0;
+    }
+
+    echo json_encode([
+        'ok' => true,
+        'hearts' => $hearts,
+        'remaining' => $remaining,
+    ]);
+    exit;
 }
+
 $pets = get_user_pets($uid);
+
+if (!$pets) {
+    echo '<p>No pets yet. <a href="?pg=create_pet">Create one</a>.</p>';
+    return;
+}
+
 $food_items = q(
     "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui"
     . " JOIN items i ON i.item_id = ui.item_id"
@@ -56,123 +80,99 @@ $food_items = q(
     . " WHERE ui.user_id = ? AND ic.category_name = 'Food'",
     [$uid]
 )->fetchAll(PDO::FETCH_ASSOC);
-$healing_items = q(
-    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
-    . " JOIN items i ON i.item_id = ui.item_id"
-    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
-    . " WHERE ui.user_id = ? AND ic.category_name = 'Potion'",
-    [$uid]
-)->fetchAll(PDO::FETCH_ASSOC);
 
-$pet = null;
+$pet_lookup = [];
+foreach ($pets as $p) {
+    $pet_lookup[(int)$p['pet_instance_id']] = $p;
+}
+
 $pid = isset($_GET['id']) ? (int)$_GET['id'] : null;
-if ($pid) {
-    foreach ($pets as $p) {
-        if ((int)$p['pet_instance_id'] === $pid) {
-            $pet = $p;
-            break;
-        }
-    }
+$active_pet = ($pid && isset($pet_lookup[$pid])) ? $pet_lookup[$pid] : $pets[0];
+
+$species_ids = array_values(array_unique(array_map(fn($p) => (int)$p['species_id'], $pets)));
+$preference_rows = [];
+if ($species_ids) {
+    $placeholders = implode(',', array_fill(0, count($species_ids), '?'));
+    $preference_rows = q(
+        "SELECT species_id, item_id, like_scale FROM food_preferences WHERE species_id IN ($placeholders)",
+        $species_ids
+    )->fetchAll(PDO::FETCH_ASSOC);
 }
-if (!$pet && $pets) {
-    $pet = $pets[0];
+
+$preferences = [];
+foreach ($preference_rows as $pref) {
+    $sid = (int)$pref['species_id'];
+    $iid = (int)$pref['item_id'];
+    $preferences[$sid][$iid] = (int)$pref['like_scale'];
 }
+
+function slugify_item(string $name): string {
+    $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '_', $name));
+    return trim($slug, '_');
+}
+
+$food_payload = array_map(function ($item) use ($preferences, $active_pet) {
+    $slug = slugify_item($item['item_name']);
+    return [
+        'id' => (int)$item['item_id'],
+        'name' => $item['item_name'],
+        'quantity' => (int)$item['quantity'],
+        'image' => 'images/games/items/' . $slug . '.png',
+        'preference' => $preferences[(int)$active_pet['species_id']][(int)$item['item_id']] ?? null,
+    ];
+}, $food_items);
+
+$pets_payload = array_map(function ($pet) use ($preferences) {
+    return [
+        'id' => (int)$pet['pet_instance_id'],
+        'name' => $pet['nickname'] ?: $pet['species_name'],
+        'speciesId' => (int)$pet['species_id'],
+        'color' => $pet['color_name'] ?? '',
+        'image' => pet_image_url($pet['species_name'], $pet['color_name']),
+        'preferences' => $preferences[(int)$pet['species_id']] ?? [],
+    ];
+}, $pets);
 ?>
-<h1>Your Pets</h1>
-<?php if ($pets): ?>
-<?php if ($pet): ?>
-<a class="btn" href="?pg=petting&id=<?= (int)$pet['pet_instance_id'] ?>">Open petting mode</a>
-<?php endif; ?>
-<a class="btn" href="?pg=create_pet">Create pet</a>
-<p></p>
-<div class="pets-grid">
-<?php foreach ($pets as $pet): ?>
-  <div class="card glass pet-card">
-    <img class="thumb" src="<?= htmlspecialchars(pet_image_url($pet['species_name'], $pet['color_name'])) ?>" alt="">
-    <h2><?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></h2>
-    <button class="show-details" data-id="<?= (int)$pet['pet_instance_id'] ?>">Details</button>
-    <div id="pet-<?= (int)$pet['pet_instance_id'] ?>" class="pet-details" style="display:none;">
-      <p>Species: <?= htmlspecialchars($pet['species_name']) ?></p>
-      <p>Color: <?= htmlspecialchars($pet['color_name'] ?? 'None') ?></p>
-      <p>Gender: <?= htmlspecialchars($pet['gender']) ?></p>
-      <p>Level: <?= (int)$pet['level'] ?></p>
-      <p>HP: <?= (int)($pet['hp_current'] ?? 0) ?> / <?= (int)($pet['hp_max'] ?? ($pet['hp_current'] ?? 0)) ?></p>
-      <p>Sickness: <?= !empty($pet['sickness']) ? '😷 Unwell' : '✅ Healthy' ?></p>
-      <p>Hunger: <?= (int)$pet['hunger'] ?></p>
-      <p>Happiness: <?= (int)$pet['happiness'] ?></p>
-      <div class="actions">
-        <button class="play">Play</button>
-        <button class="feed">Feed</button>
-        <button class="read">Read</button>
-        <button class="heal">Heal</button>
-        <button class="close">Close</button>
-      </div>
-      <div class="feed-form" style="display:none;">
-        <?php if ($food_items): ?>
-        <form method="post">
-          <input type="hidden" name="action" value="feed">
-          <input type="hidden" name="pet_id" value="<?= (int)$pet['pet_instance_id'] ?>">
-          <select name="item_id">
-            <?php foreach ($food_items as $item): ?>
-              <option value="<?= (int)$item['item_id'] ?>"><?= htmlspecialchars($item['item_name']) ?> (x<?= (int)$item['quantity'] ?>)</option>
-            <?php endforeach; ?>
-          </select>
-          <button type="submit">Feed to <?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></button>
-        </form>
-        <?php else: ?>
-          <p>You do not have any food items.</p>
-        <?php endif; ?>
-      </div>
-      <div class="heal-form" style="display:none;">
-        <?php if ($healing_items): ?>
-        <form method="post">
-          <input type="hidden" name="action" value="heal">
-          <input type="hidden" name="pet_id" value="<?= (int)$pet['pet_instance_id'] ?>">
-          <select name="item_id">
-            <?php foreach ($healing_items as $item): ?>
-              <option value="<?= (int)$item['item_id'] ?>"><?= htmlspecialchars($item['item_name']) ?> (heals <?= (int)$item['replenish'] ?> HP, x<?= (int)$item['quantity'] ?>)</option>
-            <?php endforeach; ?>
-          </select>
-          <button type="submit">Heal <?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></button>
-        </form>
-        <?php else: ?>
-          <p>No healing items available.</p>
-        <?php endif; ?>
-      </div>
-    </div>
-  </div>
-<?php endforeach; ?>
-</div>
+<link rel="stylesheet" href="assets/css/petting.css">
 <script>
-document.querySelectorAll('.show-details').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const details = document.getElementById('pet-' + btn.dataset.id);
-    if (details) details.style.display = 'block';
-  });
-});
-document.querySelectorAll('.pet-details .actions .heal').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const form = btn.closest('.pet-details').querySelector('.heal-form');
-    if (form) form.style.display = 'block';
-  });
-});
-document.querySelectorAll('.pet-details .close').forEach(btn => {
-  btn.addEventListener('click', () => {
-    btn.closest('.pet-details').style.display = 'none';
-  });
-});
-document.querySelectorAll('.pet-details .actions .feed').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const form = btn.closest('.pet-details').querySelector('.feed-form');
-    if (form) form.style.display = 'block';
-  });
-});
-document.querySelectorAll('.pet-details .actions button').forEach(btn => {
-  if (!btn.classList.contains('close') && !btn.classList.contains('feed') && !btn.classList.contains('heal')) {
-    btn.addEventListener('click', () => alert('Not implemented'));
-  }
-});
+    window.pettingData = {
+        activePetId: <?= (int)$active_pet['pet_instance_id'] ?>,
+        pets: <?= json_encode($pets_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+        food: <?= json_encode($food_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+        assets: {
+            inventoryIcon: 'images/games/ui/inventory.png',
+            petIcon: 'images/games/ui/pet_list.png',
+            dust: 'images/games/effects/dust.png',
+            heart: 'images/games/effects/heart.png',
+            crumbs: 'images/games/effects/crumb.png',
+            eat: 'assets/sfx/eat.wav',
+            hop: 'assets/sfx/hop.wav'
+        }
+    };
 </script>
-<?php else: ?>
-<p>No pets yet. <a href="?pg=create_pet">Create one</a>.</p>
-<?php endif; ?>
+<h1>Petting Mode</h1>
+<p class="petting-hint">Feed your pets directly, toss them snacks, and swap companions without leaving the screen. Everything works with the mouse.</p>
+<div class="petting-shell">
+    <div class="petting-viewport" id="petting-viewport">
+        <button class="inventory-toggle" id="inventory-toggle" type="button" aria-label="Open inventory">🍱</button>
+        <div class="inventory-banner" id="inventory-banner" aria-live="polite">
+            <div class="inventory-list" id="inventory-list"></div>
+            <button class="banner-close" id="inventory-close" type="button" aria-label="Close inventory">✕</button>
+        </div>
+
+        <button class="pet-switch-toggle" id="pet-switch-toggle" type="button" aria-label="Switch pet">⬆</button>
+        <div class="pet-banner" id="pet-banner" aria-live="polite">
+            <div class="pet-list" id="pet-list"></div>
+            <button class="banner-close" id="pet-banner-close" type="button" aria-label="Close pet list">✕</button>
+        </div>
+
+        <div class="petting-stage" id="petting-stage">
+            <div class="pet-shadow"></div>
+            <img id="active-pet" class="pet-sprite" src="<?= htmlspecialchars(pet_image_url($active_pet['species_name'], $active_pet['color_name'])) ?>" alt="Active pet">
+            <div class="dust-cloud" id="dust-cloud"></div>
+            <div class="heart-layer" id="heart-layer"></div>
+            <div class="crumb-layer" id="crumb-layer"></div>
+        </div>
+    </div>
+</div>
+<script defer src="assets/js/petting.js"></script>
