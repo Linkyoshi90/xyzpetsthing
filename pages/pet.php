@@ -12,11 +12,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'feed'
         [$uid, $item_id]
     )->fetch(PDO::FETCH_ASSOC);
     if ($row && (int)$row['quantity'] > 0) {
-        q("UPDATE pet_instances SET hunger = GREATEST(0, hunger - ?) WHERE pet_instance_id = ? AND owner_user_id = ?", [$row['replenish'], $pet_id, $uid]);
-        if ((int)$row['quantity'] > 1) {
-            q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-        } else {
-            q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+        $max_hunger = 100;
+        $current_hunger = (int)(q(
+            "SELECT hunger FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+            [$pet_id, $uid]
+        )->fetchColumn() ?? 0);
+
+        if ($current_hunger < $max_hunger) {
+            q("UPDATE pet_instances SET hunger = LEAST(?, hunger + ?) WHERE pet_instance_id = ? AND owner_user_id = ?", [$max_hunger, $row['replenish'], $pet_id, $uid]);
+            if ((int)$row['quantity'] > 1) {
+                q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+            } else {
+                q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+            }
         }
         header('Location: ?pg=pet&id=' . $pet_id);
         exit;

@@ -17,11 +17,17 @@
   const petBanner = document.getElementById('pet-banner');
   const petBannerClose = document.getElementById('pet-banner-close');
   const petList = document.getElementById('pet-list');
+  const hungerMeter = document.getElementById('hunger-meter');
+  const hungerFill = hungerMeter?.querySelector('.fill');
+  const hungerValue = hungerMeter?.querySelector('.value');
+  const fullBanner = document.getElementById('full-banner');
 
   let activePetId = data.activePetId;
   let draggingFood = null;
   let dragProxy = null;
   let idleTimer = null;
+  let fullTimer = null;
+  const hungerMax = data.hungerMax ?? 100;
 
   const hopSound = data.assets?.hop ? new Audio(data.assets.hop) : null;
   const eatSound = data.assets?.eat ? new Audio(data.assets.eat) : null;
@@ -30,6 +36,32 @@
 
     function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
+    }
+
+    function getActivePet() {
+        return data.pets.find((p) => p.id === activePetId);
+    }
+
+    function updateHungerDisplay() {
+        const pet = getActivePet();
+        if (!pet || !hungerMeter) return;
+        const percent = Math.round(clamp(pet.hunger ?? 0, 0, hungerMax));
+        if (hungerFill) hungerFill.style.width = `${(percent / hungerMax) * 100}%`;
+        if (hungerValue) hungerValue.textContent = `${percent}/${hungerMax}`;
+    }
+
+    function setHunger(value) {
+        const pet = getActivePet();
+        if (!pet) return;
+        pet.hunger = clamp(value, 0, hungerMax);
+        updateHungerDisplay();
+    }
+
+    function showFullBanner() {
+        if (!fullBanner) return;
+        fullBanner.classList.add('visible');
+        if (fullTimer) clearTimeout(fullTimer);
+        fullTimer = setTimeout(() => fullBanner.classList.remove('visible'), 10000);
     }
 
     function setPetPosition(leftPx, bottomPx) {
@@ -67,6 +99,7 @@
     petImg.alt = pet.name;
     closePetBanner();
       renderFood();
+      updateHungerDisplay();
       const stageRect = stage.getBoundingClientRect();
       const petRect = petImg.getBoundingClientRect();
       scatterDust(
@@ -196,6 +229,11 @@
   }
 
   function feedPet(item, x, y) {
+    const pet = getActivePet();
+    if (pet && (pet.hunger ?? 0) >= hungerMax) {
+      showFullBanner();
+      return;
+    }
     const petRect = petImg.getBoundingClientRect();
     const formData = new FormData();
     formData.append('action', 'feed_pet');
@@ -214,6 +252,7 @@
       .then((res) => {
         if (!res.ok) {
           console.warn(res.message || 'Could not feed pet');
+          if (res.full) showFullBanner();
           return;
         }
         if (eatSound) {
@@ -223,6 +262,12 @@
         dropCrumbs(petRect.left + petRect.width / 2, petRect.bottom - 10, 6);
         showHearts(res.hearts || 2);
         updateFoodCount(item.id, res.remaining ?? item.quantity - 1);
+        if (typeof res.hunger === 'number') {
+          setHunger(res.hunger);
+        }
+        if (res.full) {
+          showFullBanner();
+        }
       })
       .catch((err) => console.error(err));
   }
@@ -360,5 +405,6 @@
     syncShadowWithPet();
   renderPets();
   renderFood();
+  updateHungerDisplay();
   resetIdleTimer();
 })();
