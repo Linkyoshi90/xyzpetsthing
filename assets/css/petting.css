@@ -23,6 +23,77 @@
   overflow: hidden;
 }
 
+.pet-status {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+  z-index: 6;
+}
+
+.food-meter {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #0d2448;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+  min-width: 220px;
+}
+
+.food-meter .label {
+  font-weight: 700;
+  color: #16305f;
+}
+
+.food-meter .bar {
+  position: relative;
+  height: 12px;
+  background: #e4ecf8;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #c2d1ec;
+}
+
+.food-meter .bar .fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg, #89d27d 0%, #3fa15a 100%);
+  transition: width 0.3s ease;
+}
+
+.food-meter .value {
+  font-variant-numeric: tabular-nums;
+  color: #0d2448;
+}
+
+.full-banner {
+  padding: 8px 12px;
+  background: #fbe3e8;
+  color: #b31240;
+  border: 2px solid #b31240;
+  border-radius: 10px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.full-banner.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .petting-hint {
   margin-bottom: 0.5rem;
   color: #2d3954;

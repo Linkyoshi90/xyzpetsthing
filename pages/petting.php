@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed_pet') {
     $item_id = (int)($_POST['item_id'] ?? 0);
 
     $pet = q(
-        "SELECT pet_instance_id, species_id FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+        "SELECT pet_instance_id, species_id, hunger FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
         [$pet_id, $uid]
     )->fetch(PDO::FETCH_ASSOC);
 
@@ -42,14 +42,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed_pet') {
     $like_scale = $like ? (int)$like['like_scale'] : 2;
     $hearts = max(1, min(3, $like_scale));
     $replenish = max(1, (int)($row['replenish'] ?? 1));
+    $max_hunger = 100;
+
+    if ((int)$pet['hunger'] >= $max_hunger) {
+        echo json_encode(['ok' => false, 'message' => 'Pet is already full.', 'hunger' => (int)$pet['hunger']]);
+        exit;
+    }
 
     q(
         "UPDATE pet_instances"
-        . "   SET hunger = GREATEST(0, hunger - ?),"
+        . "   SET hunger = LEAST(?, hunger + ?),"
         . "       happiness = LEAST(100, happiness + ?)"
         . " WHERE pet_instance_id = ? AND owner_user_id = ?",
-        [$replenish, $hearts * 5, $pet_id, $uid]
+        [$max_hunger, $replenish, $hearts * 5, $pet_id, $uid]
     );
+
+    $new_hunger = q(
+        "SELECT hunger FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$pet_id, $uid]
+    )->fetchColumn();
 
     if ((int)$row['quantity'] > 1) {
         q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
@@ -63,6 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed_pet') {
         'ok' => true,
         'hearts' => $hearts,
         'remaining' => $remaining,
+        'hunger' => (int)$new_hunger,
+        'full' => (int)$new_hunger >= $max_hunger,
     ]);
     exit;
 }
@@ -75,7 +88,7 @@ if (!$pets) {
 }
 
 $food_items = q(
-    "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui"
+    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
     . " JOIN items i ON i.item_id = ui.item_id"
     . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
     . " WHERE ui.user_id = ? AND ic.category_name = 'Food'",
@@ -115,6 +128,7 @@ $food_payload = array_map(function ($item) use ($preferences, $active_pet) {
         'quantity' => (int)$item['quantity'],
         'image' => 'images/items/' . rawurlencode($imageFile),
         'preference' => $preferences[(int)$active_pet['species_id']][(int)$item['item_id']] ?? null,
+        'replenish' => (int)$item['replenish'],
     ];
 }, $food_items);
 
@@ -126,6 +140,7 @@ $pets_payload = array_map(function ($pet) use ($preferences) {
         'color' => $pet['color_name'] ?? '',
         'image' => pet_image_url($pet['species_name'], $pet['color_name']),
         'preferences' => $preferences[(int)$pet['species_id']] ?? [],
+        'hunger' => (int)$pet['hunger'],
     ];
 }, $pets);
 ?>
@@ -138,12 +153,13 @@ $pets_payload = array_map(function ($pet) use ($preferences) {
         assets: {
             inventoryIcon: 'images/games/ui/inventory.png',
             petIcon: 'images/games/ui/pet_list.png',
-            dust: 'images/games/effects/dust.png',
-            heart: 'images/games/effects/heart.png',
-            crumbs: 'images/games/effects/crumb.png',
+            dust: 'images/games/petting_dust.svg',
+            heart: 'images/games/petting_heart.svg',
+            crumbs: 'images/games/petting_crumb.svg',
             eat: 'assets/sfx/eat.wav',
             hop: 'assets/sfx/hop.wav'
-        }
+        },
+        hungerMax: 100
     };
 </script>
 <h1>Petting Mode</h1>
@@ -163,6 +179,14 @@ $pets_payload = array_map(function ($pet) use ($preferences) {
         </div>
 
         <div class="petting-stage" id="petting-stage">
+            <div class="pet-status">
+                <div class="food-meter" id="hunger-meter">
+                    <span class="label">Food</span>
+                    <div class="bar"><div class="fill"></div></div>
+                    <span class="value">0/100</span>
+                </div>
+                <div class="full-banner" id="full-banner">She's full</div>
+            </div>
             <div class="pet-shadow"></div>
             <img id="active-pet" class="pet-sprite" src="<?= htmlspecialchars(pet_image_url($active_pet['species_name'], $active_pet['color_name'])) ?>" alt="Active pet">
             <div class="dust-cloud" id="dust-cloud"></div>
