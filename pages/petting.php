@@ -1,6 +1,7 @@
 <?php
 require_login();
 require_once __DIR__.'/../lib/pets.php';
+require_once __DIR__.'/../lib/shops.php';
 
 $uid = current_user()['id'];
 $action = $_POST['action'] ?? '';
@@ -106,18 +107,13 @@ foreach ($preference_rows as $pref) {
     $preferences[$sid][$iid] = (int)$pref['like_scale'];
 }
 
-function slugify_item(string $name): string {
-    $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '_', $name));
-    return trim($slug, '_');
-}
-
 $food_payload = array_map(function ($item) use ($preferences, $active_pet) {
-    $slug = slugify_item($item['item_name']);
+    $imageFile = shop_find_item_image($item['item_name']);
     return [
         'id' => (int)$item['item_id'],
         'name' => $item['item_name'],
         'quantity' => (int)$item['quantity'],
-        'image' => 'images/games/items/' . $slug . '.png',
+        'image' => 'images/items/' . rawurlencode($imageFile),
         'preference' => $preferences[(int)$active_pet['species_id']][(int)$item['item_id']] ?? null,
     ];
 }, $food_items);

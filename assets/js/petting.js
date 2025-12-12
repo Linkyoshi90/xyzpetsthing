@@ -5,6 +5,7 @@
   const viewport = document.getElementById('petting-viewport');
   const stage = document.getElementById('petting-stage');
   const petImg = document.getElementById('active-pet');
+  const petShadow = document.querySelector('.pet-shadow');
   const heartLayer = document.getElementById('heart-layer');
   const crumbLayer = document.getElementById('crumb-layer');
   const dustCloud = document.getElementById('dust-cloud');
@@ -25,7 +26,38 @@
   const hopSound = data.assets?.hop ? new Audio(data.assets.hop) : null;
   const eatSound = data.assets?.eat ? new Audio(data.assets.eat) : null;
 
-  dustCloud.style.backgroundImage = data.assets?.dust ? `url(${data.assets.dust})` : 'none';
+    dustCloud.style.backgroundImage = data.assets?.dust ? `url(${data.assets.dust})` : 'none';
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function setPetPosition(leftPx, bottomPx) {
+        petImg.style.left = `${leftPx}px`;
+        petImg.style.bottom = `${bottomPx}px`;
+        if (petShadow) {
+            const shadowBottom = Math.max(8, bottomPx - 45);
+            petShadow.style.left = `${leftPx}px`;
+            petShadow.style.bottom = `${shadowBottom}px`;
+        }
+    }
+
+    function scatterDust(x, y) {
+        if (!dustCloud) return;
+        dustCloud.style.left = `${x}px`;
+        dustCloud.style.top = `${y}px`;
+        dustCloud.classList.remove('active');
+        void dustCloud.offsetWidth;
+        dustCloud.classList.add('active');
+    }
+
+    function syncShadowWithPet(petRect = null, stageRect = null) {
+        const rect = petRect || petImg.getBoundingClientRect();
+        const stageBox = stageRect || stage.getBoundingClientRect();
+        const centerX = rect.left - stageBox.left + rect.width / 2;
+        const bottom = stageBox.bottom - rect.bottom;
+        setPetPosition(centerX, bottom);
+    }
 
   function setActivePet(petId) {
     const pet = data.pets.find((p) => p.id === petId);
@@ -34,8 +66,14 @@
     petImg.src = pet.image;
     petImg.alt = pet.name;
     closePetBanner();
-    renderFood();
-    scatterDust(petImg.offsetLeft + petImg.clientWidth / 2, petImg.offsetTop + petImg.clientHeight);
+      renderFood();
+      const stageRect = stage.getBoundingClientRect();
+      const petRect = petImg.getBoundingClientRect();
+      scatterDust(
+          petRect.left - stageRect.left + petRect.width / 2,
+          petRect.bottom - stageRect.top
+      );
+      syncShadowWithPet(petRect, stageRect);
   }
 
   function renderPets() {
@@ -243,53 +281,60 @@
     if (!target) return;
     target.quantity = remaining;
     renderFood();
-  }
+    }
+    function hopTo(leftPx, bottomPx, { playSound = true } = {}) {
+        setPetPosition(leftPx, bottomPx);
+        scatterDust(leftPx, stage.getBoundingClientRect().height - bottomPx);
+        if (playSound && hopSound) {
+            hopSound.currentTime = 0;
+            hopSound.play().catch(() => { });
+        }
+    }
+
+    function hopToPoint(clientX, clientY, options = {}) {
+        const rect = stage.getBoundingClientRect();
+        const halfWidth = petImg.clientWidth / 2;
+        const clampedLeft = clamp(clientX - rect.left, halfWidth, rect.width - halfWidth);
+        const clampedTop = clamp(clientY - rect.top, 0, rect.height);
+        const bottom = clamp(rect.height - clampedTop, 8, rect.height - 10);
+        hopTo(clampedLeft, bottom, options);
+    }
+
 
   function swapPet(petId) {
-    if (petId === activePetId) return;
-    const currentX = -120;
-    petImg.style.left = `${currentX}px`;
+      if (petId === activePetId) return;
+      const stageRect = stage.getBoundingClientRect();
+      const currentBottom = parseFloat(getComputedStyle(petImg).bottom) || stageRect.height * 0.18;
+      setPetPosition(-120, currentBottom);
     petImg.classList.add('running');
     setTimeout(() => {
-      setActivePet(petId);
-      petImg.style.left = '110%';
+        setActivePet(petId);
+        setPetPosition(stageRect.width + 120, currentBottom);
       requestAnimationFrame(() => {
-        petImg.classList.remove('running');
-        petImg.style.left = '40%';
+          petImg.classList.remove('running');
+          setPetPosition(stageRect.width * 0.4, currentBottom);
       });
     }, 300);
   }
 
-  function scatterDust(x, y) {
-    if (!dustCloud) return;
-    dustCloud.style.left = `${x}px`;
-    dustCloud.style.top = `${y}px`;
-    dustCloud.classList.remove('active');
-    void dustCloud.offsetWidth;
-    dustCloud.classList.add('active');
+    function idleHop() {
+        const rect = stage.getBoundingClientRect();
+        const targetLeft = Math.random() * (rect.width - 200) + 100;
+        const minBottom = rect.height * 0.12;
+        const targetBottom = Math.random() * (rect.height * 0.2) + minBottom;
+        hopTo(targetLeft, targetBottom);
   }
 
-  function idleHop() {
-    const rect = viewport.getBoundingClientRect();
-    const targetX = Math.random() * (rect.width - 200) + 100;
-    const targetY = Math.random() * 80 + 16;
-    petImg.style.left = `${targetX}px`;
-    petImg.style.bottom = `${targetY}%`;
-    scatterDust(targetX, rect.height * (1 - targetY / 100));
-    if (hopSound) {
-      hopSound.currentTime = 0;
-      hopSound.play().catch(() => {});
-    }
-  }
-
-  function disappearAndReturn() {
-    petImg.style.left = '-30%';
+    function disappearAndReturn() {
+        const rect = stage.getBoundingClientRect();
+        const currentBottom = parseFloat(getComputedStyle(petImg).bottom) || rect.height * 0.18;
+        setPetPosition(-30, currentBottom);
     petImg.style.opacity = '0';
-    setTimeout(() => {
-      petImg.style.left = '120%';
+        setTimeout(() => {
+            setPetPosition(rect.width + 30, currentBottom);
       setTimeout(() => {
-        petImg.style.opacity = '1';
-        petImg.style.left = '40%';
+          petImg.style.opacity = '1';
+          hopTo(rect.width * 0.4, currentBottom, { playSound: false });
       }, 300);
     }, 600);
   }
@@ -302,15 +347,17 @@
     }, 4500);
   }
 
-  viewport.addEventListener('dblclick', () => {
-    petImg.style.left = '50%';
-    petImg.style.bottom = '18%';
-    scatterDust(stage.clientWidth / 2, stage.clientHeight * 0.82);
+    stage.addEventListener('pointerdown', (ev) => {
+        if (draggingFood) return;
+        if (ev.button !== 0) return;
+        if (!stage.contains(ev.target)) return;
+        hopToPoint(ev.clientX, ev.clientY);
     resetIdleTimer();
   });
 
   viewport.addEventListener('pointerdown', () => resetIdleTimer());
 
+    syncShadowWithPet();
   renderPets();
   renderFood();
   resetIdleTimer();

@@ -41,7 +41,13 @@ function playSound(sound) {
 
 const sprites = {
     player: loadImage('images/games/player.png'),
-    enemy: loadImage('images/games/enemy.png'),
+    enemy: {
+        green: loadImage('images/centaur_f_green.webp'),
+        blue: loadImage('images/centaur_f_blue.webp'),
+        red: loadImage('images/centaur_f_red.webp'),
+        purple: loadImage('images/centaur_f_purple.webp'),
+        yellow: loadImage('images/yuki_onna_f_yellow.webp')
+    },
     bonus: loadImage('images/games/bonus.png'),
     powerup: {
         rapid: loadImage('images/games/powerupmachinegun.png'),
@@ -196,15 +202,15 @@ function reset() {
 
 function update() {
     // player movement
-    if (keys.ArrowLeft) player.x -= player.speed;
-    if (keys.ArrowRight) player.x += player.speed;
+    if (keys.KeyA) player.x -= player.speed;
+    if (keys.KeyD) player.x += player.speed;
     player.x = Math.max(0, Math.min(canvas.width - player.w, player.x));
     clones.forEach(c => {
         c.x = player.x + c.offset;
         c.y = player.y;
     });
     // shooting
-    if (keys.Space && player.cooldown <= 0) {
+    if (keys.KeyW && player.cooldown <= 0) {
         shoot();
         player.cooldown = activePowers.rapid > 0 ? 5 : 15;
     }
@@ -432,7 +438,7 @@ function draw() {
 
     // enemies
     enemies.forEach(e => {
-        const enemySprite = sprites.enemy;
+        const enemySprite = sprites.enemy[e.color];
         if (enemySprite && enemySprite.complete && !enemySprite._failed) {
             ctx.drawImage(enemySprite, e.x, e.y, e.w, e.h);
         } else {
