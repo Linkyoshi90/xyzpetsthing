@@ -2,8 +2,11 @@
 $u = current_user();
 $header_pet = null;
 $random_event = null;
+$page_location = null;
+$speech_dialogues = [];
 if ($u) {
     require_once __DIR__.'/../lib/pets.php';
+    require_once __DIR__.'/../lib/city_locations.php';
     $pets = get_user_pets($u['id']);
     if ($pets) {
         $header_pet = $pets[array_rand($pets)];
@@ -12,6 +15,8 @@ if ($u) {
         require_once __DIR__.'/../lib/random_events.php';
         $random_event = maybe_trigger_random_event($u);
     }
+    $page_location = get_page_location($pg ?? '');
+    $speech_dialogues = load_speech_dialogues();
 }
 ?>
 <!doctype html><html data-theme="light"><head>
@@ -56,6 +61,13 @@ $GLOBALS['app_chat_action_path'] = $chatActionPath;
         longName: <?= json_encode(APP_CURRENCY_LONG_NAME, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
     });
 </script>
+<?php if($u): ?>
+<script>
+    window.appLocation = <?= json_encode($page_location, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+    window.appActiveCreature = <?= json_encode($header_pet, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+    window.appSpeechDialogues = <?= json_encode($speech_dialogues, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+</script>
+<?php endif; ?>
 <?php
 $game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'wheel-of-fate'];
 if (!in_array($pg ?? '', $game_pages)):
@@ -64,6 +76,7 @@ if (!in_array($pg ?? '', $game_pages)):
 <script defer src="assets/js/world-map.js"></script>
 <?php endif; ?>
 <script defer src="assets/js/bubbles.js"></script>
+<script defer src="assets/js/speech-bubble.js"></script>
 <?php endif; ?>
 </head><body>
 <header class="nav">
@@ -72,13 +85,16 @@ if (!in_array($pg ?? '', $game_pages)):
         <a href="?pg=inventory">
             <span class="user-name"><?= htmlspecialchars($u['username']) ?></span>
         </a>
-        <a href="?pg=pet">
-            <?php if($header_pet): ?>
-                <img src="<?= htmlspecialchars(pet_image_url($header_pet['species_name'], $header_pet['color_name'])) ?>" alt="Active pet" class="pet-thumb" />
-            <?php else: ?>
-                <img src="/assets/creatures/placeholder.png" alt="No pet" class="pet-thumb" />
-            <?php endif; ?>
-        </a>
+        <div class="pet-thumb-wrapper">
+            <a href="?pg=pet">
+                <?php if($header_pet): ?>
+                    <img src="<?= htmlspecialchars(pet_image_url($header_pet['species_name'], $header_pet['color_name'])) ?>" alt="Active pet" class="pet-thumb" />
+                <?php else: ?>
+                    <img src="/assets/creatures/placeholder.png" alt="No pet" class="pet-thumb" />
+                <?php endif; ?>
+            </a>
+            <div id="pet-speech-bubble" class="pet-speech-bubble" role="status" aria-live="polite" hidden></div>
+        </div>
         <?php else: ?>
         <?php endif; ?>
     <a href="?pg=<?= $u?'main':'login' ?>">

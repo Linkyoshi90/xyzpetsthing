@@ -12,22 +12,33 @@
   const inventoryBanner = document.getElementById('inventory-banner');
   const inventoryList = document.getElementById('inventory-list');
   const inventoryToggle = document.getElementById('inventory-toggle');
-  const inventoryClose = document.getElementById('inventory-close');
+    const inventoryClose = document.getElementById('inventory-close');
+    const healingBanner = document.getElementById('healing-banner');
+    const healingList = document.getElementById('healing-list');
+    const healingToggle = document.getElementById('healing-toggle');
+    const healingClose = document.getElementById('healing-close');
   const petToggle = document.getElementById('pet-switch-toggle');
   const petBanner = document.getElementById('pet-banner');
   const petBannerClose = document.getElementById('pet-banner-close');
   const petList = document.getElementById('pet-list');
   const hungerMeter = document.getElementById('hunger-meter');
   const hungerFill = hungerMeter?.querySelector('.fill');
-  const hungerValue = hungerMeter?.querySelector('.value');
+    const hungerValue = hungerMeter?.querySelector('.value');
+    const healthMeter = document.getElementById('health-meter');
+    const healthFill = healthMeter?.querySelector('.fill');
+    const healthValue = healthMeter?.querySelector('.value');
   const fullBanner = document.getElementById('full-banner');
 
-  let activePetId = data.activePetId;
-  let draggingFood = null;
+    let activePetId = data.activePetId;
+    let draggingItem = null;
   let dragProxy = null;
   let idleTimer = null;
   let fullTimer = null;
-  const hungerMax = data.hungerMax ?? 100;
+    const hungerMax = data.hungerMax ?? 100;
+    const hungerPollIntervalMs = 15000;
+    let hungerPollTimer = null;
+    let hungerPersistTimer = null;
+    let queuedHungerPersist = null;
 
   const hopSound = data.assets?.hop ? new Audio(data.assets.hop) : null;
   const eatSound = data.assets?.eat ? new Audio(data.assets.eat) : null;
@@ -50,11 +61,99 @@
         if (hungerValue) hungerValue.textContent = `${percent}/${hungerMax}`;
     }
 
-    function setHunger(value) {
+    function setHunger(value, { persist = false } = {}) {
         const pet = getActivePet();
         if (!pet) return;
         pet.hunger = clamp(value, 0, hungerMax);
         updateHungerDisplay();
+        if (persist) scheduleHungerPersist(pet);
+    }
+    function updateHealthDisplay() {
+        const pet = getActivePet();
+        if (!pet || !healthMeter) return;
+        const maxHp = Math.max(1, pet.hpMax || pet.hpCurrent || 1);
+        const current = clamp(pet.hpCurrent ?? 0, 0, maxHp);
+        if (healthFill) healthFill.style.width = `${(current / maxHp) * 100}%`;
+        if (healthValue) healthValue.textContent = `${current}/${maxHp}`;
+    }
+
+    function setHealth(value, max = null) {
+        const pet = getActivePet();
+        if (!pet) return;
+        if (typeof max === 'number') {
+            pet.hpMax = Math.max(1, max);
+        }
+        pet.hpCurrent = clamp(value, 0, pet.hpMax || value || 1);
+        updateHealthDisplay();
+    }
+
+    function scheduleHungerPersist(pet) {
+        if (!pet) return;
+        queuedHungerPersist = { id: pet.id, hunger: pet.hunger };
+        if (hungerPersistTimer) clearTimeout(hungerPersistTimer);
+        hungerPersistTimer = setTimeout(() => {
+            if (queuedHungerPersist) {
+                persistHungerToServer(queuedHungerPersist.id, queuedHungerPersist.hunger);
+                queuedHungerPersist = null;
+            }
+        }, 350);
+    }
+
+    function persistHungerToServer(petId, hungerValue) {
+        const formData = new FormData();
+        formData.append('action', 'sync_hunger');
+        formData.append('pet_id', petId);
+        formData.append('hunger', hungerValue);
+
+        fetch('?pg=petting', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    console.warn(res.message || 'Could not sync hunger.');
+                    return;
+                }
+                const pet = getActivePet();
+                if (pet && typeof res.hunger === 'number') {
+                    pet.hunger = res.hunger;
+                    updateHungerDisplay();
+                }
+            })
+            .catch((err) => console.error(err));
+    }
+
+    function fetchHungerFromServer() {
+        const pet = getActivePet();
+        if (!pet) return;
+        const formData = new FormData();
+        formData.append('action', 'fetch_hunger');
+        formData.append('pet_id', pet.id);
+
+        fetch('?pg=petting', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) return;
+                if (typeof res.hunger === 'number') {
+                    pet.hunger = res.hunger;
+                    updateHungerDisplay();
+                }
+            })
+            .catch((err) => console.error(err));
+    }
+
+    function startHungerPolling() {
+        if (hungerPollTimer) clearInterval(hungerPollTimer);
+        fetchHungerFromServer();
+        hungerPollTimer = setInterval(fetchHungerFromServer, hungerPollIntervalMs);
     }
 
     function showFullBanner() {
@@ -99,7 +198,10 @@
     petImg.alt = pet.name;
     closePetBanner();
       renderFood();
+      renderHealing();
+      startHungerPolling();
       updateHungerDisplay();
+      updateHealthDisplay();
       const stageRect = stage.getBoundingClientRect();
       const petRect = petImg.getBoundingClientRect();
       scatterDust(
@@ -147,10 +249,37 @@
         <div class="name">${item.name}</div>
         <div class="quantity">x${item.quantity}${pref ? ` • ${'❤'.repeat(Math.max(1, Math.min(3, pref)))}` : ''}</div>
       `;
-      el.addEventListener('pointerdown', (ev) => startDrag(ev, item));
+        el.addEventListener('pointerdown', (ev) => startDrag(ev, item, 'food'));
       inventoryList.appendChild(el);
     });
-  }
+    }
+
+    function renderHealing() {
+        if (!healingList) return;
+        healingList.innerHTML = '';
+        const items = data.healing || [];
+        if (!items.length) {
+            const empty = document.createElement('div');
+            empty.className = 'empty-message';
+            empty.textContent = 'No healing items.';
+            healingList.appendChild(empty);
+            return;
+        }
+        items.forEach((item) => {
+            if (item.quantity < 1) return;
+            const el = document.createElement('div');
+            el.className = 'food-item';
+            el.setAttribute('data-id', item.id);
+            el.setAttribute('draggable', 'false');
+            el.innerHTML = `
+        <img src="${item.image}" alt="${item.name}">
+        <div class="name">${item.name}</div>
+        <div class="quantity">x${item.quantity} • +${item.healing} HP</div>
+      `;
+            el.addEventListener('pointerdown', (ev) => startDrag(ev, item, 'healing'));
+            healingList.appendChild(el);
+        });
+    }
 
   function preferenceFor(itemId) {
     const pet = data.pets.find((p) => p.id === activePetId);
@@ -160,7 +289,13 @@
   function toggleInventory(open) {
     const shouldOpen = open ?? !inventoryBanner.classList.contains('active');
     inventoryBanner.classList.toggle('active', shouldOpen);
-  }
+    }
+
+    function toggleHealing(open) {
+        if (!healingBanner) return;
+        const shouldOpen = open ?? !healingBanner.classList.contains('active');
+        healingBanner.classList.toggle('active', shouldOpen);
+    }
 
   function togglePetBanner(open) {
     const shouldOpen = open ?? !petBanner.classList.contains('active');
@@ -169,28 +304,36 @@
 
   function closeInventory() {
     inventoryBanner.classList.remove('active');
-  }
+    }
+
+    function closeHealing() {
+        healingBanner?.classList.remove('active');
+    }
 
   function closePetBanner() {
     petBanner.classList.remove('active');
   }
 
   inventoryToggle.addEventListener('click', () => toggleInventory(true));
-  inventoryClose.addEventListener('click', closeInventory);
+    inventoryClose.addEventListener('click', closeInventory);
+
+    healingToggle?.addEventListener('click', () => toggleHealing(true));
+    healingClose?.addEventListener('click', closeHealing);
+
 
   petToggle.addEventListener('click', () => togglePetBanner(true));
   petBannerClose.addEventListener('click', closePetBanner);
 
-  function startDrag(ev, item) {
-    ev.preventDefault();
-    if (draggingFood) return;
-    draggingFood = { item };
+    function startDrag(ev, item, kind) {
+        ev.preventDefault();
+        if (draggingItem) return;
+        draggingItem = { item, kind };
     dragProxy = document.createElement('div');
     dragProxy.className = 'drag-proxy';
     dragProxy.innerHTML = `<img src="${item.image}" alt="${item.name}">`;
     document.body.appendChild(dragProxy);
-    moveDrag(ev.clientX, ev.clientY);
-    closeInventory();
+        moveDrag(ev.clientX, ev.clientY);
+        closeHealing();
     window.addEventListener('pointermove', handleDragMove);
     window.addEventListener('pointerup', handleDragEnd, { once: true });
   }
@@ -202,24 +345,28 @@
     }
   }
 
-  function handleDragMove(ev) {
-    if (!draggingFood) return;
+    function handleDragMove(ev) {
+        if (!draggingItem) return;
     moveDrag(ev.clientX, ev.clientY);
   }
 
   function handleDragEnd(ev) {
     window.removeEventListener('pointermove', handleDragMove);
-    const droppedOnPet = overPet(ev.clientX, ev.clientY);
-    if (draggingFood && draggingFood.item) {
-      const item = draggingFood.item;
-      if (droppedOnPet) {
-        feedPet(item, ev.clientX, ev.clientY);
-      } else {
+      const droppedOnPet = overPet(ev.clientX, ev.clientY);
+      if (draggingItem && draggingItem.item) {
+          const { item, kind } = draggingItem;
+          if (droppedOnPet) {
+              if (kind === 'healing') {
+                  healPet(item, ev.clientX, ev.clientY);
+              } else {
+                  feedPet(item, ev.clientX, ev.clientY);
+              }
+          } else if (kind === 'food') {
         dropCrumbs(ev.clientX, ev.clientY);
       }
     }
-    if (dragProxy) dragProxy.remove();
-    draggingFood = null;
+      if (dragProxy) dragProxy.remove();
+      draggingItem = null;
     dragProxy = null;
   }
 
@@ -239,7 +386,7 @@
       const optimisticRemaining = Math.max(0, previousQuantity - 1);
       const optimisticHunger = previousHunger + (item.replenish ?? 0);
       updateFoodCount(item.id, optimisticRemaining);
-      setHunger(optimisticHunger);
+      setHunger(optimisticHunger, { persist: true });
     const petRect = petImg.getBoundingClientRect();
     const formData = new FormData();
     formData.append('action', 'feed_pet');
@@ -282,7 +429,55 @@
             updateFoodCount(item.id, previousQuantity);
             setHunger(previousHunger);
         });
-  }
+    }
+
+    function healPet(item, x, y) {
+        const pet = getActivePet();
+        const maxHp = Math.max(1, pet?.hpMax || pet?.hpCurrent || 1);
+        if (pet && (pet.hpCurrent ?? 0) >= maxHp) {
+            return;
+        }
+        const petRect = petImg.getBoundingClientRect();
+        const previousHp = pet?.hpCurrent ?? 0;
+        const previousQty = item.quantity;
+        const optimisticRemaining = Math.max(0, previousQty - 1);
+        const optimisticHp = Math.min(maxHp, previousHp + (item.healing ?? 0));
+        updateHealingCount(item.id, optimisticRemaining);
+        setHealth(optimisticHp);
+
+        const formData = new FormData();
+        formData.append('action', 'heal_pet');
+        formData.append('pet_id', activePetId);
+        formData.append('item_id', item.id);
+
+        animateEating(item.image, x, y, petRect);
+
+        fetch('?pg=petting', {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            body: formData,
+            credentials: 'same-origin'
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    console.warn(res.message || 'Could not heal pet');
+                    updateHealingCount(item.id, previousQty);
+                    setHealth(previousHp);
+                    return;
+                }
+                if (res.hp !== undefined) {
+                    setHealth(res.hp, res.hpMax);
+                }
+                updateHealingCount(item.id, res.remaining ?? optimisticRemaining);
+                showHearts(2);
+            })
+            .catch((err) => {
+                console.error(err);
+                updateHealingCount(item.id, previousQty);
+                setHealth(previousHp);
+            });
+    }
 
   function animateEating(image, startX, startY, petRect) {
     const anim = document.createElement('div');
@@ -339,6 +534,14 @@
     target.quantity = remaining;
     renderFood();
     }
+
+    function updateHealingCount(itemId, remaining) {
+        const target = (data.healing || []).find((f) => f.id === itemId);
+        if (!target) return;
+        target.quantity = remaining;
+        renderHealing();
+    }
+
     function hopTo(leftPx, bottomPx, { playSound = true } = {}) {
         setPetPosition(leftPx, bottomPx);
         scatterDust(leftPx, stage.getBoundingClientRect().height - bottomPx);
@@ -405,7 +608,7 @@
   }
 
     stage.addEventListener('pointerdown', (ev) => {
-        if (draggingFood) return;
+        if (draggingItem) return;
         if (ev.button !== 0) return;
         if (!stage.contains(ev.target)) return;
         hopToPoint(ev.clientX, ev.clientY);
@@ -416,7 +619,10 @@
 
     syncShadowWithPet();
   renderPets();
-  renderFood();
-  updateHungerDisplay();
+    renderFood();
+    renderHealing();
+    updateHungerDisplay();
+    updateHealthDisplay();
+    startHungerPolling();
   resetIdleTimer();
 })();

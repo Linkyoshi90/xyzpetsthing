@@ -100,17 +100,18 @@
 }
 
 .inventory-toggle,
+.healing-toggle,
 .pet-switch-toggle {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  border: 2px solid #0d2448;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
-  cursor: pointer;
-  z-index: 5;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    border: 2px solid #0d2448;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
+    cursor: pointer;
+    z-index: 5;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .inventory-toggle {
@@ -118,17 +119,23 @@
   left: 12px;
 }
 
+.healing-toggle {
+    top: 68px;
+    left: 12px;
+}
+
 .pet-switch-toggle {
   bottom: 12px;
   left: 12px;
 }
 
-.inventory-toggle:hover,
-.pet-switch-toggle:hover,
-.banner-close:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
+    .inventory-toggle:hover,
+    .healing-toggle:hover,
+    .pet-switch-toggle:hover,
+    .banner-close:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
 
 .inventory-banner,
 .pet-banner {

@@ -1,0 +1,49 @@
+{
+  "Centaur": {
+    "Love": [
+      "Heliadora's marble forums feel like home under my hooves.",
+      "Sunlight on the Aegis bridges always makes me stand taller."
+    ],
+    "Like": [
+      "A quick trot through the plazas keeps me limber."
+    ],
+    "Dislike": [
+      "These alleys are narrower than I remember.",
+      "Too many steps, not enough ramps for a proper gallop."
+    ],
+    "Hate": [
+      "Stalls packed this tight make my shoulders ache."
+    ]
+  },
+  "Yuki-Onna": {
+    "Love": [
+      "Amatera's mountain air is crisp enough to braid into ribbons.",
+      "Snowflake lanterns here melt just slow enough to smile."
+    ],
+    "Like": [
+      "I can drift along these bridges all night.",
+      "Quiet footsteps and cool river mist suit me."
+    ],
+    "Dislike": [
+      "Too many festival fires make the air a bit warm."
+    ],
+    "Hate": [
+      "If the drums get any hotter, I'll have to find shade in the hills."
+    ]
+  },
+  "Genie": {
+    "Love": [
+      "Ziggurab's skyline still shines like cut glass to me.",
+      "Home courts mean familiar wishes whispered on the wind."
+    ],
+    "Like": [
+      "Market lanterns remind me of star jars back home."
+    ],
+    "Dislike": [
+      "So few people here know how to phrase a good wish."
+    ],
+    "Hate": [
+      "Sand-choked lamps and rude summons sour my mood."
+    ]
+  }
+}

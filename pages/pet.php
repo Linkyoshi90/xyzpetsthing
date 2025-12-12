@@ -111,7 +111,6 @@ if (!$pet && $pets) {
       <div class="actions">
         <button class="play">Play</button>
         <button class="read">Read</button>
-        <button class="heal">Heal</button>
         <button class="close">Close</button>
       </div>
       <div class="feed-form" style="display:none;">
