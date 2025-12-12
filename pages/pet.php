@@ -102,7 +102,6 @@ if (!$pet && $pets) {
       <p>Happiness: <?= (int)$pet['happiness'] ?></p>
       <div class="actions">
         <button class="play">Play</button>
-        <button class="feed">Feed</button>
         <button class="read">Read</button>
         <button class="heal">Heal</button>
         <button class="close">Close</button>
