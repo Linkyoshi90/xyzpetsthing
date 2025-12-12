@@ -233,7 +233,13 @@
     if (pet && (pet.hunger ?? 0) >= hungerMax) {
       showFullBanner();
       return;
-    }
+      }
+      const previousHunger = pet?.hunger ?? 0;
+      const previousQuantity = item.quantity;
+      const optimisticRemaining = Math.max(0, previousQuantity - 1);
+      const optimisticHunger = previousHunger + (item.replenish ?? 0);
+      updateFoodCount(item.id, optimisticRemaining);
+      setHunger(optimisticHunger);
     const petRect = petImg.getBoundingClientRect();
     const formData = new FormData();
     formData.append('action', 'feed_pet');
@@ -252,7 +258,9 @@
       .then((res) => {
         if (!res.ok) {
           console.warn(res.message || 'Could not feed pet');
-          if (res.full) showFullBanner();
+            if (res.full) showFullBanner();
+            updateFoodCount(item.id, previousQuantity);
+            setHunger(previousHunger);
           return;
         }
         if (eatSound) {
@@ -260,8 +268,8 @@
           eatSound.play().catch(() => {});
         }
         dropCrumbs(petRect.left + petRect.width / 2, petRect.bottom - 10, 6);
-        showHearts(res.hearts || 2);
-        updateFoodCount(item.id, res.remaining ?? item.quantity - 1);
+          showHearts(res.hearts || 2);
+          updateFoodCount(item.id, res.remaining ?? optimisticRemaining);
         if (typeof res.hunger === 'number') {
           setHunger(res.hunger);
         }
@@ -269,7 +277,11 @@
           showFullBanner();
         }
       })
-      .catch((err) => console.error(err));
+        .catch((err) => {
+            console.error(err);
+            updateFoodCount(item.id, previousQuantity);
+            setHunger(previousHunger);
+        });
   }
 
   function animateEating(image, startX, startY, petRect) {
