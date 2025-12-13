@@ -308,13 +308,13 @@ By the by, if it doesn't update the meters or inventory, refresh the page</p>
             <div class="inventory-list" id="inventory-list"></div>
             <button class="banner-close" id="inventory-close" type="button" aria-label="Close inventory">✕</button>
         </div>
-        <button class="healing-toggle" id="healing-toggle" type="button" aria-label="Open healing items">🩹</button>
+        <button class="healing-toggle" id="healing-toggle" type="button" aria-label="Open healing items">🧪</button>
         <div class="inventory-banner" id="healing-banner" aria-live="polite">
             <div class="inventory-list" id="healing-list"></div>
             <button class="banner-close" id="healing-close" type="button" aria-label="Close healing inventory">✕</button>
         </div>
 
-        <button class="pet-switch-toggle" id="pet-switch-toggle" type="button" aria-label="Switch pet">⬆</button>
+        <button class="pet-switch-toggle" id="pet-switch-toggle" type="button" aria-label="Switch pet">🐾</button>
         <div class="pet-banner" id="pet-banner" aria-live="polite">
             <div class="pet-list" id="pet-list"></div>
             <button class="banner-close" id="pet-banner-close" type="button" aria-label="Close pet list">✕</button>

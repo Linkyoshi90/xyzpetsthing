@@ -1,26 +1,29 @@
 .petting-shell {
-  width: 80vw;
-  max-width: 1200px;
-  aspect-ratio: 4 / 3;
-  margin: 0 auto;
-  background: linear-gradient(180deg, #c8f1ff 0%, #e8fff7 40%, #fffaf1 100%);
-  border: 4px solid #1f3c6d;
-  border-radius: 12px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
-  position: relative;
-  overflow: hidden;
+    width: 80vw;
+    max-width: 1200px;
+    aspect-ratio: 4 / 3;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #c8f1ff 0%, #e8fff7 40%, #fffaf1 100%);
+    border: 4px solid #1f3c6d;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    position: relative;
+    overflow: hidden;
+    user-select: none;
 }
 
 .petting-viewport {
-  position: relative;
-  width: 100%;
-  height: 100%;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    user-select: none;
 }
 
 .petting-stage {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    user-select: none;
 }
 
 .pet-status {
