@@ -19,6 +19,35 @@
         return `${creatureName} takes in the sights of ${cityName}.`;
     }
 
+    function preferenceToCategories(preferenceValue, isHome) {
+        const baseOrder = isHome
+            ? ['Love', 'Like', 'Dislike', 'Hate']
+            : ['Like', 'Dislike', 'Hate', 'Love'];
+        const categories = [];
+
+        if (Number.isFinite(preferenceValue)) {
+            let primary = 'Hate';
+            if (preferenceValue >= 4) {
+                primary = 'Love';
+            } else if (preferenceValue >= 3) {
+                primary = 'Like';
+            } else if (preferenceValue === 2) {
+                primary = 'Dislike';
+            }
+            categories.push(primary);
+        } else if (isHome) {
+            categories.push('Love', 'Like');
+        }
+
+        for (const cat of baseOrder) {
+            if (!categories.includes(cat)) {
+                categories.push(cat);
+            }
+        }
+
+        return categories;
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const bubble = document.getElementById('pet-speech-bubble');
         const locationData = window.appLocation;
@@ -43,8 +72,18 @@
             creature.region_name.toLowerCase() === locationData.nation.toLowerCase()
         );
 
-        const preferred = isHome ? ['Love', 'Like'] : ['Like', 'Dislike', 'Hate'];
-        const chosen = pickLine(creatureDialogues, preferred) || buildFallback(creature, locationData, isHome);
+        const rawPreference = window.appPetLocationPreference;
+        const numericPreference =
+            typeof rawPreference === 'number'
+                ? rawPreference
+                : Number.parseInt(rawPreference, 10);
+
+        const preferredCategories = preferenceToCategories(
+            Number.isFinite(numericPreference) ? numericPreference : null,
+            isHome
+        );
+        const chosen =
+            pickLine(creatureDialogues, preferredCategories) || buildFallback(creature, locationData, isHome);
 
         bubble.textContent = chosen;
         bubble.hidden = false;

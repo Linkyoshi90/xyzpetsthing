@@ -10,6 +10,12 @@
     <p class="muted">Here you can paint your URB creatures.</p>
     <a class="btn" href="?pg=urb_paint_shack">Explore</a>
   </div>
+
+  <div class="card glass">
+    <h3>Meridian Arc Adventure</h3>
+    <p class="muted">Explore the capital.</p>
+    <a class="btn" href="?pg=urb-adventure">Explore</a>
+  </div>
   
   <div class="card glass">
     <h3>Back to Borealia</h3>

@@ -4,9 +4,11 @@ $header_pet = null;
 $random_event = null;
 $page_location = null;
 $speech_dialogues = [];
+$pet_location_like = null;
 if ($u) {
     require_once __DIR__.'/../lib/pets.php';
     require_once __DIR__.'/../lib/city_locations.php';
+    require_once __DIR__.'/../lib/pet_preferences.php';
     $pets = get_user_pets($u['id']);
     if ($pets) {
         $header_pet = $pets[array_rand($pets)];
@@ -17,6 +19,9 @@ if ($u) {
     }
     $page_location = get_page_location($pg ?? '');
     $speech_dialogues = load_speech_dialogues();
+    if ($header_pet && $page_location) {
+        $pet_location_like = get_pet_location_like_value($header_pet, $page_location);
+    }
 }
 ?>
 <!doctype html><html data-theme="light"><head>
@@ -66,6 +71,7 @@ $GLOBALS['app_chat_action_path'] = $chatActionPath;
     window.appLocation = <?= json_encode($page_location, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
     window.appActiveCreature = <?= json_encode($header_pet, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
     window.appSpeechDialogues = <?= json_encode($speech_dialogues, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+    window.appPetLocationPreference = <?= json_encode($pet_location_like, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 </script>
 <?php endif; ?>
 <?php

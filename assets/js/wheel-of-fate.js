@@ -74,6 +74,9 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         var state = (typeof window.WHEEL_OF_FATE_STATE === 'object' && window.WHEEL_OF_FATE_STATE) ? window.WHEEL_OF_FATE_STATE : {};
+        var spinEndpoint = (typeof window.WHEEL_OF_FATE_ENDPOINT === 'string' && window.WHEEL_OF_FATE_ENDPOINT)
+            ? window.WHEEL_OF_FATE_ENDPOINT
+            : 'index.php?pg=wheel-of-fate';
         var segments = Array.isArray(window.WHEEL_OF_FATE_SEGMENTS) ? window.WHEEL_OF_FATE_SEGMENTS : [];
         var canvas = document.getElementById('wheel-canvas');
         var spinButton = document.getElementById('spin-button');
@@ -379,7 +382,7 @@
                 timerElement.textContent = '...';
             }
 
-            fetch('index.php?pg=wheel-of-fate', {
+            fetch(spinEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

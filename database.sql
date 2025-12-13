@@ -36,6 +36,13 @@ CREATE TABLE IF NOT EXISTS wheel_of_fate_spins (
   CONSTRAINT fk_wheel_spin_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+DROP TABLE IF EXISTS `rsc_wheel_spins`;
+CREATE TABLE IF NOT EXISTS `rsc_wheel_spins` (
+  `user_id` bigint UNSIGNED NOT NULL,
+  `last_spin_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE IF NOT EXISTS daily_sudoku_runs (
   user_id            BIGINT UNSIGNED NOT NULL,
   run_date           DATE NOT NULL,
@@ -188,6 +195,17 @@ CREATE TABLE IF NOT EXISTS pet_species (
   PRIMARY KEY (species_id),
   UNIQUE KEY uq_species_name (species_name),
   CONSTRAINT fk_species_region FOREIGN KEY (region_id) REFERENCES regions(region_id)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS pet_like_city (
+  PLCid      BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  pet_id     SMALLINT UNSIGNED NOT NULL,
+  country_id SMALLINT UNSIGNED NOT NULL,
+  `like`     TINYINT NOT NULL DEFAULT 3,
+  PRIMARY KEY (PLCid),
+  UNIQUE KEY uq_pet_country (pet_id, country_id),
+  CONSTRAINT fk_plc_pet FOREIGN KEY (pet_id) REFERENCES pet_species(species_id) ON DELETE CASCADE,
+  CONSTRAINT fk_plc_country FOREIGN KEY (country_id) REFERENCES regions(region_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS pet_colors (

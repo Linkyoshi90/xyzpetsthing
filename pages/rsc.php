@@ -11,6 +11,12 @@
     <p class="muted">Here you can paint your creatures from this region.</p>
     <a class="btn" href="?pg=rsc_paint_shack">Explore</a>
   </div>
+
+  <div class="card glass">
+    <h3>Wheel of Fortune</h3>
+    <p class="muted">Spin once per day for a Red Sun prize (1,000 <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>).</p>
+    <a class="btn" href="?pg=rsc-wof">Spin</a>
+  </div>
   
   <div class="card glass">
     <h3>Back to Uluru</h3>
