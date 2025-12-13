@@ -68,8 +68,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
 
     if (empty($segments)) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'Wheel is not configured.']);
+        http_response_code(503);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Wheel is unavailable because no eligible prizes are configured.',
+            'cooldownRemaining' => 0,
+        ]);
         exit;
     }
 
@@ -216,7 +220,7 @@ window.WHEEL_OF_FATE_STATE = <?= json_encode([
         <div class="wheel-pointer" aria-hidden="true"></div>
     </div>
     <div class="wheel-controls">
-        <button id="spin-button" class="btn primary">Spin the Wheel</button>
+        <button id="spin-button" class="btn primary" <?= empty($segments) ? 'disabled aria-disabled="true"' : '' ?>>Spin the Wheel</button>
         <div class="spin-cost muted">Cost: <?= number_format(RSC_WOF_SPIN_COST) ?> <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?></div>
         <div class="spin-cooldown muted">Next spin in: <span id="spin-cooldown"><?= $cooldownRemaining > 0 ? gmdate('H:i:s', $cooldownRemaining) : 'Ready' ?></span></div>
         <div class="spin-timer muted">Stopping in: <span id="spin-timer">--</span>s</div>
@@ -230,5 +234,8 @@ window.WHEEL_OF_FATE_STATE = <?= json_encode([
                 </li>
             <?php endforeach; ?>
         </ul>
+        <?php if (empty($segments)): ?>
+            <p class="muted">Wheel unavailable: no eligible prizes are configured right now.</p>
+        <?php endif; ?>
     </div>
 </div>

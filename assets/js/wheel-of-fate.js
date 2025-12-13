@@ -84,7 +84,20 @@
         var cooldownElement = document.getElementById('spin-cooldown');
         var resultElement = document.getElementById('spin-result');
 
-        if (!canvas || !spinButton || !timerElement || !resultElement || !segments.length) {
+        if (!canvas || !spinButton || !timerElement || !resultElement) {
+            return;
+        }
+
+        if (!segments.length) {
+            spinButton.disabled = true;
+            spinButton.setAttribute('aria-disabled', 'true');
+            if (resultElement) {
+                resultElement.classList.remove('muted');
+                resultElement.textContent = 'Wheel unavailable: no eligible prizes are configured right now.';
+            }
+            if (cooldownElement) {
+                cooldownElement.textContent = 'Unavailable';
+            }
             return;
         }
 
