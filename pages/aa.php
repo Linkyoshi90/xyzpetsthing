@@ -32,6 +32,12 @@ require_once __DIR__.'/../lib/shops.php';
   </div>
 
   <div class="card glass">
+    <h3>Wheel of Pizza Wheels</h3>
+    <p class="muted">Spin for stacked pizza prizes (100 <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>).</p>
+    <a class="btn" href="?pg=aa-wof">Spin</a>
+  </div>
+
+  <div class="card glass">
     <h3><?= htmlspecialchars((shop_get(5)['shop_name'] ?? 'Library Annex')) ?></h3>
     <p class="muted">A marble reading hall where scribes loan illuminated epics and civic treatises.</p>
     <a class="btn" href="?pg=aa-library">Browse</a>
