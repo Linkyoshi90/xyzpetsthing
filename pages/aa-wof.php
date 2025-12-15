@@ -6,6 +6,24 @@ define('AA_WOF_CURRENCY_ID', 1);
 define('AA_WOF_SPIN_COST', 100);
 define('AA_WOF_BASE_SEGMENT_LIMIT', 8);
 
+if (!function_exists('auto_detect_locale')) {
+    /**
+     * Basic locale bootstrapper used by the wheel page.
+     *
+     * The wider app normally wires this up elsewhere, but if that helper is
+     * missing we fall back to setting a sensible default instead of blowing up
+     * the page.
+     */
+    function auto_detect_locale(): void
+    {
+        $locale = locale_get_default();
+        if (!$locale) {
+            $locale = 'en_US.UTF-8';
+        }
+        setlocale(LC_ALL, $locale);
+    }
+}
+
 auto_detect_locale();
 
 function aa_wof_quantity_for_item(int $itemId, string $seed): int {
@@ -158,7 +176,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->rollBack();
         }
         http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Unable to complete spin.']);
+        error_log('[aa-wof] spin failed: '.$e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'error' => 'Unable to complete spin: '.$e->getMessage(),
+        ]);
     }
     exit;
 }
