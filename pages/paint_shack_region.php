@@ -184,6 +184,39 @@ $regionPets = array_values(array_filter(
 $previewPet = $regionPets[0] ?? null;
 $previewColor = $previewPet['color_name'] ?? 'Blue';
 $previewImage = $previewPet ? pet_image_url($previewPet['species_name'], $previewColor) : 'images/tengu_f_blue.png';
+
+$regionCreatures = q(
+    'SELECT species_name FROM pet_species WHERE region_id = ? ORDER BY species_name',
+    [$regionId]
+)->fetchAll(PDO::FETCH_COLUMN);
+
+$slugify = static function (string $str): string {
+    return strtolower(preg_replace('/[^a-z0-9]+/i', '_', $str));
+};
+
+$creatureVariants = [];
+foreach ($regionCreatures as $creatureName) {
+    $slug = $slugify($creatureName);
+    $variants = [];
+
+    foreach (glob(__DIR__ . '/../images/' . $slug . '_*_*.webp') as $file) {
+        $base = basename($file, '.webp');
+        if (preg_match('/^' . preg_quote($slug, '/') . '_([mf])_(.+)$/i', $base, $m)) {
+            $variants[] = strtolower($m[1] . '_' . $m[2]);
+        }
+    }
+
+    $variants = array_values(array_unique($variants));
+    if (!$variants) {
+        $variants[] = 'f_blue';
+    }
+
+    $creatureVariants[] = [
+        'name' => $creatureName,
+        'slug' => $slug,
+        'variants' => $variants,
+    ];
+}
 ?>
 <h1><?= htmlspecialchars($regionName) ?> Paint Shack</h1>
 <p class="muted">Only creatures from <?= htmlspecialchars($regionName) ?> can be painted here.</p>
@@ -240,6 +273,65 @@ $previewImage = $previewPet ? pet_image_url($previewPet['species_name'], $previe
     <button type="submit" name="paint_pet" value="1" <?= $usablePaints ? '' : 'disabled' ?>>Paint</button>
   </form>
 <?php endif; ?>
+
+<?php if ($creatureVariants): ?>
+  <section class="card glass creature-showcase">
+    <h2>Creatures from <?= htmlspecialchars($regionName) ?></h2>
+    <p class="muted">Browse all paintable creatures from this region and preview their available variants.</p>
+    <div class="creature-grid">
+      <?php foreach ($creatureVariants as $creature): ?>
+        <?php $firstVariant = $creature['variants'][0] ?? 'f_blue'; ?>
+        <article class="creature-card">
+          <h3><?= htmlspecialchars($creature['name']) ?></h3>
+          <div class="creature-slideshow" data-slug="<?= htmlspecialchars($creature['slug'], ENT_QUOTES) ?>" data-variants='<?= htmlspecialchars(json_encode($creature['variants']), ENT_QUOTES) ?>'>
+            <button type="button" class="variant-nav prev" aria-label="Previous <?= htmlspecialchars($creature['name']) ?> variant">&#9664;</button>
+            <img src="images/<?= htmlspecialchars($creature['slug']) ?>_<?= htmlspecialchars($firstVariant) ?>.webp" alt="<?= htmlspecialchars($creature['name']) ?> preview" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/tengu_f_blue.webp';">
+            <button type="button" class="variant-nav next" aria-label="Next <?= htmlspecialchars($creature['name']) ?> variant">&#9654;</button>
+          </div>
+        </article>
+      <?php endforeach; ?>
+    </div>
+  </section>
+<?php endif; ?>
+
+<style>
+  .creature-showcase {
+    margin-top: 1.5rem;
+  }
+  .creature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .creature-card {
+    text-align: center;
+    padding: 0.75rem;
+  }
+  .creature-slideshow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .creature-slideshow img {
+    max-width: 180px;
+    width: 100%;
+    height: auto;
+  }
+  .creature-slideshow .variant-nav {
+    border: none;
+    background: #f0f0f0;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  .creature-slideshow .variant-nav:hover {
+    background: #e0e0e0;
+  }
+</style>
 
 <script>
   const pets = <?= json_encode(array_map(function ($pet) {
@@ -304,4 +396,36 @@ $previewImage = $previewPet ? pet_image_url($previewPet['species_name'], $previe
   }
 
   updatePreview();
+
+  const FALLBACK = 'images/tengu_f_blue.webp';
+  document.querySelectorAll('.creature-slideshow').forEach(slider => {
+    const slug = slider.dataset.slug;
+    let variants;
+    try {
+      variants = JSON.parse(slider.dataset.variants || '[]');
+    } catch (e) {
+      variants = [];
+    }
+    if (!variants || !variants.length) {
+      variants = ['f_blue'];
+    }
+    let index = 0;
+    const img = slider.querySelector('img');
+    const prev = slider.querySelector('.variant-nav.prev');
+    const next = slider.querySelector('.variant-nav.next');
+
+    const show = () => {
+      img.src = `images/${slug}_${variants[index]}.webp`;
+      img.onerror = () => { img.onerror = null; img.src = FALLBACK; };
+    };
+
+    prev?.addEventListener('click', () => {
+      index = (index - 1 + variants.length) % variants.length;
+      show();
+    });
+    next?.addEventListener('click', () => {
+      index = (index + 1) % variants.length;
+      show();
+    });
+  });
 </script>
