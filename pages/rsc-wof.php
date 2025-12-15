@@ -183,7 +183,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $pdo->rollBack();
         }
         http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Unable to complete spin.']);
+        error_log('[rsc-wof] spin failed: '.$e->getMessage());
+        echo json_encode([
+            'success' => false,
+            'error' => 'Unable to complete spin: '.$e->getMessage(),
+        ]);
     }
     exit;
 }
