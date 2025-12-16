@@ -4,7 +4,7 @@ require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 $pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
 $allowed = ['login','register','logout','main','pet','create_pet','inventory','petting',
-    'map','vote','games','friends','bank','user-chat','paint_shack',
+    'map','vote','games','friends','bank','user-chat','paint_shack','gacha',
     // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
     'wanted-alive','blackjack','paddle-panic','sudoku',
@@ -41,7 +41,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'srl_paint_shack',
     'urb_paint_shack','urb-adventure',
     'xm_paint_shack',
-    'ynk_paint_shack','ynk-adventure',
+    'ynk_paint_shack','ynk-adventure','ynk-ramen',
     'yn_paint_shack',
 ];
 if(current_user()) {
@@ -74,6 +74,11 @@ if($pg === 'blackjack' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if($pg === 'aa-pizza' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/aa-pizza.php';
+  exit;
+}
+if($pg === 'ynk-ramen' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/ynk-ramen.php';
   exit;
 }
 if(current_user()) {
