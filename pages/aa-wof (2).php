@@ -1,11 +1,38 @@
 <?php
 require_once __DIR__.'/../auth.php';
-require_once __DIR__.'/../lib/shops.php';
 require_login();
 
 define('AA_WOF_CURRENCY_ID', 1);
 define('AA_WOF_SPIN_COST', 50);
 define('AA_WOF_BASE_SEGMENT_LIMIT', 8);
+const AA_WOF_PRIZE_ITEM_IDS = [
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    39,
+    43,
+    44,
+    62,
+    86,
+];
 
 if (!function_exists('auto_detect_locale')) {
     /**
@@ -30,32 +57,32 @@ auto_detect_locale();
 function aa_wof_quantity_for_item(int $itemId, string $seed): int {
     $hash = hash('sha256', $seed.'|qty|'.$itemId);
     $value = hexdec(substr($hash, 0, 8));
-    return ($value % 8) + 1; // 1-8 pizzas
+    return ($value % 10) + 1; // 1-10 prizes
 }
 
 function aa_wof_weight_for_quantity(int $quantity): int {
-    $weight = 9 - $quantity; // higher quantity => lower weight
+    $weight = 11 - $quantity; // higher quantity => lower weight
     return $weight > 0 ? $weight : 1;
 }
 
-function aa_wof_segments(): array {
-    $items = q(
-        "SELECT item_id, item_name FROM items WHERE LOWER(item_name) LIKE '%pizza%' ORDER BY item_id ASC"
+function aa_wof_prize_pool(): array {
+    if (empty(AA_WOF_PRIZE_ITEM_IDS)) {
+        return [];
+    }
+
+    $placeholders = implode(',', array_fill(0, count(AA_WOF_PRIZE_ITEM_IDS), '?'));
+    $order = implode(',', AA_WOF_PRIZE_ITEM_IDS);
+    return q(
+        "SELECT item_id, item_name FROM items WHERE item_id IN ($placeholders) ORDER BY FIELD(item_id, $order)",
+        AA_WOF_PRIZE_ITEM_IDS
     )->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function aa_wof_segments(): array {
+    $items = aa_wof_prize_pool();
 
     if (!$items) {
-        // Fall back to the current pizza shop menu if no pizza-tagged items exist yet.
-        $inventory = shop_inventory(4);
-        if (!$inventory) {
-            return [];
-        }
-
-        $items = array_map(static function (array $row): array {
-            return [
-                'item_id' => (int)($row['item_id'] ?? 0),
-                'item_name' => (string)($row['name'] ?? 'Pizza prize'),
-            ];
-        }, $inventory);
+        return [];
     }
 
     $seed = hash('sha256', date('Y-m-d').'|aa-wof');
@@ -211,7 +238,7 @@ window.WHEEL_OF_FATE_STATE = <?= json_encode([
 
 <h1>Wheel of Pizza Wheels</h1>
 <p class="muted">Spin the wheel for a pizza haul. Each spin costs <?= number_format(AA_WOF_SPIN_COST) ?> <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>.</p>
-<p class="muted small">Each slice of the wheel holds 1–8 pizzas. Bigger stacks weigh less on the wheel, so jackpots are rarer.</p>
+<p class="muted small">Each slice of the wheel holds 1–10 pizzas. Bigger stacks weigh less on the wheel, so jackpots are rarer.</p>
 
 <div class="wheel-of-fate-layout">
     <div class="wheel-stage">
