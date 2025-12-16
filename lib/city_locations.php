@@ -36,6 +36,7 @@ function get_page_location_map(): array {
         'aa-library' => 'Aegia Aeterna',
         'aa-pizza' => 'Aegia Aeterna',
         'aa_paint_shack' => 'Aegia Aeterna',
+        'aa-wof' => 'Aegia Aeterna',
         'baharamandal' => 'Baharamandal',
         'bm_paint_shack' => 'Baharamandal',
         'bretonreach' => 'Bretonreach',
@@ -60,6 +61,7 @@ function get_page_location_map(): array {
         'nornheim' => 'Nornheim',
         'nh_paint_shack' => 'Nornheim',
         'rsc' => 'Red Sun Commonwealth',
+        'rsc-wof' => 'Red Sun Commonwealth',
         'rsc_paint_shack' => 'Red Sun Commonwealth',
         'rheinland' => 'Rheinland',
         'rl_paint_shack' => 'Rheinland',
@@ -80,6 +82,7 @@ function get_page_location_map(): array {
         'yamanokubo' => 'Yamanokubo',
         'ynk-adventure' => 'Yamanokubo',
         'ynk_paint_shack' => 'Yamanokubo',
+        'ynk-ramen' => 'Yamanokubo',
         'yn' => 'Yara Nations',
         'yn_paint_shack' => 'Yara Nations',
     ];
