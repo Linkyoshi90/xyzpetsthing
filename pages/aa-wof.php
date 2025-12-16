@@ -1,9 +1,10 @@
 <?php
 require_once __DIR__.'/../auth.php';
+require_once __DIR__.'/../lib/shops.php';
 require_login();
 
 define('AA_WOF_CURRENCY_ID', 1);
-define('AA_WOF_SPIN_COST', 100);
+define('AA_WOF_SPIN_COST', 50);
 define('AA_WOF_BASE_SEGMENT_LIMIT', 8);
 
 if (!function_exists('auto_detect_locale')) {
@@ -43,7 +44,18 @@ function aa_wof_segments(): array {
     )->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$items) {
-        return [];
+        // Fall back to the current pizza shop menu if no pizza-tagged items exist yet.
+        $inventory = shop_inventory(4);
+        if (!$inventory) {
+            return [];
+        }
+
+        $items = array_map(static function (array $row): array {
+            return [
+                'item_id' => (int)($row['item_id'] ?? 0),
+                'item_name' => (string)($row['name'] ?? 'Pizza prize'),
+            ];
+        }, $inventory);
     }
 
     $seed = hash('sha256', date('Y-m-d').'|aa-wof');

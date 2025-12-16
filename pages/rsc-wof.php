@@ -15,7 +15,10 @@ function rsc_wheel_segments(): array {
     )->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$items) {
-        return [];
+        // If no priced items are available, fall back to the earliest catalog entries.
+        $items = q(
+            'SELECT item_id, item_name FROM items ORDER BY item_id ASC LIMIT '.(int)RSC_WOF_SEGMENT_LIMIT
+        )->fetchAll(PDO::FETCH_ASSOC);
     }
 
     $seed = hash('sha256', date('Y-m-d').'|rsc-wof');
