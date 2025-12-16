@@ -1,5 +1,4 @@
-﻿<?php
-require_login();
+<?php
 require_once __DIR__.'/../lib/shops.php';
 
 $shopId = 7;
@@ -7,6 +6,17 @@ $shop = shop_get($shopId) ?? ['shop_id' => $shopId, 'shop_name' => 'Yumenoki Ram
 
 $inventory = shop_inventory($shopId);
 $inventoryById = shop_inventory_indexed($inventory);
+
+if (!current_user() && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json');
+    http_response_code(401);
+    echo json_encode(shop_error_payload('Please log in to place an order.', [
+        'shop_id' => $shopId,
+    ]));
+    exit;
+}
+
+require_login();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'checkout') {
     header('Content-Type: application/json');
