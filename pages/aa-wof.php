@@ -234,7 +234,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'label' => $segment['label'],
         ];
 
-        $itemId = (int)$segment['item_id'];
         $quantity = (int)($segment['quantity'] ?? 1);
         $itemStmt = $pdo->prepare('INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)');
         $itemStmt->execute([$uid, $itemId, $quantity]);
@@ -299,6 +298,7 @@ window.WHEEL_OF_FATE_STATE = <?= json_encode([
     'cooldownSeconds' => WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS,
     'cooldownRemaining' => $cooldownRemaining,
 ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>;
+window.WHEEL_OF_FATE_ENDPOINT = 'index.php?pg=aa-wof';
 </script>
 <script defer src="assets/js/wheel-of-fate.js"></script>
 
