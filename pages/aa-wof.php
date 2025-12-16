@@ -4,7 +4,7 @@ require_login();
 
 const WHEEL_OF_FATE_CURRENCY_ID = 1;
 const WHEEL_OF_FATE_SPIN_COST = 1000;
-const WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS = 720;
+const WHEEL_OF_FATE_SPIN_COOLDOWN_SECONDS = 72;
 const WHEEL_OF_FATE_BASE_SEGMENT_LIMIT = 8;
 const WHEEL_OF_FATE_PRIZE_ITEM_IDS = [
     14,
@@ -234,6 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'label' => $segment['label'],
         ];
 
+        $itemId = (int)$segment['item_id'];
         $quantity = (int)($segment['quantity'] ?? 1);
         $itemStmt = $pdo->prepare('INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)');
         $itemStmt->execute([$uid, $itemId, $quantity]);

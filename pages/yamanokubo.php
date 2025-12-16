@@ -16,6 +16,12 @@
     <p class="muted">A daily shrine stop in Amatera that stacks luck when you keep your visits going.</p>
     <a class="btn" href="?pg=ynk-adventure">Begin</a>
   </div>
+
+  <div class="card glass">
+    <h3>Yumenoki Ramen</h3>
+    <p class="muted">Noodle counter with simmered broths, late-night tea, and quick stools under warm cedar.</p>
+    <a class="btn" href="?pg=ynk-ramen">Order</a>
+  </div>
   
   <div class="card glass">
     <h3>Back to Dawnmarch</h3>

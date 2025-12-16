@@ -41,7 +41,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'srl_paint_shack',
     'urb_paint_shack','urb-adventure',
     'xm_paint_shack',
-    'ynk_paint_shack','ynk-adventure',
+    'ynk_paint_shack','ynk-adventure','ynk-ramen',
     'yn_paint_shack',
 ];
 if(current_user()) {
