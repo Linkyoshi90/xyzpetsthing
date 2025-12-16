@@ -224,6 +224,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $segmentIndex = random_int(0, count($segments) - 1);
         $segment = $segments[$segmentIndex];
+        $itemId = (int)$segment['item_id'];
+        if (!in_array($itemId, WHEEL_OF_FATE_PRIZE_ITEM_IDS, true)) {
+            throw new RuntimeException('Invalid prize drawn.');
+        }
+
         $reward = [
             'type' => 'item',
             'label' => $segment['label'],
