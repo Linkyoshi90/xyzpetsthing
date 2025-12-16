@@ -22,6 +22,12 @@
     <p class="muted">Noodle counter with simmered broths, late-night tea, and quick stools under warm cedar.</p>
     <a class="btn" href="?pg=ynk-ramen">Order</a>
   </div>
+
+  <div class="card glass">
+    <h3>Gacha Machines</h3>
+    <p class="muted">A bunch of machines, giving you something strange for your Dosh.</p>
+    <a class="btn" href="?pg=gacha">Gamble</a>
+  </div>
   
   <div class="card glass">
     <h3>Back to Dawnmarch</h3>

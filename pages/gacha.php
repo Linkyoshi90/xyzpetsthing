@@ -2,18 +2,19 @@
 require_login();
 require_once __DIR__.'/../db.php';
 
-$cost = 100;
+$cost = 25;
 $items = q(
-    'SELECT item_id, item_name, base_price FROM items WHERE item_id BETWEEN 1 AND 10 ORDER BY item_id'
+    'SELECT item_id, item_name, base_price FROM items WHERE item_id not in 
+(4,6,7,8,9,10,11,12,13,23,24) 
+ORDER BY item_id'
 )->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <link rel="stylesheet" href="assets/css/gacha.css">
 <section class="gacha-page">
   <header class="gacha-header">
     <div>
-      <p class="eyebrow">Golden Gacha</p>
       <h1>Spin the capsule machine</h1>
-      <p>Each spin costs <strong><?= number_format($cost) ?> Dosh</strong>. Loaded items come directly from your database (IDs 1-10).</p>
+      <p>Each spin costs <strong><?= number_format($cost) ?> Dosh</strong>. Loaded items come directly the item pool.</p>
     </div>
     <div class="gacha-cost">100<span class="currency-label">Dosh</span></div>
   </header>
