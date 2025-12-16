@@ -33,7 +33,7 @@ require_once __DIR__.'/../lib/shops.php';
 
   <div class="card glass">
     <h3>Wheel of Pizza Wheels</h3>
-    <p class="muted">Spin for stacked pizza prizes (100 <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>).</p>
+    <p class="muted">Spin for stacked pizza prizes (50 <?= htmlspecialchars(APP_CURRENCY_LONG_NAME) ?>).</p>
     <a class="btn" href="?pg=aa-wof">Spin</a>
   </div>
 
