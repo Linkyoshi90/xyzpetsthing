@@ -61,11 +61,6 @@ function wheel_of_fate_quantity_for_item(int $itemId, string $seed): int {
     return ($value % 10) + 1; // 1-10 prizes
 }
 
-function wheel_of_fate_weight_for_quantity(int $quantity): int {
-    $weight = 11 - $quantity; // higher quantity => lower weight
-    return $weight > 0 ? $weight : 1;
-}
-
 function wheel_of_fate_prize_pool(): array {
     if (empty(WHEEL_OF_FATE_PRIZE_ITEM_IDS)) {
         return [];
@@ -103,16 +98,12 @@ function wheel_of_fate_segments_data(): array {
     $segments = [];
     foreach ($selected as $row) {
         $quantity = wheel_of_fate_quantity_for_item((int)$row['item_id'], $seed);
-        $weight = wheel_of_fate_weight_for_quantity($quantity);
-        $segment = [
+        $segments[] = [
             'type' => 'item',
             'item_id' => (int)$row['item_id'],
             'quantity' => $quantity,
             'label' => $quantity.'x '.$row['item_name'],
         ];
-        for ($i = 0; $i < $weight; $i++) {
-            $segments[] = $segment;
-        }
     }
 
     return [
@@ -272,6 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($pdo) && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
+        error_log('[aa-wof] spin failed: '.$e->getMessage());
         http_response_code(500);
         echo json_encode(['success' => false, 'error' => 'Unable to complete spin.']);
     }
@@ -304,7 +296,7 @@ window.WHEEL_OF_FATE_ENDPOINT = 'index.php?pg=aa-wof';
 
 <h1>Wheel of Fate</h1>
 <p class="muted">Spin the wheel for a haul of <?= $itemCount ?> featured prizes, each worth 1–10 items.</p>
-<p class="muted small">Today's wheel holds <?= $segmentCount ?> weighted slices drawn from <?= $itemCount ?> items.</p>
+<p class="muted small">Today's wheel holds <?= $segmentCount ?> slices drawn from <?= $itemCount ?> items.</p>
 
 <div class="wheel-of-fate-layout">
     <div class="wheel-stage">
