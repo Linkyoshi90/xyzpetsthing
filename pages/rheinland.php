@@ -20,6 +20,12 @@
   </div>
 
   <div class="card glass">
+    <h3>Fairy Fountain</h3>
+    <p class="muted">A moonlit cave where coins wake a shy river fairy. One visit per day.</p>
+    <a class="btn" href="?pg=rl_ff">Enter the cave</a>
+  </div>
+
+  <div class="card glass">
     <h3>Back to Auronia</h3>
     <a class="btn" href="?pg=auronia">Back</a>
   </div>
