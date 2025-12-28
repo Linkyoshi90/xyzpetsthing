@@ -176,6 +176,19 @@ CREATE TABLE IF NOT EXISTS item_instances (
   CONSTRAINT fk_iteminst_owner FOREIGN KEY (owner_user_id) REFERENCES users(user_id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
+-- Picnic Tree item pool
+CREATE TABLE IF NOT EXISTS picnic_tree_items (
+  picnic_item_id      BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  item_id             BIGINT UNSIGNED NOT NULL,
+  available_quantity  INT UNSIGNED NOT NULL DEFAULT 0,
+  chance_percent      DECIMAL(5,2) NOT NULL DEFAULT 100.00,
+  created_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at          TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (picnic_item_id),
+  UNIQUE KEY uq_picnic_item (item_id),
+  CONSTRAINT fk_picnic_item FOREIGN KEY (item_id) REFERENCES items(item_id)
+) ENGINE=InnoDB;
+
 -- World/Regions & Pets
 CREATE TABLE IF NOT EXISTS regions (
   region_id   SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT,

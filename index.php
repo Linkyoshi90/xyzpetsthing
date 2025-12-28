@@ -4,7 +4,7 @@ require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 $pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
 $allowed = ['login','register','logout','main','pet','create_pet','inventory','petting',
-    'map','vote','games','friends','bank','user-chat','paint_shack','gacha',
+    'map','vote','games','friends','bank','user-chat','paint_shack','gacha','picnic-tree',
     // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
     'wanted-alive','blackjack','paddle-panic','sudoku',
