@@ -7,9 +7,48 @@ if (!dataElement) {
     const sceneBody = document.getElementById('adventure-scene-body');
     const choicesContainer = document.getElementById('adventure-choices');
     const historyList = document.getElementById('adventure-history');
+    const flash = document.getElementById('adventure-flash');
 
     const history = [];
     let currentNodeId = story.start;
+    let rewardLock = false;
+
+    const showFlash = (message, tone = 'info') => {
+        if (!flash || !message) return;
+        flash.textContent = message;
+        flash.dataset.tone = tone;
+        flash.hidden = false;
+        flash.classList.remove('is-error', 'is-info');
+        flash.classList.add(tone === 'error' ? 'is-error' : 'is-info');
+    };
+
+    const maybeGrantItem = async (choice) => {
+        if (!choice.giveItem || rewardLock) {
+            return;
+        }
+        rewardLock = true;
+        try {
+            const response = await fetch('urb_adventure_reward.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item_id: choice.giveItem })
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const payload = await response.json();
+            if (payload?.message) {
+                showFlash(payload.message, 'info');
+            } else if (choice.giveItemNote) {
+                showFlash(`You received something special: ${choice.giveItemNote}.`, 'info');
+            }
+        } catch (error) {
+            console.error('Could not grant item:', error);
+            showFlash('Could not deliver the item right now. Try again in a moment.', 'error');
+        } finally {
+            rewardLock = false;
+        }
+    };
 
     const renderHistory = () => {
         if (!historyList) return;
@@ -38,7 +77,7 @@ if (!dataElement) {
             sceneBody.innerHTML = '';
             node.body.forEach((paragraph) => {
                 const p = document.createElement('p');
-                p.textContent = paragraph;
+                p.innerHTML = paragraph;
                 sceneBody.appendChild(p);
             });
         }
@@ -50,11 +89,12 @@ if (!dataElement) {
                 button.className = 'choice-btn';
                 button.type = 'button';
                 button.textContent = choice.text;
-                button.addEventListener('click', () => {
+                button.addEventListener('click', async () => {
                     if (choice.link) {
                         window.location.href = choice.link;
                         return;
                     }
+                    await maybeGrantItem(choice);
                     if (!choice.restart) {
                         history.push({
                             from: currentNodeId,
