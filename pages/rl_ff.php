@@ -9,6 +9,8 @@ $today = date('Y-m-d');
 $appearanceChance = 68; // percent
 $messages = [];
 $rewardVisualKey = null;
+$defaultPoseImage = '/images/tengu_f_blue.webp';
+$givenPoseImage = '/images/tengu_f_blue.webp';
 
 $rewardImages = [
     'heal_full_party' => 'Fairy mending every creature at once',
@@ -315,6 +317,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+$todayVisit = fairy_fountain_visit_row($uid, $today, $isTemp);
+$currentPoseImage = $todayVisit ? $givenPoseImage : $defaultPoseImage;
+$currentPoseLabel = $todayVisit ? 'Given pose' : 'Default pose';
 ?>
 
 <h1>Rheinland - Fairy Fountain</h1>
@@ -325,6 +331,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <li><?= htmlspecialchars($appearanceChance) ?>% chance the fairy appears after your offering.</li>
     <li>Blessings can heal creatures, nudge their HP, refill food, grant a potion or shovel, or sometimes nothing.</li>
   </ul>
+  <div class="fairy-pose">
+    <img src="<?= htmlspecialchars($currentPoseImage) ?>" alt="Tengu fairy placeholder pose" class="pose-image">
+    <div class="pose-label"><?= htmlspecialchars($currentPoseLabel) ?></div>
+    <div class="muted small">Default and given poses will update once the illustrated variants are ready.</div>
+  </div>
   <?php if ($todayVisit): ?>
     <div class="alert success">
       <strong>Today's visit logged.</strong>
@@ -388,6 +399,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   padding: 0.75rem;
   border: 1px dashed rgba(255,255,255,0.2);
   border-radius: 8px;
+}
+.fairy-pose {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem 1rem;
+  align-items: center;
+  padding: 0.75rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.03);
+  margin-bottom: 1rem;
+}
+.fairy-pose .pose-label {
+  font-weight: 600;
+  color: #ffe6ff;
+}
+.fairy-pose .pose-image {
+  width: 160px;
+  max-width: 100%;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  padding: 0.25rem;
+  grid-row: span 2;
+}
+.fairy-pose .muted.small {
+  font-size: 0.9em;
 }
 .fairy-image-placeholder {
   padding: 0.75rem;
