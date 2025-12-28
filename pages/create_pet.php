@@ -1,6 +1,10 @@
 <?php require_login();
+require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/temp_user.php';
 $uid = current_user()['id'];
+$maxPets = 4;
+$existingPets = get_user_pets($uid);
+$petCount = count($existingPets);
 
 // Load list of enabled species from file
 $allowedSpecies = [];
@@ -32,6 +36,9 @@ if ($allowedSpecies) {
 $colors = [1 => 'red', 2 => 'blue', 3 => 'green', 4 => 'yellow', 5 => 'purple'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($petCount >= $maxPets) {
+        $err = "You already have the maximum of {$maxPets} pets.";
+    } else {
     $sp = (int)($_POST['species_id'] ?? 0);
     $name = trim($_POST['name'] ?? '');
     $color = (int)($_POST['color_id'] ?? 1);
@@ -92,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
     $err = "Pick a species, color and name.";
+    }
 }
 
 // Helper to slugify names like the JS code
@@ -103,7 +111,11 @@ function slugify($str)
 <h1>Create a Pet</h1>
 <?php if (!empty($err)) echo "<p class='err'>$err</p>"; ?>
 
-<form method="post" class="card glass form" id="createForm">
+<?php if ($petCount >= $maxPets): ?>
+  <p class="err">You already have the maximum of <?= (int)$maxPets ?> pets.</p>
+<?php endif; ?>
+
+<form method="post" class="card glass form" id="createForm" <?= $petCount >= $maxPets ? 'aria-disabled="true"' : '' ?>>
   <input type="hidden" name="species_id" id="species_id" value="<?= $species[0]['species_id'] ?? '' ?>">
   <input type="hidden" name="color_id" id="color_id" value="1">
 
@@ -137,7 +149,7 @@ function slugify($str)
         <input name="name" required maxlength="40">
       </label>
 
-      <button>Create</button>
+      <button <?= $petCount >= $maxPets ? 'disabled' : '' ?>>Create</button>
     </div>
 
     <!-- Stats display -->
