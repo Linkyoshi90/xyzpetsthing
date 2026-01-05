@@ -253,6 +253,7 @@ CREATE TABLE IF NOT EXISTS pet_instances (
   atk             INT NULL,
   def             INT NULL,
   initiative      INT NULL,
+  inactive        TINYINT(1) NOT NULL DEFAULT 0,
   created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (pet_instance_id),
   KEY ix_pets_owner (owner_user_id),
@@ -637,9 +638,33 @@ ALTER TABLE pet_instances
   ADD COLUMN happiness TINYINT UNSIGNED NOT NULL DEFAULT 50 AFTER hunger,
   ADD COLUMN intelligence INT UNSIGNED NOT NULL DEFAULT 0 AFTER happiness,
   ADD COLUMN sickness TINYINT UNSIGNED NOT NULL DEFAULT 0 AFTER intelligence,
-  ADD COLUMN hp_max INT NULL AFTER hp_current;
+  ADD COLUMN hp_max INT NULL AFTER hp_current,
+  ADD COLUMN IF NOT EXISTS inactive TINYINT(1) NOT NULL DEFAULT 0 AFTER initiative;
 
 UPDATE pet_instances
    SET hp_max = COALESCE(hp_max, hp_current),
        hp_current = LEAST(COALESCE(hp_max, hp_current), hp_current)
  WHERE hp_current IS NOT NULL;
+
+-- Backfill inactive flag for existing pet rows (safe to re-run)
+UPDATE pet_instances SET inactive = COALESCE(inactive, 0);
+
+-- Breeding daycare
+CREATE TABLE IF NOT EXISTS breeding (
+  breed_instance_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  owner_user_id BIGINT UNSIGNED NOT NULL,
+  deposit_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  father BIGINT UNSIGNED NULL,
+  mother BIGINT UNSIGNED NOT NULL,
+  egg_creature_id SMALLINT UNSIGNED NULL,
+  egg_count INT UNSIGNED NOT NULL DEFAULT 0,
+  time_to_hatch TINYINT UNSIGNED NOT NULL DEFAULT 0,
+  father_best_stat VARCHAR(16) NULL,
+  mother_best_stat VARCHAR(16) NULL,
+  PRIMARY KEY (breed_instance_id),
+  KEY ix_breeding_owner (owner_user_id),
+  CONSTRAINT fk_breeding_owner FOREIGN KEY (owner_user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+  CONSTRAINT fk_breeding_father FOREIGN KEY (father) REFERENCES pet_instances(pet_instance_id) ON DELETE SET NULL,
+  CONSTRAINT fk_breeding_mother FOREIGN KEY (mother) REFERENCES pet_instances(pet_instance_id) ON DELETE CASCADE,
+  CONSTRAINT fk_breeding_species FOREIGN KEY (egg_creature_id) REFERENCES pet_species(species_id)
+) ENGINE=InnoDB;

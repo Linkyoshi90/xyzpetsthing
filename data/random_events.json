@@ -84,5 +84,28 @@
       }
     ],
     "weight": 4
+  },
+  {
+    "id": "daycare_egg",
+    "title": "Nursery News",
+    "message": "A caretaker from the daycare rushes over, beaming.",
+    "effects": [
+      {
+        "type": "breeding_deposit"
+      }
+    ],
+    "weight": 5
+  },
+  {
+    "id": "daycare_tick",
+    "title": "Egg Checkup",
+    "message": "You receive a quick update from the daycare attendants.",
+    "effects": [
+      {
+        "type": "breeding_tick",
+        "chance": 1
+      }
+    ],
+    "weight": 5
   }
 ]
