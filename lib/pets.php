@@ -2,9 +2,13 @@
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/temp_user.php';
 
-function get_user_pets(int $user_id): array {
+function get_user_pets(int $user_id, bool $include_inactive = false): array {
     if ($user_id === 0) {
         return temp_user_get_pets();
+    }
+    $where = "WHERE pi.owner_user_id = ?";
+    if (!$include_inactive) {
+        $where .= " AND COALESCE(pi.inactive, 0) = 0";
     }
     return q(
         "SELECT pi.pet_instance_id,
@@ -19,6 +23,7 @@ function get_user_pets(int $user_id): array {
                 pi.happiness,
                 pi.intelligence,
                 pi.sickness,
+                pi.inactive,
                 ps.region_id,
                 ps.species_name,
                 r.region_name,
@@ -27,7 +32,7 @@ function get_user_pets(int $user_id): array {
            JOIN pet_species ps ON ps.species_id = pi.species_id
            LEFT JOIN regions r ON r.region_id = ps.region_id
            LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
-          WHERE pi.owner_user_id = ?",
+          {$where}",
         [$user_id]
     )->fetchAll(PDO::FETCH_ASSOC);
 }
