@@ -440,6 +440,35 @@ INSERT INTO `pet_instances` (`pet_instance_id`, `owner_user_id`, `species_id`, `
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `abandoned_pets`
+--
+
+DROP TABLE IF EXISTS `abandoned_pets`;
+CREATE TABLE IF NOT EXISTS `abandoned_pets` (
+  `ap_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `creature_id` bigint UNSIGNED NOT NULL,
+  `old_player_id` bigint UNSIGNED NOT NULL,
+  `creature_name` varchar(100) NOT NULL,
+  `abandoned_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`ap_id`),
+  UNIQUE KEY `uq_abandoned_creature` (`creature_id`),
+  KEY `ix_abandoned_old_player` (`old_player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `abandoned_pets`
+--
+ALTER TABLE `abandoned_pets`
+  ADD CONSTRAINT `fk_abandoned_old_player` FOREIGN KEY (`old_player_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_abandoned_pet` FOREIGN KEY (`creature_id`) REFERENCES `pet_instances` (`pet_instance_id`) ON DELETE CASCADE;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `pet_species`
 --
 

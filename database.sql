@@ -262,6 +262,19 @@ CREATE TABLE IF NOT EXISTS pet_instances (
   CONSTRAINT fk_petinst_color   FOREIGN KEY (color_id)   REFERENCES pet_colors(color_id)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS abandoned_pets (
+  ap_id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  creature_id   BIGINT UNSIGNED NOT NULL,
+  old_player_id BIGINT UNSIGNED NOT NULL,
+  creature_name VARCHAR(100) NOT NULL,
+  abandoned_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (ap_id),
+  UNIQUE KEY uq_abandoned_creature (creature_id),
+  KEY ix_abandoned_old_player (old_player_id),
+  CONSTRAINT fk_abandoned_pet FOREIGN KEY (creature_id) REFERENCES pet_instances(pet_instance_id) ON DELETE CASCADE,
+  CONSTRAINT fk_abandoned_old_player FOREIGN KEY (old_player_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Equipment for pets (uses unique item instances)
 CREATE TABLE IF NOT EXISTS pet_equipment (
   pet_instance_id  BIGINT UNSIGNED NOT NULL,

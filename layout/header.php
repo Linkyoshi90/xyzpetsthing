@@ -113,12 +113,11 @@ if (!in_array($pg ?? '', $game_pages)):
     </div>
     <?php endif; ?>
   </div>
-  <div class="nav-right">
+    <div class="nav-right">
     <nav>
       <a href="?pg=games">🎮 games</a>
       <a href="?pg=bank">🏦 bank</a>
       <a href="?pg=map">🗺️ explore</a>
-      <a href="?pg=breeding">🐣 daycare</a>
       <a href="?pg=vote">🗳️ vote</a>
       <a href="?pg=notifications" aria-label="notifications">🔔</a>
     </nav>
