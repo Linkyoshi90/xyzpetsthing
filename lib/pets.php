@@ -77,12 +77,15 @@ function get_abandoned_pets(): array {
                 ap.creature_name,
                 ap.abandoned_at,
                 pi.pet_instance_id AS creature_id,
+                u.username AS old_player_name,
                 ps.species_name,
                 pc.color_name
            FROM abandoned_pets ap
            JOIN pet_instances pi ON pi.pet_instance_id = ap.creature_id
+           LEFT JOIN users u ON u.user_id = ap.old_player_id
            JOIN pet_species ps ON ps.species_id = pi.species_id
            LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
+          WHERE ap.creature_id IS NOT NULL
        ORDER BY ap.abandoned_at DESC"
     )->fetchAll(PDO::FETCH_ASSOC);
 }

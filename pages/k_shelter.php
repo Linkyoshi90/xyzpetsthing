@@ -26,6 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     "INSERT INTO abandoned_pets (creature_id, old_player_id, creature_name) VALUES (?,?,?)"
                 );
                 $ins->execute([$pet_id, $uid, $creature_name]);
+                $deactivate = $pdo->prepare("UPDATE pet_instances SET inactive = 1 WHERE pet_instance_id = ?");
+                $deactivate->execute([$pet_id]);
                 $pdo->commit();
                 $status = sprintf('You abandoned %s.', htmlspecialchars($creature_name, ENT_QUOTES, 'UTF-8'));
             } catch (Throwable $e) {
@@ -50,10 +52,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $record->execute([$ap_id]);
             $abandoned = $record->fetch(PDO::FETCH_ASSOC);
             if ($abandoned) {
-                $update = $pdo->prepare("UPDATE pet_instances SET owner_user_id = ? WHERE pet_instance_id = ?");
+                $update = $pdo->prepare("UPDATE pet_instances SET owner_user_id = ?, inactive = 0 WHERE pet_instance_id = ?");
                 $update->execute([$uid, $abandoned['creature_id']]);
-                $delete = $pdo->prepare("DELETE FROM abandoned_pets WHERE ap_id = ?");
-                $delete->execute([$ap_id]);
+                $clear = $pdo->prepare(
+                    "UPDATE abandoned_pets
+                        SET creature_id = NULL,
+                            old_player_id = NULL,
+                            creature_name = NULL,
+                            abandoned_at = NULL
+                      WHERE ap_id = ?"
+                );
+                $clear->execute([$ap_id]);
                 $pdo->commit();
                 $status = 'You rescued a pet!';
             } else {
@@ -120,6 +129,7 @@ $abandoned_pets = get_abandoned_pets();
             <img class="thumb" src="<?= htmlspecialchars(pet_image_url($pet['species_name'], $pet['color_name'])) ?>" alt="">
             <h3><?= htmlspecialchars($pet['creature_name']) ?></h3>
             <p class="muted">Species: <?= htmlspecialchars($pet['species_name']) ?></p>
+            <p class="muted">Previous owner: <?= htmlspecialchars($pet['old_player_name'] ?? 'Unknown') ?></p>
             <form method="post">
               <input type="hidden" name="action" value="rescue">
               <input type="hidden" name="ap_id" value="<?= (int)$pet['ap_id'] ?>">
