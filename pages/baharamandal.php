@@ -16,6 +16,12 @@ require_once __DIR__.'/../lib/shops.php';
     <p class="muted">Here you can paint your creatures from this region.</p>
     <a class="btn" href="?pg=bm_paint_shack">Explore</a>
   </div>
+  
+  <div class="card glass">
+    <h3>Picnic Tree</h3>
+    <p class="muted">Grab some random goodies.</p>
+    <a class="btn" href="?pg=bm_pt">Explore</a>
+  </div>
 
   <div class="card glass">
     <h3>Back to Dawnmarch</h3>

@@ -14,6 +14,12 @@
   <div class="card glass">
     <h3>Meridian Arc Adventure</h3>
     <p class="muted">Explore the capital.</p>
+    <a class="btn" href="?pg=urb-adventure2">Explore</a>
+  </div>
+
+  <div class="card glass">
+    <h3>Abandoned Farm Adventure</h3>
+    <p class="muted">Explore an abandoned farm.</p>
     <a class="btn" href="?pg=urb-adventure">Explore</a>
   </div>
   

@@ -4,7 +4,6 @@ require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 $pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
 $allowed = ['login','register','logout','main','pet','create_pet','inventory','petting',
-    'map','vote','games','friends','bank','user-chat','paint_shack','gacha','picnic-tree',
     // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
     'wanted-alive','blackjack','paddle-panic','sudoku',
@@ -22,6 +21,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     // country subsections
     'aa-adventure','aa-pizza','aa-library','aa_paint_shack','aa-wof',
     'bm_paint_shack',
+    'bm_paint_shack','bm_pt',
     'br_paint_shack','br-everything-store',
     'cc_paint_shack',
     'esd_paint_shack',
@@ -40,6 +40,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'stap_paint_shack',
     'srl_paint_shack',
     'urb_paint_shack','urb-adventure',
+    'urb_paint_shack','urb-adventure','urb-adventure2',
     'xm_paint_shack',
     'ynk_paint_shack','ynk-adventure','ynk-ramen',
     'yn_paint_shack',
