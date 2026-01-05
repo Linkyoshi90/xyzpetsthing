@@ -12,6 +12,12 @@
   </div>
   
   <div class="card glass">
+    <h3>Daycare</h3>
+    <p class="muted">You can leave the creatures with them. Maybe you will find a surprise.</p>
+    <a class="btn" href="?pg=ldk_breeding">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Dawnmarch</h3>
     <a class="btn" href="?pg=dawnmarch">Explore</a>
   </div>
