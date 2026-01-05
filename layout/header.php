@@ -118,7 +118,6 @@ if (!in_array($pg ?? '', $game_pages)):
       <a href="?pg=games">🎮 games</a>
       <a href="?pg=bank">🏦 bank</a>
       <a href="?pg=map">🗺️ explore</a>
-      <a href="?pg=shelter">🏠 shelter</a>
       <a href="?pg=vote">🗳️ vote</a>
       <a href="?pg=notifications" aria-label="notifications">🔔</a>
     </nav>

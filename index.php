@@ -5,7 +5,6 @@ require_once __DIR__.'/lib/bank.php';
 $pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
 $allowed = ['login','register','logout','main','pet','create_pet','inventory','petting',
     'map','vote','games','friends','bank','user-chat','paint_shack','gacha',
-    'shelter',
     // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
     'wanted-alive','blackjack','paddle-panic','sudoku',
@@ -31,7 +30,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'gc_paint_shack',
     'h_paint_shack',
     'ie_paint_shack',
-    'k_paint_shack',
+    'k_paint_shack','k_shelter',
     'ldk_paint_shack',
     'nh_paint_shack',
     'rsc_paint_shack','rsc-wof',

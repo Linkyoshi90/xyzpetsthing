@@ -12,6 +12,12 @@
   </div>
   
   <div class="card glass">
+    <h3>Shelter</h3>
+    <p class="muted">A shelter where you can either abandon or adopt.</p>
+    <a class="btn" href="?pg=k_shelter">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Saharene</h3>
     <a class="btn" href="?pg=saharene">Explore</a>
   </div>
