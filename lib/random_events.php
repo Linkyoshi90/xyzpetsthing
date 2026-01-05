@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/pets.php';
+require_once __DIR__.'/breeding.php';
 
 const RANDOM_EVENT_FILE = __DIR__ . '/../data/random_events.json';
 const RANDOM_EVENT_CHANCE = 0.005; // x% per page load
@@ -78,6 +79,7 @@ function apply_random_event_effects(array $event, array $user): ?array
         'title' => $event['title'] ?? 'Random Encounter',
         'message' => $event['message'] ?? '',
         'details' => [],
+        'actions' => [],
     ];
     $balances = [];
     foreach ($effects as $effect) {
@@ -100,12 +102,25 @@ function apply_random_event_effects(array $event, array $user): ?array
             case 'sickness':
                 $detail = handle_event_sickness_effect($user['id'], $effect);
                 break;
+            case 'breeding_deposit':
+                $detail = handle_event_breeding_deposit_effect($user['id'], $effect);
+                break;
+            case 'breeding_tick':
+                $detail = handle_event_breeding_tick_effect($user['id'], $effect);
+                break;
             default:
                 $detail = null;
                 break;
         }
         if ($detail) {
-            if (is_array($detail)) {
+            if (is_array($detail) && (isset($detail['details']) || isset($detail['actions']))) {
+                if (!empty($detail['details'])) {
+                    $result['details'] = array_merge($result['details'], $detail['details']);
+                }
+                if (!empty($detail['actions'])) {
+                    $result['actions'] = array_merge($result['actions'], $detail['actions']);
+                }
+            } elseif (is_array($detail)) {
                 $result['details'] = array_merge($result['details'], $detail);
             } else {
                 $result['details'][] = $detail;
@@ -320,4 +335,96 @@ function handle_event_sickness_effect(int $user_id, array $effect)
         }
     }
     return $details;
+}
+
+function handle_event_breeding_deposit_effect(int $user_id, array $effect): ?array
+{
+    $rows = breeding_active_pairs($user_id);
+    if (!$rows) {
+        return null;
+    }
+    $details = [];
+    foreach ($rows as $row) {
+        if ((int)($row['egg_count'] ?? 0) > 0) {
+            continue;
+        }
+        $speciesOptions = array_values(array_filter([
+            (int)($row['egg_creature_id'] ?? 0),
+            (int)($row['mother_species_id'] ?? 0),
+            (int)($row['father_species_id'] ?? 0),
+        ], static fn($val) => $val > 0));
+        if (!$speciesOptions) {
+            continue;
+        }
+        $chosenSpecies = $speciesOptions[array_rand($speciesOptions)];
+        $time = mt_rand(3, 5);
+        q(
+            "UPDATE breeding SET egg_count = egg_count + 1, egg_creature_id = ?, time_to_hatch = ? WHERE breed_instance_id = ?",
+            [$chosenSpecies, $time, $row['breed_instance_id']]
+        );
+        $details[] = sprintf(
+            '%s and %s laid an egg! It will hatch in %d days.',
+            $row['mother_name'] ?: ($row['mother_species_name'] ?? 'Mother'),
+            $row['father_name'] ?: ($row['father_species_name'] ?? 'Daycare Stallion'),
+            $time
+        );
+    }
+    if (!$details) {
+        return null;
+    }
+    return [
+        'details' => $details,
+        'actions' => [
+            ['label' => 'Visit daycare', 'url' => '?pg=breeding'],
+        ],
+    ];
+}
+
+function handle_event_breeding_tick_effect(int $user_id, array $effect): ?array
+{
+    $chance = (int)($effect['chance'] ?? 10);
+    $rows = breeding_active_pairs($user_id);
+    if (!$rows) {
+        return null;
+    }
+    $details = [];
+    foreach ($rows as $row) {
+        if ((int)($row['egg_count'] ?? 0) <= 0 || (int)($row['time_to_hatch'] ?? 0) <= 0) {
+            continue;
+        }
+        if (mt_rand(1, 10) > $chance) {
+            continue;
+        }
+        $newTime = max(0, (int)$row['time_to_hatch'] - 1);
+        q(
+            "UPDATE breeding SET time_to_hatch = ? WHERE breed_instance_id = ?",
+            [$newTime, $row['breed_instance_id']]
+        );
+        if ($newTime === 0) {
+            $details[] = sprintf(
+                'An egg from %s and %s is ready to hatch!',
+                $row['mother_name'] ?: ($row['mother_species_name'] ?? 'Mother'),
+                $row['father_name'] ?: ($row['father_species_name'] ?? 'Daycare Stallion')
+            );
+            $hatched = breeding_hatch_ready_eggs($user_id);
+            if ($hatched) {
+                $details = array_merge($details, $hatched);
+            }
+        } else {
+            $details[] = sprintf(
+                'An egg in daycare now has %d days until it hatches.',
+                $newTime
+            );
+        }
+    }
+    if (!$details) {
+        return null;
+    }
+    return [
+        'details' => $details,
+        'actions' => [
+            ['label' => 'Visit daycare', 'url' => '?pg=breeding'],
+            ['label' => 'View pets', 'url' => '?pg=pet'],
+        ],
+    ];
 }

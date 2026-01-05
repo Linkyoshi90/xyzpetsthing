@@ -118,7 +118,6 @@ if (!in_array($pg ?? '', $game_pages)):
       <a href="?pg=games">🎮 games</a>
       <a href="?pg=bank">🏦 bank</a>
       <a href="?pg=map">🗺️ explore</a>
-      <a href="?pg=shelter">🏠 shelter</a>
       <a href="?pg=vote">🗳️ vote</a>
       <a href="?pg=notifications" aria-label="notifications">🔔</a>
     </nav>
@@ -147,6 +146,13 @@ if (!in_array($pg ?? '', $game_pages)):
       <li><?= htmlspecialchars($detail) ?></li>
       <?php endforeach; ?>
     </ul>
+    <?php endif; ?>
+    <?php if (!empty($random_event['actions'])): ?>
+    <div class="random-event-actions">
+      <?php foreach ($random_event['actions'] as $action): ?>
+        <a class="btn" href="<?= htmlspecialchars($action['url'] ?? '#') ?>"><?= htmlspecialchars($action['label'] ?? 'Continue') ?></a>
+      <?php endforeach; ?>
+    </div>
     <?php endif; ?>
   </div>
 </div>
