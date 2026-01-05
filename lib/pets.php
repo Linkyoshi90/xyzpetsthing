@@ -46,3 +46,43 @@ function pet_image_url(string $species_name, ?string $color_name): string {
     }
     return $path;
 }
+
+function get_owned_pet(int $user_id, int $pet_id, bool $include_inactive = false): ?array {
+    if ($user_id <= 0 || $pet_id <= 0) {
+        return null;
+    }
+    $inactiveClause = $include_inactive ? '' : ' AND COALESCE(pi.inactive, 0) = 0';
+    $pet = q(
+        "SELECT pi.pet_instance_id,
+                pi.owner_user_id,
+                pi.nickname,
+                pi.color_id,
+                pi.species_id,
+                pi.inactive,
+                ps.species_name,
+                pc.color_name
+           FROM pet_instances pi
+           JOIN pet_species ps ON ps.species_id = pi.species_id
+           LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
+          WHERE pi.owner_user_id = ? AND pi.pet_instance_id = ?{$inactiveClause}",
+        [$user_id, $pet_id]
+    )->fetch(PDO::FETCH_ASSOC);
+
+    return $pet ?: null;
+}
+
+function get_abandoned_pets(): array {
+    return q(
+        "SELECT ap.ap_id,
+                ap.creature_name,
+                ap.abandoned_at,
+                pi.pet_instance_id AS creature_id,
+                ps.species_name,
+                pc.color_name
+           FROM abandoned_pets ap
+           JOIN pet_instances pi ON pi.pet_instance_id = ap.creature_id
+           JOIN pet_species ps ON ps.species_id = pi.species_id
+           LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
+       ORDER BY ap.abandoned_at DESC"
+    )->fetchAll(PDO::FETCH_ASSOC);
+}

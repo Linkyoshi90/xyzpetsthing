@@ -33,8 +33,25 @@ if ($hatched) {
     $messages = array_merge($messages, $hatched);
 }
 
-$activePets = get_user_pets($uid);
+$allPets = get_user_pets($uid, true);
+$activePets = array_values(array_filter($allPets, static function (array $pet): bool {
+    return (int)($pet['inactive'] ?? 0) === 0;
+}));
+$inactivePets = array_values(array_filter($allPets, static function (array $pet): bool {
+    return (int)($pet['inactive'] ?? 0) === 1;
+}));
 $allPairs = breeding_active_pairs($uid);
+$pairedPetIds = [];
+foreach ($allPairs as $pair) {
+    $motherId = (int)($pair['mother'] ?? 0);
+    $fatherId = (int)($pair['father'] ?? 0);
+    if ($motherId > 0) {
+        $pairedPetIds[$motherId] = true;
+    }
+    if ($fatherId > 0) {
+        $pairedPetIds[$fatherId] = true;
+    }
+}
 ?>
 <h1>Daycare Breeding</h1>
 
@@ -82,9 +99,10 @@ $allPairs = breeding_active_pairs($uid);
 
 <div class="card glass">
   <h2>Daycare Status</h2>
-  <?php if (!$allPairs): ?>
+  <?php if (!$allPairs && !$inactivePets): ?>
     <p>No creatures are currently breeding.</p>
   <?php else: ?>
+  <?php if ($allPairs): ?>
     <form method="post">
       <input type="hidden" name="action" value="hatch">
       <button type="submit" class="btn">Collect any hatched eggs</button>
@@ -117,5 +135,37 @@ $allPairs = breeding_active_pairs($uid);
         <?php endforeach; ?>
       </tbody>
     </table>
+    <?php else: ?>
+      <p>No creatures are currently breeding.</p>
+    <?php endif; ?>
+
+    <?php if ($inactivePets): ?>
+      <h3>Inactive creatures at daycare</h3>
+      <p class="mini">These creatures are marked inactive and cannot join new adventures until they leave daycare.</p>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Species</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($inactivePets as $pet): ?>
+            <tr>
+              <td><?= htmlspecialchars($pet['nickname'] ?: ($pet['species_name'] ?? 'Unknown')) ?></td>
+              <td><?= htmlspecialchars($pet['species_name'] ?? 'Unknown species') ?></td>
+              <td>
+                <?php if (isset($pairedPetIds[(int)$pet['pet_instance_id']])): ?>
+                  Part of a breeding pair
+                <?php else: ?>
+                  Resting in daycare
+                <?php endif; ?>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    <?php endif; ?>
   <?php endif; ?>
 </div>
