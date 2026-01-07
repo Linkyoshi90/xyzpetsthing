@@ -54,15 +54,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($abandoned) {
                 $update = $pdo->prepare("UPDATE pet_instances SET owner_user_id = ?, inactive = 0 WHERE pet_instance_id = ?");
                 $update->execute([$uid, $abandoned['creature_id']]);
-                $clear = $pdo->prepare(
-                    "UPDATE abandoned_pets
-                        SET creature_id = NULL,
-                            old_player_id = NULL,
-                            creature_name = NULL,
-                            abandoned_at = NULL
-                      WHERE ap_id = ?"
-                );
-                $clear->execute([$ap_id]);
+                $delete = $pdo->prepare("DELETE FROM abandoned_pets WHERE ap_id = ?");
+                $delete->execute([$ap_id]);
                 $pdo->commit();
                 $status = 'You rescued a pet!';
             } else {
