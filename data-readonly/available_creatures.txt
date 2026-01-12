@@ -1,13 +1,16 @@
 Ahuizotl
+Alisnapor
 Amarok
 Amaru
 Angel
+Anomalocaris
 Anubis
 Argentinosaurus
 Azureus
 Bahamut
 Banshee
 Black Turtle
+Blaze Cat
 Bunyip
 Capybara
 Centaur
@@ -16,11 +19,13 @@ Chupacabra
 Cipactli
 Crab man
 Curupira
+Daeodon
 Death
 Demon
 Dolphin
 Drop Bear
 Dullahan
+Elf
 Fishman
 Fury
 Gandharva
@@ -49,6 +54,7 @@ Ocelot
 Polar Bear
 Quetzalcoatl
 Rainbow Serpent
+Slidred
 Spider-Crab
 Succubus
 Taniwha
@@ -58,6 +64,7 @@ Vermillion Bird
 Vodyanoy
 Wadjet
 War
+Waterlil
 Wayob
 Will-o-Wisp
 Yuki-Onna
