@@ -47,17 +47,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $pdo->beginTransaction();
             $record = $pdo->prepare(
-                "SELECT ap_id, creature_id FROM abandoned_pets WHERE ap_id = ? FOR UPDATE"
+                "SELECT ap_id, creature_id, old_player_id FROM abandoned_pets WHERE ap_id = ? FOR UPDATE"
             );
             $record->execute([$ap_id]);
             $abandoned = $record->fetch(PDO::FETCH_ASSOC);
             if ($abandoned) {
-                $update = $pdo->prepare("UPDATE pet_instances SET owner_user_id = ?, inactive = 0 WHERE pet_instance_id = ?");
-                $update->execute([$uid, $abandoned['creature_id']]);
-                $delete = $pdo->prepare("DELETE FROM abandoned_pets WHERE ap_id = ?");
-                $delete->execute([$ap_id]);
-                $pdo->commit();
-                $status = 'You rescued a pet!';
+                if (!empty($abandoned['old_player_id']) && (int)$abandoned['old_player_id'] === $uid) {
+                    $pdo->rollBack();
+                    $errors[] = 'You cannot rescue a pet you abandoned.';
+                } else {
+                    $update = $pdo->prepare("UPDATE pet_instances SET owner_user_id = ?, inactive = 0 WHERE pet_instance_id = ?");
+                    $update->execute([$uid, $abandoned['creature_id']]);
+                    $delete = $pdo->prepare("DELETE FROM abandoned_pets WHERE ap_id = ?");
+                    $delete->execute([$ap_id]);
+                    $pdo->commit();
+                    $status = 'You rescued a pet!';
+                }
             } else {
                 $pdo->rollBack();
                 $errors[] = 'That pet has already been rescued.';
@@ -73,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $user_pets = get_user_pets($uid);
-$abandoned_pets = get_abandoned_pets();
+$abandoned_pets = get_abandoned_pets($uid);
 ?>
 <h1>Pet Shelter</h1>
 
@@ -143,7 +148,7 @@ if (abandonForm) {
   abandonForm.addEventListener('submit', (ev) => {
     const select = abandonForm.querySelector('select[name=\"pet_id\"]');
     const petName = select ? select.options[select.selectedIndex].textContent : 'this pet';
-    if (!confirm(`Are you sure you want to abandon ${petName}?`)) {
+    if (!confirm(`Are you sure you want to abandon ${petName}? You will not be able to rescue them again.`)) {
       ev.preventDefault();
     }
   });

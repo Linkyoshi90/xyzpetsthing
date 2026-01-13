@@ -71,11 +71,18 @@ function get_owned_pet(int $user_id, int $pet_id, bool $include_inactive = false
     return $pet ?: null;
 }
 
-function get_abandoned_pets(): array {
+function get_abandoned_pets(?int $user_id = null): array {
+    $params = [];
+    $where = "WHERE ap.creature_id IS NOT NULL";
+    if ($user_id !== null) {
+        $where .= " AND (ap.old_player_id IS NULL OR ap.old_player_id <> ?)";
+        $params[] = $user_id;
+    }
     return q(
         "SELECT ap.ap_id,
                 ap.creature_name,
                 ap.abandoned_at,
+                ap.old_player_id,
                 pi.pet_instance_id AS creature_id,
                 u.username AS old_player_name,
                 ps.species_name,
@@ -85,7 +92,8 @@ function get_abandoned_pets(): array {
            LEFT JOIN users u ON u.user_id = ap.old_player_id
            JOIN pet_species ps ON ps.species_id = pi.species_id
            LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
-          WHERE ap.creature_id IS NOT NULL
-       ORDER BY ap.abandoned_at DESC"
+          {$where}
+       ORDER BY ap.abandoned_at DESC",
+        $params
     )->fetchAll(PDO::FETCH_ASSOC);
 }
