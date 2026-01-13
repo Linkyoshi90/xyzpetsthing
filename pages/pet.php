@@ -85,6 +85,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'heal') {
     header('Location: ?pg=pet&id=' . $pet_id);
     exit;
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'read') {
+    $pet_id = (int)($_POST['pet_id'] ?? 0);
+    $item_id = (int)($_POST['item_id'] ?? 0);
+    $row = q(
+        "SELECT ui.quantity FROM user_inventory ui"
+        . " JOIN items i ON i.item_id = ui.item_id"
+        . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+        . " WHERE ui.user_id = ? AND ui.item_id = ? AND (ic.category_name = 'Book' OR i.item_name LIKE '%Book%')",
+        [$uid, $item_id]
+    )->fetch(PDO::FETCH_ASSOC);
+    if ($row && (int)$row['quantity'] > 0) {
+        q(
+            "UPDATE pet_instances SET intelligence = intelligence + 1 WHERE pet_instance_id = ? AND owner_user_id = ?",
+            [$pet_id, $uid]
+        );
+        if ((int)$row['quantity'] > 1) {
+            q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+        } else {
+            q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+        }
+    }
+    header('Location: ?pg=pet&id=' . $pet_id);
+    exit;
+}
 $pets = get_user_pets($uid);
 $food_items = q(
     "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui"
@@ -98,6 +122,13 @@ $healing_items = q(
     . " JOIN items i ON i.item_id = ui.item_id"
     . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
     . " WHERE ui.user_id = ? AND ic.category_name = 'Potion'",
+    [$uid]
+)->fetchAll(PDO::FETCH_ASSOC);
+$book_items = q(
+    "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui"
+    . " JOIN items i ON i.item_id = ui.item_id"
+    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+    . " WHERE ui.user_id = ? AND (ic.category_name = 'Book' OR i.item_name LIKE '%Book%')",
     [$uid]
 )->fetchAll(PDO::FETCH_ASSOC);
 
@@ -164,6 +195,7 @@ if (!$pet && $pets) {
       <p>Sickness: <?= !empty($pet['sickness']) ? '😷 Unwell' : '✅ Healthy' ?></p>
       <p>Hunger: <?= (int)$pet['hunger'] ?></p>
       <p>Happiness: <span class="happiness-value"><?= (int)$pet['happiness'] ?></span></p>
+      <p>Intelligence: <?= (int)($pet['intelligence'] ?? 0) ?></p>
       <div class="actions">
         <button class="play">Play</button>
         <button class="read">Read</button>
@@ -199,6 +231,22 @@ if (!$pet && $pets) {
         </form>
         <?php else: ?>
           <p>No healing items available.</p>
+        <?php endif; ?>
+      </div>
+      <div class="read-form" style="display:none;">
+        <?php if ($book_items): ?>
+        <form method="post">
+          <input type="hidden" name="action" value="read">
+          <input type="hidden" name="pet_id" value="<?= (int)$pet['pet_instance_id'] ?>">
+          <select name="item_id">
+            <?php foreach ($book_items as $item): ?>
+              <option value="<?= (int)$item['item_id'] ?>"><?= htmlspecialchars($item['item_name']) ?> (x<?= (int)$item['quantity'] ?>)</option>
+            <?php endforeach; ?>
+          </select>
+          <button type="submit">Read to <?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></button>
+        </form>
+        <?php else: ?>
+          <p>You do not have any books.</p>
         <?php endif; ?>
       </div>
     </div>
@@ -257,6 +305,12 @@ document.querySelectorAll('.pet-details .actions .heal').forEach(btn => {
     if (form) form.style.display = 'block';
   });
 });
+document.querySelectorAll('.pet-details .actions .read').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const form = btn.closest('.pet-details').querySelector('.read-form');
+    if (form) form.style.display = 'block';
+  });
+});
 document.querySelectorAll('.pet-details .close').forEach(btn => {
   btn.addEventListener('click', () => {
     btn.closest('.pet-details').style.display = 'none';
@@ -269,7 +323,7 @@ document.querySelectorAll('.pet-details .actions .feed').forEach(btn => {
   });
 });
 document.querySelectorAll('.pet-details .actions button').forEach(btn => {
-  if (!btn.classList.contains('close') && !btn.classList.contains('feed') && !btn.classList.contains('heal') && !btn.classList.contains('play')) {
+  if (!btn.classList.contains('close') && !btn.classList.contains('feed') && !btn.classList.contains('heal') && !btn.classList.contains('play') && !btn.classList.contains('read')) {
     btn.addEventListener('click', () => alert('Not implemented'));
   }
 });
