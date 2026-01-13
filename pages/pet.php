@@ -1,7 +1,35 @@
 ﻿<?php require_login();
 require_once __DIR__.'/../lib/pets.php';
 $uid = current_user()['id'];
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'feed') {
+$action = $_POST['action'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'play') {
+    header('Content-Type: application/json');
+    $pet_id = (int)($_POST['pet_id'] ?? 0);
+    $pet = q(
+        "SELECT happiness FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$pet_id, $uid]
+    )->fetch(PDO::FETCH_ASSOC);
+
+    if (!$pet) {
+        echo json_encode(['ok' => false, 'message' => 'That pet is not available.']);
+        exit;
+    }
+
+    $boost = 5;
+    q(
+        "UPDATE pet_instances SET happiness = LEAST(100, happiness + ?) WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$boost, $pet_id, $uid]
+    );
+
+    $happiness = q(
+        "SELECT happiness FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$pet_id, $uid]
+    )->fetchColumn();
+
+    echo json_encode(['ok' => true, 'happiness' => (int)$happiness]);
+    exit;
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed') {
     $pet_id = (int)($_POST['pet_id'] ?? 0);
     $item_id = (int)($_POST['item_id'] ?? 0);
     $row = q(
@@ -28,33 +56,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'feed'
         }
         header('Location: ?pg=pet&id=' . $pet_id);
         exit;
-    } elseif ($action === 'heal') {
-        $pet_id = (int)($_POST['pet_id'] ?? 0);
-        $item_id = (int)($_POST['item_id'] ?? 0);
-        $row = q(
-            "SELECT ui.quantity, i.replenish FROM user_inventory ui"
-            . " JOIN items i ON i.item_id = ui.item_id"
-            . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
-            . " WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Potion'",
-            [$uid, $item_id]
-        )->fetch(PDO::FETCH_ASSOC);
-        if ($row && (int)$row['quantity'] > 0) {
-            $healing = max(0, (int)$row['replenish']);
-            if ($healing > 0) {
-                q(
-                    "UPDATE pet_instances SET hp_current = IF(hp_max IS NULL, hp_current + ?, LEAST(hp_max, hp_current + ?)) WHERE pet_instance_id = ? AND owner_user_id = ?",
-                    [$healing, $healing, $pet_id, $uid]
-                );
-            }
-            if ((int)$row['quantity'] > 1) {
-                q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-            } else {
-                q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-            }
-        }
-        header('Location: ?pg=pet&id=' . $pet_id);
-        exit;
     }
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'heal') {
+    $pet_id = (int)($_POST['pet_id'] ?? 0);
+    $item_id = (int)($_POST['item_id'] ?? 0);
+    $row = q(
+        "SELECT ui.quantity, i.replenish FROM user_inventory ui"
+        . " JOIN items i ON i.item_id = ui.item_id"
+        . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+        . " WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Potion'",
+        [$uid, $item_id]
+    )->fetch(PDO::FETCH_ASSOC);
+    if ($row && (int)$row['quantity'] > 0) {
+        $healing = max(0, (int)$row['replenish']);
+        if ($healing > 0) {
+            q(
+                "UPDATE pet_instances SET hp_current = IF(hp_max IS NULL, hp_current + ?, LEAST(hp_max, hp_current + ?)) WHERE pet_instance_id = ? AND owner_user_id = ?",
+                [$healing, $healing, $pet_id, $uid]
+            );
+        }
+        if ((int)$row['quantity'] > 1) {
+            q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+        } else {
+            q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
+        }
+    }
+    header('Location: ?pg=pet&id=' . $pet_id);
+    exit;
 }
 $pets = get_user_pets($uid);
 $food_items = q(
@@ -86,6 +115,33 @@ if (!$pet && $pets) {
     $pet = $pets[0];
 }
 ?>
+<style>
+  .pet-details {
+    position: relative;
+  }
+
+  .smiley-pop {
+    position: absolute;
+    font-size: 1.6rem;
+    pointer-events: none;
+    transform: translate(-50%, 0);
+    animation: smiley-pop 1s ease-out forwards;
+  }
+
+  @keyframes smiley-pop {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, 0) scale(0.6);
+    }
+    30% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -32px) scale(1.2);
+    }
+  }
+</style>
 <h1>Your Pets</h1>
 <?php if ($pets): ?>
 <?php if ($pet): ?>
@@ -99,7 +155,7 @@ if (!$pet && $pets) {
     <img class="thumb" src="<?= htmlspecialchars(pet_image_url($pet['species_name'], $pet['color_name'])) ?>" alt="">
     <h2><?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></h2>
     <button class="show-details" data-id="<?= (int)$pet['pet_instance_id'] ?>">Details</button>
-    <div id="pet-<?= (int)$pet['pet_instance_id'] ?>" class="pet-details" style="display:none;">
+    <div id="pet-<?= (int)$pet['pet_instance_id'] ?>" class="pet-details" data-pet-id="<?= (int)$pet['pet_instance_id'] ?>" style="display:none;">
       <p>Species: <?= htmlspecialchars($pet['species_name']) ?></p>
       <p>Color: <?= htmlspecialchars($pet['color_name'] ?? 'None') ?></p>
       <p>Gender: <?= htmlspecialchars($pet['gender']) ?></p>
@@ -107,7 +163,7 @@ if (!$pet && $pets) {
       <p>HP: <?= (int)($pet['hp_current'] ?? 0) ?> / <?= (int)($pet['hp_max'] ?? ($pet['hp_current'] ?? 0)) ?></p>
       <p>Sickness: <?= !empty($pet['sickness']) ? '😷 Unwell' : '✅ Healthy' ?></p>
       <p>Hunger: <?= (int)$pet['hunger'] ?></p>
-      <p>Happiness: <?= (int)$pet['happiness'] ?></p>
+      <p>Happiness: <span class="happiness-value"><?= (int)$pet['happiness'] ?></span></p>
       <div class="actions">
         <button class="play">Play</button>
         <button class="read">Read</button>
@@ -156,6 +212,45 @@ document.querySelectorAll('.show-details').forEach(btn => {
     if (details) details.style.display = 'block';
   });
 });
+document.querySelectorAll('.pet-details .actions .play').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    const details = btn.closest('.pet-details');
+    const petId = details?.dataset.petId;
+    const happinessValue = details?.querySelector('.happiness-value');
+    if (!petId) return;
+
+    const formData = new FormData();
+    formData.append('action', 'play');
+    formData.append('pet_id', petId);
+
+    try {
+      const response = await fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      const data = await response.json();
+      if (!data.ok) {
+        alert(data.message || 'Unable to play right now.');
+        return;
+      }
+      if (happinessValue) {
+        happinessValue.textContent = data.happiness;
+      }
+      const pop = document.createElement('span');
+      pop.className = 'smiley-pop';
+      pop.textContent = '😊';
+      const buttonRect = btn.getBoundingClientRect();
+      const detailsRect = details.getBoundingClientRect();
+      pop.style.left = `${buttonRect.left - detailsRect.left + buttonRect.width / 2}px`;
+      pop.style.top = `${buttonRect.top - detailsRect.top - 6}px`;
+      details.appendChild(pop);
+      setTimeout(() => pop.remove(), 1000);
+    } catch (error) {
+      alert('Unable to play right now.');
+    }
+  });
+});
 document.querySelectorAll('.pet-details .actions .heal').forEach(btn => {
   btn.addEventListener('click', () => {
     const form = btn.closest('.pet-details').querySelector('.heal-form');
@@ -174,7 +269,7 @@ document.querySelectorAll('.pet-details .actions .feed').forEach(btn => {
   });
 });
 document.querySelectorAll('.pet-details .actions button').forEach(btn => {
-  if (!btn.classList.contains('close') && !btn.classList.contains('feed') && !btn.classList.contains('heal')) {
+  if (!btn.classList.contains('close') && !btn.classList.contains('feed') && !btn.classList.contains('heal') && !btn.classList.contains('play')) {
     btn.addEventListener('click', () => alert('Not implemented'));
   }
 });
