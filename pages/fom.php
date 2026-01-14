@@ -101,6 +101,7 @@ if (
     </p>
     <div>
       <img src="images/tengu_f_blue.webp" alt="View of the grachten" class="world-map" />
+      <img src="images/harmontide-fom-grachten.webp" alt="View of the grachten" class="world-map" />
     </div>
     <?php if ($isTempUser): ?>
       <p class="muted">Create a full account to take part in daily grachten fishing.</p>
