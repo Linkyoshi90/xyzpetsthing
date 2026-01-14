@@ -2,6 +2,7 @@
 require_login();
 require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/temp_user.php';
+require_once __DIR__.'/../lib/input.php';
 
 $uid = (int)current_user()['id'];
 $isTemp = is_temp_user();
@@ -229,7 +230,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($todayVisit) {
         $messages[] = 'You already visited today. The fountain sleeps until tomorrow.';
     } else {
-        $amount = round((float)($_POST['deposit'] ?? 0), 2);
+        $amount = round(input_float($_POST['deposit'] ?? 0, 0.01), 2);
         if ($amount <= 0) {
             $messages[] = 'Offer at least 0.01 coins to wake the fountain.';
         } else {

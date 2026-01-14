@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/../auth.php';
 require_login();
+require_once __DIR__.'/../lib/input.php';
 
 $uid = current_user()['id'];
 $today = date('Y-m-d');
@@ -179,7 +180,7 @@ if (!$state['game_over'] && (!is_array($state['board']) || !is_array($state['sol
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
+    $action = input_string($_POST['action'] ?? '', 20);
     if ($action === 'submit' && !$state['game_over']) {
         $answers = $_POST['cell'] ?? [];
         $correct = 0;
@@ -195,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $totalBlanks++;
                 $raw = $answers[$r][$c] ?? '';
-                $value = is_scalar($raw) ? (int)$raw : 0;
+                $value = input_int($raw);
                 if ($value < 1 || $value > 9) {
                     $value = 0;
                 }

@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/../lib/shops.php';
+require_once __DIR__.'/../lib/input.php';
 
 $shopId = 7;
 $shop = shop_get($shopId) ?? ['shop_id' => $shopId, 'shop_name' => 'Yumenoki Ramen'];
@@ -18,7 +19,7 @@ if (!current_user() && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
 require_login();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'checkout') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && input_string($_POST['action'] ?? '', 20) === 'checkout') {
     header('Content-Type: application/json');
 
     if (!$inventoryById) {

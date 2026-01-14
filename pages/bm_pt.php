@@ -1,6 +1,7 @@
 <?php
 require_login();
 require_once __DIR__.'/../db.php';
+require_once __DIR__.'/../lib/input.php';
 
 $uid = current_user()['id'];
 $messages = ['success' => null, 'error' => null];
@@ -8,7 +9,7 @@ $messages = ['success' => null, 'error' => null];
 $pdo = db();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $itemId = isset($_POST['item_id']) ? (int) $_POST['item_id'] : 0;
+    $itemId = input_int($_POST['item_id'] ?? 0, 1);
     if ($itemId <= 0) {
         $messages['error'] = 'Please pick a valid picnic table item.';
     } else {

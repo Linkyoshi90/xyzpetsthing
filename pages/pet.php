@@ -1,10 +1,11 @@
 ﻿<?php require_login();
 require_once __DIR__.'/../lib/pets.php';
+require_once __DIR__.'/../lib/input.php';
 $uid = current_user()['id'];
-$action = $_POST['action'] ?? '';
+$action = input_string($_POST['action'] ?? '', 20);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'play') {
     header('Content-Type: application/json');
-    $pet_id = (int)($_POST['pet_id'] ?? 0);
+    $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
     $pet = q(
         "SELECT happiness FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
         [$pet_id, $uid]
@@ -30,8 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'play') {
     exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed') {
-    $pet_id = (int)($_POST['pet_id'] ?? 0);
-    $item_id = (int)($_POST['item_id'] ?? 0);
+    $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
+    $item_id = input_int($_POST['item_id'] ?? 0, 1);
     $row = q(
         "SELECT ui.quantity, i.replenish FROM user_inventory ui
          JOIN items i ON i.item_id = ui.item_id
@@ -59,8 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed') {
     }
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'heal') {
-    $pet_id = (int)($_POST['pet_id'] ?? 0);
-    $item_id = (int)($_POST['item_id'] ?? 0);
+    $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
+    $item_id = input_int($_POST['item_id'] ?? 0, 1);
     $row = q(
         "SELECT ui.quantity, i.replenish FROM user_inventory ui"
         . " JOIN items i ON i.item_id = ui.item_id"
@@ -86,8 +87,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'heal') {
     exit;
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'read') {
-    $pet_id = (int)($_POST['pet_id'] ?? 0);
-    $item_id = (int)($_POST['item_id'] ?? 0);
+    $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
+    $item_id = input_int($_POST['item_id'] ?? 0, 1);
     $row = q(
         "SELECT ui.quantity FROM user_inventory ui"
         . " JOIN items i ON i.item_id = ui.item_id"
@@ -133,7 +134,10 @@ $book_items = q(
 )->fetchAll(PDO::FETCH_ASSOC);
 
 $pet = null;
-$pid = isset($_GET['id']) ? (int)$_GET['id'] : null;
+$pid = input_int($_GET['id'] ?? 0, 1);
+if ($pid === 0) {
+    $pid = null;
+}
 if ($pid) {
     foreach ($pets as $p) {
         if ((int)$p['pet_instance_id'] === $pid) {
