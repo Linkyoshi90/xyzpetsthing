@@ -1,6 +1,7 @@
 <?php require_login();
 require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/temp_user.php';
+require_once __DIR__.'/../lib/input.php';
 $uid = current_user()['id'];
 $maxPets = 4;
 $existingPets = get_user_pets($uid);
@@ -39,10 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($petCount >= $maxPets) {
         $err = "You already have the maximum of {$maxPets} pets.";
     } else {
-    $sp = (int)($_POST['species_id'] ?? 0);
-    $name = trim($_POST['name'] ?? '');
-    $color = (int)($_POST['color_id'] ?? 1);
-    $gender = ($_POST['gender'] ?? 'f') === 'm' ? 'm' : 'f';
+    $sp = input_int($_POST['species_id'] ?? 0, 1);
+    $name = input_string($_POST['name'] ?? '', 40);
+    $color = input_int($_POST['color_id'] ?? 1, 1);
+    $genderRaw = input_string($_POST['gender'] ?? 'f', 1, true);
+    $gender = $genderRaw === 'm' ? 'm' : 'f';
 
     $row = q(
         "SELECT ps.species_id, ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init, ps.region_id, r.region_name " .

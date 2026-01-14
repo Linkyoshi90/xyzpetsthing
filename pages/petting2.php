@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../auth.php';
 require_once __DIR__ . '/../db.php';
+require_once __DIR__ . '/../lib/input.php';
 
 require_login();
 
@@ -22,7 +23,8 @@ function petting2_clamp_int(int $value, int $min, int $max): int {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $payload = json_decode(file_get_contents('php://input'), true);
-    $action = $payload['action'] ?? ($_POST['action'] ?? '');
+    $payload = is_array($payload) ? $payload : [];
+    $action = input_string($payload['action'] ?? ($_POST['action'] ?? ''), 20);
 
     if ($action === 'save_stats') {
         header('Content-Type: application/json');
@@ -30,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updated = 0;
 
         foreach ($pets_payload as $state) {
-            $pet_id = (int)($state['id'] ?? 0);
+            $pet_id = input_int($state['id'] ?? 0, 1);
             if ($pet_id <= 0) {
                 continue;
             }
@@ -47,10 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $hp_max = isset($row['hp_max']) ? (int)$row['hp_max'] : (int)($row['hp_current'] ?? 0);
             $hp_max = max(1, $hp_max);
 
-            $hunger = petting2_clamp_int((int)($state['hunger'] ?? 0), 0, 100);
-            $happiness = petting2_clamp_int((int)($state['happiness'] ?? 0), 0, 100);
-            $intelligence = max(0, (int)($state['intelligence'] ?? 0));
-            $hp_current = petting2_clamp_int((int)($state['hp'] ?? 0), 0, $hp_max);
+            $hunger = petting2_clamp_int(input_int($state['hunger'] ?? 0), 0, 100);
+            $happiness = petting2_clamp_int(input_int($state['happiness'] ?? 0), 0, 100);
+            $intelligence = max(0, input_int($state['intelligence'] ?? 0));
+            $hp_current = petting2_clamp_int(input_int($state['hp'] ?? 0), 0, $hp_max);
 
             q(
                 "UPDATE pet_instances"

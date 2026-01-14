@@ -1,13 +1,17 @@
 <?php
+require_once __DIR__.'/../lib/input.php';
+
 if($_SERVER['REQUEST_METHOD']==='POST'){
-    if(isset($_POST['action']) && $_POST['action']==='temp'){
+    $action = input_string($_POST['action'] ?? '', 20);
+    if($action === 'temp'){
     temp_login();
     header('Location: ?pg=main');
     exit;
   }
-  $email=trim($_POST['email']??''); $pass=$_POST['pass']??'';
-  if(isset($_POST['action']) && $_POST['action']==='register'){
-    $user=trim($_POST['username']??'');
+  $email = input_email($_POST['email'] ?? '');
+  $pass = input_password($_POST['pass'] ?? '');
+  if($action === 'register'){
+    $user = input_string($_POST['username'] ?? '', 40);
     if(register($email,$user,$pass)){ header('Location: ?pg=main'); exit; }
     $err="Registration failed.";
   } else {

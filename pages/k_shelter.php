@@ -1,16 +1,17 @@
 <?php require_login();
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/../lib/pets.php';
+require_once __DIR__.'/../lib/input.php';
 
 $uid = current_user()['id'];
 $status = '';
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
+    $action = input_string($_POST['action'] ?? '', 20);
 
     if ($action === 'abandon') {
-        $pet_id = (int)($_POST['pet_id'] ?? 0);
+        $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
         $pet = get_owned_pet($uid, $pet_id);
         if (!$pet) {
             $errors[] = 'That pet is not available to abandon.';
@@ -39,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } elseif ($action === 'rescue') {
-        $ap_id = (int)($_POST['ap_id'] ?? 0);
+        $ap_id = input_int($_POST['ap_id'] ?? 0, 1);
         try {
             $pdo = db();
             if (!$pdo) {

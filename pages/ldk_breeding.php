@@ -1,17 +1,24 @@
 <?php require_login();
 require_once __DIR__ . '/../lib/pets.php';
 require_once __DIR__ . '/../lib/breeding.php';
+require_once __DIR__ . '/../lib/input.php';
 
 $uid = current_user()['id'];
 $messages = [];
 $errors = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['action'] ?? '';
+    $action = input_string($_POST['action'] ?? '', 20);
     if ($action === 'start') {
-        $motherId = (int)($_POST['mother_id'] ?? 0);
-        $fatherInput = $_POST['father_id'] ?? '';
-        $fatherId = ($fatherInput === '' || $fatherInput === 'npc') ? null : (int)$fatherInput;
+        $motherId = input_int($_POST['mother_id'] ?? 0, 1);
+        $fatherInput = input_string($_POST['father_id'] ?? '', 10);
+        $fatherId = null;
+        if ($fatherInput !== '' && $fatherInput !== 'npc') {
+            $fatherId = input_int($fatherInput, 1);
+            if ($fatherId === 0) {
+                $fatherId = null;
+            }
+        }
         $result = breeding_start_pair($uid, $motherId, $fatherId);
         if ($result['ok']) {
             $messages[] = $result['message'];

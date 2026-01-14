@@ -2,9 +2,10 @@
 require_once __DIR__.'/../auth.php';
 require_login();
 require_once __DIR__.'/../lib/pets.php';
+require_once __DIR__.'/../lib/input.php';
 
 $uid = current_user()['id'];
-$action = $_GET['action'] ?? '';
+$action = input_string($_GET['action'] ?? '', 20);
 
 if ($action === 'save_stats' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
@@ -22,7 +23,7 @@ if ($action === 'save_stats' && $_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     foreach ($payload['pets'] as $entry) {
-        $pet_id = (int)($entry['id'] ?? 0);
+        $pet_id = input_int($entry['id'] ?? 0, 1);
         if (!$pet_id || !isset($pet_lookup[$pet_id])) {
             continue;
         }
@@ -33,10 +34,10 @@ if ($action === 'save_stats' && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $current_happiness = (int)($pet['happiness'] ?? 0);
         $current_intelligence = (int)($pet['intelligence'] ?? 0);
 
-        $incoming_hunger = (int)($entry['hunger'] ?? $current_hunger);
-        $incoming_hp = (int)($entry['hp'] ?? $current_hp);
-        $incoming_happiness = (int)($entry['happiness'] ?? $current_happiness);
-        $incoming_intelligence = (int)($entry['intelligence'] ?? $current_intelligence);
+        $incoming_hunger = input_int($entry['hunger'] ?? $current_hunger);
+        $incoming_hp = input_int($entry['hp'] ?? $current_hp);
+        $incoming_happiness = input_int($entry['happiness'] ?? $current_happiness);
+        $incoming_intelligence = input_int($entry['intelligence'] ?? $current_intelligence);
 
         $max_hunger = 100;
         $next_hunger = max(0, min($incoming_hunger, $max_hunger));
