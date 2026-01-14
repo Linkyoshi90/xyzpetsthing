@@ -100,7 +100,6 @@ if (
       Every sunrise the dikes creak, the water breathes, and the grachten produce another ripple of new scales.
     </p>
     <div>
-      <img src="images/tengu_f_blue.webp" alt="View of the grachten" class="world-map" />
       <img src="images/harmontide-fom-grachten.webp" alt="View of the grachten" class="world-map" />
     </div>
     <?php if ($isTempUser): ?>
