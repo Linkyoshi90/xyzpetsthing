@@ -396,15 +396,7 @@ foreach ($pets as $pet) {
   <audio id="soundLose" src="/assets/sfx/lose.wav"></audio>
 
   <script>
-    const pets = <?php echo json_encode(
-        $pet_payload,
-        JSON_UNESCAPED_SLASHES
-        | JSON_UNESCAPED_UNICODE
-        | JSON_HEX_TAG
-        | JSON_HEX_AMP
-        | JSON_HEX_APOS
-        | JSON_HEX_QUOT
-    ); ?>;
+    const pets = <?php echo json_encode($pet_payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE); ?>;
     const creatureList = document.getElementById('creatureList');
     const creatureCard = document.getElementById('creatureCard');
     const creatureImage = document.getElementById('creatureImage');
