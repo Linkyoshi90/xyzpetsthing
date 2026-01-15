@@ -162,8 +162,9 @@ a {
     }
 
 .pet-thumb {
-    width: calc(50px * var(--size-mode));
-    height: calc(50px * var(--size-mode));
+    width: 10%;
+    height: auto;
+    aspect-ratio: 1 / 1;
     object-fit: cover;
     object-position: center top;
     border-radius: 50%;
