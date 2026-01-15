@@ -256,203 +256,205 @@ $saved_cosmetics = load_pet_cosmetics($pet_id);
 </div>
 
 <script>
-const petImageUrl = <?= json_encode($pet_image, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
-const savedCosmetics = <?= json_encode($saved_cosmetics, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
-const maxCosmetics = 15;
+(() => {
+  const petImageUrl = <?= json_encode($pet_image, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+  const savedCosmetics = <?= json_encode($saved_cosmetics, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+  const maxCosmetics = 15;
 
-const canvas = document.getElementById('dress-canvas');
-const ctx = canvas.getContext('2d');
-const sizeControl = document.getElementById('size-control');
-const selectedItemLabel = document.getElementById('selected-item');
-const state = {
-  items: [],
-  draggingIndex: null,
-  dragOffsetX: 0,
-  dragOffsetY: 0,
-  selectedIndex: null,
-};
-
-const petImage = new Image();
-petImage.src = petImageUrl;
-petImage.onload = () => {
-  canvas.width = petImage.width;
-  canvas.height = petImage.height;
-  render();
-};
-
-function loadItemImage(item) {
-  const img = new Image();
-  img.src = item.image;
-  item.img = img;
-  img.onload = () => render();
-}
-
-function render() {
-  if (!ctx) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (petImage.complete) {
-    ctx.drawImage(petImage, 0, 0, canvas.width, canvas.height);
-  }
-  state.items.forEach(item => {
-    if (!item.img || !item.img.complete) return;
-    const scale = item.size / 100;
-    const width = item.img.width * scale;
-    const height = item.img.height * scale;
-    ctx.drawImage(item.img, item.x, item.y, width, height);
-  });
-}
-
-function setSelected(index) {
-  state.selectedIndex = index;
-  if (index === null || index === undefined) {
-    selectedItemLabel.textContent = 'No item selected';
-    sizeControl.value = 100;
-    return;
-  }
-  const item = state.items[index];
-  selectedItemLabel.textContent = item?.name ? `Selected: ${item.name}` : 'Selected item';
-  if (item) {
-    sizeControl.value = item.size;
-  }
-}
-
-function getMousePos(evt) {
-  const rect = canvas.getBoundingClientRect();
-  return {
-    x: (evt.clientX - rect.left) * (canvas.width / rect.width),
-    y: (evt.clientY - rect.top) * (canvas.height / rect.height),
+  const canvas = document.getElementById('dress-canvas');
+  const ctx = canvas.getContext('2d');
+  const sizeControl = document.getElementById('size-control');
+  const selectedItemLabel = document.getElementById('selected-item');
+  const state = {
+    items: [],
+    draggingIndex: null,
+    dragOffsetX: 0,
+    dragOffsetY: 0,
+    selectedIndex: null,
   };
-}
 
-function findItemAt(x, y) {
-  for (let i = state.items.length - 1; i >= 0; i -= 1) {
-    const item = state.items[i];
-    if (!item.img || !item.img.complete) continue;
-    const scale = item.size / 100;
-    const width = item.img.width * scale;
-    const height = item.img.height * scale;
-    if (x >= item.x && x <= item.x + width && y >= item.y && y <= item.y + height) {
-      return i;
-    }
+  const petImage = new Image();
+  petImage.src = petImageUrl;
+  petImage.onload = () => {
+    canvas.width = petImage.width;
+    canvas.height = petImage.height;
+    render();
+  };
+
+  function loadItemImage(item) {
+    const img = new Image();
+    img.src = item.image;
+    item.img = img;
+    img.onload = () => render();
   }
-  return null;
-}
 
-canvas.addEventListener('mousedown', event => {
-  const pos = getMousePos(event);
-  const index = findItemAt(pos.x, pos.y);
-  if (index !== null) {
-    const item = state.items[index];
-    state.draggingIndex = index;
-    state.dragOffsetX = pos.x - item.x;
-    state.dragOffsetY = pos.y - item.y;
-    setSelected(index);
-  } else {
-    setSelected(null);
-  }
-});
-
-canvas.addEventListener('mousemove', event => {
-  if (state.draggingIndex === null) return;
-  const pos = getMousePos(event);
-  const item = state.items[state.draggingIndex];
-  const scale = item.size / 100;
-  const width = item.img.width * scale;
-  const height = item.img.height * scale;
-  item.x = Math.max(0, Math.min(canvas.width - width, pos.x - state.dragOffsetX));
-  item.y = Math.max(0, Math.min(canvas.height - height, pos.y - state.dragOffsetY));
-  render();
-});
-
-canvas.addEventListener('mouseup', () => {
-  state.draggingIndex = null;
-});
-
-canvas.addEventListener('mouseleave', () => {
-  state.draggingIndex = null;
-});
-
-sizeControl.addEventListener('input', () => {
-  if (state.selectedIndex === null) return;
-  const item = state.items[state.selectedIndex];
-  item.size = parseInt(sizeControl.value, 10);
-  render();
-});
-
-document.querySelectorAll('.cosmetic-item').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (state.items.length >= maxCosmetics) {
-      alert('You can only add up to 15 cosmetics.');
-      return;
+  function render() {
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (petImage.complete) {
+      ctx.drawImage(petImage, 0, 0, canvas.width, canvas.height);
     }
-    const item = {
-      item_id: parseInt(btn.dataset.itemId, 10),
-      name: btn.dataset.itemName,
-      image: btn.dataset.itemImage,
-      x: 0,
-      y: 0,
-      size: 100,
-      img: null,
-    };
-    loadItemImage(item);
-    const tryPlace = () => {
-      if (!item.img || !item.img.complete || !canvas.width) {
-        requestAnimationFrame(tryPlace);
-        return;
-      }
+    state.items.forEach(item => {
+      if (!item.img || !item.img.complete) return;
       const scale = item.size / 100;
       const width = item.img.width * scale;
       const height = item.img.height * scale;
-      item.x = Math.max(0, (canvas.width - width) / 2);
-      item.y = Math.max(0, (canvas.height - height) / 2);
-      state.items.push(item);
-      setSelected(state.items.length - 1);
-      render();
-    };
-    tryPlace();
-  });
-});
-
-savedCosmetics.forEach(item => {
-  const loaded = {
-    item_id: item.item_id,
-    name: item.name,
-    image: item.image,
-    x: item.x,
-    y: item.y,
-    size: item.size || 100,
-    img: null,
-  };
-  loadItemImage(loaded);
-  state.items.push(loaded);
-});
-
-document.getElementById('save-dress').addEventListener('click', async () => {
-  const payload = {
-    action: 'save',
-    pet_id: <?= (int) $pet_id ?>,
-    items: state.items.map(item => ({
-      item_id: item.item_id,
-      x: Math.round(item.x),
-      y: Math.round(item.y),
-      size: Math.round(item.size),
-    })),
-  };
-
-  try {
-    const response = await fetch(window.location.href, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      ctx.drawImage(item.img, item.x, item.y, width, height);
     });
-    const data = await response.json();
-    if (!data.ok) {
-      alert(data.message || 'Unable to save right now.');
+  }
+
+  function setSelected(index) {
+    state.selectedIndex = index;
+    if (index === null || index === undefined) {
+      selectedItemLabel.textContent = 'No item selected';
+      sizeControl.value = 100;
       return;
     }
-    window.location.href = `?pg=pet&id=<?= (int) $pet_id ?>`;
-  } catch (error) {
-    alert('Unable to save right now.');
+    const item = state.items[index];
+    selectedItemLabel.textContent = item?.name ? `Selected: ${item.name}` : 'Selected item';
+    if (item) {
+      sizeControl.value = item.size;
+    }
   }
-});
+
+  function getMousePos(evt) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: (evt.clientX - rect.left) * (canvas.width / rect.width),
+      y: (evt.clientY - rect.top) * (canvas.height / rect.height),
+    };
+  }
+
+  function findItemAt(x, y) {
+    for (let i = state.items.length - 1; i >= 0; i -= 1) {
+      const item = state.items[i];
+      if (!item.img || !item.img.complete) continue;
+      const scale = item.size / 100;
+      const width = item.img.width * scale;
+      const height = item.img.height * scale;
+      if (x >= item.x && x <= item.x + width && y >= item.y && y <= item.y + height) {
+        return i;
+      }
+    }
+    return null;
+  }
+
+  canvas.addEventListener('mousedown', event => {
+    const pos = getMousePos(event);
+    const index = findItemAt(pos.x, pos.y);
+    if (index !== null) {
+      const item = state.items[index];
+      state.draggingIndex = index;
+      state.dragOffsetX = pos.x - item.x;
+      state.dragOffsetY = pos.y - item.y;
+      setSelected(index);
+    } else {
+      setSelected(null);
+    }
+  });
+
+  canvas.addEventListener('mousemove', event => {
+    if (state.draggingIndex === null) return;
+    const pos = getMousePos(event);
+    const item = state.items[state.draggingIndex];
+    const scale = item.size / 100;
+    const width = item.img.width * scale;
+    const height = item.img.height * scale;
+    item.x = Math.max(0, Math.min(canvas.width - width, pos.x - state.dragOffsetX));
+    item.y = Math.max(0, Math.min(canvas.height - height, pos.y - state.dragOffsetY));
+    render();
+  });
+
+  canvas.addEventListener('mouseup', () => {
+    state.draggingIndex = null;
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    state.draggingIndex = null;
+  });
+
+  sizeControl.addEventListener('input', () => {
+    if (state.selectedIndex === null) return;
+    const item = state.items[state.selectedIndex];
+    item.size = parseInt(sizeControl.value, 10);
+    render();
+  });
+
+  document.querySelectorAll('.cosmetic-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (state.items.length >= maxCosmetics) {
+        alert('You can only add up to 15 cosmetics.');
+        return;
+      }
+      const item = {
+        item_id: parseInt(btn.dataset.itemId, 10),
+        name: btn.dataset.itemName,
+        image: btn.dataset.itemImage,
+        x: 0,
+        y: 0,
+        size: 100,
+        img: null,
+      };
+      loadItemImage(item);
+      const tryPlace = () => {
+        if (!item.img || !item.img.complete || !canvas.width) {
+          requestAnimationFrame(tryPlace);
+          return;
+        }
+        const scale = item.size / 100;
+        const width = item.img.width * scale;
+        const height = item.img.height * scale;
+        item.x = Math.max(0, (canvas.width - width) / 2);
+        item.y = Math.max(0, (canvas.height - height) / 2);
+        state.items.push(item);
+        setSelected(state.items.length - 1);
+        render();
+      };
+      tryPlace();
+    });
+  });
+
+  savedCosmetics.forEach(item => {
+    const loaded = {
+      item_id: item.item_id,
+      name: item.name,
+      image: item.image,
+      x: item.x,
+      y: item.y,
+      size: item.size || 100,
+      img: null,
+    };
+    loadItemImage(loaded);
+    state.items.push(loaded);
+  });
+
+  document.getElementById('save-dress').addEventListener('click', async () => {
+    const payload = {
+      action: 'save',
+      pet_id: <?= (int) $pet_id ?>,
+      items: state.items.map(item => ({
+        item_id: item.item_id,
+        x: Math.round(item.x),
+        y: Math.round(item.y),
+        size: Math.round(item.size),
+      })),
+    };
+
+    try {
+      const response = await fetch(window.location.href, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      if (!data.ok) {
+        alert(data.message || 'Unable to save right now.');
+        return;
+      }
+      window.location.href = `?pg=pet&id=<?= (int) $pet_id ?>`;
+    } catch (error) {
+      alert('Unable to save right now.');
+    }
+  });
+})();
 </script>
