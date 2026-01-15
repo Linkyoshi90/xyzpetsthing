@@ -12,7 +12,7 @@ function load_cosmetic_inventory(int $user_id): array {
         ."FROM user_inventory ui\n"
         ."JOIN items i ON i.item_id = ui.item_id\n"
         ."LEFT JOIN item_categories ic ON ic.category_id = i.category_id\n"
-        ."WHERE ui.user_id = ? AND ic.category_name = 'Cosmetic'\n"
+        ."WHERE ui.user_id = ? AND ic.category_name = 'Wearable'\n"
         ."ORDER BY i.item_name",
         [$user_id]
     )->fetchAll(PDO::FETCH_ASSOC);

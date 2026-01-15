@@ -87,6 +87,11 @@ if($pg === 'ynk-ramen' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require __DIR__.'/pages/ynk-ramen.php';
   exit;
 }
+if($pg === 'dress' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/dress.php';
+  exit;
+}
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
 }
