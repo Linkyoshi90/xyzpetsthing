@@ -7,7 +7,7 @@ $pg = input_string($_GET['pg'] ?? '', 50);
 if ($pg === '') {
   $pg = current_user() ? 'main' : 'login';
 }
-$allowed = ['login','register','logout','main','pet','create_pet','inventory','petting',
+$allowed = ['login','register','logout','main','pet','create_pet','inventory','petting','dress',
     'petting2','map','vote','games','friends','bank','user-chat','paint_shack','gacha',
     // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
