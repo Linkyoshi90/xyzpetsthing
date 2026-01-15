@@ -19,6 +19,21 @@ CREATE TABLE IF NOT EXISTS users (
   UNIQUE KEY uq_users_email (email)
 ) ENGINE=InnoDB;
 
+-- Remember-me tokens
+CREATE TABLE IF NOT EXISTS user_remember_tokens (
+  token_id   BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+  user_id    BIGINT UNSIGNED NOT NULL,
+  selector   CHAR(18) NOT NULL,
+  token_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (token_id),
+  UNIQUE KEY uq_remember_selector (selector),
+  KEY ix_remember_user (user_id),
+  KEY ix_remember_expires (expires_at),
+  CONSTRAINT fk_remember_user FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
 -- Currency catalog (so you can add COIN/CASH/etc.)
 CREATE TABLE IF NOT EXISTS currencies (
   currency_id   TINYINT UNSIGNED NOT NULL AUTO_INCREMENT,

@@ -15,7 +15,8 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     if(register($email,$user,$pass)){ header('Location: ?pg=main'); exit; }
     $err="Registration failed.";
   } else {
-    if(login($email,$pass)){ header('Location: ?pg=main'); exit; }
+    $remember = !empty($_POST['remember']);
+    if(login($email,$pass, $remember)){ header('Location: ?pg=main'); exit; }
     $err="Invalid login.";
   }
 }
@@ -27,6 +28,10 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     <h2>Login</h2>
     <input name="email" type="email" placeholder="Email" required>
     <input name="pass" type="password" placeholder="Password" required>
+    <label class="form-check">
+      <input type="checkbox" name="remember" value="1">
+      Remember me
+    </label>
     <button>Sign in</button>
   </form>
   <form method="post" class="card glass">
