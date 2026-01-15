@@ -162,9 +162,8 @@ a {
     }
 
 .pet-thumb {
-    width: 10%;
-    height: auto;
-    aspect-ratio: 1 / 1;
+    width: calc(50px * var(--size-mode));
+    height: calc(50px * var(--size-mode));
     object-fit: cover;
     object-position: center top;
     border-radius: 50%;
@@ -963,12 +962,20 @@ ul.tight {
     padding-top: 100px;
     background: none;
     border-radius: 0;
+    overflow: auto;
 }
 
 .world-map {
     display: block;
     object-fit: contain;
+    max-width: none;
+    height: auto;
 }
+
+    .world-map--half {
+        width: 50%;
+        height: auto;
+    }
 
 .random-event-overlay {
     position: fixed;
