@@ -11,7 +11,7 @@ $pets = get_user_pets($uid);
 <div class="grid three">
 <?php foreach($pets as $p): ?>
   <div class="card glass">
-    <img class="thumb" src="<?= htmlspecialchars(pet_image_url($p['species_name'], $p['color_name'])) ?>" alt="">
+    <?= render_pet_thumbnail($p, 'thumb', $p['nickname'] ?: $p['species_name']) ?>
     <h3><?= htmlspecialchars($p['nickname'] ?: $p['species_name']) ?> <small>(<?= htmlspecialchars($p['species_name']) ?>)</small></h3>
     <p>Level <?= (int)$p['level'] ?>  HP <?= (int)($p['hp_current'] ?? 0) ?> / <?= (int)($p['hp_max'] ?? ($p['hp_current'] ?? 0)) ?></p>
   </div>

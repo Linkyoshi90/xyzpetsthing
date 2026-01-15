@@ -30,32 +30,6 @@ function load_cosmetic_inventory(int $user_id): array {
     return $items;
 }
 
-function load_pet_cosmetics(int $pet_id): array {
-    $rows = q(
-        "SELECT pc.item_id, pc.xcoord, pc.ycoord, pc.size, i.item_name\n"
-        ."FROM pet_cosmetics pc\n"
-        ."JOIN items i ON i.item_id = pc.item_id\n"
-        ."WHERE pc.pet_instance_id = ?\n"
-        ."ORDER BY pc.id",
-        [$pet_id]
-    )->fetchAll(PDO::FETCH_ASSOC);
-
-    $items = [];
-    foreach ($rows as $row) {
-        $imageFile = shop_find_item_image($row['item_name']);
-        $items[] = [
-            'item_id' => (int) $row['item_id'],
-            'name' => $row['item_name'],
-            'image' => 'images/items/'.rawurlencode($imageFile),
-            'x' => (int) $row['xcoord'],
-            'y' => (int) $row['ycoord'],
-            'size' => (int) $row['size'],
-        ];
-    }
-
-    return $items;
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Content-Type: application/json');
     $payload = json_decode(file_get_contents('php://input'), true);
@@ -149,7 +123,7 @@ if (!$pet) {
 $pet_name = $pet['nickname'] ?: $pet['species_name'];
 $pet_image = pet_image_url($pet['species_name'], $pet['color_name']);
 $inventory = load_cosmetic_inventory($uid);
-$saved_cosmetics = load_pet_cosmetics($pet_id);
+$saved_cosmetics = get_pet_cosmetics($pet_id);
 ?>
 <style>
   .dress-up {

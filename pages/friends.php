@@ -75,7 +75,7 @@ $friends = q("SELECT uf.connection_id, CASE WHEN uf.user_id = ? THEN uf.friend_i
             <div class="grid three">
                 <?php foreach($pets as $p): ?>
                 <div class="card glass">
-                    <img class="thumb" src="<?= htmlspecialchars(pet_image_url($p['species_name'], $p['color_name'])) ?>" alt="">
+                    <?= render_pet_thumbnail($p, 'thumb', $p['nickname'] ?: $p['species_name']) ?>
                     <p><?= htmlspecialchars($p['nickname'] ?: $p['species_name']) ?></p>
                 </div>
                 <?php endforeach; ?>
