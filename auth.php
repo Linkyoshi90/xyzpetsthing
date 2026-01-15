@@ -27,6 +27,13 @@ function delete_remember_token(?string $selector): void {
   q("DELETE FROM user_remember_tokens WHERE selector = ?", [$selector]);
 }
 
+function delete_remember_tokens_for_user(?int $user_id): void {
+  if (!$user_id) {
+    return;
+  }
+  q("DELETE FROM user_remember_tokens WHERE user_id = ?", [$user_id]);
+}
+
 function create_remember_token(int $user_id): void {
   $selector = bin2hex(random_bytes(9));
   $token = bin2hex(random_bytes(32));
@@ -164,12 +171,17 @@ function temp_login(){
 }
 
 function logout(){
+  $user_id = current_user()['id'] ?? null;
   $selector = '';
   $cookie = $_COOKIE[REMEMBER_COOKIE_NAME] ?? '';
   if (strpos($cookie, ':') !== false) {
     [$selector] = explode(':', $cookie, 2);
   }
-  delete_remember_token($selector);
+  if ($selector !== '') {
+    delete_remember_token($selector);
+  } else {
+    delete_remember_tokens_for_user(is_numeric($user_id) ? (int)$user_id : null);
+  }
   clear_remember_cookie();
   $_SESSION=[];
   session_destroy();
