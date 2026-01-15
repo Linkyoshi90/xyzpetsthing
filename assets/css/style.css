@@ -173,9 +173,12 @@ a {
 .pet-thumb {
     width: calc(50px * var(--size-mode));
     height: calc(50px * var(--size-mode));
+    max-width: calc(50px * var(--size-mode));
+    max-height: calc(50px * var(--size-mode));
     object-fit: cover;
     object-position: center top;
     border-radius: 50%;
+    flex: 0 0 auto;
 }
 
 .pet-thumb-wrapper {
