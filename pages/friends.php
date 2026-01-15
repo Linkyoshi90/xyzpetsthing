@@ -2,15 +2,16 @@
 require_login();
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/../lib/pets.php';
+require_once __DIR__.'/../lib/input.php';
 
 $uid = current_user()['id'];
 
 $searchedUser = null;
-$searchName = trim($_POST['username'] ?? '');
+$searchName = input_string($_POST['username'] ?? '', 40);
 $message = '';
 
 if(isset($_POST['add']) && isset($_POST['friend_id'])) {
-    $fid = (int)$_POST['friend_id'];
+    $fid = input_int($_POST['friend_id'] ?? 0, 1);
     if($fid !== $uid) {
         q("INSERT IGNORE INTO user_friends (user_id, friend_id) VALUES (?, ?)", [$uid, $fid]);
         $message = 'Friend added!';

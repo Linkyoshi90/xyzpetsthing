@@ -1,6 +1,7 @@
 <?php
 require_login();
 require_once __DIR__.'/../lib/shops.php';
+require_once __DIR__.'/../lib/input.php';
 
 $shopId = 4;
 $shop = shop_get($shopId) ?? ['shop_id' => $shopId, 'shop_name' => 'Pizzeria Sol Invicta'];
@@ -8,7 +9,7 @@ $shop = shop_get($shopId) ?? ['shop_id' => $shopId, 'shop_name' => 'Pizzeria Sol
 $inventory = shop_inventory($shopId);
 $inventoryById = shop_inventory_indexed($inventory);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'checkout') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && input_string($_POST['action'] ?? '', 20) === 'checkout') {
     header('Content-Type: application/json');
 
     if (!$inventoryById) {

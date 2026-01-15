@@ -1,6 +1,7 @@
 <?php
 require_login();
 require_once __DIR__.'/../lib/pets.php';
+require_once __DIR__.'/../lib/input.php';
 
 $uid = current_user()['id'];
 $regionInitial = $regionInitial ?? '';
@@ -98,8 +99,8 @@ $resolvePaintColor = function (string $itemName) use ($paintItemColors, $colorNa
 };
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['paint_pet'])) {
-    $petId = (int)($_POST['pet_id'] ?? 0);
-    $itemId = (int)($_POST['item_id'] ?? 0);
+    $petId = input_int($_POST['pet_id'] ?? 0, 1);
+    $itemId = input_int($_POST['item_id'] ?? 0, 1);
 
     $pet = q(
         "SELECT pi.pet_instance_id, pi.nickname, pi.color_id, ps.species_name, ps.region_id "

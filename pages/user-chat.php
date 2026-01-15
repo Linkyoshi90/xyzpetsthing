@@ -1,12 +1,16 @@
 <?php
 require_login();
 require_once __DIR__.'/../lib/chat.php';
+require_once __DIR__.'/../lib/input.php';
 
 $user = current_user();
 $uid = $user['id'];
 
 $friends = get_user_friend_list($uid);
-$activeFriendId = isset($_GET['friend']) ? (int)$_GET['friend'] : null;
+$activeFriendId = input_int($_GET['friend'] ?? 0, 1);
+if ($activeFriendId === 0) {
+    $activeFriendId = null;
+}
 if ($activeFriendId && !isset($friends[$activeFriendId])) {
     $activeFriendId = null;
 }

@@ -2,6 +2,7 @@
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/lib/temp_user.php';
+require_once __DIR__ . '/lib/input.php';
 
 header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -18,7 +19,8 @@ if (!$user) {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
-$itemId = isset($input['item_id']) ? (int) $input['item_id'] : 0;
+$input = is_array($input) ? $input : [];
+$itemId = input_int($input['item_id'] ?? 0, 1);
 $quantity = 1;
 
 if ($itemId !== 1) {

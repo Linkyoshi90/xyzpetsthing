@@ -1,13 +1,14 @@
 <?php
 require_once __DIR__.'/../auth.php';
 require_once __DIR__.'/../lib/blackjack.php';
+require_once __DIR__.'/../lib/input.php';
 require_login();
 
 $uid = current_user()['id'];
 blackjack_ensure_balance_row($uid);
 $state = blackjack_get_state();
 $errors = [];
-$action = $_POST['action'] ?? '';
+$action = input_string($_POST['action'] ?? '', 20);
 
 switch ($action) {
     case 'start':
@@ -15,7 +16,7 @@ switch ($action) {
             $errors[] = 'Finish your current hand before starting a new one.';
             break;
         }
-        $bet = isset($_POST['bet']) ? (int)$_POST['bet'] : 0;
+        $bet = input_int($_POST['bet'] ?? 0, 1);
         if ($bet < 1) {
             $errors[] = 'Bet at least 1 '.APP_CURRENCY_LONG_NAME.' to start.';
             break;

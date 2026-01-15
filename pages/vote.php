@@ -1,5 +1,6 @@
 ﻿<?php
 require_login();
+require_once __DIR__ . '/../lib/input.php';
 
 // Determine which species are enabled
 $allowedSpecies = [];
@@ -25,7 +26,7 @@ $allowedSlugs = array_map('slugify', $allowedSpecies);
 
 // Handle vote submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $json = $_POST['selection_json'] ?? '[]';
+    $json = input_string($_POST['selection_json'] ?? '[]', 10000, false);
     // Ensure valid JSON to satisfy column constraint
     $data = json_decode($json, true);
     if ($data === null) {

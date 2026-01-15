@@ -2,11 +2,12 @@
 require_once __DIR__.'/auth.php';
 require_login();
 require_once __DIR__.'/lib/chat.php';
+require_once __DIR__.'/lib/input.php';
 
 header('Content-Type: application/json');
 
 $uid = current_user()['id'];
-$action = $_POST['action'] ?? $_GET['action'] ?? '';
+$action = input_string($_POST['action'] ?? $_GET['action'] ?? '', 20);
 
 function json_error(string $message, int $status = 400): void
 {
@@ -16,7 +17,7 @@ function json_error(string $message, int $status = 400): void
 }
 
 if ($action === 'fetch') {
-    $friendId = isset($_GET['friend_id']) ? (int)$_GET['friend_id'] : 0;
+    $friendId = input_int($_GET['friend_id'] ?? 0, 1);
     if ($friendId <= 0) {
         json_error('Invalid friend selected.');
     }
@@ -39,8 +40,8 @@ if ($action === 'fetch') {
 }
 
 if ($action === 'send') {
-    $friendId = isset($_POST['friend_id']) ? (int)$_POST['friend_id'] : 0;
-    $message = trim($_POST['message'] ?? '');
+    $friendId = input_int($_POST['friend_id'] ?? 0, 1);
+    $message = input_string($_POST['message'] ?? '', 1000);
     if ($friendId <= 0) {
         json_error('Invalid friend selected.');
     }

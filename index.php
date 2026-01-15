@@ -2,7 +2,11 @@
 require_once __DIR__.'/lib/errors.php';
 require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
-$pg = $_GET['pg'] ?? (current_user() ? 'main' : 'login');
+require_once __DIR__.'/lib/input.php';
+$pg = input_string($_GET['pg'] ?? '', 50);
+if ($pg === '') {
+  $pg = current_user() ? 'main' : 'login';
+}
 $allowed = ['login','register','logout','main','pet','create_pet','inventory','petting',
     'petting2','map','vote','games','friends','bank','user-chat','paint_shack','gacha',
     // Games
@@ -55,10 +59,10 @@ if($pg === 'bank' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   if(isset($_POST['create'])) {
     create_bank_account($uid);
   } elseif(isset($_POST['deposit'])) {
-    $amt = floatval($_POST['amount'] ?? 0);
+    $amt = input_float($_POST['amount'] ?? 0, 0.01);
     deposit_to_bank($uid, $amt);
   } elseif(isset($_POST['withdraw'])) {
-    $amt = floatval($_POST['amount'] ?? 0);
+    $amt = input_float($_POST['amount'] ?? 0, 0.01);
     withdraw_from_bank($uid, $amt);
   }
   header('Location: index.php?pg=bank');
