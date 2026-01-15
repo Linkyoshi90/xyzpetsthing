@@ -187,7 +187,7 @@ if (!$pet && $pets) {
 <div class="pets-grid">
 <?php foreach ($pets as $pet): ?>
   <div class="card glass pet-card">
-    <img class="thumb" src="<?= htmlspecialchars(pet_image_url($pet['species_name'], $pet['color_name'])) ?>" alt="">
+    <?= render_pet_thumbnail($pet, 'thumb', $pet['nickname'] ?: $pet['species_name']) ?>
     <h2><?= htmlspecialchars($pet['nickname'] ?: $pet['species_name']) ?></h2>
     <button class="show-details" data-id="<?= (int)$pet['pet_instance_id'] ?>">Details</button>
     <div id="pet-<?= (int)$pet['pet_instance_id'] ?>" class="pet-details" data-pet-id="<?= (int)$pet['pet_instance_id'] ?>" style="display:none;">

@@ -94,7 +94,7 @@ if (!in_array($pg ?? '', $game_pages)):
         <div class="pet-thumb-wrapper">
             <a href="?pg=pet">
                 <?php if($header_pet): ?>
-                    <img src="<?= htmlspecialchars(pet_image_url($header_pet['species_name'], $header_pet['color_name'])) ?>" alt="Active pet" class="pet-thumb" />
+                    <?= render_pet_thumbnail($header_pet, 'pet-thumb', 'Active pet') ?>
                 <?php else: ?>
                     <img src="/assets/creatures/placeholder.png" alt="No pet" class="pet-thumb" />
                 <?php endif; ?>

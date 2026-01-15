@@ -125,7 +125,7 @@ $abandoned_pets = get_abandoned_pets($uid);
       <div class="pets-grid">
         <?php foreach ($abandoned_pets as $pet): ?>
           <div class="card glass pet-card">
-            <img class="thumb" src="<?= htmlspecialchars(pet_image_url($pet['species_name'], $pet['color_name'])) ?>" alt="">
+            <?= render_pet_thumbnail($pet, 'thumb', $pet['creature_name'] ?? $pet['species_name']) ?>
             <h3><?= htmlspecialchars($pet['creature_name']) ?></h3>
             <p class="muted">Species: <?= htmlspecialchars($pet['species_name']) ?></p>
             <p class="muted">Previous owner: <?= htmlspecialchars($pet['old_player_name'] ?? 'Unknown') ?></p>

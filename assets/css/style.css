@@ -161,7 +161,8 @@ a {
         gap: 4px;
     }
 
-.pet-thumb {
+.pet-thumb,
+.pet-thumb-stack.pet-thumb {
     width: calc(50px * var(--size-mode));
     height: calc(50px * var(--size-mode));
     object-fit: cover;
@@ -174,6 +175,34 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+.pet-thumb-stack {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.pet-thumb-stack .pet-thumb-base {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    border-radius: inherit;
+    display: block;
+}
+
+.pet-thumb-stack.thumb .pet-thumb-base {
+    object-fit: contain;
+}
+
+.pet-thumb-stack .pet-thumb-cosmetic {
+    position: absolute;
+    pointer-events: none;
+    left: 0;
+    top: 0;
+    z-index: 1;
 }
 
 .pet-speech-bubble {
@@ -508,7 +537,8 @@ input, select {
     color: #B00020
 }
 
-.thumb {
+.thumb,
+.pet-thumb-stack.thumb {
     width: 40%;
     height: 160px;
     object-fit: contain
