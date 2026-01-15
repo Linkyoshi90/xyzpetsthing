@@ -14,11 +14,3 @@
     <area target="" alt="Saharene" title="Saharene" href="index.php?pg=saharene" coords="1341,523,1200,538,1178,598,1126,597,1069,532,1093,370,1050,258,1176,169,1264,119,1354,198,1400,272,1385,376" shape="poly">
     <area target="" alt="Tundria" title="Tundria" href="index.php?pg=tundria" coords="1074,212,857,53,893,10,1231,6,1234,128" shape="poly">
 </map>
-<script src="https://unpkg.com/image-map-resizer@1.0.10/js/imageMapResizer.min.js"></script>
-<script>
-  window.addEventListener("load", function () {
-    if (typeof imageMapResize === "function") {
-      imageMapResize();
-    }
-  });
-</script>
