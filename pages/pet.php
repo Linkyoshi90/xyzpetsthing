@@ -203,6 +203,7 @@ if (!$pet && $pets) {
       <div class="actions">
         <button class="play">Play</button>
         <button class="read">Read</button>
+        <button class="dress">Dress up</button>
         <button class="close">Close</button>
       </div>
       <div class="feed-form" style="display:none;">
@@ -315,6 +316,14 @@ document.querySelectorAll('.pet-details .actions .read').forEach(btn => {
     if (form) form.style.display = 'block';
   });
 });
+document.querySelectorAll('.pet-details .actions .dress').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const details = btn.closest('.pet-details');
+    const petId = details?.dataset.petId;
+    if (!petId) return;
+    window.location.href = `?pg=dress&id=${petId}`;
+  });
+});
 document.querySelectorAll('.pet-details .close').forEach(btn => {
   btn.addEventListener('click', () => {
     btn.closest('.pet-details').style.display = 'none';
@@ -327,7 +336,12 @@ document.querySelectorAll('.pet-details .actions .feed').forEach(btn => {
   });
 });
 document.querySelectorAll('.pet-details .actions button').forEach(btn => {
-  if (!btn.classList.contains('close') && !btn.classList.contains('feed') && !btn.classList.contains('heal') && !btn.classList.contains('play') && !btn.classList.contains('read')) {
+  if (!btn.classList.contains('close')
+    && !btn.classList.contains('feed')
+    && !btn.classList.contains('heal')
+    && !btn.classList.contains('play')
+    && !btn.classList.contains('read')
+    && !btn.classList.contains('dress')) {
     btn.addEventListener('click', () => alert('Not implemented'));
   }
 });
