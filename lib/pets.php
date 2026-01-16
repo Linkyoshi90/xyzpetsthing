@@ -53,7 +53,7 @@ function get_pet_cosmetics(int $pet_id): array {
         return [];
     }
     $rows = q(
-        "SELECT pc.item_id, pc.xcoord, pc.ycoord, pc.size, i.item_name\n"
+        "SELECT pc.item_id, pc.xcoord, pc.ycoord, pc.size, pc.rotation, i.item_name\n"
         ."FROM pet_cosmetics pc\n"
         ."JOIN items i ON i.item_id = pc.item_id\n"
         ."WHERE pc.pet_instance_id = ?\n"
@@ -71,6 +71,7 @@ function get_pet_cosmetics(int $pet_id): array {
             'x' => (int) $row['xcoord'],
             'y' => (int) $row['ycoord'],
             'size' => (int) $row['size'],
+            'rotation' => (int) $row['rotation'],
         ];
     }
 
@@ -125,7 +126,7 @@ function render_pet_thumbnail(array $pet, string $class = 'thumb', string $alt =
         if (!$item_size) {
             continue;
         }
-        $scale = max(0.1, ($item['size'] ?? 100) / 100);
+        $scale = max(0.01, ($item['size'] ?? 100) / 100);
         $item_width = $item_size[0] * $scale;
         $item_height = $item_size[1] * $scale;
         if ($base_width <= 0 || $base_height <= 0) {
