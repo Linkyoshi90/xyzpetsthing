@@ -3,6 +3,7 @@ require_once __DIR__.'/lib/errors.php';
 require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 require_once __DIR__.'/lib/input.php';
+require_once __DIR__.'/lib/pets.php';
 $pg = input_string($_GET['pg'] ?? '', 50);
 if ($pg === '') {
   $pg = current_user() ? 'main' : 'login';
