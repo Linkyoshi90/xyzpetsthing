@@ -205,7 +205,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
 </style>
 
 <h1>Dress up <?= htmlspecialchars($pet_name) ?></h1>
-<p>Drag items onto the canvas, then move them around. Select an item on the canvas to resize it.</p>
+<p>Drag items onto the canvas, then move them around. Select an item on the canvas to resize or rotate it.</p>
 <div class="dress-up">
   <div class="dress-canvas-wrap">
     <canvas id="dress-canvas" width="500" height="500" aria-label="Dress up canvas"></canvas>
@@ -229,6 +229,8 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     <div>
       <label for="size-control">Selected size (%):</label>
       <input id="size-control" type="range" min="1" max="200" value="100">
+      <label for="rotation-control">Selected rotation (°):</label>
+      <input id="rotation-control" type="range" min="-180" max="180" value="0">
       <div class="selected-item" id="selected-item">No item selected</div>
       <button class="btn" type="button" id="remove-selected" disabled>Remove selected</button>
     </div>
@@ -248,6 +250,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
   const canvas = document.getElementById('dress-canvas');
   const ctx = canvas.getContext('2d');
   const sizeControl = document.getElementById('size-control');
+  const rotationControl = document.getElementById('rotation-control');
   const selectedItemLabel = document.getElementById('selected-item');
   const removeSelectedButton = document.getElementById('remove-selected');
   const state = {
@@ -284,7 +287,12 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
       const scale = item.size / 100;
       const width = item.img.width * scale;
       const height = item.img.height * scale;
-      ctx.drawImage(item.img, item.x, item.y, width, height);
+      const rotation = (item.rotation || 0) * (Math.PI / 180);
+      ctx.save();
+      ctx.translate(item.x + width / 2, item.y + height / 2);
+      ctx.rotate(rotation);
+      ctx.drawImage(item.img, -width / 2, -height / 2, width, height);
+      ctx.restore();
     });
   }
 
@@ -293,15 +301,21 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     if (index === null || index === undefined) {
       selectedItemLabel.textContent = 'No item selected';
       sizeControl.value = 100;
+      rotationControl.value = 0;
       removeSelectedButton.disabled = true;
+      sizeControl.disabled = true;
+      rotationControl.disabled = true;
       return;
     }
     const item = state.items[index];
     selectedItemLabel.textContent = item?.name ? `Selected: ${item.name}` : 'Selected item';
     if (item) {
       sizeControl.value = item.size;
+      rotationControl.value = item.rotation || 0;
     }
     removeSelectedButton.disabled = false;
+    sizeControl.disabled = false;
+    rotationControl.disabled = false;
   }
 
   function getMousePos(evt) {
@@ -364,6 +378,13 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     if (state.selectedIndex === null) return;
     const item = state.items[state.selectedIndex];
     item.size = parseInt(sizeControl.value, 10);
+    render();
+  });
+
+  rotationControl.addEventListener('input', () => {
+    if (state.selectedIndex === null) return;
+    const item = state.items[state.selectedIndex];
+    item.rotation = parseInt(rotationControl.value, 10);
     render();
   });
 
@@ -433,6 +454,8 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     loadItemImage(loaded);
     state.items.push(loaded);
   });
+
+  setSelected(null);
 
   document.getElementById('save-dress').addEventListener('click', async () => {
     const payload = {
