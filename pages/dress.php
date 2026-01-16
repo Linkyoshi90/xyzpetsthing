@@ -72,12 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $xcoord = input_int($item['x'] ?? 0, 0, 5000);
         $ycoord = input_int($item['y'] ?? 0, 0, 5000);
-        $size = input_int($item['size'] ?? 100, 10, 300);
+        $size = input_int($item['size'] ?? 100, 1, 300);
+        $rotation = input_int($item['rotation'] ?? 0, -360, 360);
         $to_save[] = [
             'item_id' => $item_id,
             'x' => $xcoord,
             'y' => $ycoord,
             'size' => $size,
+            'rotation' => $rotation,
         ];
         if (count($to_save) >= 15) {
             break;
@@ -95,11 +97,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         q("DELETE FROM pet_cosmetics WHERE pet_instance_id = ?", [$pet_id]);
         if ($to_save) {
             $stmt = $pdo->prepare(
-                "INSERT INTO pet_cosmetics (pet_instance_id, item_id, xcoord, ycoord, size)\n"
-                ."VALUES (?, ?, ?, ?, ?)"
+                "INSERT INTO pet_cosmetics (pet_instance_id, item_id, xcoord, ycoord, size, rotation)\n"
+                ."VALUES (?, ?, ?, ?, ?, ?)"
             );
             foreach ($to_save as $item) {
-                $stmt->execute([$pet_id, $item['item_id'], $item['x'], $item['y'], $item['size']]);
+                $stmt->execute([
+                    $pet_id,
+                    $item['item_id'],
+                    $item['x'],
+                    $item['y'],
+                    $item['size'],
+                    $item['rotation'],
+                ]);
             }
         }
         $pdo->commit();
@@ -219,8 +228,9 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     </div>
     <div>
       <label for="size-control">Selected size (%):</label>
-      <input id="size-control" type="range" min="10" max="200" value="100">
+      <input id="size-control" type="range" min="1" max="200" value="100">
       <div class="selected-item" id="selected-item">No item selected</div>
+      <button class="btn" type="button" id="remove-selected" disabled>Remove selected</button>
     </div>
     <div class="dress-actions">
       <button class="btn" type="button" id="save-dress">Save &amp; exit</button>
@@ -239,6 +249,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
   const ctx = canvas.getContext('2d');
   const sizeControl = document.getElementById('size-control');
   const selectedItemLabel = document.getElementById('selected-item');
+  const removeSelectedButton = document.getElementById('remove-selected');
   const state = {
     items: [],
     draggingIndex: null,
@@ -282,6 +293,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     if (index === null || index === undefined) {
       selectedItemLabel.textContent = 'No item selected';
       sizeControl.value = 100;
+      removeSelectedButton.disabled = true;
       return;
     }
     const item = state.items[index];
@@ -289,6 +301,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     if (item) {
       sizeControl.value = item.size;
     }
+    removeSelectedButton.disabled = false;
   }
 
   function getMousePos(evt) {
@@ -354,6 +367,23 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
     render();
   });
 
+  function removeSelectedItem() {
+    if (state.selectedIndex === null) return;
+    state.items.splice(state.selectedIndex, 1);
+    setSelected(null);
+    render();
+  }
+
+  removeSelectedButton.addEventListener('click', removeSelectedItem);
+
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Delete' && event.key !== 'Backspace') {
+      return;
+    }
+    if (state.selectedIndex === null) return;
+    removeSelectedItem();
+  });
+
   document.querySelectorAll('.cosmetic-item').forEach(btn => {
     btn.addEventListener('click', () => {
       if (state.items.length >= maxCosmetics) {
@@ -367,6 +397,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
         x: 0,
         y: 0,
         size: 100,
+        rotation: 0,
         img: null,
       };
       loadItemImage(item);
@@ -396,6 +427,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
       x: item.x,
       y: item.y,
       size: item.size || 100,
+      rotation: item.rotation || 0,
       img: null,
     };
     loadItemImage(loaded);
@@ -411,6 +443,7 @@ $saved_cosmetics = get_pet_cosmetics($pet_id);
         x: Math.round(item.x),
         y: Math.round(item.y),
         size: Math.round(item.size),
+        rotation: Math.round(item.rotation || 0),
       })),
     };
 
