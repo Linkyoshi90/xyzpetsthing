@@ -33,6 +33,13 @@ if ($allowedSpecies) {
     $species = [];
 }
 
+$groupedSpecies = [];
+foreach ($species as $entry) {
+    $region = $entry['region_name'] ?: 'Unknown';
+    $groupedSpecies[$region][] = $entry;
+}
+$firstRegion = $species[0]['region_name'] ?? 'Unknown';
+
 // Map of available colors
 $colors = [1 => 'red', 2 => 'blue', 3 => 'green', 4 => 'yellow', 5 => 'purple'];
 
@@ -124,12 +131,23 @@ function slugify($str)
   <div class="pet-create">
     <!-- Species selector -->
     <div class="species-list">
-      <?php foreach ($species as $i => $s): $slug = slugify($s['species_name']); ?>
-        <div class="species-option<?= $i===0?' selected':'' ?>" data-id="<?= $s['species_id'] ?>">
-          <img src="images/<?= $slug ?>_f_blue.webp" alt="<?= htmlspecialchars($s['species_name']) ?>"
-               onerror="this.src='images/tengu_f_blue.webp'" />
-          <div class="mini"><?= htmlspecialchars($s['species_name']) ?></div>
-        </div>
+      <?php foreach ($groupedSpecies as $region => $entries): ?>
+        <?php $isOpen = $region === $firstRegion; ?>
+        <details class="species-group"<?= $isOpen ? ' open' : '' ?>>
+          <summary>
+            <span><?= htmlspecialchars($region) ?></span>
+            <span class="mini"><?= count($entries) ?> species</span>
+          </summary>
+          <div class="species-grid">
+            <?php foreach ($entries as $i => $s): $slug = slugify($s['species_name']); ?>
+              <div class="species-option<?= ($s['species_id'] === ($species[0]['species_id'] ?? null)) ? ' selected' : '' ?>" data-id="<?= $s['species_id'] ?>">
+                <img src="images/<?= $slug ?>_f_blue.webp" alt="<?= htmlspecialchars($s['species_name']) ?>"
+                     onerror="this.src='images/tengu_f_blue.webp'" />
+                <div class="mini"><?= htmlspecialchars($s['species_name']) ?></div>
+              </div>
+            <?php endforeach; ?>
+          </div>
+        </details>
       <?php endforeach; ?>
     </div>
 

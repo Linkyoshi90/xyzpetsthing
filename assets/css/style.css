@@ -886,12 +886,40 @@ ul.tight {
 }
 
 .species-list {
-    width: calc(200px * var(--size-mode));
-    max-height: calc(400px * var(--size-mode));
+    width: calc(320px * var(--size-mode));
+    max-height: calc(420px * var(--size-mode));
     overflow-y: auto;
     display: flex;
     flex-direction: column;
+    gap: 10px;
+    padding-right: 6px;
+}
+
+.species-group {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius);
+    padding: 6px;
+    background: rgba(255, 255, 255, 0.4);
+}
+
+    .species-group summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        font-weight: 700;
+        gap: 8px;
+    }
+
+    .species-group summary .mini {
+        font-weight: 400;
+    }
+
+.species-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 8px;
+    margin-top: 8px;
 }
 
 .species-option {
@@ -960,9 +988,6 @@ ul.tight {
     .species-list {
         width: 100%;
         max-height: none;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
     }
 
     .species-option {
