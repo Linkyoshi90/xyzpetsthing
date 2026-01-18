@@ -26,12 +26,12 @@
 
   <section class="card glass">
     <h2>Pet colors and coloring them</h2>
-    <p>Explore available color variants for your pets and apply new colors to refresh their appearance.</p>
+    <p>Using paint buckets you can apply new colors to refresh their appearance at the respective Paint Shacks in their home regions.</p>
   </section>
 
   <section class="card glass">
     <h2>Games and currency</h2>
-    <p>Play games to earn currency. Winnings show up in your balance at the top of the page and can be spent on upgrades and items.</p>
+    <p>Play games to earn currency. Winnings show up in your balance at the top of the page and can be spent on items.</p>
   </section>
 
   <section class="card glass">

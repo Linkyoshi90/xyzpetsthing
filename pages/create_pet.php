@@ -38,7 +38,14 @@ foreach ($species as $entry) {
     $region = $entry['region_name'] ?: 'Unknown';
     $groupedSpecies[$region][] = $entry;
 }
-$firstRegion = $species[0]['region_name'] ?? 'Unknown';
+$regionNames = array_keys($groupedSpecies);
+sort($regionNames, SORT_NATURAL | SORT_FLAG_CASE);
+$sortedSpecies = [];
+foreach ($regionNames as $regionName) {
+    $sortedSpecies[$regionName] = $groupedSpecies[$regionName];
+}
+$groupedSpecies = $sortedSpecies;
+$firstRegion = $regionNames[0] ?? 'Unknown';
 
 // Map of available colors
 $colors = [1 => 'red', 2 => 'blue', 3 => 'green', 4 => 'yellow', 5 => 'purple'];

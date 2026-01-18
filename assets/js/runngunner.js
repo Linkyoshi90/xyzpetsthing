@@ -238,7 +238,7 @@ function update() {
     if (!keys['KeyS']) keys._s = false;
     player.y = laneYs[player.lane] - player.h;
 
-    if (keys['Space']) fireWeapon();
+    if (keys['KeyF']) fireWeapon();
 
     // generate terrain
     for (let l = 0; l < 3; l++) generateLane(l);

@@ -30,6 +30,7 @@ Dolphin
 Drop Bear
 Dullahan
 Elf
+Famine
 Fishman
 Fury
 Gandharva
@@ -44,6 +45,7 @@ Kappa
 Keelut
 Kelpie
 Kitsune
+Klabuster
 Kraken
 La Llorona
 Lamassu
@@ -56,6 +58,7 @@ Mimic
 Min-Min Lights
 Naga
 Ocelot
+Pestilence
 Polar Bear
 Quetzalcoatl
 Rainbow Serpent
