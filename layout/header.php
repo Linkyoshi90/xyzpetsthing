@@ -121,6 +121,7 @@ if (!in_array($pg ?? '', $game_pages)):
       <a href="?pg=vote">🗳️ vote</a>
       <a href="?pg=notifications" aria-label="notifications">🔔</a>
     </nav>
+    <a class="btn" href="?pg=user-guide" aria-label="User guide">❓</a>
     <?php if($u): ?>
     <div class="user-menu">
       <button id="user-menu-toggle" class="btn" type="button">🙂</button>
