@@ -537,6 +537,19 @@ input, select {
     margin: 6px 0
 }
 
+.form-check {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+}
+
+.form-check input[type="checkbox"] {
+    width: auto;
+    margin: 0;
+}
+
 .err {
     color: #B00020
 }
