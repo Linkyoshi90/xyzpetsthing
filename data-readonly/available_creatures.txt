@@ -31,7 +31,9 @@ Drop Bear
 Dullahan
 Elf
 Famine
+Fire Giant
 Fishman
+Frost Giant
 Fury
 Gandharva
 Genie
@@ -62,6 +64,7 @@ Pestilence
 Polar Bear
 Quetzalcoatl
 Rainbow Serpent
+Ratatoskr
 Slidred
 Spider-Crab
 Succubus

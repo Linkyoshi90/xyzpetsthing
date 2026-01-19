@@ -111,6 +111,10 @@ Squidkin: Riftkrak, Abyssant, Maelmaph, Tentacast, Deepclaw
 Kraken: Riftkrak, Abyssant, Maelmaph, Tentacast, Deepclaw
 Ratatoskr: Gossquirrel, Rattasker, Skytattle, Runaskip, Nibblenut
 Valkyrie: Valyra, Shieldra, Wingyr, Skymaiden, Einheris
+Frost Giant: 
+Nidhoggr: 
+Troll: 
+Fire Giant: 
 
 Auronia - Bretonreach (BR)
 Banshee: Keenera, Mourna, Sidhecall, Cryrae, Wailis
