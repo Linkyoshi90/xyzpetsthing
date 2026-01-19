@@ -200,6 +200,14 @@
   gap: 10px;
 }
 
+.inventory-list {
+  max-height: 240px;
+  max-height: min(45vh, 240px);
+  overflow-y: auto;
+  padding-right: 6px;
+  overscroll-behavior: contain;
+}
+
 .food-item,
 .pet-card {
   display: grid;
