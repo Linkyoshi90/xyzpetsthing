@@ -29,6 +29,9 @@ if ($u) {
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title><?= APP_NAME ?></title>
 <link rel="stylesheet" href="assets/css/style.css">
+<?php if (($pg ?? '') === 'encyclopedia'): ?>
+<link rel="stylesheet" href="assets/css/encyclopedia.css">
+<?php endif; ?>
 <script defer src="assets/js/theme.js"></script>
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>

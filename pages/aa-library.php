@@ -95,6 +95,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && input_string($_POST['action'] ?? ''
   <header class="pizza-shop__header">
     <h1><?= htmlspecialchars($shop['shop_name'] ?? 'Heliadora Civic Library') ?></h1>
     <p class="muted">Marble stacks, sunlit desks, and scribes who pair epics with ink-scented teas.</p>
+    <div class="card glass" style="margin-top: 1rem;">
+      <h2>Creature Encyclopedia</h2>
+      <p class="muted">Browse the illustrated bestiary compiled by the librarians.</p>
+      <a class="btn" href="?pg=encyclopedia">Open the encyclopedia</a>
+    </div>
   </header>
   <div class="pizza-shop__layout">
     <div class="card glass pizza-shop__menu">
