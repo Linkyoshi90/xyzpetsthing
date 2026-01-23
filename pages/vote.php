@@ -112,9 +112,9 @@ Kraken: Riftkrak, Abyssant, Maelmaph, Tentacast, Deepclaw
 Ratatoskr: Gossquirrel, Rattasker, Skytattle, Runaskip, Nibblenut
 Valkyrie: Valyra, Shieldra, Wingyr, Skymaiden, Einheris
 Frost Giant: 
+Fire Giant: 
 Nidhoggr: 
 Troll: 
-Fire Giant: 
 
 Auronia - Bretonreach (BR)
 Banshee: Keenera, Mourna, Sidhecall, Cryrae, Wailis
@@ -155,6 +155,9 @@ Alkonost: Alkonya, Joysong, Blissbird, Halcyra, Sunchant
 
 Borealia - United free Republic of Borealia (URB)
 Lich: Grimarch, Phylax, Soulbind, Mortivus, Boneward
+Jack-o-lantern: Pumpkith, Gourdlume, Wick-O, Lanternjack, Hollowkin
+Lizardman: Lacerto, Saurlet, Geckru, Drakshed, Scalekin
+Mothman: Umbramoth, Noctemoth, Lampryth, Dreadwing, Eyelume
 Mimic: 
 Jackalope: 
 Mad Hatter: 
@@ -163,9 +166,6 @@ War:
 Pestilence: 
 Fury: 
 Famine: 
-Jack-o-lantern: Pumpkith, Gourdlume, Wick-O, Lanternjack, Hollowkin
-Lizardman: Lacerto, Saurlet, Geckru, Drakshed, Scalekin
-Mothman: Umbramoth, Noctemoth, Lampryth, Dreadwing, Eyelume
 
 Borealia - Sovereign Tribes of the Ancestral Plains (STAP)
 Thunderbird: Stormwing, Skylash, Thundara, Boomfeather, Astrapin
@@ -174,6 +174,7 @@ Sasquatch: Squatcha, Mossbulk, Shaggfoot, Pinegruff, Woodbaron
 Pukwudgie: Pukwidge, Thornmite, Pricklet, Needlenik, Puckbud
 Trickster Raven: Trickrave, Quipwing, Cawjax, Jestcorvid, Prankrook
 Kachina: Kachiri, Cloudancer, Maskway, Hopispirit, Rainson
+Alisnapor: 
 
 Dawnmarch - Lotus-Dragon Kingdom (LDK)
 Jiang-Shi: Stiffwalker, Jiangpo, Coinseal, Hopseng, Qinghop
@@ -280,6 +281,7 @@ Ammit: Ammunch, Scalesnap, Crocleo, Devoura, Heartnosh
 Serpopard: Serpop, Pardsnake, Neckcoil, Spotcoil, Serpopard
 Uraeus: Uraelia, Browflame, Diademserp, Royalcoil, Cobreris
 Spinosaur: Spinosurge, Sailjaw, Rivensail, Marshsaur, Spindrake
+Landharpy: 
 
 Tundria - Sila Council (SC)
 Amarok: Amarokh, Frostfang, Glaciwulf, Tundrahound, Snowmara
@@ -309,6 +311,7 @@ Croc-Man: Crocborne, Scalewalker, Caimanox, Brinegait, Reptanth
 Nargun: Rocknarg, Basalurk, Cavergast, Stonewarden, Gloomglen
 Tiddalik: Tiddalick, Floodfrog, Gorgegulp, Swellhop, Drysip
 Yara-ma-yha-who: Yarahoo, Figdropper, Treeperch, Redgrin, Yaramite
+Spoodr: 
 
 Verdania - Gran Columbia (GC)
 Curupira: Curupix, Backheel, Foresttrix, Trailwisp, Heelturn

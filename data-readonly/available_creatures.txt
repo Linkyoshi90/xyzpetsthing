@@ -7,7 +7,9 @@ Amaru
 Angel
 Anomalocaris
 Anubis
+Apsara
 Argentinosaurus
+Armadillo
 Azureus
 Bahamut
 Banshee
@@ -16,6 +18,7 @@ Black Turtle
 Blaze Cat
 Bullywug
 Bunyip
+Camel
 Capybara
 Centaur
 Charro Negro
@@ -28,6 +31,7 @@ Death
 Demon
 Dolphin
 Drop Bear
+Dugong
 Dullahan
 Elf
 Famine
@@ -39,9 +43,11 @@ Gandharva
 Genie
 Girtablilu
 Golem
+Harpy
 Horned Serpent Uktena
 Jack-o-lantern
 Jiang-Shi
+Kachina
 Kangaroo
 Kappa
 Keelut
@@ -50,28 +56,41 @@ Kitsune
 Klabuster
 Kraken
 La Llorona
+La Mano Peluda
 Lamassu
 Lamia
 Landharpy
 Leshy
 Lich
 Lilith
+Manticore
 Mimic
 Min-Min Lights
+Moo
 Naga
+Nightmarcher
 Ocelot
+Oryx
+Pegasus
+Penguin
 Pestilence
+Pishtaco
 Polar Bear
 Quetzalcoatl
 Rainbow Serpent
 Ratatoskr
+Sea Turtle
 Slidred
 Spider-Crab
+Spinosaur
+Spoodr
 Succubus
 Taniwha
 Tapir
 Tengu
 Thunderbird
+Tiddalik
+Toucan
 Vermillion Bird
 Vodyanoy
 Wadjet
@@ -81,3 +100,4 @@ Wayob
 Will-o-Wisp
 Yatagarasu
 Yuki-Onna
+Ziz
