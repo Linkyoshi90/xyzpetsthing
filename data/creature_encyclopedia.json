@@ -1,0 +1,1496 @@
+{
+  "Adaro": {
+    "name": "Adaro",
+    "region": "Rheinland",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 8,
+      "def": 5,
+      "init": 9
+    },
+    "description": "A Adaro is a storied creature native to Rheinland."
+  },
+  "Akaname": {
+    "name": "Akaname",
+    "region": "Kemet",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 6,
+      "def": 7,
+      "init": 10
+    },
+    "description": "A Akaname is a storied creature native to Kemet."
+  },
+  "Ahuizotl": {
+    "name": "Ahuizotl",
+    "region": "Nornheim",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 9,
+      "def": 6,
+      "init": 6
+    },
+    "description": "A Ahuizotl is a storied creature native to Nornheim."
+  },
+  "Amarok": {
+    "name": "Amarok",
+    "region": "Spice Route League",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 12,
+      "atk": 7,
+      "def": 8,
+      "init": 3
+    },
+    "description": "A Amarok is a storied creature native to Spice Route League."
+  },
+  "Amaru": {
+    "name": "Amaru",
+    "region": "Yara Nations",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 9,
+      "def": 7,
+      "init": 3
+    },
+    "description": "A Amaru is a storied creature native to Yara Nations."
+  },
+  "Angel": {
+    "name": "Angel",
+    "region": "Crescent Caliphate",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 9,
+      "def": 6,
+      "init": 7
+    },
+    "description": "A Angel is a storied creature native to Crescent Caliphate."
+  },
+  "Anubis": {
+    "name": "Anubis",
+    "region": "Sovereign Tribes of the Ancestral Plains",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 8,
+      "def": 8,
+      "init": 4
+    },
+    "description": "A Anubis is a storied creature native to Sovereign Tribes of the Ancestral Plains."
+  },
+  "Argentinosaurus": {
+    "name": "Argentinosaurus",
+    "region": "Yara Nations",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 15,
+      "atk": 6,
+      "def": 7,
+      "init": 2
+    },
+    "description": "A Argentinosaurus is a storied creature native to Yara Nations."
+  },
+  "Azureus": {
+    "name": "Azureus",
+    "region": "Red Sun Commonwealth",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Azureus is a storied creature native to Red Sun Commonwealth."
+  },
+  "Bahamut": {
+    "name": "Bahamut",
+    "region": "Rodinian Tsardom",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Bahamut is a storied creature native to Rodinian Tsardom."
+  },
+  "Banshee": {
+    "name": "Banshee",
+    "region": "Bretonreach",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 6,
+      "atk": 7,
+      "def": 5,
+      "init": 12
+    },
+    "description": "A Banshee is a storied creature native to Bretonreach."
+  },
+  "Black Turtle": {
+    "name": "Black Turtle",
+    "region": "Hammurabia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 13,
+      "atk": 7,
+      "def": 7,
+      "init": 3
+    },
+    "description": "A Black Turtle is a storied creature native to Hammurabia."
+  },
+  "Bunyip": {
+    "name": "Bunyip",
+    "region": "Xochimex",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Bunyip is a storied creature native to Xochimex."
+  },
+  "Capybara": {
+    "name": "Capybara",
+    "region": "Yamanokubo",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 12,
+      "atk": 6,
+      "def": 9,
+      "init": 3
+    },
+    "description": "A Capybara is a storied creature native to Yamanokubo."
+  },
+  "Centaur": {
+    "name": "Centaur",
+    "region": "Aegia Aeterna",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Centaur is a storied creature native to Aegia Aeterna."
+  },
+  "Charro Negro": {
+    "name": "Charro Negro",
+    "region": "Lotus-Dragon Kingdom",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 9,
+      "def": 6,
+      "init": 8
+    },
+    "description": "A Charro Negro is a storied creature native to Lotus-Dragon Kingdom."
+  },
+  "Chupacabra": {
+    "name": "Chupacabra",
+    "region": "Lotus-Dragon Kingdom",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 9,
+      "def": 6,
+      "init": 6
+    },
+    "description": "A Chupacabra is a storied creature native to Lotus-Dragon Kingdom."
+  },
+  "Cipactli": {
+    "name": "Cipactli",
+    "region": "Nornheim",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 9,
+      "def": 6,
+      "init": 6
+    },
+    "description": "A Cipactli is a storied creature native to Nornheim."
+  },
+  "Crab man": {
+    "name": "Crab man",
+    "region": "Rheinland",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Crab man is a storied creature native to Rheinland."
+  },
+  "Curupira": {
+    "name": "Curupira",
+    "region": "Yamanokubo",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 6,
+      "def": 10,
+      "init": 4
+    },
+    "description": "A Curupira is a storied creature native to Yamanokubo."
+  },
+  "Demon": {
+    "name": "Demon",
+    "region": "Crescent Caliphate",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 9,
+      "def": 6,
+      "init": 7
+    },
+    "description": "A Demon is a storied creature native to Crescent Caliphate."
+  },
+  "Dolphin": {
+    "name": "Dolphin",
+    "region": "Sila Council",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 8,
+      "def": 5,
+      "init": 9
+    },
+    "description": "A Dolphin is a storied creature native to Sila Council."
+  },
+  "Drop Bear": {
+    "name": "Drop Bear",
+    "region": "United free Republic of Borealia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 9,
+      "def": 6,
+      "init": 4
+    },
+    "description": "A Drop Bear is a storied creature native to United free Republic of Borealia."
+  },
+  "Dullahan": {
+    "name": "Dullahan",
+    "region": "Bretonreach",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Dullahan is a storied creature native to Bretonreach."
+  },
+  "Fishman": {
+    "name": "Fishman",
+    "region": "Yara Nations",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 8,
+      "def": 5,
+      "init": 9
+    },
+    "description": "A Fishman is a storied creature native to Yara Nations."
+  },
+  "Gandharva": {
+    "name": "Gandharva",
+    "region": "Itzam Empire",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 8,
+      "def": 5,
+      "init": 10
+    },
+    "description": "A Gandharva is a storied creature native to Itzam Empire."
+  },
+  "Genie": {
+    "name": "Genie",
+    "region": "Rodinian Tsardom",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 9,
+      "def": 6,
+      "init": 7
+    },
+    "description": "A Genie is a storied creature native to Rodinian Tsardom."
+  },
+  "Girtablilu": {
+    "name": "Girtablilu",
+    "region": "Sapa Inti Empire",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 10,
+      "def": 5,
+      "init": 8
+    },
+    "description": "A Girtablilu is a storied creature native to Sapa Inti Empire."
+  },
+  "Golem": {
+    "name": "Golem",
+    "region": "Sila Council",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 6,
+      "def": 10,
+      "init": 4
+    },
+    "description": "A Golem is a storied creature native to Sila Council."
+  },
+  "Horned Serpent Uktena": {
+    "name": "Horned Serpent Uktena",
+    "region": "Gran Columbia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 9,
+      "def": 7,
+      "init": 3
+    },
+    "description": "A Horned Serpent Uktena is a storied creature native to Gran Columbia."
+  },
+  "Jack-o-lantern": {
+    "name": "Jack-o-lantern",
+    "region": "Eretz-Shalem League",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 6,
+      "atk": 7,
+      "def": 5,
+      "init": 12
+    },
+    "description": "A Jack-o-lantern is a storied creature native to Eretz-Shalem League."
+  },
+  "Jiang-Shi": {
+    "name": "Jiang-Shi",
+    "region": "Hammurabia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 9,
+      "def": 5,
+      "init": 8
+    },
+    "description": "A Jiang-Shi is a storied creature native to Hammurabia."
+  },
+  "Kangaroo": {
+    "name": "Kangaroo",
+    "region": "United free Republic of Borealia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 6,
+      "init": 8
+    },
+    "description": "A Kangaroo is a storied creature native to United free Republic of Borealia."
+  },
+  "Kappa": {
+    "name": "Kappa",
+    "region": "Kemet",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 7,
+      "def": 7,
+      "init": 8
+    },
+    "description": "A Kappa is a storied creature native to Kemet."
+  },
+  "Keelut": {
+    "name": "Keelut",
+    "region": "Spice Route League",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 12,
+      "atk": 7,
+      "def": 8,
+      "init": 3
+    },
+    "description": "A Keelut is a storied creature native to Spice Route League."
+  },
+  "Kelpie": {
+    "name": "Kelpie",
+    "region": "Bretonreach",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 7,
+      "def": 7,
+      "init": 8
+    },
+    "description": "A Kelpie is a storied creature native to Bretonreach."
+  },
+  "Kitsune": {
+    "name": "Kitsune",
+    "region": "Kemet",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 7,
+      "def": 6,
+      "init": 10
+    },
+    "description": "A Kitsune is a storied creature native to Kemet."
+  },
+  "Kraken": {
+    "name": "Kraken",
+    "region": "Baharamandal",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 12,
+      "atk": 8,
+      "def": 7,
+      "init": 3
+    },
+    "description": "A Kraken is a storied creature native to Baharamandal."
+  },
+  "La Llorona": {
+    "name": "La Llorona",
+    "region": "Lotus-Dragon Kingdom",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 9,
+      "def": 6,
+      "init": 8
+    },
+    "description": "A La Llorona is a storied creature native to Lotus-Dragon Kingdom."
+  },
+  "Lamassu": {
+    "name": "Lamassu",
+    "region": "Sapa Inti Empire",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 6,
+      "def": 10,
+      "init": 4
+    },
+    "description": "A Lamassu is a storied creature native to Sapa Inti Empire."
+  },
+  "Lamia": {
+    "name": "Lamia",
+    "region": "Aegia Aeterna",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 9,
+      "def": 7,
+      "init": 3
+    },
+    "description": "A Lamia is a storied creature native to Aegia Aeterna."
+  },
+  "Leshy": {
+    "name": "Leshy",
+    "region": "Eagle Serpent Dominion",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 6,
+      "def": 10,
+      "init": 4
+    },
+    "description": "A Leshy is a storied creature native to Eagle Serpent Dominion."
+  },
+  "Lich": {
+    "name": "Lich",
+    "region": "Eretz-Shalem League",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 10,
+      "def": 7,
+      "init": 6
+    },
+    "description": "A Lich is a storied creature native to Eretz-Shalem League."
+  },
+  "Lilith": {
+    "name": "Lilith",
+    "region": "Sila Council",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 9,
+      "def": 6,
+      "init": 7
+    },
+    "description": "A Lilith is a storied creature native to Sila Council."
+  },
+  "Min-Min Lights": {
+    "name": "Min-Min Lights",
+    "region": "United free Republic of Borealia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 6,
+      "atk": 7,
+      "def": 5,
+      "init": 12
+    },
+    "description": "A Min-Min Lights is a storied creature native to United free Republic of Borealia."
+  },
+  "Naga": {
+    "name": "Naga",
+    "region": "Itzam Empire",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 9,
+      "def": 7,
+      "init": 3
+    },
+    "description": "A Naga is a storied creature native to Itzam Empire."
+  },
+  "Ocelot": {
+    "name": "Ocelot",
+    "region": "Nornheim",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Ocelot is a storied creature native to Nornheim."
+  },
+  "Polar Bear": {
+    "name": "Polar Bear",
+    "region": "Spice Route League",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 12,
+      "atk": 7,
+      "def": 8,
+      "init": 3
+    },
+    "description": "A Polar Bear is a storied creature native to Spice Route League."
+  },
+  "Quetzalcoatl": {
+    "name": "Quetzalcoatl",
+    "region": "Nornheim",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 8,
+      "def": 6,
+      "init": 6
+    },
+    "description": "A Quetzalcoatl is a storied creature native to Nornheim."
+  },
+  "Rainbow Serpent": {
+    "name": "Rainbow Serpent",
+    "region": "Xochimex",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 9,
+      "def": 7,
+      "init": 3
+    },
+    "description": "A Rainbow Serpent is a storied creature native to Xochimex."
+  },
+  "Ratatoskr": {
+    "name": "Ratatoskr",
+    "region": "Baharamandal",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 7,
+      "def": 6,
+      "init": 10
+    },
+    "description": "A Ratatoskr is a storied creature native to Baharamandal."
+  },
+  "Spider-Crab": {
+    "name": "Spider-Crab",
+    "region": "Kemet",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 7,
+      "def": 9,
+      "init": 4
+    },
+    "description": "A Spider-Crab is a storied creature native to Kemet."
+  },
+  "Succubus": {
+    "name": "Succubus",
+    "region": "Crescent Caliphate",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 9,
+      "def": 6,
+      "init": 7
+    },
+    "description": "A Succubus is a storied creature native to Crescent Caliphate."
+  },
+  "Taniwha": {
+    "name": "Taniwha",
+    "region": "Rheinland",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 12,
+      "atk": 7,
+      "def": 8,
+      "init": 3
+    },
+    "description": "A Taniwha is a storied creature native to Rheinland."
+  },
+  "Tapir": {
+    "name": "Tapir",
+    "region": "Red Sun Commonwealth",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 13,
+      "atk": 6,
+      "def": 8,
+      "init": 3
+    },
+    "description": "A Tapir is a storied creature native to Red Sun Commonwealth."
+  },
+  "Tengu": {
+    "name": "Tengu",
+    "region": "Kemet",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 8,
+      "def": 5,
+      "init": 10
+    },
+    "description": "A Tengu is a storied creature native to Kemet."
+  },
+  "Thunderbird": {
+    "name": "Thunderbird",
+    "region": "Gran Columbia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 8,
+      "def": 5,
+      "init": 6
+    },
+    "description": "A Thunderbird is a storied creature native to Gran Columbia."
+  },
+  "Vermillion Bird": {
+    "name": "Vermillion Bird",
+    "region": "Hammurabia",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 8,
+      "atk": 8,
+      "def": 6,
+      "init": 8
+    },
+    "description": "A Vermillion Bird is a storied creature native to Hammurabia."
+  },
+  "Vodyanoy": {
+    "name": "Vodyanoy",
+    "region": "Eagle Serpent Dominion",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 11,
+      "atk": 7,
+      "def": 9,
+      "init": 3
+    },
+    "description": "A Vodyanoy is a storied creature native to Eagle Serpent Dominion."
+  },
+  "Wadjet": {
+    "name": "Wadjet",
+    "region": "Sovereign Tribes of the Ancestral Plains",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 10,
+      "atk": 8,
+      "def": 8,
+      "init": 4
+    },
+    "description": "A Wadjet is a storied creature native to Sovereign Tribes of the Ancestral Plains."
+  },
+  "Wayob": {
+    "name": "Wayob",
+    "region": "Red Sun Commonwealth",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 7,
+      "atk": 7,
+      "def": 6,
+      "init": 10
+    },
+    "description": "A Wayob is a storied creature native to Red Sun Commonwealth."
+  },
+  "Will-o-Wisp": {
+    "name": "Will-o-Wisp",
+    "region": "Bretonreach",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 6,
+      "atk": 7,
+      "def": 5,
+      "init": 12
+    },
+    "description": "A Will-o-Wisp is a storied creature native to Bretonreach."
+  },
+  "Yuki-Onna": {
+    "name": "Yuki-Onna",
+    "region": "Kemet",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 9,
+      "atk": 7,
+      "def": 8,
+      "init": 6
+    },
+    "description": "A Yuki-Onna is a storied creature native to Kemet."
+  },
+  "Alisnapor": {
+    "name": "Alisnapor",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Alisnapor are being compiled in the library archives."
+  },
+  "Anomalocaris": {
+    "name": "Anomalocaris",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Anomalocaris are being compiled in the library archives."
+  },
+  "Bee": {
+    "name": "Bee",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Bee are being compiled in the library archives."
+  },
+  "Blaze Cat": {
+    "name": "Blaze Cat",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Blaze Cat are being compiled in the library archives."
+  },
+  "Bullywug": {
+    "name": "Bullywug",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Bullywug are being compiled in the library archives."
+  },
+  "Daeodon": {
+    "name": "Daeodon",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Daeodon are being compiled in the library archives."
+  },
+  "Death": {
+    "name": "Death",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Death are being compiled in the library archives."
+  },
+  "Elf": {
+    "name": "Elf",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Elf are being compiled in the library archives."
+  },
+  "Famine": {
+    "name": "Famine",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Famine are being compiled in the library archives."
+  },
+  "Fire Giant": {
+    "name": "Fire Giant",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Fire Giant are being compiled in the library archives."
+  },
+  "Frost Giant": {
+    "name": "Frost Giant",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Frost Giant are being compiled in the library archives."
+  },
+  "Fury": {
+    "name": "Fury",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Fury are being compiled in the library archives."
+  },
+  "Klabuster": {
+    "name": "Klabuster",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Klabuster are being compiled in the library archives."
+  },
+  "Landharpy": {
+    "name": "Landharpy",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Landharpy are being compiled in the library archives."
+  },
+  "Mimic": {
+    "name": "Mimic",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Mimic are being compiled in the library archives."
+  },
+  "Pestilence": {
+    "name": "Pestilence",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Pestilence are being compiled in the library archives."
+  },
+  "Slidred": {
+    "name": "Slidred",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Slidred are being compiled in the library archives."
+  },
+  "War": {
+    "name": "War",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about War are being compiled in the library archives."
+  },
+  "Waterlil": {
+    "name": "Waterlil",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Waterlil are being compiled in the library archives."
+  },
+  "Yatagarasu": {
+    "name": "Yatagarasu",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "Details about Yatagarasu are being compiled in the library archives."
+  }
+}

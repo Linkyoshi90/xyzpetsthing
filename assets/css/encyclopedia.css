@@ -1,0 +1,208 @@
+.encyclopedia {
+  display: grid;
+  gap: 2rem;
+}
+
+.encyclopedia__intro {
+  max-width: 720px;
+}
+
+.encyclopedia-backdrop {
+  position: relative;
+  padding: 2rem;
+  border-radius: 24px;
+  background: radial-gradient(circle at top left, rgba(255, 248, 220, 0.9), rgba(220, 202, 166, 0.7) 45%, rgba(125, 88, 62, 0.85) 100%);
+  box-shadow: inset 0 0 25px rgba(58, 35, 18, 0.45), 0 18px 50px rgba(30, 18, 8, 0.45);
+}
+
+.book-shell {
+  position: relative;
+  height: min(70vh, 720px);
+  max-width: 960px;
+  margin: 0 auto;
+  perspective: 2200px;
+  display: grid;
+  place-items: center;
+}
+
+.book-cover {
+  position: absolute;
+  inset: 0;
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #4b2c1b, #6d442a 40%, #3b2112 100%);
+  color: #f6e4c2;
+  text-align: center;
+  font-family: "Times New Roman", serif;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transform-origin: left center;
+  transition: transform 0.8s ease, box-shadow 0.8s ease, opacity 0.4s ease;
+  box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.6), 0 24px 48px rgba(0, 0, 0, 0.35);
+  z-index: 4;
+}
+
+.book-cover span {
+  display: block;
+}
+
+.book-cover__title {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin-top: 2.5rem;
+}
+
+.book-cover__subtitle {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-top: 1rem;
+}
+
+.book-shell.is-open .book-cover {
+  transform: rotateY(-165deg);
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.book-pages {
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  transform-style: preserve-3d;
+  transition: opacity 0.4s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.book-shell.is-open .book-pages {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.book-page {
+  position: absolute;
+  inset: 0;
+  padding: 2.5rem 3rem;
+  background: linear-gradient(90deg, #fdf7e8, #f7edd3 45%, #f9e8c7 100%);
+  border-radius: 18px;
+  box-shadow: inset 0 0 12px rgba(120, 90, 65, 0.4);
+  transform-origin: left center;
+  transform: rotateY(0deg);
+  transition: transform 0.8s ease;
+  backface-visibility: hidden;
+  display: grid;
+  gap: 1.5rem;
+  overflow-y: auto;
+}
+
+.book-page.is-flipped {
+  transform: rotateY(-180deg);
+}
+
+.book-page__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.book-page__header h2,
+.book-page__header h3 {
+  margin: 0;
+}
+
+.book-page__index {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.book-page__index button,
+.book-page__index a,
+.book-page__link {
+  padding: 0.6rem 0.9rem;
+  border-radius: 10px;
+  border: 1px solid rgba(90, 60, 35, 0.4);
+  background: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-page__index button:hover,
+.book-page__link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(40, 25, 15, 0.2);
+}
+
+.book-page__creature {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.book-page__creature figure {
+  margin: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.book-page__creature img {
+  width: min(320px, 100%);
+  justify-self: center;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 1rem;
+  box-shadow: inset 0 0 15px rgba(120, 80, 50, 0.35);
+}
+
+.book-page__stats {
+  display: grid;
+  gap: 1.2rem;
+}
+
+.book-page__stats ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+  margin: 0;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.book-page__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.book-page__tag {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(90, 60, 35, 0.15);
+  font-size: 0.85rem;
+}
+
+.book-shell.is-flipping::after {
+  content: "Turning pages...";
+  position: absolute;
+  bottom: 1.5rem;
+  right: 2rem;
+  font-size: 0.85rem;
+  color: rgba(90, 60, 35, 0.7);
+  background: rgba(255, 255, 255, 0.65);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  animation: pulse 0.6s ease-in-out infinite alternate;
+  z-index: 5;
+}
+
+@keyframes pulse {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 720px) {
+  .book-page {
+    padding: 1.5rem;
+  }
+}
