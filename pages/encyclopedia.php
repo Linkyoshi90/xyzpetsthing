@@ -60,6 +60,7 @@ function slugify(string $str): string
     return strtolower(preg_replace('/[^a-z0-9]+/i', '_', $str));
 }
 
+$defaultPageIndex = 0;
 $pageIndex = 0;
 $regionPageIndex = [];
 $creaturePageIndex = [];
@@ -80,7 +81,7 @@ foreach ($regionNames as $regionName) {
   </div>
 
   <div class="encyclopedia-backdrop">
-    <div class="book-shell is-closed" id="encyclopedia-book">
+    <div class="book-shell is-closed" id="encyclopedia-book" data-default-page="<?= (int)$defaultPageIndex ?>">
       <button class="book-cover" id="encyclopedia-cover" type="button" aria-expanded="false">
         <span class="book-cover__title">Bestiary Index</span>
         <span class="book-cover__subtitle">Tap to open</span>
@@ -135,7 +136,10 @@ foreach ($regionNames as $regionName) {
             <div class="book-page" data-page-index="<?= (int)($creaturePageIndex[$name] ?? 0) ?>" aria-hidden="true">
               <header class="book-page__header">
                 <h2><?= htmlspecialchars($name) ?></h2>
-                <button type="button" class="book-page__link" data-page-target="<?= (int)($regionPageIndex[$regionName] ?? 0) ?>">Back to <?= htmlspecialchars($regionName) ?></button>
+                <div class="book-page__nav">
+                  <button type="button" class="book-page__link" data-page-target="0">Back to index</button>
+                  <button type="button" class="book-page__link" data-page-target="<?= (int)($regionPageIndex[$regionName] ?? 0) ?>">Back to <?= htmlspecialchars($regionName) ?></button>
+                </div>
               </header>
               <div class="book-page__creature">
                 <figure>
@@ -181,12 +185,15 @@ foreach ($regionNames as $regionName) {
   if (!book || !cover) return;
 
   const pages = Array.from(document.querySelectorAll('.book-page'));
+  const pageIndexMap = new Map(pages.map((page, idx) => [Number(page.dataset.pageIndex || idx), idx]));
   const buttons = Array.from(document.querySelectorAll('[data-page-target]'));
-  let currentPage = 0;
+  const defaultPageIndex = Number(book.dataset.defaultPage || 0);
+  let currentPage = pageIndexMap.get(defaultPageIndex) ?? 0;
   let flipTimeout = null;
 
   function setPage(index) {
-    const safeIndex = Math.max(0, Math.min(index, pages.length - 1));
+    const mappedIndex = pageIndexMap.get(index);
+    const safeIndex = Math.max(0, Math.min(mappedIndex ?? index, pages.length - 1));
     currentPage = safeIndex;
     pages.forEach((page, idx) => {
       page.classList.toggle('is-flipped', idx < safeIndex);
@@ -207,7 +214,7 @@ foreach ($regionNames as $regionName) {
   }
 
   cover.addEventListener('click', () => {
-    currentPage = 0;
+    currentPage = pageIndexMap.get(defaultPageIndex) ?? 0;
     openBook();
   });
 
