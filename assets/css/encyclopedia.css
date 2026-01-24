@@ -107,6 +107,12 @@
   gap: 1rem;
 }
 
+.book-page__nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .book-page__header h2,
 .book-page__header h3 {
   margin: 0;

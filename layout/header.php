@@ -79,7 +79,8 @@ $GLOBALS['app_chat_action_path'] = $chatActionPath;
 <?php endif; ?>
 <?php
 $game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'wheel-of-fate'];
-if (!in_array($pg ?? '', $game_pages)):
+$no_bubble_pages = array_merge($game_pages, ['encyclopedia']);
+if (!in_array($pg ?? '', $no_bubble_pages, true)):
 ?>
 <?php if($pg === 'map'): ?>
 <script defer src="assets/js/world-map.js"></script>
