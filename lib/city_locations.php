@@ -81,6 +81,7 @@ function get_page_location_map(): array {
         'xm_paint_shack' => 'Xochimex',
         'yamanokubo' => 'Yamanokubo',
         'ynk-adventure' => 'Yamanokubo',
+        'ynk-adventure2' => 'Yamanokubo',
         'ynk_paint_shack' => 'Yamanokubo',
         'ynk-ramen' => 'Yamanokubo',
         'yn' => 'Yara Nations',
