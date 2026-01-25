@@ -18,6 +18,12 @@
   </div>
 
   <div class="card glass">
+    <h3>Hanako Mayoi's Night School</h3>
+    <p class="muted">A late-night horror tale in an abandoned school, where every path meets the ghost girl.</p>
+    <a class="btn" href="?pg=ynk-adventure2">Begin</a>
+  </div>
+
+  <div class="card glass">
     <h3>Yumenoki Ramen</h3>
     <p class="muted">Noodle counter with simmered broths, late-night tea, and quick stools under warm cedar.</p>
     <a class="btn" href="?pg=ynk-ramen">Order</a>
@@ -90,4 +96,3 @@
   <h3>Traveler's Note</h3>
   <p>Walk as if your sleeves were wider than they are. Read the notice boards, mind the drum, and let tea slow you down. If you overpay under the theater lanterns, call it a stage tax and try Paper Lane tomorrow. The city will repay you with a steadier step, a cleaner page, and a garden path that ends exactly where your breath does.</p>
 </section>
-

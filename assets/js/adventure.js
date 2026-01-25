@@ -23,6 +23,15 @@ if (!dataElement) {
     };
 
     const maybeGrantItem = async (choice) => {
+        if (Array.isArray(choice.rewardNotePool) && choice.rewardNotePool.length > 0) {
+            const note = choice.rewardNotePool[Math.floor(Math.random() * choice.rewardNotePool.length)];
+            showFlash(`You received something special: ${note}.`, 'info');
+            return;
+        }
+        if (choice.rewardNote) {
+            showFlash(choice.rewardNote, 'info');
+            return;
+        }
         if (!choice.giveItem || rewardLock) {
             return;
         }
