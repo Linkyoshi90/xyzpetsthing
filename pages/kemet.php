@@ -18,6 +18,12 @@
   </div>
   
   <div class="card glass">
+    <h3>Pyramid Adventure</h3>
+    <p class="muted">Delve through an ancient pyramid, track lost relic pedestals, and survive an awkward mummy encounter.</p>
+    <a class="btn" href="?pg=k-adventure">Explore</a>
+  </div>
+  
+  <div class="card glass">
     <h3>Back to Saharene</h3>
     <a class="btn" href="?pg=saharene">Explore</a>
   </div>

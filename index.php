@@ -36,7 +36,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'gc_paint_shack',
     'h_paint_shack',
     'ie_paint_shack',
-    'k_paint_shack','k_shelter',
+    'k_paint_shack','k_shelter','k-adventure',
     'ldk_paint_shack','ldk_breeding',
     'nh_paint_shack',
     'rsc_paint_shack','rsc-wof',
