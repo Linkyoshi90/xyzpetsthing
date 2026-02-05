@@ -4,6 +4,7 @@ if (!dataElement) {
 } else {
     const story = JSON.parse(dataElement.textContent);
     const sceneTitle = document.getElementById('adventure-scene-title');
+    const sceneImage = document.getElementById('adventure-scene-image');
     const sceneBody = document.getElementById('adventure-scene-body');
     const choicesContainer = document.getElementById('adventure-choices');
     const historyList = document.getElementById('adventure-history');
@@ -89,6 +90,18 @@ if (!dataElement) {
                 p.innerHTML = paragraph;
                 sceneBody.appendChild(p);
             });
+        }
+
+        if (sceneImage) {
+            if (node.image?.src) {
+                sceneImage.src = node.image.src;
+                sceneImage.alt = node.image.alt || `${node.title} scene illustration`;
+                sceneImage.hidden = false;
+            } else {
+                sceneImage.hidden = true;
+                sceneImage.removeAttribute('src');
+                sceneImage.alt = '';
+            }
         }
 
         if (choicesContainer) {
