@@ -452,14 +452,24 @@ function handle_event_unlock_species_effect(int $user_id, array $effect)
     }
 
     $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+    $regionFirstPlaceholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+    $params = array_merge([$user_id], $allowedSpecies, $allowedSpecies);
     $species = q(
         "SELECT ps.species_id, ps.species_name, r.region_name "
         . "FROM pet_species ps "
         . "LEFT JOIN regions r ON r.region_id = ps.region_id "
         . "LEFT JOIN player_unlocked_species pus "
         . "  ON pus.player_id = ? AND pus.unlocked_species_id = ps.species_id "
-        . "WHERE ps.species_name IN ($placeholders) AND pus.entryId IS NULL",
-        array_merge([$user_id], $allowedSpecies)
+        . "LEFT JOIN ( "
+        . "  SELECT MIN(ps2.species_id) AS species_id "
+        . "  FROM pet_species ps2 "
+        . "  WHERE ps2.species_name IN ($regionFirstPlaceholders) "
+        . "  GROUP BY ps2.region_id "
+        . ") region_defaults ON region_defaults.species_id = ps.species_id "
+        . "WHERE ps.species_name IN ($placeholders) "
+        . "  AND pus.entryId IS NULL "
+        . "  AND region_defaults.species_id IS NULL",
+        $params
     )->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$species) {

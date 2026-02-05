@@ -640,6 +640,17 @@ input, select {
     min-height: 320px;
 }
 
+
+.adventure-scene-image {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    margin: 6px 0 10px;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: rgba(0, 0, 0, 0.12);
+}
+
 .adventure-scene-body p {
     margin: 12px 0;
     line-height: 1.6;

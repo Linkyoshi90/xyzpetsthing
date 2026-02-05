@@ -8,6 +8,7 @@
     <div class="card glass adventure-stage" id="adventure-stage" aria-live="polite">
       <div class="adventure-scene" id="adventure-scene">
         <h2 id="adventure-scene-title"></h2>
+        <img id="adventure-scene-image" class="adventure-scene-image" src="" alt="" hidden>
         <div id="adventure-scene-body" class="adventure-scene-body"></div>
       </div>
       <div id="adventure-flash" class="adventure-flash" aria-live="polite" hidden></div>
@@ -27,8 +28,8 @@
   "nodes": {
     "sun-gate": {
       "title": "Sun Gate Entrance",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv1.png", "alt": "Sun Gate Entrance with jackal statues and torchlight" },
       "body": [
-        "<!-- Image prompt: A colossal sandstone pyramid entrance at dusk, jackal statues flanking carved doors, drifting desert sand and warm torchlight. -->",
         "Two weathered statues of jackals guard the cracked doorway. Heat lingers in the stone, but cool air spills out from the darkness within.",
         "A faded inscription reads: \"Honor what was taken, and the old keeper will speak.\""
       ],
@@ -39,8 +40,8 @@
     },
     "entry-map": {
       "title": "Carved Entry Map",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv2.png", "alt": "Ancient carved map etched into sandstone" },
       "body": [
-        "<!-- Image prompt: Close-up of an ancient carved map on sandstone with highlighted chambers and symbols for relic pedestals. -->",
         "The map marks three ceremonial rooms with tiny pedestal glyphs. Every glyph has been chiseled out, as if someone erased each relic from memory.",
         "At the bottom, a final marker shows a burial throne deep beneath the central shaft."
       ],
@@ -51,8 +52,8 @@
     },
     "descending-hall": {
       "title": "Descending Hall",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv3.png", "alt": "Torchlit descending corridor with painted stars" },
       "body": [
-        "<!-- Image prompt: Narrow descending pyramid corridor with painted stars on the ceiling, cracked walls, and flickering torchlight. -->",
         "The corridor slopes down at a steep angle. Painted stars still cling to the ceiling, while blown sand gathers in each stair corner.",
         "Ahead, the passage splits toward a lotus chamber and a vault lined with broken shelves."
       ],
@@ -63,8 +64,8 @@
     },
     "lotus-chamber": {
       "title": "Lotus Chamber",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv4.png", "alt": "Lotus mural chamber with an empty pedestal" },
       "body": [
-        "<!-- Image prompt: Circular chamber with lotus murals, a single empty pedestal at center, shafts of dust-filled light from ceiling cracks. -->",
         "Blue lotus murals circle the room, their petals fading into the stone. In the center stands a smooth pedestal ringed by old offering bowls.",
         "Only dust remains where a relic once rested, but scrape marks show it was removed with care, not force."
       ],
@@ -75,8 +76,8 @@
     },
     "broken-vault": {
       "title": "Broken Vault",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv5.png", "alt": "Shattered vault shelves and empty relic alcoves" },
       "body": [
-        "<!-- Image prompt: Ancient vault with shattered stone shelves, toppled jars, and several empty relic pedestals in alcoves. -->",
         "Rows of shelves lie shattered, and alabaster jars are piled in corners like fallen teeth. Three alcoves hold empty pedestals with copper labels still attached.",
         "The labels read: River Eye, Sun Coil, and Bread Crown. Each artifact is gone."
       ],
@@ -87,8 +88,8 @@
     },
     "archive-stairs": {
       "title": "Archive Stairs",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv6.png", "alt": "Spiral archive stairs carved with reliefs" },
       "body": [
-        "<!-- Image prompt: Spiral stair descending into darkness, walls carved with scribes carrying relics and sealed scroll cases. -->",
         "A spiral stair curls down around a shaft of stale air. Reliefs on the wall show scribes relocating relics deeper into the tomb during a time of war.",
         "At the base, a doorway of black stone opens into the burial throne room."
       ],
@@ -99,8 +100,8 @@
     },
     "burial-throne": {
       "title": "Burial Throne Room",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv7.png", "alt": "Burial throne room with empty pedestals" },
       "body": [
-        "<!-- Image prompt: Grand underground throne room with a sarcophagus throne, empty relic pedestals around it, and a mummy rising in soft torchlight. -->",
         "Six empty pedestals ring a cracked throne-sarcophagus, exactly matching the erased map symbols. Linen shifts in the shadows, and a mummy slowly rises, voice dry as sand:",
         "\"Who... disturbs... the relic court? State your title, tax district, and preferred weather.\" After a long pause she whispers, \"Sorry. I practiced that for centuries. Did that sound normal?\""
       ],
@@ -111,8 +112,8 @@
     },
     "mummy-chat": {
       "title": "Awkward Keeper",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv8.png", "alt": "Awkward mummy keeper greeting a traveler" },
       "body": [
-        "<!-- Image prompt: Friendly but awkward mummy seated beside ancient pedestals, trying to greet a traveler while fidgeting with old scrolls. -->",
         "She tries three different greetings, forgets midway, then waves both hands at once. \"I used to greet priests. Then there were no priests. Now there is... you. Hi.\"",
         "When asked about the relics, she admits she hid them generations ago to protect them and then forgot which hiding puzzle matched which room. She looks relieved someone finally visited."
       ],
@@ -123,8 +124,8 @@
     },
     "farewell": {
       "title": "Dusty Farewell",
+      "image": { "src": "assets/images/adventure/k-adventure/k_adv9.png", "alt": "Nighttime pyramid exit with a shy farewell wave" },
       "body": [
-        "<!-- Image prompt: Pyramid exit at night with a traveler leaving and a shy mummy waving from the shadowed doorway, stars over the desert. -->",
         "The mummy shuffles to a side chest, rummages for an unreasonably long time, and hands you a random snack with ceremonial seriousness.",
         "\"Please enjoy this mortal offering. Also... if we meet again, should I do a handshake? Is that too much?\" She gives a tiny embarrassed wave and lets you walk free into the desert night."
       ],
