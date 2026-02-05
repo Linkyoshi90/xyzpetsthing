@@ -16,6 +16,7 @@ Banshee
 Bee
 Black Turtle
 Blaze Cat
+Brownie
 Bullywug
 Bunyip
 Camel
@@ -71,6 +72,7 @@ Naga
 Nightmarcher
 Ocelot
 Oryx
+Papillon
 Pegasus
 Penguin
 Pestilence
