@@ -108,6 +108,9 @@ function apply_random_event_effects(array $event, array $user): ?array
             case 'breeding_tick':
                 $detail = handle_event_breeding_tick_effect($user['id'], $effect);
                 break;
+            case 'unlock_species':
+                $detail = handle_event_unlock_species_effect($user['id'], $effect);
+                break;
             default:
                 $detail = null;
                 break;
@@ -427,4 +430,53 @@ function handle_event_breeding_tick_effect(int $user_id, array $effect): ?array
             ['label' => 'View pets', 'url' => '?pg=pet'],
         ],
     ];
+}
+
+
+function handle_event_unlock_species_effect(int $user_id, array $effect)
+{
+    $allowedSpecies = [];
+    $file = __DIR__ . '/../data-readonly/available_creatures.txt';
+    if (is_file($file)) {
+        foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#') {
+                continue;
+            }
+            $allowedSpecies[] = $line;
+        }
+    }
+
+    if (!$allowedSpecies) {
+        return null;
+    }
+
+    $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+    $species = q(
+        "SELECT ps.species_id, ps.species_name, r.region_name "
+        . "FROM pet_species ps "
+        . "LEFT JOIN regions r ON r.region_id = ps.region_id "
+        . "LEFT JOIN player_unlocked_species pus "
+        . "  ON pus.player_id = ? AND pus.unlocked_species_id = ps.species_id "
+        . "WHERE ps.species_name IN ($placeholders) AND pus.entryId IS NULL",
+        array_merge([$user_id], $allowedSpecies)
+    )->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!$species) {
+        return 'You feel like you have already met every creature the world has to offer.';
+    }
+
+    $newUnlock = $species[array_rand($species)];
+    q(
+        "INSERT INTO player_unlocked_species (player_id, unlocked_species_id) VALUES (?,?) "
+        . "ON DUPLICATE KEY UPDATE unlocked_species_id = unlocked_species_id",
+        [$user_id, (int)$newUnlock['species_id']]
+    );
+
+    $regionName = $newUnlock['region_name'] ?: 'an unknown region';
+    return sprintf(
+        'You discovered %s from %s! You can now pick this creature when creating a pet.',
+        $newUnlock['species_name'],
+        $regionName
+    );
 }

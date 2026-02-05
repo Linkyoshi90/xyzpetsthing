@@ -107,5 +107,16 @@
       }
     ],
     "weight": 5
+  },
+  {
+    "id": "new_creature_sighting",
+    "title": "Strange Creature Sighting",
+    "message": "While exploring, you befriend a creature you've never seen before.",
+    "effects": [
+      {
+        "type": "unlock_species"
+      }
+    ],
+    "weight": 6
   }
 ]

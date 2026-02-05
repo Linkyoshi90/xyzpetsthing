@@ -22,15 +22,42 @@ if (is_file($file)) {
 
 if ($allowedSpecies) {
     $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
-    $species = q(
-        "SELECT ps.species_id, ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init, ps.region_id, r.region_name " .
-        "FROM pet_species ps " .
-        "LEFT JOIN regions r ON r.region_id = ps.region_id " .
-        "WHERE ps.species_name IN ($placeholders) ORDER BY ps.species_name",
-        $allowedSpecies
-    )->fetchAll(PDO::FETCH_ASSOC);
+    if ($uid === 0) {
+        $species = q(
+            "SELECT ps.species_id, ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init, ps.region_id, r.region_name " .
+            "FROM pet_species ps " .
+            "LEFT JOIN regions r ON r.region_id = ps.region_id " .
+            "WHERE ps.species_name IN ($placeholders) ORDER BY ps.species_name",
+            $allowedSpecies
+        )->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $regionFirstPlaceholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+        $params = array_merge([$uid], $allowedSpecies, $allowedSpecies);
+        $species = q(
+            "SELECT ps.species_id, ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init, ps.region_id, r.region_name " .
+            "FROM pet_species ps " .
+            "LEFT JOIN regions r ON r.region_id = ps.region_id " .
+            "LEFT JOIN player_unlocked_species pus " .
+            "  ON pus.player_id = ? AND pus.unlocked_species_id = ps.species_id " .
+            "LEFT JOIN ( " .
+            "  SELECT MIN(ps2.species_id) AS species_id " .
+            "  FROM pet_species ps2 " .
+            "  WHERE ps2.species_name IN ($regionFirstPlaceholders) " .
+            "  GROUP BY ps2.region_id " .
+            ") region_defaults ON region_defaults.species_id = ps.species_id " .
+            "WHERE ps.species_name IN ($placeholders) " .
+            "  AND (pus.entryId IS NOT NULL OR region_defaults.species_id IS NOT NULL) " .
+            "ORDER BY ps.species_name",
+            $params
+        )->fetchAll(PDO::FETCH_ASSOC);
+    }
 } else {
     $species = [];
+}
+
+$speciesById = [];
+foreach ($species as $entry) {
+    $speciesById[(int)$entry['species_id']] = $entry;
 }
 
 $groupedSpecies = [];
@@ -60,13 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $genderRaw = input_string($_POST['gender'] ?? 'f', 1, true);
     $gender = $genderRaw === 'm' ? 'm' : 'f';
 
-    $row = q(
-        "SELECT ps.species_id, ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init, ps.region_id, r.region_name " .
-        "FROM pet_species ps " .
-        "LEFT JOIN regions r ON r.region_id = ps.region_id " .
-        "WHERE ps.species_id=?",
-        [$sp]
-    )->fetch(PDO::FETCH_ASSOC);
+    $row = $speciesById[$sp] ?? null;
 
     if ($row && $name && isset($colors[$color])) {
         if ($uid === 0) {
