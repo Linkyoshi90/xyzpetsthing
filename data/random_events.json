@@ -26,6 +26,58 @@
     "weight": 8
   },
   {
+    "id": "tumbled_satchel",
+    "title": "Tumbled Satchel",
+    "message": "A canvas satchel spills its contents on the path, revealing a few forgotten coins.",
+    "effects": [
+      {
+        "type": "currency",
+        "currency": "DOSH",
+        "amount": 45
+      }
+    ],
+    "weight": 10
+  },
+  {
+    "id": "street_performer_tip",
+    "title": "Street Performer",
+    "message": "A performer bows gratefully after you lend a hand with their setup.",
+    "effects": [
+      {
+        "type": "currency",
+        "currency": "DOSH",
+        "amount": 60
+      }
+    ],
+    "weight": 9
+  },
+  {
+    "id": "lucky_rain",
+    "title": "Lucky Rain",
+    "message": "A sudden rain showers the trail with sparkling drops that harden into usable coins.",
+    "effects": [
+      {
+        "type": "currency",
+        "currency": "DOSH",
+        "amount": 90
+      }
+    ],
+    "weight": 7
+  },
+  {
+    "id": "return_lost_pouch",
+    "title": "Returned Favor",
+    "message": "You reunite a passerby with their lost pouch, and they insist on rewarding you.",
+    "effects": [
+      {
+        "type": "currency",
+        "currency": "DOSH",
+        "amount": 120
+      }
+    ],
+    "weight": 6
+  },
+  {
     "id": "hidden_trap",
     "title": "Snare Trap",
     "message": "A concealed snare whips out of the underbrush, lashing at your lead companion!",
