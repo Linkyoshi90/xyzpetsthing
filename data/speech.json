@@ -1,5 +1,5 @@
 {
-  "Ahuizotl": {
+  "Adaro": {
     "Love": [
       "This creature's favorite things will go here.",
       "Add another line about what it loves."
@@ -12,6 +12,36 @@
     ],
     "Hate": [
       "Add the thing this creature truly hates."
+    ]
+  },
+  "Akaname": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Ahuizotl": {
+    "Love": [
+      "Canal cities where the water runs deep and the quays stay shadowed.",
+      "Riverside wards where lantern light trembles on the surface after dusk."
+    ],
+    "Like": [
+      "Stone steps down to the water that let it lurk beneath the crowds."
+    ],
+    "Dislike": [
+      "Dry, windblown cities where the wells run shallow and still."
+    ],
+    "Hate": [
+      "Ports that cage their waterways with grates, wards, and watchtowers."
     ]
   },
   "Amarok": {
@@ -345,20 +375,34 @@
       "Add the thing this creature truly hates."
     ]
   },
-  "Yuki-Onna": {
+  "Gandharva": {
     "Love": [
-      "Amatera's mountain air is crisp enough to braid into ribbons.",
-      "Snowflake lanterns here melt just slow enough to smile."
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
     ],
     "Like": [
-      "I can drift along these bridges all night.",
-      "Quiet footsteps and cool river mist suit me."
+      "Include a note about things it likes."
     ],
     "Dislike": [
-      "Too many festival fires make the air a bit warm."
+      "Mention something this creature dislikes."
     ],
     "Hate": [
-      "If the drums get any hotter, I'll have to find shade in the hills."
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Genie": {
+    "Love": [
+      "Ziggurab's skyline still shines like cut glass to me.",
+      "Home courts mean familiar wishes whispered on the wind."
+    ],
+    "Like": [
+      "Market lanterns remind me of star jars back home."
+    ],
+    "Dislike": [
+      "So few people here know how to phrase a good wish."
+    ],
+    "Hate": [
+      "Sand-choked lamps and rude summons sour my mood."
     ]
   },
   "Girtablilu": {
@@ -616,21 +660,6 @@
       "Add the thing this creature truly hates."
     ]
   },
-  "Mimic": {
-    "Love": [
-      "This creature's favorite things will go here.",
-      "Add another line about what it loves."
-    ],
-    "Like": [
-      "Include a note about things it likes."
-    ],
-    "Dislike": [
-      "Mention something this creature dislikes."
-    ],
-    "Hate": [
-      "Add the thing this creature truly hates."
-    ]
-  },
   "Min-Min Lights": {
     "Love": [
       "This creature's favorite things will go here.",
@@ -721,6 +750,21 @@
       "Add the thing this creature truly hates."
     ]
   },
+  "Ratatoskr": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
   "Spider-Crab": {
     "Love": [
       "This creature's favorite things will go here.",
@@ -767,6 +811,21 @@
     ]
   },
   "Tapir": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Tengu": {
     "Love": [
       "This creature's favorite things will go here.",
       "Add another line about what it loves."
@@ -871,19 +930,320 @@
       "Add the thing this creature truly hates."
     ]
   },
-  "Genie": {
+  "Yuki-Onna": {
     "Love": [
-      "Ziggurab's skyline still shines like cut glass to me.",
-      "Home courts mean familiar wishes whispered on the wind."
+      "Amatera's mountain air is crisp enough to braid into ribbons.",
+      "Snowflake lanterns here melt just slow enough to smile."
     ],
     "Like": [
-      "Market lanterns remind me of star jars back home."
+      "I can drift along these bridges all night.",
+      "Quiet footsteps and cool river mist suit me."
     ],
     "Dislike": [
-      "So few people here know how to phrase a good wish."
+      "Too many festival fires make the air a bit warm."
     ],
     "Hate": [
-      "Sand-choked lamps and rude summons sour my mood."
+      "If the drums get any hotter, I'll have to find shade in the hills."
+    ]
+  },
+  "Alisnapor": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Anomalocaris": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Bee": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Blaze Cat": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Bullywug": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Daeodon": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Death": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Elf": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Famine": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Fire Giant": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Frost Giant": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Fury": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Klabuster": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Landharpy": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Mimic": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Pestilence": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Slidred": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "War": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Waterlil": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
+    ]
+  },
+  "Yatagarasu": {
+    "Love": [
+      "This creature's favorite things will go here.",
+      "Add another line about what it loves."
+    ],
+    "Like": [
+      "Include a note about things it likes."
+    ],
+    "Dislike": [
+      "Mention something this creature dislikes."
+    ],
+    "Hate": [
+      "Add the thing this creature truly hates."
     ]
   }
 }
