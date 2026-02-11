@@ -2,9 +2,11 @@
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/pets.php';
 require_once __DIR__.'/breeding.php';
+require_once __DIR__.'/city_locations.php';
 
 const RANDOM_EVENT_FILE = __DIR__ . '/../data/random_events.json';
-const RANDOM_EVENT_CHANCE = 0.005; // x% per page load
+const RANDOM_EVENT_CHANCE_DEFAULT = 6; // % chance on regular pages
+const RANDOM_EVENT_CHANCE_EXPLORING = 18; // % chance while exploring a nation page
 
 function random_event_catalog(): array
 {
@@ -28,7 +30,7 @@ function random_event_catalog(): array
     return $cache;
 }
 
-function maybe_trigger_random_event(array $user): ?array
+function maybe_trigger_random_event(array $user, string $page = ''): ?array
 {
     static $rolled = false;
     if ($rolled || !$user || (int)($user['id'] ?? 0) === 0) {
@@ -39,14 +41,37 @@ function maybe_trigger_random_event(array $user): ?array
     if (!$events) {
         return null;
     }
-    if (mt_rand(1, 100) > (int)(RANDOM_EVENT_CHANCE * 100)) {
+    $location = get_page_location($page);
+    $isExploring = is_array($location) && !empty($location['nation']);
+    $rollChance = $isExploring ? RANDOM_EVENT_CHANCE_EXPLORING : RANDOM_EVENT_CHANCE_DEFAULT;
+    if (mt_rand(1, 100) > $rollChance) {
         return null;
     }
-    $event = pick_weighted_event($events);
+
+    $eligibleEvents = array_values(array_filter($events, static function (array $event) use ($isExploring): bool {
+        $conditions = $event['conditions'] ?? [];
+        if (!is_array($conditions)) {
+            return true;
+        }
+        if (!empty($conditions['requires_exploration']) && !$isExploring) {
+            return false;
+        }
+        return true;
+    }));
+
+    if (!$eligibleEvents) {
+        return null;
+    }
+
+    $event = pick_weighted_event($eligibleEvents);
     if (!$event) {
         return null;
     }
-    return apply_random_event_effects($event, $user);
+    return apply_random_event_effects($event, $user, [
+        'page' => $page,
+        'location' => $location,
+        'is_exploring' => $isExploring,
+    ]);
 }
 
 function pick_weighted_event(array $events): ?array
@@ -69,7 +94,7 @@ function pick_weighted_event(array $events): ?array
     return $events[array_key_first($events)] ?? null;
 }
 
-function apply_random_event_effects(array $event, array $user): ?array
+function apply_random_event_effects(array $event, array $user, array $context = []): ?array
 {
     $effects = $event['effects'] ?? [];
     if (!$effects || !is_array($effects)) {
@@ -109,7 +134,7 @@ function apply_random_event_effects(array $event, array $user): ?array
                 $detail = handle_event_breeding_tick_effect($user['id'], $effect);
                 break;
             case 'unlock_species':
-                $detail = handle_event_unlock_species_effect($user['id'], $effect);
+                $detail = handle_event_unlock_species_effect($user['id'], $effect, $context);
                 break;
             default:
                 $detail = null;
@@ -433,7 +458,7 @@ function handle_event_breeding_tick_effect(int $user_id, array $effect): ?array
 }
 
 
-function handle_event_unlock_species_effect(int $user_id, array $effect)
+function handle_event_unlock_species_effect(int $user_id, array $effect, array $context = [])
 {
     $allowedSpecies = [];
     $file = __DIR__ . '/../data-readonly/available_creatures.txt';
@@ -454,6 +479,14 @@ function handle_event_unlock_species_effect(int $user_id, array $effect)
     $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
     $regionFirstPlaceholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
     $params = array_merge([$user_id], $allowedSpecies, $allowedSpecies);
+
+    $targetNation = trim((string)($context['location']['nation'] ?? ''));
+    $regionFilterSql = '';
+    if ($targetNation !== '') {
+        $regionFilterSql = ' AND r.region_name = ?';
+        $params[] = $targetNation;
+    }
+
     $species = q(
         "SELECT ps.species_id, ps.species_name, r.region_name "
         . "FROM pet_species ps "
@@ -468,11 +501,18 @@ function handle_event_unlock_species_effect(int $user_id, array $effect)
         . ") region_defaults ON region_defaults.species_id = ps.species_id "
         . "WHERE ps.species_name IN ($placeholders) "
         . "  AND pus.entryId IS NULL "
-        . "  AND region_defaults.species_id IS NULL",
+        . "  AND region_defaults.species_id IS NULL"
+        . $regionFilterSql,
         $params
     )->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$species) {
+        if ($targetNation !== '') {
+            return sprintf(
+                'You search around %s, but you have already discovered every species currently available there.',
+                $targetNation
+            );
+        }
         return 'You feel like you have already met every creature the world has to offer.';
     }
 
