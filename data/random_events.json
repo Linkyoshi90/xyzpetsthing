@@ -163,12 +163,15 @@
   {
     "id": "new_creature_sighting",
     "title": "Strange Creature Sighting",
-    "message": "While exploring, you befriend a creature you've never seen before.",
+    "message": "While exploring the area, your party encounters a species native to this country that you have never seen before.",
+    "conditions": {
+      "requires_exploration": true
+    },
     "effects": [
       {
         "type": "unlock_species"
       }
     ],
-    "weight": 6
+    "weight": 20
   }
 ]

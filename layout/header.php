@@ -15,7 +15,7 @@ if ($u) {
     }
     if ((int)$u['id'] !== 0) {
         require_once __DIR__.'/../lib/random_events.php';
-        $random_event = maybe_trigger_random_event($u);
+        $random_event = maybe_trigger_random_event($u, (string)($pg ?? ''));
     }
     $page_location = get_page_location($pg ?? '');
     $speech_dialogues = load_speech_dialogues();
