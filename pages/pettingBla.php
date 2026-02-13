@@ -100,7 +100,7 @@ $pets_payload = array_map(static function (array $pet): array {
         'id' => (int)$pet['pet_instance_id'],
         'name' => $pet['nickname'] ?: $pet['species_name'],
         'species' => strtolower((string)$pet['species_name']),
-        'emoji' => '🐾',
+        'image' => pet_image_url((string)$pet['species_name'], $pet['color_name'] ?? null),
         'level' => (int)($pet['level'] ?? 1),
         'hunger' => (int)($pet['hunger'] ?? 0),
         'health' => (int)($pet['hp_current'] ?? 0),
@@ -825,9 +825,12 @@ window.pettingBlaData = {
         }
 
         .pet-card .pet-icon {
-            font-size: 3.5rem;
+            width: 74px;
+            height: 74px;
             margin-bottom: 8px;
             display: block;
+            margin-inline: auto;
+            object-fit: contain;
         }
 
         .pet-card .pet-name {
@@ -1196,7 +1199,7 @@ window.pettingBlaData = {
             const pet = getActivePet();
             if (!pet) return;
 
-            petSprite.innerHTML = `<span style="font-size: 8rem; line-height: 1;">${pet.emoji}</span>`;
+            petSprite.innerHTML = `<img src="${pet.image}" alt="${pet.name}">`;
             petNameEl.textContent = pet.name;
             petLevelEl.textContent = `Lv. ${pet.level}`;
             updateStatusBars();
@@ -1310,7 +1313,7 @@ window.pettingBlaData = {
                 card.className = `pet-card ${isActive ? 'active' : ''}`;
                 card.dataset.petId = pet.id;
                 card.innerHTML = `
-                    <span class="pet-icon">${pet.emoji}</span>
+                    <img class="pet-icon" src="${pet.image}" alt="${pet.name}">
                     <div class="pet-name">${pet.name}</div>
                     <div class="pet-level">Level ${pet.level}</div>
                 `;
