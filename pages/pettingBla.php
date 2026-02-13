@@ -2,6 +2,7 @@
 require_login();
 require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/input.php';
+require_once __DIR__.'/../lib/shops.php';
 
 $uid = current_user()['id'];
 $action = input_string($_POST['action'] ?? '', 20);
@@ -100,7 +101,7 @@ $pets_payload = array_map(static function (array $pet): array {
         'id' => (int)$pet['pet_instance_id'],
         'name' => $pet['nickname'] ?: $pet['species_name'],
         'species' => strtolower((string)$pet['species_name']),
-        'emoji' => '🐾',
+        'image' => pet_image_url((string)$pet['species_name'], $pet['color_name'] ?? null),
         'level' => (int)($pet['level'] ?? 1),
         'hunger' => (int)($pet['hunger'] ?? 0),
         'health' => (int)($pet['hp_current'] ?? 0),
@@ -111,20 +112,24 @@ $pets_payload = array_map(static function (array $pet): array {
 }, $pets);
 
 $food_payload = array_map(static function (array $item) use ($pick_emoji): array {
+    $imageFile = shop_find_item_image((string)$item['item_name']);
     return [
         'id' => (int)$item['item_id'],
         'name' => $item['item_name'],
         'emoji' => $pick_emoji((string)$item['item_name'], '🍖'),
+        'image' => 'images/items/' . rawurlencode($imageFile),
         'quantity' => (int)$item['quantity'],
         'replenish' => max(1, (int)($item['replenish'] ?? 1)),
     ];
 }, $food);
 
 $healing_payload = array_map(static function (array $item) use ($pick_emoji): array {
+    $imageFile = shop_find_item_image((string)$item['item_name']);
     return [
         'id' => (int)$item['item_id'],
         'name' => $item['item_name'],
         'emoji' => $pick_emoji((string)$item['item_name'], '💊'),
+        'image' => 'images/items/' . rawurlencode($imageFile),
         'quantity' => (int)$item['quantity'],
         'heal' => max(1, (int)($item['replenish'] ?? 1)),
     ];
@@ -769,9 +774,12 @@ window.pettingBlaData = {
         }
 
         .item-card .item-icon {
-            font-size: 2.5rem;
+            width: 52px;
+            height: 52px;
             margin-bottom: 8px;
             display: block;
+            margin-inline: auto;
+            object-fit: contain;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
@@ -825,9 +833,12 @@ window.pettingBlaData = {
         }
 
         .pet-card .pet-icon {
-            font-size: 3.5rem;
+            width: 74px;
+            height: 74px;
             margin-bottom: 8px;
             display: block;
+            margin-inline: auto;
+            object-fit: contain;
         }
 
         .pet-card .pet-name {
@@ -846,10 +857,20 @@ window.pettingBlaData = {
             position: fixed;
             pointer-events: none;
             z-index: 1000;
-            font-size: 4rem;
+            width: 72px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
             transform: translate(-50%, -50%);
             transition: transform 0.1s ease;
+        }
+
+        .drag-proxy img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .drag-proxy.dragging {
@@ -859,10 +880,17 @@ window.pettingBlaData = {
         /* Eating Animation */
         .eating-item {
             position: absolute;
-            font-size: 3rem;
+            width: 52px;
+            height: 52px;
             z-index: 30;
             animation: eatItem 0.6s ease-out forwards;
             filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+
+        .eating-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         @keyframes eatItem {
@@ -1196,7 +1224,7 @@ window.pettingBlaData = {
             const pet = getActivePet();
             if (!pet) return;
 
-            petSprite.innerHTML = `<span style="font-size: 8rem; line-height: 1;">${pet.emoji}</span>`;
+            petSprite.innerHTML = `<img src="${pet.image}" alt="${pet.name}">`;
             petNameEl.textContent = pet.name;
             petLevelEl.textContent = `Lv. ${pet.level}`;
             updateStatusBars();
@@ -1259,7 +1287,7 @@ window.pettingBlaData = {
                 card.dataset.itemId = item.id;
                 card.dataset.type = 'food';
                 card.innerHTML = `
-                    <span class="item-icon">${item.emoji}</span>
+                    <img class="item-icon" src="${item.image}" alt="${item.name}">
                     <div class="item-name">${item.name}</div>
                     <div class="item-quantity">x${item.quantity} • +${item.replenish}🍖</div>
                     ${hearts ? `<div class="item-preference">${hearts}</div>` : ''}
@@ -1291,7 +1319,7 @@ window.pettingBlaData = {
                 card.dataset.itemId = item.id;
                 card.dataset.type = 'healing';
                 card.innerHTML = `
-                    <span class="item-icon">${item.emoji}</span>
+                    <img class="item-icon" src="${item.image}" alt="${item.name}">
                     <div class="item-name">${item.name}</div>
                     <div class="item-quantity">x${item.quantity} • +${item.heal}💚</div>
                 `;
@@ -1310,7 +1338,7 @@ window.pettingBlaData = {
                 card.className = `pet-card ${isActive ? 'active' : ''}`;
                 card.dataset.petId = pet.id;
                 card.innerHTML = `
-                    <span class="pet-icon">${pet.emoji}</span>
+                    <img class="pet-icon" src="${pet.image}" alt="${pet.name}">
                     <div class="pet-name">${pet.name}</div>
                     <div class="pet-level">Level ${pet.level}</div>
                 `;
@@ -1329,7 +1357,7 @@ window.pettingBlaData = {
             
             dragProxy = document.createElement('div');
             dragProxy.className = 'drag-proxy';
-            dragProxy.textContent = item.emoji;
+            dragProxy.innerHTML = `<img src="${item.image}" alt="${item.name}">`;
             document.body.appendChild(dragProxy);
             
             moveDrag(e.clientX, e.clientY);
@@ -1408,7 +1436,7 @@ window.pettingBlaData = {
             pet.happiness = clamp(pet.happiness + hearts * 3, 0, 100);
 
             // Animations
-            createEatingAnimation(item.emoji, x, y);
+            createEatingAnimation(item, x, y);
             petSprite.classList.add('eating');
             setTimeout(() => petSprite.classList.remove('eating'), 500);
 
@@ -1442,7 +1470,7 @@ window.pettingBlaData = {
             item.quantity = Math.max(0, item.quantity - 1);
 
             // Animations
-            createEatingAnimation(item.emoji, x, y);
+            createEatingAnimation(item, x, y);
             petSprite.classList.add('happy');
             setTimeout(() => petSprite.classList.remove('happy'), 600);
 
@@ -1547,11 +1575,11 @@ window.pettingBlaData = {
             setTimeout(() => dust.remove(), 600);
         }
 
-        function createEatingAnimation(emoji, x, y) {
+        function createEatingAnimation(item, x, y) {
             const stageRect = petStage.getBoundingClientRect();
             const eating = document.createElement('div');
             eating.className = 'eating-item';
-            eating.textContent = emoji;
+            eating.innerHTML = `<img src="${item.image}" alt="${item.name}">`;
             eating.style.left = `${x}px`;
             eating.style.top = `${y}px`;
             document.body.appendChild(eating);
