@@ -1,13 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Petting Mode - Harmontide</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
+<?php
+require_login();
+require_once __DIR__.'/../lib/pets.php';
+require_once __DIR__.'/../lib/input.php';
+
+$uid = current_user()['id'];
+$action = input_string($_POST['action'] ?? '', 20);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'fetch_hunger') {
+    header('Content-Type: application/json');
+    $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
+
+    $hunger = q(
+        "SELECT hunger FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$pet_id, $uid]
+    )->fetchColumn();
+
+    if ($hunger === false) {
+        echo json_encode(['ok' => false, 'message' => 'That pet is not available.']);
+        exit;
+    }
+
+    echo json_encode(['ok' => true, 'hunger' => (int)$hunger]);
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'sync_hunger') {
+    header('Content-Type: application/json');
+    $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
+    $hunger = input_int($_POST['hunger'] ?? 0);
+
+    $exists = q(
+        "SELECT 1 FROM pet_instances WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$pet_id, $uid]
+    )->fetchColumn();
+
+    if (!$exists) {
+        echo json_encode(['ok' => false, 'message' => 'That pet is not available.']);
+        exit;
+    }
+
+    $max_hunger = 100;
+    $next_hunger = max(0, min($hunger, $max_hunger));
+
+    q(
+        "UPDATE pet_instances SET hunger = ? WHERE pet_instance_id = ? AND owner_user_id = ?",
+        [$next_hunger, $pet_id, $uid]
+    );
+
+    echo json_encode(['ok' => true, 'hunger' => $next_hunger]);
+    exit;
+}
+
+$pets = get_user_pets($uid);
+if (!$pets) {
+    echo '<p>No pets yet. <a href="?pg=create_pet">Create one</a>.</p>';
+    return;
+}
+
+$food = q(
+    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
+    . " JOIN items i ON i.item_id = ui.item_id"
+    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+    . " WHERE ui.user_id = ? AND ic.category_name = 'Food' AND ui.quantity > 0 ORDER BY i.item_name",
+    [$uid]
+)->fetchAll(PDO::FETCH_ASSOC);
+
+$healing = q(
+    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
+    . " JOIN items i ON i.item_id = ui.item_id"
+    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+    . " WHERE ui.user_id = ? AND ic.category_name = 'Potion' AND ui.quantity > 0 ORDER BY i.item_name",
+    [$uid]
+)->fetchAll(PDO::FETCH_ASSOC);
+
+$emoji_map = [
+    'apple' => '🍎',
+    'berry' => '🫐',
+    'cake' => '🍰',
+    'honey' => '🍯',
+    'candy' => '🍬',
+    'kelp' => '🥬',
+    'potion' => '🧪',
+    'elixir' => '🧴',
+    'bandage' => '🩹',
+];
+
+$pick_emoji = static function (string $name, string $default) use ($emoji_map): string {
+    $slug = strtolower($name);
+    foreach ($emoji_map as $needle => $emoji) {
+        if (strpos($slug, $needle) !== false) {
+            return $emoji;
+        }
+    }
+    return $default;
+};
+
+$pets_payload = array_map(static function (array $pet): array {
+    return [
+        'id' => (int)$pet['pet_instance_id'],
+        'name' => $pet['nickname'] ?: $pet['species_name'],
+        'species' => strtolower((string)$pet['species_name']),
+        'emoji' => '🐾',
+        'level' => (int)($pet['level'] ?? 1),
+        'hunger' => (int)($pet['hunger'] ?? 0),
+        'health' => (int)($pet['hp_current'] ?? 0),
+        'maxHealth' => max(1, (int)($pet['hp_max'] ?? 100)),
+        'happiness' => (int)($pet['happiness'] ?? 0),
+        'preferences' => new stdClass(),
+    ];
+}, $pets);
+
+$food_payload = array_map(static function (array $item) use ($pick_emoji): array {
+    return [
+        'id' => (int)$item['item_id'],
+        'name' => $item['item_name'],
+        'emoji' => $pick_emoji((string)$item['item_name'], '🍖'),
+        'quantity' => (int)$item['quantity'],
+        'replenish' => max(1, (int)($item['replenish'] ?? 1)),
+    ];
+}, $food);
+
+$healing_payload = array_map(static function (array $item) use ($pick_emoji): array {
+    return [
+        'id' => (int)$item['item_id'],
+        'name' => $item['item_name'],
+        'emoji' => $pick_emoji((string)$item['item_name'], '💊'),
+        'quantity' => (int)$item['quantity'],
+        'heal' => max(1, (int)($item['replenish'] ?? 1)),
+    ];
+}, $healing);
+?>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script>
+window.pettingBlaData = {
+    activePetId: <?= (int)$pets_payload[0]['id'] ?>,
+    pets: <?= json_encode($pets_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+    food: <?= json_encode($food_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+    healing: <?= json_encode($healing_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
+};
+</script>
+
+<style>
+
         * {
             margin: 0;
             padding: 0;
@@ -34,7 +170,7 @@
             --radius-full: 9999px;
         }
 
-        body {
+        body:has(.petting-page) {
             font-family: 'Nunito', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             min-height: 100vh;
@@ -45,7 +181,16 @@
             overflow-x: hidden;
         }
 
-        .page-header {
+        
+.petting-page {
+    width: 100vw;
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    padding: 20px;
+}
+
+.page-header {
             text-align: center;
             margin-bottom: 20px;
             color: white;
@@ -68,8 +213,8 @@
         /* Main Petting Container */
         .petting-container {
             width: 100%;
-            max-width: 1000px;
-            aspect-ratio: 16 / 10;
+            max-width: none;
+            min-height: min(78vh, 900px);
             background: linear-gradient(180deg, 
                 #87ceeb 0%, 
                 #b4e4f7 20%, 
@@ -821,9 +966,10 @@
                 opacity: 0; 
             }
         }
-    </style>
-</head>
-<body>
+    
+</style>
+
+<div class="petting-page">
     <header class="page-header">
         <h1>💕 Petting Mode</h1>
         <p>Click anywhere to call your pet, drag food to feed them, and watch them play!</p>
@@ -944,64 +1090,14 @@
         <div class="effects-layer" id="effectsLayer"></div>
     </div>
 
-    <script>
+    
+</div>
+<script>
         // ==========================================
         // Game Data
         // ==========================================
-        const gameData = {
-            activePetId: 1,
-            pets: [
-                {
-                    id: 1,
-                    name: 'Sparkle',
-                    species: 'flutterby',
-                    emoji: '🦋',
-                    level: 12,
-                    hunger: 65,
-                    health: 80,
-                    maxHealth: 100,
-                    happiness: 85,
-                    preferences: { 1: 3, 2: 2, 3: 1 } // food_id: hearts (1-3)
-                },
-                {
-                    id: 2,
-                    name: 'Bubbles',
-                    species: 'glimmerfin',
-                    emoji: '🐟',
-                    level: 8,
-                    hunger: 45,
-                    health: 100,
-                    maxHealth: 100,
-                    happiness: 70,
-                    preferences: { 1: 1, 2: 3, 4: 2 }
-                },
-                {
-                    id: 3,
-                    name: 'Shadow',
-                    species: 'starmane',
-                    emoji: '🦁',
-                    level: 15,
-                    hunger: 90,
-                    health: 60,
-                    maxHealth: 120,
-                    happiness: 50,
-                    preferences: { 3: 3, 5: 2 }
-                }
-            ],
-            food: [
-                { id: 1, name: 'Starfruit', emoji: '🍎', quantity: 5, replenish: 15 },
-                { id: 2, name: 'Moonberry', emoji: '🫐', quantity: 8, replenish: 10 },
-                { id: 3, name: 'Dream Cake', emoji: '🍰', quantity: 2, replenish: 30 },
-                { id: 4, name: 'Honey Drop', emoji: '🍯', quantity: 4, replenish: 12 },
-                { id: 5, name: 'Crystal Candy', emoji: '🍬', quantity: 3, replenish: 20 },
-                { id: 6, name: 'Rainbow Kelp', emoji: '🥬', quantity: 6, replenish: 8 }
-            ],
-            healing: [
-                { id: 101, name: 'Healing Potion', emoji: '💊', quantity: 3, heal: 30 },
-                { id: 102, name: 'Health Elixir', emoji: '🧴', quantity: 1, heal: 50 },
-                { id: 103, name: 'Magic Bandage', emoji: '🩹', quantity: 5, heal: 15 }
-            ]
-        };
+        const gameData = window.pettingBlaData;
+        gameData.activePetId = gameData.activePetId || (gameData.pets[0] ? gameData.pets[0].id : null);
 
         // ==========================================
         // DOM Elements
@@ -1558,6 +1654,5 @@
             const stageRect = petStage.getBoundingClientRect();
             setPetPosition(stageRect.width / 2, stageRect.height * 0.2);
         });
-    </script>
-</body>
-</html>
+    
+</script>
