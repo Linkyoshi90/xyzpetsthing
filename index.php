@@ -10,7 +10,7 @@ if ($pg === '') {
 }
 $allowed = ['login','register','logout','main','pet','create_pet','inventory','petting','dress',
     'petting2','map','vote','games','friends','bank','user-chat','paint_shack','gacha',
-    'user-guide','encyclopedia','petting_fullscreen',
+    'user-guide','encyclopedia','petting_fullscreen','pettingBla',
     // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
     'wanted-alive','blackjack','paddle-panic','sudoku',
