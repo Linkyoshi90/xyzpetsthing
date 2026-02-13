@@ -13,6 +13,13 @@
     <a class="btn" href="?pg=nh_paint_shack">Explore</a>
   </div>
 
+
+  <div class="card glass">
+    <h3>Adventure: The Weeping Lanes</h3>
+    <p class="muted">A time-locked horror adventure set in a deserted village near Skeldgard.</p>
+    <a class="btn" href="?pg=nh-adventure">Enter at Dusk</a>
+  </div>
+
   <div class="card glass">
     <h3>Back to Auronia</h3>
     <a class="btn" href="?pg=auronia">Back</a>
