@@ -47,8 +47,8 @@ $mapAreas = [
         'description' => 'Here you can paint your creatures from this region. Nornheim artisans use frost-pigments that shimmer in the northern lights.',
         'action' => 'Explore',
         'href' => '?pg=nh_paint_shack',
-        // CORRECTED: Yellow markings - middle-left portion of map
-        'points' => toPercentPoints([295, 365, 340, 395, 365, 415, 365, 460, 340, 485, 295, 460, 280, 410], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        // ADJUSTED: Yellow markings - small hut in middle-left portion of map
+        'points' => toPercentPoints([210, 220, 248, 232, 270, 258, 264, 298, 236, 318, 204, 306, 190, 270], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#06b6d4' // Cyan - ice blue
     ],
     [
@@ -57,8 +57,8 @@ $mapAreas = [
         'description' => 'A time-locked horror adventure set in a deserted village near Skeldgard. Enter at dusk, if you dare.',
         'action' => 'Enter at Dusk',
         'href' => '?pg=nh-adventure',
-        // CORRECTED: Red markings - upper middle portion of map
-        'points' => toPercentPoints([465, 95, 525, 120, 530, 185, 490, 210, 465, 195, 460, 130], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        // ADJUSTED: Red markings - upper middle portion of map (between large hall and church)
+        'points' => toPercentPoints([342, 86, 384, 94, 416, 132, 412, 186, 374, 214, 336, 188, 326, 132], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#a855f7' // Purple - mysterious/horror
     ]
 ];
