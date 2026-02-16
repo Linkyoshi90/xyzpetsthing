@@ -20,7 +20,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'orienthem','saharene','tundria','uluru','verdania',
     // Countries
     'aa','baharamandal','bretonreach','cc',
-    'esd','esl','fom','gc','hammurabia',
+    'esd','esl','fom','fom-fishing','gc','hammurabia',
     'ie','kemet','ldk','nornheim','rsc',
     'rheinland','rt','sie','sc',
     'stap','srl',

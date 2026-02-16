@@ -64,6 +64,8 @@ function get_page_location_map(): array {
         'rsc-wof' => 'Red Sun Commonwealth',
         'rsc_paint_shack' => 'Red Sun Commonwealth',
         'rheinland' => 'Rheinland',
+        'fom' => 'Rheinland',
+        'fom-fishing' => 'Rheinland',
         'rl_paint_shack' => 'Rheinland',
         'rt' => 'Rodinian Tsardom',
         'rt_paint_shack' => 'Rodinian Tsardom',
