@@ -116,6 +116,25 @@ body {
         inset 0 0 60px rgba(100, 200, 255, 0.03);
 }
 
+
+.map-back-link {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 120;
+    text-decoration: none;
+    color: #fff;
+    background: rgba(6, 10, 24, 0.82);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+}
+
+.map-back-link:hover {
+    background: rgba(20, 28, 48, 0.92);
+}
+
 .map-wrapper {
     position: relative;
     width: 100%;
@@ -806,6 +825,7 @@ body {
 
         <!-- Main Map Container -->
         <div class="map-container">
+            <a class="map-back-link" href="?pg=auronia">← Back to Auronia</a>
             <div class="map-scroll-container">
                 <div class="map-inner" id="mapInner">
                     <!-- Map Image -->
