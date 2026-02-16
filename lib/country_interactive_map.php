@@ -44,10 +44,6 @@ function render_country_interactive_map(array $config): void {
     </div>
 
     <div class="country-map-wrap">
-        <?php if (!empty($config['back_href']) && !empty($config['back_label'])): ?>
-            <a class="country-map-back" href="<?= htmlspecialchars($config['back_href']) ?>">← <?= htmlspecialchars($config['back_label']) ?></a>
-        <?php endif; ?>
-
         <div class="country-map-media" style="aspect-ratio: <?= $width ?> / <?= $height ?>;">
             <img src="<?= htmlspecialchars($config['image']) ?>" alt="<?= htmlspecialchars($config['title']) ?> map" class="country-map-image">
 
@@ -106,8 +102,6 @@ function render_country_interactive_map(array $config): void {
 .country-map-header .subtitle { opacity: .8; margin: 0; }
 .country-map-header .hint { font-size: .9rem; opacity: .7; margin-top: .5rem; }
 .country-map-wrap { position: relative; border-radius: 14px; overflow: hidden; box-shadow: 0 20px 45px rgba(0,0,0,.35); background: #060913; }
-.country-map-back { position: absolute; top: .85rem; left: .85rem; z-index: 5; text-decoration: none; padding: .35rem .6rem; border-radius: 8px; border: 1px solid rgba(255,255,255,.2); background: rgba(6, 10, 24, .8); color: #fff; font-size: .9rem; }
-.country-map-back:hover { background: rgba(18, 24, 44, .9); }
 .country-map-media { position: relative; width: 100%; }
 .country-map-image { width: 100%; height: 100%; object-fit: cover; display:block; }
 .country-map-overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
