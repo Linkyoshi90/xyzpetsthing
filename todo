@@ -2,6 +2,7 @@
 	1.1. China
 	1.2. Powerful, fast, low defense
 2. battle system
+	2.1. Pokmon style effectiveness (a bit simpler, based on Chinese elements)
 	2.1. Pokémon style effectiveness (a bit simpler, based on Chinese elements)
 	2.2. Random battles
 	2.3. Arena
@@ -18,14 +19,29 @@
 5. actual rewards for taking good care of pets
 	5.1. Pets find items for player
 	5.2. Better Exp Curve per for happiness level (multiplier: 1 for 0 happiness, 2 for 100 happiness. Happiness divided by 100 plus 1)
-6. More pet connections
-	6.1. Minigames with player pets (increase happiness. Zelda 1, mario bros, arcade games with pets as player avatars)
+	5.3. Minigames with player pets (increase happiness. Zelda 1, mario bros, arcade games with pets as player avatars)
+6. Maps
+	6.1. At least one food shop per country
+	6.2. At least one minigame per country
+	6.3. At least one adventure per country
+	6.4. Secret events that let the player unlock map parts
+		6.4.1. Tyrannia inspired part of country (One of the jungle countries)
+		6.4.2. Atlantis inspired part (Spiceroute)
+		6.4.3. Incest hillbilly county (URB)
+		6.4.4. Island of topless cucumber farmers 
+		6.4.5. Dracula's Castle (Rodinian Tsardom)
+		6.4.6. Fairy cloud (Rheinland)
+		6.4.7. Wild west (URB)
+		6.4.8. El Dorado
+		6.4.9. Abandoned school (Yamanokubo)
+		6.4.10. Abandoned cabaret district (China)
 7. Minigames
 	7.1. Rail shooter
 	7.2. Fruit gathering (fruit falls from tree, basket catches them, bombs fall too)
 	7.3. Minigolf (9 holes)
 	7.4. Flappy Bird
 	7.5. Autoscroll avoid walls game
+	7.6. More puzzle games
 8. Big collaborative stuff
 	8.1. (Football) tournaments
 	8.2. Board game (Mario party)
@@ -35,3 +51,28 @@ Project definition of done:
 - Pet interactions should feel meaningful
 - Daily rewards should let the player come back without feeling like a live service game
 - Either fully delve into the mature elements (gore/sex/mental health/addictions) or keep it child friendly
+- Redo random events to not let players spam refresh to get them
+
+9. Revisit incentives (lightweight, low-FOMO)
+	9.1. Daily rotating "Pet Errands" (3 small tasks: feed, play, battle)
+	9.2. Weekly country spotlight (boosted drops + unique lore snippet)
+	9.3. Streak-safe "miss token" so players don't feel punished for missing a day
+	9.4. Fortune wheel with mostly utility rewards and rare cosmetics
+
+10. Classic Neopets feel
+	10.1. Shop restocks + haggling minigame for better prices
+	10.2. Safety Deposit Box / gallery collection goals
+	10.3. Random events while exploring (good and bad luck moments)
+	10.4. Browser-style dailies list page with simple flavor text and worldbuilding
+
+11. Pokemon-inspired design pillars
+	11.1. Clear readable type chart with no more than 8-10 elements
+	11.2. Distinct status effects (burn/poison/sleep equivalents) tied to Chinese elements
+	11.3. Signature move for each pet species line to improve identity
+	11.4. Evolution/ascension choices with tradeoffs, not strict upgrades
+
+12. Scope guardrails (what to avoid in v1)
+	12.1. Avoid real-time PvP netcode in first release (start with async friend battles)
+	12.2. Avoid too many minigames at launch (ship 2 polished games, add more later)
+	12.3. Avoid giant country map upfront (release 2-3 dense countries first)
+	12.4. Avoid complex player economy initially (NPC economy first, player trading later)
