@@ -1,4 +1,37 @@
-1. Fix "Remember me" Placement
-2. Add Sun Wukong
-3. 4 species of each country
-4. Yurei, design like Hachikuji Mayoi
+1. Sun Wukong
+	1.1. China
+	1.2. Powerful, fast, low defense
+2. battle system
+	2.1. Pokémon style effectiveness (a bit simpler, based on Chinese elements)
+	2.2. Random battles
+	2.3. Arena
+	2.4. PvP against friends
+	2.5. Leaderboards?
+3. pet interactions in petting screen
+	3.1. petting (zoom, holding the mouse button)
+	3.2. playing (frisbee, cat toy, etc)
+	3.3. reading
+4. deeper health system
+	4.1. more varied healing items
+	4.2. effects of healing items
+	4.3. sickness (result of events and 0 happiness + hunger)
+5. actual rewards for taking good care of pets
+	5.1. Pets find items for player
+	5.2. Better Exp Curve per for happiness level (multiplier: 1 for 0 happiness, 2 for 100 happiness. Happiness divided by 100 plus 1)
+6. More pet connections
+	6.1. Minigames with player pets (increase happiness. Zelda 1, mario bros, arcade games with pets as player avatars)
+7. Minigames
+	7.1. Rail shooter
+	7.2. Fruit gathering (fruit falls from tree, basket catches them, bombs fall too)
+	7.3. Minigolf (9 holes)
+	7.4. Flappy Bird
+	7.5. Autoscroll avoid walls game
+8. Big collaborative stuff
+	8.1. (Football) tournaments
+	8.2. Board game (Mario party)
+
+Project definition of done:
+- Every country has a reason to explore it
+- Pet interactions should feel meaningful
+- Daily rewards should let the player come back without feeling like a live service game
+- Either fully delve into the mature elements (gore/sex/mental health/addictions) or keep it child friendly
