@@ -108,10 +108,35 @@ function render_country_interactive_map(array $config): void {
         <?php endforeach; ?>
     </div>
 
-    <div class="card glass" style="margin-top: 1rem;">
-        <h3><?= htmlspecialchars($config['city_heading'] ?? $config['title']) ?></h3>
-        <p class="muted"><?= htmlspecialchars($config['lore']) ?></p>
-    </div>
+    <?php if (!empty($config['lore_sections']) && is_array($config['lore_sections'])): ?>
+        <div class="country-map-lore-section">
+            <?php foreach ($config['lore_sections'] as $section): ?>
+                <div class="card glass country-map-lore-card" style="margin-top: 1rem;">
+                    <?php if (!empty($section['title'])): ?>
+                        <h3><?= htmlspecialchars($section['title']) ?></h3>
+                    <?php endif; ?>
+                    <?php if (!empty($section['html'])): ?>
+                        <div class="country-map-lore-rich">
+                            <?= $section['html'] ?>
+                        </div>
+                    <?php elseif (!empty($section['text'])): ?>
+                        <p class="muted"><?= htmlspecialchars($section['text']) ?></p>
+                    <?php endif; ?>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php else: ?>
+        <div class="card glass country-map-lore" style="margin-top: 1rem;">
+            <h3><?= htmlspecialchars($config['city_heading'] ?? $config['title']) ?></h3>
+            <?php if (!empty($config['lore_html'])): ?>
+                <div class="country-map-lore-rich">
+                    <?= $config['lore_html'] ?>
+                </div>
+            <?php else: ?>
+                <p class="muted"><?= htmlspecialchars($config['lore']) ?></p>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
 </div>
 
 <style>
@@ -144,6 +169,13 @@ function render_country_interactive_map(array $config): void {
 .country-map-legend { margin-top: .75rem; display: flex; flex-wrap: wrap; gap: .5rem; }
 .country-map-legend-item { border: 1px solid rgba(255,255,255,.18); background: rgba(15,20,36,.8); color: #fff; border-radius: 999px; padding: .4rem .8rem; cursor: pointer; }
 .country-map-legend-item span { width: .65rem; height: .65rem; display:inline-block; border-radius: 50%; background: var(--legend-color); margin-right: .45rem; }
+.country-map-lore-section { margin-top: .25rem; }
+.country-map-lore-card h3 { margin-bottom: .45rem; }
+.country-map-lore-rich p { margin: .55rem 0; line-height: 1.55; }
+.country-map-lore-rich ul { margin: .35rem 0 .9rem 1.1rem; }
+.country-map-lore-rich li { margin: .25rem 0; }
+.country-map-lore-rich h3 { margin-top: 1rem; margin-bottom: .4rem; }
+.country-map-lore-rich hr { border: 0; border-top: 1px solid rgba(255,255,255,.18); margin: .95rem 0; }
 .country-map-particles { position: absolute; inset: 0; pointer-events: none; }
 .country-particle { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,.45); animation: countryMapFloat linear infinite; }
 @keyframes countryMapFloat { from { transform: translateY(0); opacity: 0; } 25% { opacity: .9; } to { transform: translateY(-18px); opacity: 0; } }
