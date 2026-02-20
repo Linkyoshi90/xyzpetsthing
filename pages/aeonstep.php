@@ -1,4 +1,14 @@
 <?php
+require_login();
+require_once __DIR__.'/../lib/map_unlocks.php';
+
+$user = current_user();
+$hasAccess = $user && has_map_unlock((int)$user['id'], 'aeonstep_plateau');
+if (!$hasAccess) {
+    echo '<div class="card glass"><h2>Aeonstep Plateau is still hidden</h2><p class="muted">Explore the Sapa Inti Empire to trigger cave tremors that can reveal the plateau path.</p><p><a class="btn" href="?pg=sie">Return to Sapa Inti Empire</a></p></div>';
+    return;
+}
+
 $ORIGINAL_WIDTH = 1600;
 $ORIGINAL_HEIGHT = 900;
 

@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__.'/country_interactive_map.php';
+require_once __DIR__.'/map_unlocks.php';
 
 function get_country_map_config(string $slug): ?array {
     $w = 1531;
@@ -927,5 +928,21 @@ function get_country_map_config(string $slug): ?array {
         return null;
     }
 
-    return $configs[$slug] + ['width' => $w, 'height' => $h];
+    $config = $configs[$slug];
+
+    if ($slug === 'sie' && function_exists('current_user')) {
+        $user = current_user();
+        if ($user && has_map_unlock((int)$user['id'], 'aeonstep_plateau')) {
+            $config['areas'][] = [
+                'name' => 'Aeonstep Plateau',
+                'description' => 'A hidden highland route revealed after a cave-side rock slide.',
+                'action' => 'Travel',
+                'href' => '?pg=aeonstep',
+                'color' => '#a78bfa',
+                'points' => country_map_rect_points(1080, 255, 300, 185, $w, $h),
+            ];
+        }
+    }
+
+    return $config + ['width' => $w, 'height' => $h];
 }
