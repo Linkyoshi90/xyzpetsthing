@@ -1,14 +1,4 @@
 <?php
-require_login();
-require_once __DIR__.'/../lib/map_unlocks.php';
-
-$user = current_user();
-$hasAccess = $user && has_map_unlock((int)$user['id'], 'aeonstep_plateau');
-if (!$hasAccess) {
-    echo '<div class="card glass"><h2>Aeonstep Plateau is still hidden</h2><p class="muted">Explore the Sapa Inti Empire to trigger cave tremors that can reveal the plateau path.</p><p><a class="btn" href="?pg=sie">Return to Sapa Inti Empire</a></p></div>';
-    return;
-}
-
 $ORIGINAL_WIDTH = 1600;
 $ORIGINAL_HEIGHT = 900;
 
@@ -85,9 +75,7 @@ $mapAreas = [
         <a class="map-back-link" href="?pg=sie">← Back to Sapa Inti Empire</a>
 
         <div class="map-wrapper">
-            <img src="images/harmontide-smol.png" alt="Aeonstep Plateau concept map" class="map-image" />
-            <div class="map-tint"></div>
-
+            <img src="images/harmontide-aeonstep.webp" alt="Aeonstep Plateau map" class="map-image" />
             <div class="map-overlay">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                     <?php foreach ($mapAreas as $area): ?>
@@ -110,11 +98,6 @@ $mapAreas = [
 
             <div class="area-label" id="areaLabel"></div>
 
-            <div class="info-panel" id="infoPanel">
-                <h3 id="panelTitle">Aeonstep Plateau</h3>
-                <p id="panelDescription">The Stillplate waits above the cloud line. Select a landmark to view lore notes.</p>
-                <a id="panelAction" class="panel-action" href="#overview">Read Overview</a>
-            </div>
         </div>
     </div>
 
@@ -171,8 +154,7 @@ $mapAreas = [
     box-shadow: 0 20px 70px -30px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.1);
 }
 .map-wrapper { position: relative; width: 100%; aspect-ratio: <?= $ORIGINAL_WIDTH ?> / <?= $ORIGINAL_HEIGHT ?>; }
-.map-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter: saturate(0.6) contrast(1.1); }
-.map-tint { position:absolute; inset:0; background: radial-gradient(circle at 20% 20%, rgba(250,204,21,.15), transparent 40%), linear-gradient(135deg, rgba(8,47,73,.78), rgba(63,12,37,.68)); }
+.map-image { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter: saturate(0.95) contrast(1.02); }
 .map-overlay, .map-overlay svg { position:absolute; inset:0; width:100%; height:100%; }
 .map-overlay { pointer-events:none; }
 .map-overlay svg { pointer-events:all; }
@@ -194,13 +176,6 @@ $mapAreas = [
 }
 .area-label.visible { opacity:1; }
 
-.info-panel {
-    position:absolute; right:20px; bottom:20px; z-index:5; max-width:380px;
-    background: rgba(2,6,23,.84); border:1px solid rgba(255,255,255,.18); border-radius:12px; padding:14px 16px;
-}
-.info-panel h3 { margin:0 0 6px; font-size:1.1rem; }
-.info-panel p { margin:0 0 10px; font-size:.92rem; line-height:1.45; color:#dbeafe; }
-.panel-action { display:inline-block; color:#fde68a; text-decoration:none; font-weight:700; }
 
 .aeonstep-copy { max-width:1000px; margin:24px auto 0; }
 .subtitle { color:#cbd5e1; margin-top:-4px; }
@@ -217,21 +192,9 @@ $mapAreas = [
 (() => {
     const areas = Array.from(document.querySelectorAll('.map-area'));
     const label = document.getElementById('areaLabel');
-    const panelTitle = document.getElementById('panelTitle');
-    const panelDescription = document.getElementById('panelDescription');
-    const panelAction = document.getElementById('panelAction');
-
-    function setPanel(area) {
-        panelTitle.textContent = area.dataset.name;
-        panelDescription.textContent = area.dataset.description;
-        panelAction.textContent = area.dataset.action;
-        panelAction.href = area.dataset.href;
-    }
-
     function activate(area) {
         areas.forEach(el => el.classList.remove('active'));
         area.classList.add('active');
-        setPanel(area);
     }
 
     function placeLabel(area, event) {
@@ -247,7 +210,10 @@ $mapAreas = [
         area.addEventListener('mousemove', (event) => placeLabel(area, event));
         area.addEventListener('mouseleave', () => label.classList.remove('visible'));
         area.addEventListener('focus', () => activate(area));
-        area.addEventListener('click', () => activate(area));
+        area.addEventListener('click', () => {
+            activate(area);
+            window.location.hash = area.dataset.href.replace('#', '');
+        });
         area.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
