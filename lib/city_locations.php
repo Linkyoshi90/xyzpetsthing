@@ -60,6 +60,7 @@ function get_page_location_map(): array {
         'ldk_paint_shack' => 'Lotus-Dragon Kingdom',
         'nornheim' => 'Nornheim',
         'nh_paint_shack' => 'Nornheim',
+        'aeonstep' => 'Aeonstep Plateau',
         'rsc' => 'Red Sun Commonwealth',
         'rsc-wof' => 'Red Sun Commonwealth',
         'rsc_paint_shack' => 'Red Sun Commonwealth',

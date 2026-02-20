@@ -22,7 +22,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'aa','baharamandal','bretonreach','cc',
     'esd','esl','fom','fom-fishing','gc','hammurabia',
     'ie','kemet','ldk','nornheim','rsc',
-    'rheinland','rt','sie','sc',
+    'rheinland','rt','sie','sc','aeonstep',
     'stap','srl',
     'urb','xochimex','yamanokubo','yn',
     // country subsections
