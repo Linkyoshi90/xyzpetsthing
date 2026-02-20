@@ -65,6 +65,18 @@ foreach ($species as $entry) {
     $region = $entry['region_name'] ?: 'Unknown';
     $groupedSpecies[$region][] = $entry;
 }
+
+$countryNamesFile = __DIR__ . '/../data-readonly/country-names.txt';
+if (is_file($countryNamesFile)) {
+    foreach (file($countryNamesFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $countryName) {
+        $countryName = trim($countryName);
+        if ($countryName === '') {
+            continue;
+        }
+        $groupedSpecies[$countryName] = $groupedSpecies[$countryName] ?? [];
+    }
+}
+
 $regionNames = array_keys($groupedSpecies);
 sort($regionNames, SORT_NATURAL | SORT_FLAG_CASE);
 $sortedSpecies = [];
@@ -167,13 +179,17 @@ function slugify($str)
             <span class="mini"><?= count($entries) ?> species</span>
           </summary>
           <div class="species-grid">
-            <?php foreach ($entries as $i => $s): $slug = slugify($s['species_name']); ?>
-              <div class="species-option<?= ($s['species_id'] === ($species[0]['species_id'] ?? null)) ? ' selected' : '' ?>" data-id="<?= $s['species_id'] ?>">
-                <img src="images/<?= $slug ?>_f_blue.webp" alt="<?= htmlspecialchars($s['species_name']) ?>"
-                     onerror="this.src='images/tengu_f_blue.webp'" />
-                <div class="mini"><?= htmlspecialchars($s['species_name']) ?></div>
-              </div>
-            <?php endforeach; ?>
+            <?php if ($entries): ?>
+              <?php foreach ($entries as $i => $s): $slug = slugify($s['species_name']); ?>
+                <div class="species-option<?= ($s['species_id'] === ($species[0]['species_id'] ?? null)) ? ' selected' : '' ?>" data-id="<?= $s['species_id'] ?>">
+                  <img src="images/<?= $slug ?>_f_blue.webp" alt="<?= htmlspecialchars($s['species_name']) ?>"
+                       onerror="this.src='images/tengu_f_blue.webp'" />
+                  <div class="mini"><?= htmlspecialchars($s['species_name']) ?></div>
+                </div>
+              <?php endforeach; ?>
+            <?php else: ?>
+              <p class="mini">No species available in this country yet.</p>
+            <?php endif; ?>
           </div>
         </details>
       <?php endforeach; ?>
