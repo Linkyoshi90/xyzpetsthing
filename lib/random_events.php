@@ -3,6 +3,7 @@ require_once __DIR__.'/../db.php';
 require_once __DIR__.'/pets.php';
 require_once __DIR__.'/breeding.php';
 require_once __DIR__.'/city_locations.php';
+require_once __DIR__.'/map_unlocks.php';
 
 const RANDOM_EVENT_FILE = __DIR__ . '/../data/random_events.json';
 const RANDOM_EVENT_CHANCE_DEFAULT = 6; // % chance on regular pages
@@ -48,12 +49,21 @@ function maybe_trigger_random_event(array $user, string $page = ''): ?array
         return null;
     }
 
-    $eligibleEvents = array_values(array_filter($events, static function (array $event) use ($isExploring): bool {
+    $userId = (int)($user['id'] ?? 0);
+    $nation = $location['nation'] ?? '';
+
+    $eligibleEvents = array_values(array_filter($events, static function (array $event) use ($isExploring, $nation, $userId): bool {
         $conditions = $event['conditions'] ?? [];
         if (!is_array($conditions)) {
             return true;
         }
         if (!empty($conditions['requires_exploration']) && !$isExploring) {
+            return false;
+        }
+        if (!empty($conditions['requires_nation']) && $conditions['requires_nation'] !== $nation) {
+            return false;
+        }
+        if (!empty($conditions['requires_locked_map']) && has_map_unlock($userId, (string)$conditions['requires_locked_map'])) {
             return false;
         }
         return true;
@@ -135,6 +145,9 @@ function apply_random_event_effects(array $event, array $user, array $context = 
                 break;
             case 'unlock_species':
                 $detail = handle_event_unlock_species_effect($user['id'], $effect, $context);
+                break;
+            case 'unlock_map':
+                $detail = handle_event_unlock_map_effect($user['id'], $effect);
                 break;
             default:
                 $detail = null;
@@ -529,4 +542,34 @@ function handle_event_unlock_species_effect(int $user_id, array $effect, array $
         $newUnlock['species_name'],
         $regionName
     );
+}
+
+function handle_event_unlock_map_effect(int $user_id, array $effect): ?array
+{
+    $mapKey = trim((string)($effect['map_key'] ?? ''));
+    if ($mapKey === '') {
+        return null;
+    }
+
+    $mapName = trim((string)($effect['map_name'] ?? 'New Area'));
+    $actionLabel = trim((string)($effect['action_label'] ?? 'Visit'));
+    $url = trim((string)($effect['url'] ?? '?pg=map'));
+
+    if (has_map_unlock($user_id, $mapKey)) {
+        return [
+            'details' => [sprintf('%s remains open for travel.', $mapName)],
+            'actions' => [
+                ['label' => $actionLabel, 'url' => $url],
+            ],
+        ];
+    }
+
+    grant_map_unlock($user_id, $mapKey);
+
+    return [
+        'details' => [sprintf('You discovered %s.', $mapName)],
+        'actions' => [
+            ['label' => $actionLabel, 'url' => $url],
+        ],
+    ];
 }

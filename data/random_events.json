@@ -173,5 +173,25 @@
       }
     ],
     "weight": 20
+  },
+  {
+    "id": "aeonstep_rockslide",
+    "title": "The Mountain Shudders",
+    "message": "Near a cave trail in Intirumi, the ground gives a deep rumble. A sudden rock slide tears open the cliffside. When the dust clears, a hidden path climbs toward a high, sunlit shelf. You follow it and map the newly revealed Aeonstep Plateau.",
+    "conditions": {
+      "requires_exploration": true,
+      "requires_nation": "Sapa Inti Empire",
+      "requires_locked_map": "aeonstep_plateau"
+    },
+    "effects": [
+      {
+        "type": "unlock_map",
+        "map_key": "aeonstep_plateau",
+        "map_name": "Aeonstep Plateau",
+        "action_label": "Travel to Aeonstep",
+        "url": "?pg=aeonstep"
+      }
+    ],
+    "weight": 8
   }
 ]
