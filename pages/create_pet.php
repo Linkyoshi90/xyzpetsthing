@@ -65,7 +65,7 @@ foreach ($species as $entry) {
     $region = $entry['region_name'] ?: 'Unknown';
     $groupedSpecies[$region][] = $entry;
 }
-
+/**
 $countryNamesFile = __DIR__ . '/../data-readonly/country-names.txt';
 if (is_file($countryNamesFile)) {
     foreach (file($countryNamesFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $countryName) {
@@ -76,7 +76,7 @@ if (is_file($countryNamesFile)) {
         $groupedSpecies[$countryName] = $groupedSpecies[$countryName] ?? [];
     }
 }
-
+*/
 $regionNames = array_keys($groupedSpecies);
 sort($regionNames, SORT_NATURAL | SORT_FLAG_CASE);
 $sortedSpecies = [];
