@@ -9,6 +9,7 @@ Anomalocaris
 Anubis
 Apsara
 Argentinosaurus
+Argentowlis
 Armadillo
 Azureus
 Bahamut
@@ -44,6 +45,7 @@ Gandharva
 Genie
 Girtablilu
 Golem
+Hairypterix
 Harpy
 Horned Serpent Uktena
 Jack-o-lantern
@@ -96,6 +98,7 @@ Tengu
 Thunderbird
 Tiddalik
 Toucan
+Turtworld
 Tuskin
 Vermillion Bird
 Vodyanoy
