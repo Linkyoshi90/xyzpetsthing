@@ -473,25 +473,7 @@ function handle_event_breeding_tick_effect(int $user_id, array $effect): ?array
 
 function handle_event_unlock_species_effect(int $user_id, array $effect, array $context = [])
 {
-    $allowedSpecies = [];
-    $file = __DIR__ . '/../data-readonly/available_creatures.txt';
-    if (is_file($file)) {
-        foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if ($line === '' || $line[0] === '#') {
-                continue;
-            }
-            $allowedSpecies[] = $line;
-        }
-    }
-
-    if (!$allowedSpecies) {
-        return null;
-    }
-
-    $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
-    $regionFirstPlaceholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
-    $params = array_merge([$user_id], $allowedSpecies, $allowedSpecies);
+    $params = [$user_id];
 
     $targetNation = trim((string)($context['location']['nation'] ?? ''));
     $regionFilterSql = '';
@@ -509,10 +491,9 @@ function handle_event_unlock_species_effect(int $user_id, array $effect, array $
         . "LEFT JOIN ( "
         . "  SELECT MIN(ps2.species_id) AS species_id "
         . "  FROM pet_species ps2 "
-        . "  WHERE ps2.species_name IN ($regionFirstPlaceholders) "
         . "  GROUP BY ps2.region_id "
         . ") region_defaults ON region_defaults.species_id = ps.species_id "
-        . "WHERE ps.species_name IN ($placeholders) "
+        . "WHERE 1=1 "
         . "  AND pus.entryId IS NULL "
         . "  AND region_defaults.species_id IS NULL"
         . $regionFilterSql,
