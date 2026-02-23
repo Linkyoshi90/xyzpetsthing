@@ -473,7 +473,30 @@ function handle_event_breeding_tick_effect(int $user_id, array $effect): ?array
 
 function handle_event_unlock_species_effect(int $user_id, array $effect, array $context = [])
 {
+    $allowedSpecies = [];
+    $file = __DIR__ . '/../data-readonly/available_creatures.txt';
+    if (is_file($file)) {
+        foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            $line = trim($line);
+            if ($line === '' || $line[0] === '#') {
+                continue;
+            }
+            $allowedSpecies[] = $line;
+        }
+    }
+
     $params = [$user_id];
+    $regionDefaultsJoinSql = '';
+    if ($allowedSpecies) {
+        $regionFirstPlaceholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+        $regionDefaultsJoinSql = "LEFT JOIN ( "
+            . "  SELECT MIN(ps2.species_id) AS species_id "
+            . "  FROM pet_species ps2 "
+            . "  WHERE ps2.species_name IN ($regionFirstPlaceholders) "
+            . "  GROUP BY ps2.region_id "
+            . ") region_defaults ON region_defaults.species_id = ps.species_id ";
+        $params = array_merge($params, $allowedSpecies);
+    }
 
     $targetNation = trim((string)($context['location']['nation'] ?? ''));
     $regionFilterSql = '';
@@ -488,14 +511,10 @@ function handle_event_unlock_species_effect(int $user_id, array $effect, array $
         . "LEFT JOIN regions r ON r.region_id = ps.region_id "
         . "LEFT JOIN player_unlocked_species pus "
         . "  ON pus.player_id = ? AND pus.unlocked_species_id = ps.species_id "
-        . "LEFT JOIN ( "
-        . "  SELECT MIN(ps2.species_id) AS species_id "
-        . "  FROM pet_species ps2 "
-        . "  GROUP BY ps2.region_id "
-        . ") region_defaults ON region_defaults.species_id = ps.species_id "
+        . $regionDefaultsJoinSql
         . "WHERE 1=1 "
         . "  AND pus.entryId IS NULL "
-        . "  AND region_defaults.species_id IS NULL"
+        . ($allowedSpecies ? "  AND region_defaults.species_id IS NULL" : '')
         . $regionFilterSql,
         $params
     )->fetchAll(PDO::FETCH_ASSOC);
