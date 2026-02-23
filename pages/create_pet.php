@@ -45,8 +45,9 @@ if ($allowedSpecies) {
             "  WHERE ps2.species_name IN ($regionFirstPlaceholders) " .
             "  GROUP BY ps2.region_id " .
             ") region_defaults ON region_defaults.species_id = ps.species_id " .
-            "WHERE ps.species_name IN ($placeholders) " .
-            "  AND (pus.entryId IS NOT NULL OR region_defaults.species_id IS NOT NULL) " .
+            "WHERE ((ps.species_name IN ($placeholders) " .
+            "  AND (pus.entryId IS NOT NULL OR region_defaults.species_id IS NOT NULL)) " .
+            "  OR pus.entryId IS NOT NULL) " .
             "ORDER BY ps.species_name",
             $params
         )->fetchAll(PDO::FETCH_ASSOC);

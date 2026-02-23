@@ -485,13 +485,18 @@ function handle_event_unlock_species_effect(int $user_id, array $effect, array $
         }
     }
 
-    if (!$allowedSpecies) {
-        return null;
+    $params = [$user_id];
+    $regionDefaultsJoinSql = '';
+    if ($allowedSpecies) {
+        $regionFirstPlaceholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
+        $regionDefaultsJoinSql = "LEFT JOIN ( "
+            . "  SELECT MIN(ps2.species_id) AS species_id "
+            . "  FROM pet_species ps2 "
+            . "  WHERE ps2.species_name IN ($regionFirstPlaceholders) "
+            . "  GROUP BY ps2.region_id "
+            . ") region_defaults ON region_defaults.species_id = ps.species_id ";
+        $params = array_merge($params, $allowedSpecies);
     }
-
-    $placeholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
-    $regionFirstPlaceholders = implode(',', array_fill(0, count($allowedSpecies), '?'));
-    $params = array_merge([$user_id], $allowedSpecies, $allowedSpecies);
 
     $targetNation = trim((string)($context['location']['nation'] ?? ''));
     $regionFilterSql = '';
@@ -506,15 +511,10 @@ function handle_event_unlock_species_effect(int $user_id, array $effect, array $
         . "LEFT JOIN regions r ON r.region_id = ps.region_id "
         . "LEFT JOIN player_unlocked_species pus "
         . "  ON pus.player_id = ? AND pus.unlocked_species_id = ps.species_id "
-        . "LEFT JOIN ( "
-        . "  SELECT MIN(ps2.species_id) AS species_id "
-        . "  FROM pet_species ps2 "
-        . "  WHERE ps2.species_name IN ($regionFirstPlaceholders) "
-        . "  GROUP BY ps2.region_id "
-        . ") region_defaults ON region_defaults.species_id = ps.species_id "
-        . "WHERE ps.species_name IN ($placeholders) "
+        . $regionDefaultsJoinSql
+        . "WHERE 1=1 "
         . "  AND pus.entryId IS NULL "
-        . "  AND region_defaults.species_id IS NULL"
+        . ($allowedSpecies ? "  AND region_defaults.species_id IS NULL" : '')
         . $regionFilterSql,
         $params
     )->fetchAll(PDO::FETCH_ASSOC);
