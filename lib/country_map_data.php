@@ -974,7 +974,6 @@ function get_country_map_config(string $slug): ?array {
     if ($slug === 'srl' && function_exists('current_user')) {
         $user = current_user();
         if ($user) {
-            grant_map_unlock((int)$user['id'], 'pelagora_ringtown');
             if (has_map_unlock((int)$user['id'], 'pelagora_ringtown')) {
                 $config['areas'][] = [
                     'name' => 'Pelagora',
