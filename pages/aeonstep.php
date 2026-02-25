@@ -26,8 +26,8 @@ $mapAreas = [
         'id' => 'emberfen',
         'name' => 'Emberfen',
         'description' => 'Warm black mud, giant dragonflies, and spore-light nights over steaming reed pools.',
-        'action' => 'Survey Wetlands',
-        'href' => '#emberfen',
+        'action' => 'Visit Grill',
+        'href' => '?pg=aest-emberfen-grill',
         'points' => toPercentPoints([770, 420, 980, 380, 1120, 500, 1085, 650, 850, 690, 710, 560], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#14b8a6'
     ],
@@ -123,7 +123,7 @@ $mapAreas = [
         <article class="lore-card" id="emberfen">
             <h2>Emberfen &amp; Sunprint Basin</h2>
             <p>Emberfen bubbles with hot springs, dragonflies, mirelurks, and reedbiters that recycle decay into life. Sunprint Basin bakes tracks in clay—and somehow records prints no one saw being made.</p>
-            <a href="#sunprint-basin">Track reports</a>
+            <a href="?pg=aest-emberfen-grill">Visit the Emberfen grill</a>
         </article>
         <article class="lore-card" id="skycrow-ledge">
             <h2>Skycrow Ledge &amp; Bone Chorus Cave</h2>
