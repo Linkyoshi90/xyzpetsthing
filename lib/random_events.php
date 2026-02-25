@@ -501,11 +501,15 @@ function handle_event_unlock_species_effect(int $user_id, array $effect, array $
     $targetNation = trim((string)($context['location']['nation'] ?? ''));
     $candidateRegions = [];
     if ($targetNation !== '') {
-        $candidateRegions[] = $targetNation;
-        if ($targetNation === 'Aeonstep Plateau') {
-            // Aeonstep is discovered from Sapa Inti, and its species may still belong to that region.
-            $candidateRegions[] = 'Sapa Inti Empire';
-        }
+        $regionAliases = [
+            'aeonstep plateau' => ['Aeonstep Plateau', 'Aeonstep', 'Sapa Inti Empire'],
+            'aeonstep' => ['Aeonstep Plateau', 'Aeonstep', 'Sapa Inti Empire'],
+            'sapa inti empire' => ['Sapa Inti Empire', 'Aeonstep Plateau', 'Aeonstep'],
+        ];
+
+        $normalizedTarget = strtolower($targetNation);
+        $candidateRegions = $regionAliases[$normalizedTarget] ?? [$targetNation];
+        $candidateRegions = array_values(array_unique(array_filter(array_map('trim', $candidateRegions))));
     }
 
     $regionFilterSql = '';
