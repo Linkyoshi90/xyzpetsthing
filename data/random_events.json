@@ -193,5 +193,25 @@
       }
     ],
     "weight": 8
+  },
+  {
+    "id": "pelagora_whirlpool",
+    "title": "The Treasure Below",
+    "message": "While diving off Navakai, you discover an old treasure chest wedged between reef stones. The lock gives way with a snap, but before you can look inside, a whirlpool erupts beneath you and drags you down. When you finally wake, you are lying on wet basalt under strange ringed arches: Pelagora.",
+    "conditions": {
+      "requires_exploration": true,
+      "requires_nation": "Spice Route League",
+      "requires_locked_map": "pelagora_ringtown"
+    },
+    "effects": [
+      {
+        "type": "unlock_map",
+        "map_key": "pelagora_ringtown",
+        "map_name": "Pelagora",
+        "action_label": "Travel to Pelagora",
+        "url": "?pg=pelagora"
+      }
+    ],
+    "weight": 8
   }
 ]
