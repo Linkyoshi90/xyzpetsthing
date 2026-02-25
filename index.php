@@ -19,10 +19,10 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'auronia','borealia','dawnmarch','gulfbelt','moana_crown',
     'orienthem','saharene','tundria','uluru','verdania',
     // Countries
-    'aa','baharamandal','bretonreach','cc',
+    'aa','aeonstep','baharamandal','bretonreach','cc',
     'esd','esl','fom','fom-fishing','gc','hammurabia',
-    'ie','kemet','ldk','nornheim','rsc',
-    'rheinland','rt','sie','sc','aeonstep',
+    'ie','kemet','ldk','nornheim','pelagora','rsc',
+    'rheinland','rt','sie','sc',
     'stap','srl',
     'urb','xochimex','yamanokubo','yn',
     // country subsections
