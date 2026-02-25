@@ -85,6 +85,8 @@ Rainbow Serpent
 Ratatoskr
 Rheintalensis
 Rhiwool
+Sabertooth
+Sabre
 Sea Turtle
 Slidred
 Spider-Crab
@@ -100,6 +102,7 @@ Tiddalik
 Toucan
 Turtworld
 Tuskin
+Tusktaur
 Vermillion Bird
 Vodyanoy
 Wadjet
