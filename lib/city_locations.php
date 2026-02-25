@@ -77,6 +77,7 @@ function get_page_location_map(): array {
         'stap' => 'Sovereign Tribes of the Ancestral Plains',
         'stap_paint_shack' => 'Sovereign Tribes of the Ancestral Plains',
         'srl' => 'Spice Route League',
+        'pelagora' => 'Spice Route League',
         'srl_paint_shack' => 'Spice Route League',
         'urb' => 'United free Republic of Borealia',
         'urb_paint_shack' => 'United free Republic of Borealia',
