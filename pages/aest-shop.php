@@ -3,7 +3,7 @@ require_login();
 require_once __DIR__.'/../lib/shops.php';
 require_once __DIR__.'/../lib/input.php';
 
-$shopId = 4;
+$shopId = 7;
 $shop = shop_get($shopId) ?? ['shop_id' => $shopId, 'shop_name' => 'Aeonstep Provisioners'];
 
 $keywords = ['prehistoric', 'neogenic', 'aeon', 'aeonstepian'];
