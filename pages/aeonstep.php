@@ -17,8 +17,8 @@ $mapAreas = [
         'id' => 'fangroot-canyon',
         'name' => 'Fangroot Canyon',
         'description' => 'A root-hung chasm where feathered hunters and climbing herbivores test each other on ledges of sun-yellow stone.',
-        'action' => 'Read Field Notes',
-        'href' => '#fangroot-canyon',
+        'action' => 'Visit Shop',
+        'href' => '?pg=aest-shop',
         'points' => toPercentPoints([275, 220, 510, 170, 650, 260, 600, 360, 370, 390, 250, 310], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#f97316'
     ],
@@ -118,7 +118,7 @@ $mapAreas = [
         <article class="lore-card" id="fangroot-canyon">
             <h2>Fangroot Canyon &amp; Shellplain</h2>
             <p>Fangroot Canyon hangs with impossible roots and returning echoes that come back as roars. Nearby, Shellplain hosts stoneback herds and beaked scavengers among fossil-littered flats.</p>
-            <a href="#overview">Return to regional brief</a>
+            <a href="?pg=aest-shop">Visit the Fangroot shop</a>
         </article>
         <article class="lore-card" id="emberfen">
             <h2>Emberfen &amp; Sunprint Basin</h2>
@@ -212,13 +212,23 @@ $mapAreas = [
         area.addEventListener('focus', () => activate(area));
         area.addEventListener('click', () => {
             activate(area);
-            window.location.hash = area.dataset.href.replace('#', '');
+            const href = area.dataset.href || '';
+            if (href.startsWith('?pg=')) {
+                window.location.href = href;
+                return;
+            }
+            window.location.hash = href.replace('#', '');
         });
         area.addEventListener('keydown', (event) => {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 activate(area);
-                window.location.hash = area.dataset.href.replace('#', '');
+                const href = area.dataset.href || '';
+                if (href.startsWith('?pg=')) {
+                    window.location.href = href;
+                    return;
+                }
+                window.location.hash = href.replace('#', '');
             }
         });
     });

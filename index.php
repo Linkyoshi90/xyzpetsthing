@@ -26,7 +26,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'stap','srl',
     'urb','xochimex','yamanokubo','yn',
     // country subsections
-    'aa-adventure','aa-pizza','aa-library','aa_paint_shack','aa-wof',
+    'aa-adventure','aa-pizza','aa-library','aa_paint_shack','aa-wof','aest-shop',
     'bm_paint_shack',
     'bm_paint_shack','bm_pt',
     'br_paint_shack','br-everything-store',
@@ -82,6 +82,11 @@ if($pg === 'blackjack' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if($pg === 'aa-pizza' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/aa-pizza.php';
+  exit;
+}
+if($pg === 'aest-shop' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/aest-shop.php';
   exit;
 }
 if($pg === 'ynk-ramen' && $_SERVER['REQUEST_METHOD'] === 'POST') {
