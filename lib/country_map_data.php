@@ -712,6 +712,33 @@ function get_country_map_config(string $slug): ?array {
                 ['name' => 'Paint Shack', 'description' => 'Spice Route League custom colors.', 'action' => 'Explore', 'href' => '?pg=srl_paint_shack', 'color' => '#f43f5e', 'points' => country_map_rect_points(250, 500, 250, 170, $w, $h)],
             ],
         ],
+        'pelagora' => [
+            'title' => 'Spice Route League - Pelagora',
+            'subtitle' => 'Ringed Sea-Town of the Heart Mirror',
+            'image' => is_file(__DIR__.'/../images/harmontide-pelagora.webp') ? 'images/harmontide-pelagora.webp' : 'images/harmontide-srl.webp',
+            'lore' => 'Pelagora is a ringed sea-town that remembers when it was a capital, split between stone and tide around a still, deep lagoon.',
+            'lore_sections' => [
+                [
+                    'title' => 'Overview',
+                    'html' => '<p><strong>Pelagora</strong> is a ringed sea-town that remembers when it was a capital. From above, it looks like a broken bracelet: concentric arcs of stone and water curving around a still, deep lagoon. The outer ring rises just above the waves, paved in pale basalt and slick with spray; the inner rings step down toward the central pool like terraces where the ocean has come to sit. Bronze-green pillars lean out of the water, barnacled and banded with old glyphs, and at dusk the whole place glows with drowned light from below.</p><p>The town is not fully drowned, only half-returned to the sea. In storms, spray lashes over the outer ring and fills the lower plazas; in calmer weather, the channels lie clear and glassy, showing streets and colonnades on the lagoon floor. The people of Pelagora live on the highest arcs and in stone houses set back from the waterline, always within sight of the waves that once punished their ancestors.</p>',
+                ],
+                [
+                    'title' => 'The Sinking and the Rings',
+                    'html' => '<p>Pelagora was founded by a people who believed order could be drawn into circles and that the heart of the world lay at the center of the smallest ring. Trade poured in from every horizon, temple fires never went out, and the harbor’s bronze bulls drank wine thicker than seawater. But pride swelled higher than any tide. When councils began to weigh glory over mercy, the sea answered, and the ground under Pelagora folded.</p><p>Now the town lives as a remnant and a warning. Great palace rings are half-submerged, upper galleries turned into walkways and markets, lower halls given over to fish and slow creatures that glide between fallen columns. Rope bridges and shell-chime chains link surviving arcs while narrow boats dart through old canals, guided as much by memory as sight.</p>',
+                ],
+                [
+                    'title' => 'Life by Tide and Law',
+                    'html' => '<p>Everyday life runs on tides and echoes. Markets open when the inner lagoon is calm enough for boats to tie up; they close when the first swell carries salt spray over the third stair. Fisher-families drop nets into flooded courtyards and haul silver schools where nobles once danced. Divers follow sunshafts through colonnades, counting heartbeats to find relics from the age of hubris.</p><p>Pelagoran law is simple and heavy: no one owns more shoreline than they can walk in a single breath, and no one may seal a door that faces the sea. Fines are paid in stone and service—patch the cracked quay, strengthen the sea-wall, light lamps along flood stairs. Each month, scribes read aloud the names of those drowned in the old sinking so no one can claim they forgot.</p>',
+                ],
+                [
+                    'title' => 'Sea’s Temper and the Heart Mirror',
+                    'html' => '<p>Emotion in Pelagora moves like water. Joy rings loudly across curved stone; grief sinks fast and deep. When envy or greed run unchecked, locals say the sea responds: waves slap higher on the outer ring, carved dolphins darken with salt, and low bronze bells under the water toll on their own. Visitors learn quickly to bargain fair, share catch, and leave bragging on land.</p><p>At Pelagora’s center rests the <strong>Heart Mirror</strong>, a lagoon that can reflect sky and rings so perfectly the city seems suspended between worlds. On rare still nights, elders say it shows Pelagora before the sinking—every ring whole, every tower bright. Travelers who stay long enough leave feeling the rings’ shape in their own thoughts.</p>',
+                ],
+            ],
+            'back_label' => 'Back to Spice Route League',
+            'back_href' => '?pg=srl',
+            'areas' => [],
+        ],
         'stap' => [
             'title' => 'Sovereign Tribes - Turtlestar',
             'subtitle' => 'Circle Fires and Open Plains',
@@ -941,6 +968,23 @@ function get_country_map_config(string $slug): ?array {
                 'color' => '#a78bfa',
                 'points' => country_map_rect_points(1080, 255, 300, 185, $w, $h),
             ];
+        }
+    }
+
+    if ($slug === 'srl' && function_exists('current_user')) {
+        $user = current_user();
+        if ($user) {
+            grant_map_unlock((int)$user['id'], 'pelagora_ringtown');
+            if (has_map_unlock((int)$user['id'], 'pelagora_ringtown')) {
+                $config['areas'][] = [
+                    'name' => 'Pelagora',
+                    'description' => 'A half-drowned ring-town where old canals now flow through market terraces.',
+                    'action' => 'Travel',
+                    'href' => '?pg=pelagora',
+                    'color' => '#2dd4bf',
+                    'points' => country_map_rect_points(1030, 250, 300, 190, $w, $h),
+                ];
+            }
         }
     }
 
