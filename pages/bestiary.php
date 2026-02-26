@@ -15,15 +15,117 @@
 // CONFIGURATION
 // ============================================================================
 
-define('COUNTRY_FILE', __DIR__ . '/../data-readonly/country-names.txt');
-define('COUNTRY_FILE_ALT', __DIR__ . '/../data-readonly/country_names.txt');
-define('CREATURE_DATA_FILE', __DIR__ . '/../data-readonly/creature_encyclopedia.json');
+// Try multiple possible locations for the country file
+define('COUNTRY_FILE_PATHS', [
+    __DIR__ . '/../data-readonly/country-names.txt',
+    __DIR__ . '/../data-readonly/country_names.txt',
+    __DIR__ . '/../../data-readonly/country-names.txt',
+    __DIR__ . '/data-readonly/country-names.txt',
+    dirname(__DIR__) . '/data-readonly/country-names.txt',
+]);
 
-require_once __DIR__ . '/../db.php';
+define('CREATURE_DATA_PATHS', [
+    __DIR__ . '/../data-readonly/creature_encyclopedia.json',
+    __DIR__ . '/../../data-readonly/creature_encyclopedia.json',
+    dirname(__DIR__) . '/data-readonly/creature_encyclopedia.json',
+]);
+
+// Include db.php if it exists (for embedded mode)
+$dbPath = __DIR__ . '/../db.php';
+if (is_file($dbPath)) {
+    require_once $dbPath;
+}
 
 // ============================================================================
-// DATABASE HELPER (shared db.php connection)
+// DATABASE HELPER
 // ============================================================================
+
+/**
+ * Check if q() function exists (from db.php)
+ */
+function hasDb(): bool {
+    return function_exists('q');
+}
+
+/**
+ * Get database connection (fallback if q() doesn't exist)
+ */
+function getDb(): ?PDO {
+    static $db = null;
+    
+    if ($db !== null) {
+        return $db;
+    }
+    
+    // Try to find the database file
+    $dbPaths = [
+        __DIR__ . '/../db/custom.db',
+        __DIR__ . '/../../db/custom.db',
+        dirname(__DIR__) . '/db/custom.db',
+    ];
+    
+    foreach ($dbPaths as $dbPath) {
+        if (is_file($dbPath)) {
+            try {
+                $db = new PDO('sqlite:' . $dbPath);
+                $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+                return $db;
+            } catch (PDOException $e) {
+                continue;
+            }
+        }
+    }
+    
+    return null;
+}
+
+/**
+ * Execute a query (wrapper for q() or direct PDO)
+ */
+function executeQuery(string $sql, array $params = []): ?array {
+    // Use q() from db.php if available
+    if (function_exists('q')) {
+        try {
+            return q($sql, $params)->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+    
+    // Fallback to direct PDO
+    $db = getDb();
+    if (!$db) {
+        return null;
+    }
+    
+    try {
+        $stmt = $db->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return null;
+    }
+}
+
+/**
+ * Check if a table exists (SQLite compatible)
+ */
+function tableExists(string $tableName): bool {
+    $db = getDb();
+    if (!$db) {
+        return false;
+    }
+    
+    try {
+        $result = $db->query(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name=" . $db->quote($tableName)
+        );
+        return $result && $result->fetch() !== false;
+    } catch (PDOException $e) {
+        return false;
+    }
+}
 
 // ============================================================================
 // DATA LOADING
@@ -34,31 +136,73 @@ require_once __DIR__ . '/../db.php';
  */
 function loadCountries(): array {
     $countries = [];
-    $countryFiles = [COUNTRY_FILE, COUNTRY_FILE_ALT];
-
-    foreach ($countryFiles as $countryFile) {
-        if (!is_file($countryFile)) {
-            continue;
-        }
-
-        foreach (file($countryFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-            $line = trim($line);
-            if ($line !== '' && $line[0] !== '#') {
-                $countries[] = $line;
+    
+    // Try each possible path
+    foreach (COUNTRY_FILE_PATHS as $filePath) {
+        if (is_file($filePath) && is_readable($filePath)) {
+            $content = file_get_contents($filePath);
+            if ($content !== false) {
+                $lines = explode("\n", $content);
+                foreach ($lines as $line) {
+                    $line = trim($line);
+                    // Skip empty lines and comments
+                    if ($line !== '' && !str_starts_with($line, '#')) {
+                        $countries[] = $line;
+                    }
+                }
+                
+                // If we found countries, break
+                if (!empty($countries)) {
+                    break;
+                }
             }
         }
     }
-
+    
+    // Fallback: try to get regions from database
     if (empty($countries)) {
-        foreach (getRegions() as $region) {
+        $regions = getRegions();
+        foreach ($regions as $region) {
             if (!empty($region['name'])) {
                 $countries[] = trim((string)$region['name']);
             }
         }
     }
-
-    $countries = array_values(array_unique(array_filter($countries)));
+    
+    // Final fallback: hardcoded list
+    if (empty($countries)) {
+        $countries = [
+            'Aegia Aeterna',
+            'Aeonstep Plateau',
+            'Baharamandal',
+            'Bretonreach',
+            'Crescent Caliphate',
+            'Eagle Serpent Dominion',
+            'Eretz-Shalem League',
+            'Gran Columbia',
+            'Hammurabia',
+            'Itzam Empire',
+            'Kemet',
+            'Lotus-Dragon Kingdom',
+            'Nornheim',
+            'Red Sun Commonwealth',
+            'Rheinland',
+            'Rodinian Tsardom',
+            'Sapa Inti Empire',
+            'Sila Council',
+            'Sovereign Tribes of the Ancestral Plains',
+            'Spice Route League',
+            'United free Republic of Borealia',
+            'Xochimex',
+            'Yamanokubo',
+            'Yara Nations',
+        ];
+    }
+    
+    // Clean and deduplicate
+    $countries = array_values(array_unique(array_filter($countries, fn($c) => trim($c) !== '')));
     sort($countries, SORT_NATURAL | SORT_FLAG_CASE);
+    
     return $countries;
 }
 
@@ -66,91 +210,88 @@ function loadCountries(): array {
  * Load creature encyclopedia JSON data
  */
 function loadCreatureData(): array {
-    if (is_file(CREATURE_DATA_FILE)) {
-        $decoded = json_decode(file_get_contents(CREATURE_DATA_FILE), true);
-        if (is_array($decoded)) {
-            return $decoded;
+    foreach (CREATURE_DATA_PATHS as $filePath) {
+        if (is_file($filePath) && is_readable($filePath)) {
+            $content = file_get_contents($filePath);
+            if ($content !== false) {
+                $decoded = json_decode($content, true);
+                if (is_array($decoded)) {
+                    return $decoded;
+                }
+            }
         }
     }
     return [];
 }
 
 /**
- * Get regions from database (countries that have creatures)
+ * Get regions from database
  */
 function getRegions(): array {
-    try {
-        return q("SELECT id, name FROM regions ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        // Table might not exist, return empty array
+    // Check if regions table exists
+    if (!tableExists('regions')) {
         return [];
     }
+    
+    return executeQuery("SELECT id, name FROM regions ORDER BY name") ?? [];
 }
 
 /**
  * Get creatures grouped by region
  */
 function getCreaturesByRegion(): array {
-    $db = db();
-    if (!$db) {
-        return getSampleCreatures();
-    }
-
     $creatureData = loadCreatureData();
     
-    try {
-        // Check if pet_species table exists
-        $tables = q("SHOW TABLES LIKE 'pet_species'")->fetchAll(PDO::FETCH_NUM);
-        
-        if (empty($tables)) {
-            // Return sample data if table doesn't exist
-            return getSampleCreatures();
-        }
-        
-        $creatures = q("
-            SELECT 
-                ps.id,
-                ps.name as species_name,
-                ps.base_hp,
-                ps.base_atk,
-                ps.base_def,
-                ps.base_init,
-                r.name as region_name,
-                r.id as region_id
-            FROM pet_species ps
-            LEFT JOIN regions r ON r.id = ps.region_id
-            ORDER BY r.name, ps.name
-        ")->fetchAll(PDO::FETCH_ASSOC);
-        
-        $grouped = [];
-        foreach ($creatures as $creature) {
-            $region = $creature['region_name'] ?: 'Unknown';
-            
-            // Merge with JSON data if available
-            $jsonData = $creatureData[$creature['species_name']] ?? [];
-            
-            $grouped[$region][] = [
-                'id' => $creature['id'],
-                'name' => $creature['species_name'],
-                'stats' => [
-                    'hp' => $jsonData['stats']['hp'] ?? (int)$creature['base_hp'],
-                    'atk' => $jsonData['stats']['atk'] ?? (int)$creature['base_atk'],
-                    'def' => $jsonData['stats']['def'] ?? (int)$creature['base_def'],
-                    'init' => $jsonData['stats']['init'] ?? (int)$creature['base_init'],
-                ],
-                'colors' => $jsonData['colors'] ?? ['Red', 'Blue', 'Green', 'Yellow', 'Purple'],
-                'description' => $jsonData['description'] ?? 'Details are being cataloged by the library staff.',
-                'rarity' => $jsonData['rarity'] ?? 'Common',
-                'size' => $jsonData['size'] ?? 'Medium',
-                'diet' => $jsonData['diet'] ?? 'Unknown',
-            ];
-        }
-        
-        return $grouped;
-        
-    } catch (PDOException $e) {
+    // Check if pet_species table exists
+    if (!tableExists('pet_species')) {
         return getSampleCreatures();
     }
+    
+    $creatures = executeQuery("
+        SELECT 
+            ps.id,
+            ps.name as species_name,
+            ps.base_hp,
+            ps.base_atk,
+            ps.base_def,
+            ps.base_init,
+            r.name as region_name,
+            r.id as region_id
+        FROM pet_species ps
+        LEFT JOIN regions r ON r.id = ps.region_id
+        ORDER BY r.name, ps.name
+    ");
+    
+    if ($creatures === null || empty($creatures)) {
+        return getSampleCreatures();
+    }
+    
+    $grouped = [];
+    foreach ($creatures as $creature) {
+        $region = $creature['region_name'] ?: 'Unknown';
+        
+        // Merge with JSON data if available
+        $jsonData = $creatureData[$creature['species_name']] ?? [];
+        
+        $grouped[$region][] = [
+            'id' => $creature['id'],
+            'name' => $creature['species_name'],
+            'stats' => [
+                'hp' => $jsonData['stats']['hp'] ?? (int)$creature['base_hp'],
+                'atk' => $jsonData['stats']['atk'] ?? (int)$creature['base_atk'],
+                'def' => $jsonData['stats']['def'] ?? (int)$creature['base_def'],
+                'init' => $jsonData['stats']['init'] ?? (int)$creature['base_init'],
+            ],
+            'colors' => $jsonData['colors'] ?? ['Red', 'Blue', 'Green', 'Yellow', 'Purple'],
+            'description' => $jsonData['description'] ?? 'Details are being cataloged by the library staff.',
+            'rarity' => $jsonData['rarity'] ?? 'Common',
+            'size' => $jsonData['size'] ?? 'Medium',
+            'diet' => $jsonData['diet'] ?? 'Unknown',
+            'region' => $region,
+        ];
+    }
+    
+    return $grouped;
 }
 
 /**
@@ -159,7 +300,7 @@ function getCreaturesByRegion(): array {
 function getSampleCreatures(): array {
     $countries = loadCountries();
     $creatureData = loadCreatureData();
-
+    
     if (empty($countries)) {
         $countries = ['Unknown'];
     }
@@ -175,13 +316,15 @@ function getSampleCreatures(): array {
     
     // Distribute creatures among countries
     $grouped = [];
-    foreach ($countries as $idx => $country) {
+    foreach ($countries as $country) {
         $grouped[$country] = [];
     }
     
     $countryIdx = 0;
+    $countryKeys = array_keys($grouped);
+    
     foreach ($sampleCreatures as $creatureName) {
-        $country = $countries[$countryIdx % count($countries)];
+        $country = $countryKeys[$countryIdx % count($countryKeys)];
         $jsonData = $creatureData[$creatureName] ?? [];
         
         $grouped[$country][] = [
@@ -198,6 +341,7 @@ function getSampleCreatures(): array {
             'rarity' => $jsonData['rarity'] ?? 'Common',
             'size' => $jsonData['size'] ?? 'Medium',
             'diet' => $jsonData['diet'] ?? 'Unknown',
+            'region' => $country,
         ];
         
         $countryIdx++;
@@ -312,12 +456,21 @@ foreach ($creaturesByRegion as $regionCreatures) {
 $pages = [];
 $pages[] = ['type' => 'index', 'data' => null];
 
+$regionPageIndex = [];
+$creaturePageIndex = [];
+$idx = 1;
+
 foreach ($countries as $country) {
     $regionCreatures = $creaturesByRegion[$country] ?? [];
     if (!empty($regionCreatures)) {
+        $regionPageIndex[$country] = $idx;
         $pages[] = ['type' => 'region', 'data' => $country];
+        $idx++;
+        
         foreach ($regionCreatures as $creature) {
+            $creaturePageIndex[$creature['name']] = $idx;
             $pages[] = ['type' => 'creature', 'data' => $creature['name']];
+            $idx++;
         }
     }
 }
@@ -549,7 +702,7 @@ $totalPages = count($pages);
                 </button>
                 
                 <!-- Close book button -->
-                <button id="close-book" class="absolute -top-2 -right-2 w-8 h-8 bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-full shadow-lg flex items-center justify-center transition-colors z-50 cursor-pointer">
+                <button id="close-book-btn" class="absolute -top-2 -right-2 w-8 h-8 bg-amber-700 hover:bg-amber-600 text-amber-100 rounded-full shadow-lg flex items-center justify-center transition-colors z-50 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -585,7 +738,7 @@ $totalPages = count($pages);
                 <span id="region-emoji" class="text-4xl"></span>
                 <div>
                     <h2 id="region-name" class="text-2xl font-bold text-amber-900 font-serif"></h2>
-                    <p class="text-amber-600 text-sm"></p>
+                    <p id="region-creature-count" class="text-amber-600 text-sm"></p>
                 </div>
             </div>
             <button class="back-to-index mb-4 text-sm text-amber-600 hover:text-amber-800 flex items-center gap-1 transition-colors cursor-pointer">
@@ -694,21 +847,8 @@ $totalPages = count($pages);
         const creatures = <?= json_encode($allCreatures) ?>;
         const creaturesByRegion = <?= json_encode($creaturesByRegion) ?>;
         const countries = <?= json_encode($countries) ?>;
-        
-        // Page index lookup
-        const pageIndexMap = {};
-        let regionPageIndex = {};
-        let creaturePageIndex = {};
-        
-        let idx = 1;
-        countries.forEach(country => {
-            if (creaturesByRegion[country] && creaturesByRegion[country].length > 0) {
-                regionPageIndex[country] = idx++;
-                creaturesByRegion[country].forEach(creature => {
-                    creaturePageIndex[creature.name] = idx++;
-                });
-            }
-        });
+        const regionPageIndex = <?= json_encode($regionPageIndex) ?>;
+        const creaturePageIndex = <?= json_encode($creaturePageIndex) ?>;
         
         // ====================================================================
         // STATE
@@ -717,8 +857,6 @@ $totalPages = count($pages);
         let isBookOpen = false;
         let isFlipping = false;
         let currentPageIndex = 0;
-        let leftArrowOpacity = 0;
-        let rightArrowOpacity = 0;
         
         // ====================================================================
         // DOM ELEMENTS
@@ -735,7 +873,7 @@ $totalPages = count($pages);
         const rightPageNumber = document.getElementById('right-page-number');
         const navLeft = document.getElementById('nav-left');
         const navRight = document.getElementById('nav-right');
-        const closeBook = document.getElementById('close-book');
+        const closeBookBtn = document.getElementById('close-book-btn');
         const flipOverlay = document.getElementById('flip-overlay');
         
         // ====================================================================
@@ -775,6 +913,67 @@ $totalPages = count($pages);
             return text
                 .replace(/\*\*(.+?)\*\*/g, '<strong class="font-bold text-amber-900">$1</strong>')
                 .replace(/\*(.+?)\*/g, '<em class="italic">$1</em>');
+        }
+        
+        // ====================================================================
+        // EMOJI HELPERS
+        // ====================================================================
+        
+        const countryEmojis = <?= json_encode(getCountryEmoji('')) ?>;
+        const creatureEmojis = <?= json_encode(getCreatureEmoji('')) ?>;
+        
+        function getCountryEmoji(name) {
+            const emojis = {
+                'Aegia Aeterna': '🏛️',
+                'Aeonstep Plateau': '🏔️',
+                'Baharamandal': '🕌',
+                'Bretonreach': '🏰',
+                'Crescent Caliphate': '🌙',
+                'Eagle Serpent Dominion': '🦅',
+                'Eretz-Shalem League': '⭐',
+                'Gran Columbia': '🌎',
+                'Hammurabia': '📜',
+                'Itzam Empire': '🐍',
+                'Kemet': '🏺',
+                'Lotus-Dragon Kingdom': '🐉',
+                'Nornheim': '❄️',
+                'Red Sun Commonwealth': '☀️',
+                'Rheinland': '⚔️',
+                'Rodinian Tsardom': '🐻',
+                'Sapa Inti Empire': '🌟',
+                'Sila Council': '🤝',
+                'Sovereign Tribes of the Ancestral Plains': '🏇',
+                'Spice Route League': '🧂',
+                'United free Republic of Borealia': '🦫',
+                'Xochimex': '🌺',
+                'Yamanokubo': '⛩️',
+                'Yara Nations': '🌴',
+            };
+            return emojis[name] || '🏳️';
+        }
+        
+        function getCreatureEmoji(name) {
+            const emojis = {
+                'Tengu': '🦅', 'Dryad': '🌳', 'Treant': '🌲', 'Forest Sprite': '✨', 'Moss Drake': '🐉',
+                'Stone Golem': '🗿', 'Thunder Eagle': '⚡', 'Crystal Wyrm': '💎', 'Mountain Troll': '👹', 'Phoenix': '🔥',
+                'Kraken': '🦑', 'Merfolk': '🧜', 'Sea Serpent': '🐍', 'Siren': '🧝', 'Leviathan': '🐋',
+                'Sand Wyrm': '🏜️', 'Djinn': '🧞', 'Sphinx': '🦁', 'Fire Salamander': '🦎', 'Mummy Lord': '💀',
+                'Frost Giant': '❄️', 'Ice Elemental': '🧊', 'Winter Wolf': '🐺', 'Snow Owl': '🦉', 'Yeti': '👣',
+                'Shadow Wraith': '👻', 'Void Walker': '🌀', 'Dark Knight': '⚔️', 'Necromancer': '🧙', 'Blood Demon': '👹',
+            };
+            return emojis[name] || '📜';
+        }
+        
+        function getRarityColorClass(rarity) {
+            const colors = {
+                'Common': 'bg-gray-100 text-gray-700 border border-gray-300',
+                'Uncommon': 'bg-green-100 text-green-700 border border-green-300',
+                'Rare': 'bg-blue-100 text-blue-700 border border-blue-300',
+                'Epic': 'bg-purple-100 text-purple-700 border border-purple-300',
+                'Legendary': 'bg-amber-100 text-amber-700 border border-amber-300',
+                'Mythical': 'bg-rose-100 text-rose-700 border border-rose-300',
+            };
+            return colors[rarity] || colors['Common'];
         }
         
         // ====================================================================
@@ -824,7 +1023,7 @@ $totalPages = count($pages);
             
             content.querySelector('#region-emoji').textContent = getCountryEmoji(country);
             content.querySelector('#region-name').textContent = country;
-            content.querySelector('.text-amber-600.text-sm').textContent = `${regionCreatures.length} creatures documented`;
+            content.querySelector('#region-creature-count').textContent = `${regionCreatures.length} creatures documented`;
             
             const creaturesList = content.querySelector('#region-creatures');
             regionCreatures.forEach((creature, idx) => {
@@ -908,60 +1107,6 @@ $totalPages = count($pages);
                 default:
                     return null;
             }
-        }
-        
-        function getCountryEmoji(name) {
-            const emojis = {
-                'Aegia Aeterna': '🏛️',
-                'Aeonstep Plateau': '🏔️',
-                'Baharamandal': '🕌',
-                'Bretonreach': '🏰',
-                'Crescent Caliphate': '🌙',
-                'Eagle Serpent Dominion': '🦅',
-                'Eretz-Shalem League': '⭐',
-                'Gran Columbia': '🌎',
-                'Hammurabia': '📜',
-                'Itzam Empire': '🐍',
-                'Kemet': '🏺',
-                'Lotus-Dragon Kingdom': '🐉',
-                'Nornheim': '❄️',
-                'Red Sun Commonwealth': '☀️',
-                'Rheinland': '⚔️',
-                'Rodinian Tsardom': '🐻',
-                'Sapa Inti Empire': '🌟',
-                'Sila Council': '🤝',
-                'Sovereign Tribes of the Ancestral Plains': '🏇',
-                'Spice Route League': '🧂',
-                'United free Republic of Borealia': '🦫',
-                'Xochimex': '🌺',
-                'Yamanokubo': '⛩️',
-                'Yara Nations': '🌴',
-            };
-            return emojis[name] || '🏳️';
-        }
-        
-        function getCreatureEmoji(name) {
-            const emojis = {
-                'Tengu': '🦅', 'Dryad': '🌳', 'Treant': '🌲', 'Forest Sprite': '✨', 'Moss Drake': '🐉',
-                'Stone Golem': '🗿', 'Thunder Eagle': '⚡', 'Crystal Wyrm': '💎', 'Mountain Troll': '👹', 'Phoenix': '🔥',
-                'Kraken': '🦑', 'Merfolk': '🧜', 'Sea Serpent': '🐍', 'Siren': '🧝', 'Leviathan': '🐋',
-                'Sand Wyrm': '🏜️', 'Djinn': '🧞', 'Sphinx': '🦁', 'Fire Salamander': '🦎', 'Mummy Lord': '💀',
-                'Frost Giant': '❄️', 'Ice Elemental': '🧊', 'Winter Wolf': '🐺', 'Snow Owl': '🦉', 'Yeti': '👣',
-                'Shadow Wraith': '👻', 'Void Walker': '🌀', 'Dark Knight': '⚔️', 'Necromancer': '🧙', 'Blood Demon': '👹',
-            };
-            return emojis[name] || '📜';
-        }
-        
-        function getRarityColorClass(rarity) {
-            const colors = {
-                'Common': 'bg-gray-100 text-gray-700 border border-gray-300',
-                'Uncommon': 'bg-green-100 text-green-700 border border-green-300',
-                'Rare': 'bg-blue-100 text-blue-700 border border-blue-300',
-                'Epic': 'bg-purple-100 text-purple-700 border border-purple-300',
-                'Legendary': 'bg-amber-100 text-amber-700 border border-amber-300',
-                'Mythical': 'bg-rose-100 text-rose-700 border border-rose-300',
-            };
-            return colors[rarity] || colors['Common'];
         }
         
         // ====================================================================
@@ -1062,7 +1207,7 @@ $totalPages = count($pages);
         bookCover.addEventListener('click', openBook);
         
         // Close button
-        closeBook.addEventListener('click', closeBook);
+        closeBookBtn.addEventListener('click', closeBook);
         
         // Navigation arrows
         navLeft.addEventListener('click', prevPage);
