@@ -15,29 +15,14 @@
 // CONFIGURATION
 // ============================================================================
 
-define('DB_PATH', __DIR__ . '/../db/custom.db');
 define('COUNTRY_FILE', __DIR__ . '/../data-readonly/country-names.txt');
 define('CREATURE_DATA_FILE', __DIR__ . '/../data-readonly/creature_encyclopedia.json');
 
-// ============================================================================
-// DATABASE HELPER
-// ============================================================================
+require_once __DIR__ . '/../db.php';
 
-function getDB(): PDO {
-    static $db = null;
-    if ($db === null) {
-        $db = new PDO('sqlite:' . DB_PATH);
-        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $db->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    }
-    return $db;
-}
-
-function q(string $sql, array $params = []): PDOStatement {
-    $stmt = getDB()->prepare($sql);
-    $stmt->execute($params);
-    return $stmt;
-}
+// ============================================================================
+// DATABASE HELPER (shared db.php connection)
+// ============================================================================
 
 // ============================================================================
 // DATA LOADING
@@ -78,7 +63,7 @@ function loadCreatureData(): array {
  */
 function getRegions(): array {
     try {
-        return q("SELECT id, name FROM regions ORDER BY name")->fetchAll();
+        return q("SELECT id, name FROM regions ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         // Table might not exist, return empty array
         return [];
@@ -89,12 +74,16 @@ function getRegions(): array {
  * Get creatures grouped by region
  */
 function getCreaturesByRegion(): array {
-    $db = getDB();
+    $db = db();
+    if (!$db) {
+        return getSampleCreatures();
+    }
+
     $creatureData = loadCreatureData();
     
     try {
         // Check if pet_species table exists
-        $tables = $db->query("SELECT name FROM sqlite_master WHERE type='table' AND name='pet_species'")->fetchAll();
+        $tables = q("SHOW TABLES LIKE 'pet_species'")->fetchAll(PDO::FETCH_NUM);
         
         if (empty($tables)) {
             // Return sample data if table doesn't exist
@@ -114,7 +103,7 @@ function getCreaturesByRegion(): array {
             FROM pet_species ps
             LEFT JOIN regions r ON r.id = ps.region_id
             ORDER BY r.name, ps.name
-        ")->fetchAll();
+        ")->fetchAll(PDO::FETCH_ASSOC);
         
         $grouped = [];
         foreach ($creatures as $creature) {
