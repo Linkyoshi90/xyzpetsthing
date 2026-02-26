@@ -16,6 +16,7 @@
 // ============================================================================
 
 define('COUNTRY_FILE', __DIR__ . '/../data-readonly/country-names.txt');
+define('COUNTRY_FILE_ALT', __DIR__ . '/../data-readonly/country_names.txt');
 define('CREATURE_DATA_FILE', __DIR__ . '/../data-readonly/creature_encyclopedia.json');
 
 require_once __DIR__ . '/../db.php';
@@ -33,14 +34,30 @@ require_once __DIR__ . '/../db.php';
  */
 function loadCountries(): array {
     $countries = [];
-    if (is_file(COUNTRY_FILE)) {
-        foreach (file(COUNTRY_FILE, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+    $countryFiles = [COUNTRY_FILE, COUNTRY_FILE_ALT];
+
+    foreach ($countryFiles as $countryFile) {
+        if (!is_file($countryFile)) {
+            continue;
+        }
+
+        foreach (file($countryFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
             $line = trim($line);
             if ($line !== '' && $line[0] !== '#') {
                 $countries[] = $line;
             }
         }
     }
+
+    if (empty($countries)) {
+        foreach (getRegions() as $region) {
+            if (!empty($region['name'])) {
+                $countries[] = trim((string)$region['name']);
+            }
+        }
+    }
+
+    $countries = array_values(array_unique(array_filter($countries)));
     sort($countries, SORT_NATURAL | SORT_FLAG_CASE);
     return $countries;
 }
@@ -142,6 +159,10 @@ function getCreaturesByRegion(): array {
 function getSampleCreatures(): array {
     $countries = loadCountries();
     $creatureData = loadCreatureData();
+
+    if (empty($countries)) {
+        $countries = ['Unknown'];
+    }
     
     $sampleCreatures = [
         'Tengu', 'Dryad', 'Treant', 'Forest Sprite', 'Moss Drake',
@@ -154,8 +175,6 @@ function getSampleCreatures(): array {
     
     // Distribute creatures among countries
     $grouped = [];
-    $creaturesPerCountry = ceil(count($sampleCreatures) / count($countries));
-    
     foreach ($countries as $idx => $country) {
         $grouped[$country] = [];
     }
