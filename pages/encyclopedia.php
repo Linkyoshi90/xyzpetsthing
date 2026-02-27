@@ -56,8 +56,8 @@ if ($bodyAttributes !== '' && preg_match('/class=["\']([^"\']+)["\']/i', $bodyAt
 
 <section class="encyclopedia">
   <div class="encyclopedia__intro">
-    <h1>Creature Encyclopedia</h1>
-    <p class="muted">The standalone Bestiary now runs directly inside the encyclopedia page.</p>
+    <h1></h1>
+    <p class="muted"></p>
   </div>
 </section>
 
