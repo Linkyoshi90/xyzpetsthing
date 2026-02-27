@@ -95,6 +95,7 @@ render_country_interactive_map([
     'title' => 'World Map',
     'subtitle' => 'Explore each region of Harmontide from a scalable, interactive world view.',
     'image' => 'images/harmontide-smol.png',
+    'lore' => 'A living chart of Harmontide, where each continent keeps its own memory, customs, and age-old paths.',
     'lore_sections' => [
         [
             'title' => 'A Cartographer\'s Tidbit',
