@@ -7,7 +7,75 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "16bit",
+      "8bit",
+      "baby",
+      "bikini",
+      "black",
+      "blackwhite",
+      "blue",
+      "blue2",
+      "blue3",
+      "brown",
+      "burlap",
+      "checkered",
+      "chocolate",
+      "christmas",
+      "cloud",
+      "cookie",
+      "ecchi",
+      "eww",
+      "fabric",
+      "fairy",
+      "fcamo",
+      "feral",
+      "festival",
+      "fire",
+      "gold",
+      "green",
+      "grey",
+      "gummy",
+      "gyaru",
+      "ice",
+      "icecream",
+      "inverted",
+      "island2",
+      "jello",
+      "maid",
+      "milk2",
+      "muffin",
+      "neon",
+      "nude",
+      "old",
+      "orange",
+      "origami",
+      "pencil",
+      "pink",
+      "plush",
+      "polygon",
+      "polygon2",
+      "purple",
+      "rainbow",
+      "realistic",
+      "red",
+      "relic",
+      "shadow",
+      "silver",
+      "snow",
+      "split",
+      "sponge",
+      "strawberry",
+      "sunburnt",
+      "sunset",
+      "synthwave",
+      "tblue2",
+      "thunder",
+      "toy",
+      "valentine",
+      "white",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -20,7 +88,22 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "fire",
+      "green",
+      "gyaru",
+      "inverted",
+      "nipplepeek",
+      "nude",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -33,7 +116,32 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "16bit",
+      "8bit",
+      "baby",
+      "black",
+      "blackwhite",
+      "blue",
+      "brown",
+      "burlap",
+      "checkered",
+      "chocolate",
+      "christmas",
+      "cloud",
+      "cookie",
+      "green",
+      "inverted",
+      "leather",
+      "pink",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "white",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -46,7 +154,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -59,7 +179,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "red_thumb",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -72,7 +204,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "black2",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -85,7 +229,21 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "fcamo",
+      "green",
+      "gyaru",
+      "inverted",
+      "nude",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -98,7 +256,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "orange",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -111,7 +281,23 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "blue_thumb",
+      "green",
+      "gyaru",
+      "inverted",
+      "nude",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "topless",
+      "topless2",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -124,7 +310,24 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "blue2",
+      "ero2",
+      "festival",
+      "green",
+      "gyaru",
+      "inverted",
+      "milk",
+      "plush",
+      "polygon",
+      "preg",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -137,7 +340,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "voxel",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -150,7 +365,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -163,7 +390,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "pink",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -176,7 +415,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "realistic2",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -189,7 +440,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "scary",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -202,7 +466,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "grey",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -215,7 +492,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -228,7 +516,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -241,7 +540,22 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "ice",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "red2",
+      "water",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -254,7 +568,23 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "gold",
+      "green",
+      "gyaru",
+      "ice",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "snow",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -267,7 +597,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "polygon",
+      "purple",
+      "quint",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -280,7 +621,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "neon",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -293,7 +647,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygonal",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -306,7 +671,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -319,7 +696,73 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "8bit",
+      "baby",
+      "black",
+      "blue",
+      "brown",
+      "burlap",
+      "bw",
+      "checkered",
+      "chocolate",
+      "christmas",
+      "clouds",
+      "cookie",
+      "ecchi",
+      "eww",
+      "fabric",
+      "fairy",
+      "fcam",
+      "feral",
+      "festival",
+      "festival2",
+      "fire",
+      "giraffe",
+      "gold",
+      "green",
+      "grey",
+      "gummy",
+      "gyaru",
+      "hero",
+      "ice",
+      "icecream",
+      "inverted",
+      "island",
+      "jello",
+      "maid",
+      "milk",
+      "muffin",
+      "neon",
+      "orange",
+      "origami",
+      "pencil",
+      "pink",
+      "plush",
+      "plush2",
+      "polygon",
+      "pregnant",
+      "purple",
+      "rainbow",
+      "realistic",
+      "red",
+      "relic",
+      "senator",
+      "shadow",
+      "silver",
+      "snow",
+      "split",
+      "sponge",
+      "strawberry",
+      "sunburnt",
+      "sunset",
+      "thunder",
+      "toy",
+      "valentine",
+      "white",
+      "yellow",
+      "zebra"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -332,7 +775,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "purple2",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -345,7 +801,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "fblue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -358,7 +826,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "pencil",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -371,7 +851,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "orange",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -384,7 +877,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -397,7 +902,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -410,7 +926,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -423,7 +951,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "fcamo",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -436,7 +977,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "fairy",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -449,7 +1001,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "grey",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -462,7 +1026,15 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "plush",
+      "purple",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -475,7 +1047,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -488,7 +1072,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "plush",
+      "polygon",
+      "purple",
+      "quint",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -501,7 +1097,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygo",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -514,7 +1121,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -527,7 +1144,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -540,7 +1168,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "snow",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -553,7 +1194,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -566,7 +1219,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -579,7 +1244,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "fcamo",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -592,7 +1270,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -605,7 +1294,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "blue",
+      "clay",
+      "green",
+      "gyaru",
+      "inverted",
+      "island",
+      "plush",
+      "polygon",
+      "purple",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -618,7 +1319,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -631,7 +1344,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "thunder",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -644,7 +1370,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "feral",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -657,7 +1395,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "orange",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -670,7 +1420,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "split",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -683,7 +1445,12 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "blue",
+      "inverted",
+      "plush",
+      "purple"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -696,7 +1463,21 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "grey",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "toon",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -709,7 +1490,32 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "bordeaux",
+      "brown",
+      "browns",
+      "cyan",
+      "golden",
+      "green",
+      "grey",
+      "gyaru",
+      "holiday",
+      "inverted",
+      "orange",
+      "pink",
+      "plush",
+      "polygon",
+      "purple",
+      "purples",
+      "rainbow",
+      "realistic",
+      "red",
+      "skyblue",
+      "sunset",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -722,7 +1528,21 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "grey",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "rainbow",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -735,7 +1555,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "sponge",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -748,7 +1580,22 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "baby",
+      "black",
+      "blue",
+      "fcamo",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "quint",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -761,7 +1608,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -774,7 +1633,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -787,7 +1657,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "fblue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -800,7 +1682,15 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "plush",
+      "purple",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -813,7 +1703,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -826,7 +1727,74 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "8bit",
+      "baby",
+      "bikini",
+      "black",
+      "blackwhite",
+      "blue",
+      "brown",
+      "burlap",
+      "checkered",
+      "chocolate",
+      "christmas",
+      "clouds",
+      "cookie",
+      "coral",
+      "ecchi",
+      "eww",
+      "fabric",
+      "fairy",
+      "fcam",
+      "feral",
+      "feral2",
+      "festival",
+      "festival2",
+      "fire",
+      "gold",
+      "green",
+      "grey",
+      "gummy",
+      "gyaru",
+      "ice",
+      "icecream",
+      "inverted",
+      "island",
+      "jello",
+      "maid",
+      "mge",
+      "milk",
+      "muffin",
+      "neon",
+      "oracle",
+      "orange",
+      "origami",
+      "pencil",
+      "pink",
+      "plush",
+      "polygon",
+      "purple",
+      "python",
+      "rainbow",
+      "realistic",
+      "red",
+      "relic",
+      "senator",
+      "shadow",
+      "silver",
+      "snow",
+      "split",
+      "sponge",
+      "strawberry",
+      "sunburnt",
+      "sunset",
+      "thunder",
+      "toy",
+      "valentine",
+      "white",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -839,7 +1807,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -852,7 +1830,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "blue2",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -865,7 +1855,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -878,7 +1879,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "valentine",
+      "valentine2",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -891,7 +1905,21 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "fblue",
+      "green",
+      "inverted",
+      "pink",
+      "plush",
+      "polygonal",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -904,7 +1932,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "invert",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -917,7 +1956,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "white",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -930,7 +1980,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -943,7 +2003,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -956,7 +2027,16 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "purple",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -969,7 +2049,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -982,7 +2073,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -995,7 +2098,22 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "baby",
+      "black",
+      "blue",
+      "brown",
+      "gold",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "snow",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1008,7 +2126,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "8bit",
+      "baby",
+      "black",
+      "blue",
+      "fcamo",
+      "green",
+      "inverted",
+      "plush",
+      "purple",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1021,7 +2151,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1034,7 +2174,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1047,7 +2198,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1060,7 +2221,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1073,7 +2245,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1086,7 +2269,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "grey",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1099,7 +2294,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1112,7 +2318,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1125,7 +2342,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1138,7 +2367,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black_suno",
+      "blue_suno",
+      "brown_suno",
+      "green_suno",
+      "inverted_suno",
+      "plush_suno",
+      "polygon_suno",
+      "purple_suno",
+      "realistic_suno",
+      "red_suno",
+      "yellow_suno"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1151,7 +2392,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1164,7 +2417,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1177,7 +2442,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1190,7 +2466,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1203,7 +2489,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "breal",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1216,7 +2514,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1229,7 +2537,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1242,7 +2560,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plushie",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1255,7 +2584,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "water",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1268,7 +2609,22 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "gold",
+      "granite",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "silver",
+      "snow",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1281,7 +2637,17 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "plush",
+      "purple",
+      "red",
+      "white",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1294,7 +2660,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "regal",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1307,7 +2685,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "white",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1320,7 +2711,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1333,7 +2735,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1346,7 +2760,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1359,7 +2785,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "brown",
+      "green",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1372,7 +2809,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "ero",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "polygon2",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1385,7 +2835,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1398,7 +2859,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1411,7 +2883,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1424,7 +2907,18 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1437,7 +2931,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "valentine",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1450,7 +2956,71 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "8bit",
+      "baby",
+      "bikini",
+      "black",
+      "blackwhite",
+      "blue",
+      "brown",
+      "burlap",
+      "chandelure",
+      "checkered",
+      "chocolate",
+      "christmas",
+      "cloud",
+      "cookie",
+      "ecchi",
+      "eww",
+      "fabric",
+      "fairy",
+      "fcamo",
+      "feral",
+      "festival",
+      "fire",
+      "gold",
+      "green",
+      "grey",
+      "gummy",
+      "gyaru",
+      "ice",
+      "icecream",
+      "inverted",
+      "island",
+      "jello",
+      "maid",
+      "mge",
+      "milk",
+      "muffin",
+      "neon",
+      "orange",
+      "origami",
+      "pencil",
+      "pink",
+      "plush",
+      "polygon",
+      "polygon (2)",
+      "purple",
+      "rainbow",
+      "realistic",
+      "red",
+      "relic",
+      "shadow",
+      "silver",
+      "snow",
+      "split",
+      "sponge",
+      "strawberry",
+      "sunburnt",
+      "sunset",
+      "thunder",
+      "toy",
+      "transparent",
+      "valentine",
+      "white",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1463,7 +3033,20 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "polygon",
+      "purple",
+      "quint",
+      "realistic",
+      "red",
+      "red_thumb",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1476,7 +3059,21 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "gyaru",
+      "inverted",
+      "lolita",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "sunset",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1489,7 +3086,19 @@
       "def": 0,
       "init": 0
     },
-    "colors": [],
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "ice",
+      "inverted",
+      "plush",
+      "polygon",
+      "purple",
+      "realistic",
+      "red",
+      "yellow"
+    ],
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
