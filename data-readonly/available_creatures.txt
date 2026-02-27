@@ -8,6 +8,7 @@ Angel
 Anomalocaris
 Anubis
 Apsara
+Archelon
 Argentinosaurus
 Argentowlis
 Armadillo
@@ -31,18 +32,21 @@ Curupira
 Daeodon
 Death
 Demon
+Doggo
 Dolphin
 Drop Bear
 Dugong
 Dullahan
 Elf
 Famine
+Fernstalker
 Fire Giant
 Fishman
 Frost Giant
 Fury
 Gandharva
 Genie
+Gigantopithecus
 Girtablilu
 Golem
 Hairypterix
@@ -70,6 +74,7 @@ Manticore
 Mimic
 Min-Min Lights
 Moo
+Moopie
 Naga
 Nightmarcher
 Ocelot
@@ -85,10 +90,10 @@ Rainbow Serpent
 Ratatoskr
 Rheintalensis
 Rhiwool
-Sabertooth
 Sabre
 Sea Turtle
 Slidred
+Smilodon
 Spider-Crab
 Spinosaur
 Spoodr
@@ -100,9 +105,11 @@ Tengu
 Thunderbird
 Tiddalik
 Toucan
+Turtfolk
 Turtworld
 Tuskin
 Tusktaur
+Urchskin
 Vermillion Bird
 Vodyanoy
 Wadjet

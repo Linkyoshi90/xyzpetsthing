@@ -1,5 +1,6 @@
 Here’s the full capital list (ASCII only):
 Aegia Aeterna: Heliadora
+Aeonstep Plateau
 Baharamandal: Padmanagara
 Bretonreach: Avalore
 Crescent Caliphate: Ansurah
@@ -11,6 +12,7 @@ Itzam Empire: Itzankaan
 Kemet: Ankhmeru
 Lotus-Dragon Kingdom: Shenhedu
 Nornheim: Skeldgard
+Pelagora
 Red Sun Commonwealth: Redwind
 Rheinland: Rheingard
 Rodinian Tsardom: Velesgrad

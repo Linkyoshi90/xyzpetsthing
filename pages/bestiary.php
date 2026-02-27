@@ -48,6 +48,21 @@ function hasDb(): bool {
 }
 
 /**
+ * Backward-compatible helper for PHP < 8 where str_starts_with() is unavailable.
+ */
+function startsWith(string $haystack, string $needle): bool {
+    if (function_exists('str_starts_with')) {
+        return str_starts_with($haystack, $needle);
+    }
+
+    if ($needle === '') {
+        return true;
+    }
+
+    return strpos($haystack, $needle) === 0;
+}
+
+/**
  * Get database connection (fallback if q() doesn't exist)
  */
 function getDb(): ?PDO {
@@ -158,7 +173,7 @@ function loadCountries(): array {
                 foreach ($lines as $line) {
                     $line = trim($line);
                     // Skip empty lines and comments
-                    if ($line !== '' && !str_starts_with($line, '#')) {
+                    if ($line !== '' && !startsWith($line, '#')) {
                         $countries[] = $line;
                     }
                 }
