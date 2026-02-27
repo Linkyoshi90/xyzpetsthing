@@ -1124,6 +1124,11 @@ mapAreas.forEach(area => {
         // Hide hover label
         areaLabel.classList.remove('visible');
     });
+
+    // Double-click to navigate directly (matches continent map behavior)
+    area.addEventListener('dblclick', function() {
+        window.location.href = this.dataset.href;
+    });
 });
 
 // Close info panel when clicking outside
