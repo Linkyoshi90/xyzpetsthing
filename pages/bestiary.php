@@ -25,6 +25,9 @@ define('COUNTRY_FILE_PATHS', [
 ]);
 
 define('CREATURE_DATA_PATHS', [
+    __DIR__ . '/../data/creature_encyclopedia.json',
+    __DIR__ . '/../../data/creature_encyclopedia.json',
+    dirname(__DIR__) . '/data/creature_encyclopedia.json',
     __DIR__ . '/../data-readonly/creature_encyclopedia.json',
     __DIR__ . '/../../data-readonly/creature_encyclopedia.json',
     dirname(__DIR__) . '/data-readonly/creature_encyclopedia.json',
@@ -310,6 +313,61 @@ function getRegions(): array {
  */
 function getCreaturesByRegion(): array {
     $creatureData = loadCreatureData();
+
+    // Prefer JSON encyclopedia data when available.
+    if (!empty($creatureData)) {
+        $grouped = [];
+        foreach ($creatureData as $key => $creature) {
+            if (!is_array($creature)) {
+                continue;
+            }
+
+            $name = trim((string)($creature['name'] ?? $key));
+            if ($name === '') {
+                continue;
+            }
+
+            $region = trim((string)($creature['region'] ?? 'Unknown'));
+            if ($region === '') {
+                $region = 'Unknown';
+            }
+
+            $stats = is_array($creature['stats'] ?? null) ? $creature['stats'] : [];
+            $colors = array_values(array_filter(
+                is_array($creature['colors'] ?? null) ? $creature['colors'] : ['Blue'],
+                fn($color) => trim((string)$color) !== ''
+            ));
+
+            $grouped[$region][] = [
+                'id' => crc32($name),
+                'name' => $name,
+                'stats' => [
+                    'hp' => (int)($stats['hp'] ?? 0),
+                    'atk' => (int)($stats['atk'] ?? 0),
+                    'def' => (int)($stats['def'] ?? 0),
+                    'init' => (int)($stats['init'] ?? 0),
+                ],
+                'colors' => !empty($colors) ? $colors : ['Blue'],
+                'image' => getCreatureImagePath($name),
+                'description' => normalizeEncyclopediaField(
+                    $creature['description'] ?? null,
+                    'Details are being cataloged by the library staff.'
+                ),
+                'rarity' => normalizeEncyclopediaField($creature['rarity'] ?? null, 'Common'),
+                'size' => normalizeEncyclopediaField($creature['size'] ?? null, 'Medium'),
+                'diet' => normalizeEncyclopediaField($creature['diet'] ?? null, 'Omnivore'),
+                'region' => $region,
+            ];
+        }
+
+        foreach ($grouped as &$regionCreatures) {
+            usort($regionCreatures, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+        }
+        unset($regionCreatures);
+
+        ksort($grouped, SORT_NATURAL | SORT_FLAG_CASE);
+        return $grouped;
+    }
     
     // Check if required tables exist
     if (!tableExists('pet_species') || !tableExists('regions')) {
