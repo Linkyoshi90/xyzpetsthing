@@ -237,6 +237,48 @@ function loadCreatureData(): array {
 }
 
 /**
+ * Normalize encyclopedia placeholder values so DB-backed data can be used.
+ */
+function normalizeEncyclopediaField(mixed $value, mixed $fallback): mixed {
+    if ($value === null) {
+        return $fallback;
+    }
+
+    if (is_string($value)) {
+        $trimmed = trim($value);
+        if ($trimmed === '' || strcasecmp($trimmed, 'unknown') === 0 || str_starts_with($trimmed, 'TODO:')) {
+            return $fallback;
+        }
+        return $trimmed;
+    }
+
+    return $value;
+}
+
+/**
+ * Resolve the bestiary portrait path using the female blue default.
+ */
+function getCreatureImagePath(string $speciesName): string {
+    $speciesSlug = strtolower((string)preg_replace('/[^a-z0-9]+/i', '_', $speciesName));
+    $speciesSlug = trim($speciesSlug, '_');
+
+    $candidates = [
+        "images/{$speciesSlug}_f_blue.webp",
+        "images/{$speciesSlug}_f_blue.png",
+        "images/{$speciesSlug}_f_blue.jpg",
+        'images/tengu_f_blue.png',
+    ];
+
+    foreach ($candidates as $path) {
+        if (is_file(__DIR__ . '/../' . $path)) {
+            return $path;
+        }
+    }
+
+    return 'images/tengu_f_blue.png';
+}
+
+/**
  * Get regions from database
  */
 function getRegions(): array {
@@ -289,16 +331,17 @@ function getCreaturesByRegion(): array {
             'id' => $creature['species_id'],
             'name' => $creature['species_name'],
             'stats' => [
-                'hp' => $jsonData['stats']['hp'] ?? (int)$creature['base_hp'],
-                'atk' => $jsonData['stats']['atk'] ?? (int)$creature['base_atk'],
-                'def' => $jsonData['stats']['def'] ?? (int)$creature['base_def'],
-                'init' => $jsonData['stats']['init'] ?? (int)$creature['base_init'],
+                'hp' => (int)(($jsonData['stats']['hp'] ?? 0) > 0 ? $jsonData['stats']['hp'] : $creature['base_hp']),
+                'atk' => (int)(($jsonData['stats']['atk'] ?? 0) > 0 ? $jsonData['stats']['atk'] : $creature['base_atk']),
+                'def' => (int)(($jsonData['stats']['def'] ?? 0) > 0 ? $jsonData['stats']['def'] : $creature['base_def']),
+                'init' => (int)(($jsonData['stats']['init'] ?? 0) > 0 ? $jsonData['stats']['init'] : $creature['base_init']),
             ],
-            'colors' => $jsonData['colors'] ?? ['Red', 'Blue', 'Green', 'Yellow', 'Purple'],
-            'description' => $jsonData['description'] ?? 'Details are being cataloged by the library staff.',
-            'rarity' => $jsonData['rarity'] ?? 'Common',
-            'size' => $jsonData['size'] ?? 'Medium',
-            'diet' => $jsonData['diet'] ?? 'Unknown',
+            'colors' => ['Blue'],
+            'image' => getCreatureImagePath((string)$creature['species_name']),
+            'description' => normalizeEncyclopediaField($jsonData['description'] ?? null, 'Details are being cataloged by the library staff.'),
+            'rarity' => normalizeEncyclopediaField($jsonData['rarity'] ?? null, 'Common'),
+            'size' => normalizeEncyclopediaField($jsonData['size'] ?? null, 'Medium'),
+            'diet' => normalizeEncyclopediaField($jsonData['diet'] ?? null, 'Omnivore'),
             'region' => $region,
         ];
     }
@@ -718,14 +761,14 @@ $totalPages = count($pages);
                 <span id="creature-rarity" class="px-2 py-1 rounded text-xs font-semibold"></span>
             </div>
             
-            <!-- Creature Image Placeholder -->
+            <!-- Creature Image -->
             <div class="relative w-full h-40 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden border-2 border-amber-200">
                 <div class="absolute inset-0 opacity-20">
                     <div class="absolute top-2 left-2 w-16 h-16 border-2 border-amber-400 rounded-full"></div>
                     <div class="absolute bottom-4 right-4 w-12 h-12 border-2 border-amber-400 rounded-full"></div>
                     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border border-amber-400"></div>
                 </div>
-                <div id="creature-emoji" class="text-4xl"></div>
+                <img id="creature-image" src="" alt="" class="relative z-10 h-full w-full object-contain p-2" loading="lazy" />
             </div>
             
             <!-- Stats Grid -->
@@ -1018,7 +1061,12 @@ $totalPages = count($pages);
             const content = template.content.cloneNode(true);
             
             content.querySelector('#creature-name').textContent = creature.name;
-            content.querySelector('#creature-emoji').textContent = getCreatureEmoji(creature.name);
+            const creatureImage = content.querySelector('#creature-image');
+            creatureImage.src = creature.image;
+            creatureImage.alt = `${creature.name} (female, blue)`;
+            creatureImage.onerror = () => {
+                creatureImage.src = 'images/tengu_f_blue.png';
+            };
             
             const rarityEl = content.querySelector('#creature-rarity');
             rarityEl.textContent = creature.rarity;
