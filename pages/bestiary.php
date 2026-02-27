@@ -112,11 +112,23 @@ function executeQuery(string $sql, array $params = []): ?array {
  * Check if a table exists (SQLite compatible)
  */
 function tableExists(string $tableName): bool {
+    if (function_exists('db')) {
+        $pdo = db();
+        if ($pdo instanceof PDO) {
+            try {
+                $stmt = $pdo->query('SHOW TABLES LIKE ' . $pdo->quote($tableName));
+                return $stmt !== false && $stmt->fetch() !== false;
+            } catch (PDOException $e) {
+                return false;
+            }
+        }
+    }
+
     $db = getDb();
     if (!$db) {
         return false;
     }
-    
+
     try {
         $result = $db->query(
             "SELECT name FROM sqlite_master WHERE type='table' AND name=" . $db->quote($tableName)
@@ -163,8 +175,8 @@ function loadCountries(): array {
     if (empty($countries)) {
         $regions = getRegions();
         foreach ($regions as $region) {
-            if (!empty($region['name'])) {
-                $countries[] = trim((string)$region['name']);
+            if (!empty($region['region_name'])) {
+                $countries[] = trim((string)$region['region_name']);
             }
         }
     }
@@ -233,7 +245,7 @@ function getRegions(): array {
         return [];
     }
     
-    return executeQuery("SELECT id, name FROM regions ORDER BY name") ?? [];
+    return executeQuery("SELECT region_id, region_name FROM regions ORDER BY region_name") ?? [];
 }
 
 /**
@@ -242,28 +254,28 @@ function getRegions(): array {
 function getCreaturesByRegion(): array {
     $creatureData = loadCreatureData();
     
-    // Check if pet_species table exists
-    if (!tableExists('pet_species')) {
-        return getSampleCreatures();
+    // Check if required tables exist
+    if (!tableExists('pet_species') || !tableExists('regions')) {
+        return [];
     }
     
     $creatures = executeQuery("
         SELECT 
-            ps.id,
-            ps.name as species_name,
+            ps.species_id,
+            ps.species_name,
             ps.base_hp,
             ps.base_atk,
             ps.base_def,
             ps.base_init,
-            r.name as region_name,
-            r.id as region_id
+            r.region_name,
+            r.region_id
         FROM pet_species ps
-        LEFT JOIN regions r ON r.id = ps.region_id
-        ORDER BY r.name, ps.name
+        INNER JOIN regions r ON r.region_id = ps.region_id
+        ORDER BY r.region_name, ps.species_name
     ");
     
     if ($creatures === null || empty($creatures)) {
-        return getSampleCreatures();
+        return [];
     }
     
     $grouped = [];
@@ -274,7 +286,7 @@ function getCreaturesByRegion(): array {
         $jsonData = $creatureData[$creature['species_name']] ?? [];
         
         $grouped[$region][] = [
-            'id' => $creature['id'],
+            'id' => $creature['species_id'],
             'name' => $creature['species_name'],
             'stats' => [
                 'hp' => $jsonData['stats']['hp'] ?? (int)$creature['base_hp'],
@@ -289,62 +301,6 @@ function getCreaturesByRegion(): array {
             'diet' => $jsonData['diet'] ?? 'Unknown',
             'region' => $region,
         ];
-    }
-    
-    return $grouped;
-}
-
-/**
- * Sample creatures for when database is empty
- */
-function getSampleCreatures(): array {
-    $countries = loadCountries();
-    $creatureData = loadCreatureData();
-    
-    if (empty($countries)) {
-        $countries = ['Unknown'];
-    }
-    
-    $sampleCreatures = [
-        'Tengu', 'Dryad', 'Treant', 'Forest Sprite', 'Moss Drake',
-        'Stone Golem', 'Thunder Eagle', 'Crystal Wyrm', 'Mountain Troll', 'Phoenix',
-        'Kraken', 'Merfolk', 'Sea Serpent', 'Siren', 'Leviathan',
-        'Sand Wyrm', 'Djinn', 'Sphinx', 'Fire Salamander', 'Mummy Lord',
-        'Frost Giant', 'Ice Elemental', 'Winter Wolf', 'Snow Owl', 'Yeti',
-        'Shadow Wraith', 'Void Walker', 'Dark Knight', 'Necromancer', 'Blood Demon'
-    ];
-    
-    // Distribute creatures among countries
-    $grouped = [];
-    foreach ($countries as $country) {
-        $grouped[$country] = [];
-    }
-    
-    $countryIdx = 0;
-    $countryKeys = array_keys($grouped);
-    
-    foreach ($sampleCreatures as $creatureName) {
-        $country = $countryKeys[$countryIdx % count($countryKeys)];
-        $jsonData = $creatureData[$creatureName] ?? [];
-        
-        $grouped[$country][] = [
-            'id' => $countryIdx + 1,
-            'name' => $creatureName,
-            'stats' => [
-                'hp' => $jsonData['stats']['hp'] ?? rand(40, 200),
-                'atk' => $jsonData['stats']['atk'] ?? rand(30, 150),
-                'def' => $jsonData['stats']['def'] ?? rand(30, 120),
-                'init' => $jsonData['stats']['init'] ?? rand(20, 130),
-            ],
-            'colors' => $jsonData['colors'] ?? ['Red', 'Blue', 'Green'],
-            'description' => $jsonData['description'] ?? 'A mysterious creature.',
-            'rarity' => $jsonData['rarity'] ?? 'Common',
-            'size' => $jsonData['size'] ?? 'Medium',
-            'diet' => $jsonData['diet'] ?? 'Unknown',
-            'region' => $country,
-        ];
-        
-        $countryIdx++;
     }
     
     return $grouped;
@@ -719,13 +675,13 @@ $totalPages = count($pages);
     <template id="template-index">
         <div class="h-full">
             <h2 class="text-2xl font-bold text-amber-900 font-serif mb-2 text-center">Index of Nations</h2>
-            <p class="text-amber-600 text-sm text-center mb-4">Select a nation to explore its creatures</p>
-            <div id="index-list" class="space-y-3"></div>
+            <p class="text-amber-600 text-sm text-center mb-4">Select a nation to jump directly to its page</p>
+            <ol id="index-list" class="space-y-1 text-sm"></ol>
             <div class="mt-6 pt-4 border-t border-amber-200">
                 <h3 class="text-sm font-bold text-amber-800 mb-3">Quick Navigation</h3>
                 <div class="grid grid-cols-2 gap-2 text-xs text-amber-600">
                     <div>← → Arrow keys to flip</div>
-                    <div>Click edges for nav arrows</div>
+                    <div>Click entries to jump pages</div>
                 </div>
             </div>
         </div>
@@ -984,35 +940,31 @@ $totalPages = count($pages);
             const template = document.getElementById('template-index');
             const content = template.content.cloneNode(true);
             const list = content.querySelector('#index-list');
-            
+
             countries.forEach(country => {
                 const regionCreatures = creaturesByRegion[country] || [];
                 if (regionCreatures.length === 0) return;
-                
+
                 const pageIndex = regionPageIndex[country];
-                const emoji = getCountryEmoji(country);
-                
+                const pageNumber = pageIndex + 1;
+
+                const row = document.createElement('li');
                 const btn = document.createElement('button');
-                btn.className = 'w-full text-left p-3 bg-gradient-to-r from-amber-50 to-amber-100/50 hover:from-amber-100 hover:to-amber-200/50 rounded-lg border border-amber-200 transition-all duration-200 group cursor-pointer';
+                btn.className = 'w-full text-left flex items-center gap-2 py-1 text-amber-900 hover:text-amber-700 transition-colors cursor-pointer';
                 btn.setAttribute('data-page-target', pageIndex);
                 btn.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <span class="text-2xl">${emoji}</span>
-                            <div>
-                                <h3 class="font-bold text-amber-900 group-hover:text-amber-700 transition-colors">${country}</h3>
-                                <p class="text-xs text-amber-600">${regionCreatures.length} creatures</p>
-                            </div>
-                        </div>
-                        <svg class="w-5 h-5 text-amber-400 group-hover:text-amber-600 transition-colors transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                        </svg>
-                    </div>
+                    <span class="shrink-0">${getCountryEmoji(country)}</span>
+                    <span class="shrink-0">${country}</span>
+                    <span class="flex-1 border-b border-dotted border-amber-300 mb-1"></span>
+                    <span class="shrink-0 font-semibold">${pageNumber}</span>
                 `;
+                btn.title = `${regionCreatures.length} creatures`;
                 btn.addEventListener('click', () => navigateToPage(pageIndex));
-                list.appendChild(btn);
+
+                row.appendChild(btn);
+                list.appendChild(row);
             });
-            
+
             return content;
         }
         
@@ -1026,7 +978,11 @@ $totalPages = count($pages);
             content.querySelector('#region-creature-count').textContent = `${regionCreatures.length} creatures documented`;
             
             const creaturesList = content.querySelector('#region-creatures');
-            regionCreatures.forEach((creature, idx) => {
+            if (regionCreatures.length === 0) {
+                creaturesList.innerHTML = '<p class="text-sm text-amber-600 italic">No creatures recorded for this nation yet.</p>';
+            }
+
+            regionCreatures.forEach((creature) => {
                 const pageIndex = creaturePageIndex[creature.name];
                 const btn = document.createElement('button');
                 btn.className = 'w-full text-left p-2 bg-amber-50 hover:bg-amber-100 rounded border border-amber-200 transition-all group flex items-center gap-3 cursor-pointer';
