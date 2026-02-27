@@ -254,14 +254,14 @@ function loadCreatureData(): array {
 /**
  * Normalize encyclopedia placeholder values so DB-backed data can be used.
  */
-function normalizeEncyclopediaField(mixed $value, mixed $fallback): mixed {
+function normalizeEncyclopediaField($value, $fallback) {
     if ($value === null) {
         return $fallback;
     }
 
     if (is_string($value)) {
         $trimmed = trim($value);
-        if ($trimmed === '' || strcasecmp($trimmed, 'unknown') === 0 || startsWith($trimmed, 'TODO:')) {
+        if ($trimmed === '' || strcasecmp($trimmed, 'unknown') === 0 || strpos($trimmed, 'TODO:') === 0) {
             return $fallback;
         }
         return $trimmed;
