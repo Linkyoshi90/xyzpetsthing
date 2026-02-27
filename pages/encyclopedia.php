@@ -45,6 +45,7 @@ if ($headContent !== '') {
     preg_match_all('/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/i', $headContent, $assetMatches);
     if (!empty($assetMatches[0])) {
         $headAssets = implode("\n", $assetMatches[0]);
+        $headAssets = preg_replace('/(^|\n)\s*body\s*\{/i', "$1.encyclopedia-bestiary {", $headAssets);
     }
 }
 
@@ -63,6 +64,6 @@ if ($bodyAttributes !== '' && preg_match('/class=["\']([^"\']+)["\']/i', $bodyAt
 
 <?= $headAssets ?>
 
-<section class="<?= htmlspecialchars($bodyClass) ?>">
+<section class="encyclopedia-bestiary <?= htmlspecialchars($bodyClass) ?>">
   <?= $bodyInner ?>
 </section>
