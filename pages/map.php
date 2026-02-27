@@ -98,5 +98,6 @@ render_country_interactive_map([
     'width' => $worldWidth,
     'height' => $worldHeight,
     'particle_count' => 20,
+    'show_panel' => false,
     'areas' => $areas,
 ]);

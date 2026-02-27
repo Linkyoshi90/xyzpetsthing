@@ -37,12 +37,13 @@ function render_country_interactive_map(array $config): void {
     $areas = $config['areas'] ?? [];
     $backLabel = $config['back_label'] ?? null;
     $backHref = $config['back_href'] ?? null;
+    $showPanel = array_key_exists('show_panel', $config) ? (bool)$config['show_panel'] : true;
     ?>
 <div class="country-map-page">
     <div class="country-map-header">
         <h1><?= htmlspecialchars($config['title']) ?></h1>
         <p class="subtitle"><?= htmlspecialchars($config['subtitle'] ?? '') ?></p>
-        <p class="hint">Click highlighted areas to explore.</p>
+        <p class="hint">Click highlighted areas to explore. Double-click to open.</p>
     </div>
 
     <div class="country-map-wrap">
@@ -88,11 +89,13 @@ function render_country_interactive_map(array $config): void {
 
         <div class="country-map-zoom-level" id="countryMapZoomLevel">100%</div>
 
-        <div class="country-map-panel" id="countryMapPanel">
-            <h3 id="countryMapPanelTitle"></h3>
-            <p id="countryMapPanelDescription"></p>
-            <a href="#" class="btn" id="countryMapPanelLink"></a>
-        </div>
+        <?php if ($showPanel): ?>
+            <div class="country-map-panel" id="countryMapPanel">
+                <h3 id="countryMapPanelTitle"></h3>
+                <p id="countryMapPanelDescription"></p>
+                <a href="#" class="btn" id="countryMapPanelLink"></a>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="country-map-legend">
@@ -183,6 +186,7 @@ function render_country_interactive_map(array $config): void {
 
 <script>
 (function () {
+    const showPanel = <?= $showPanel ? 'true' : 'false' ?>;
     const mapScrollContainer = document.getElementById('countryMapScrollContainer');
     const mapInner = document.getElementById('countryMapInner');
     const mapMedia = document.getElementById('countryMapMedia');
@@ -237,18 +241,22 @@ function render_country_interactive_map(array $config): void {
         area.classList.add('active');
         activeAreaId = area.dataset.id;
 
-        panelTitle.textContent = area.dataset.name;
-        panelDescription.textContent = area.dataset.description;
-        panelLink.href = area.dataset.href;
-        panelLink.textContent = area.dataset.action;
-        panel.classList.add('visible');
+        if (showPanel && panel && panelTitle && panelDescription && panelLink) {
+            panelTitle.textContent = area.dataset.name;
+            panelDescription.textContent = area.dataset.description;
+            panelLink.href = area.dataset.href;
+            panelLink.textContent = area.dataset.action;
+            panel.classList.add('visible');
+        }
         updateLegend();
     }
 
     function clearSelection() {
         areas.forEach((node) => node.classList.remove('active'));
         activeAreaId = null;
-        panel.classList.remove('visible');
+        if (showPanel && panel) {
+            panel.classList.remove('visible');
+        }
         updateLegend();
     }
 
@@ -270,6 +278,10 @@ function render_country_interactive_map(array $config): void {
                 return;
             }
             selectArea(area);
+        });
+
+        area.addEventListener('dblclick', () => {
+            window.location.href = area.dataset.href;
         });
     });
 
