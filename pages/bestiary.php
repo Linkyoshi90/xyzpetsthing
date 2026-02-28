@@ -240,18 +240,57 @@ function loadCountries(): array {
  * Load creature encyclopedia JSON data
  */
 function loadCreatureData(): array {
+    $merged = [];
+
     foreach (CREATURE_DATA_PATHS as $filePath) {
         if (is_file($filePath) && is_readable($filePath)) {
             $content = file_get_contents($filePath);
             if ($content !== false) {
                 $decoded = json_decode($content, true);
                 if (is_array($decoded)) {
-                    return $decoded;
+                    foreach ($decoded as $key => $creature) {
+                        if (!is_array($creature)) {
+                            continue;
+                        }
+
+                        $name = trim((string)($creature['name'] ?? $key));
+                        if ($name === '') {
+                            continue;
+                        }
+
+                        if (!isset($merged[$name])) {
+                            $merged[$name] = [];
+                        }
+
+                        // Merge so later files can fill blanks from earlier files while
+                        // preserving richer values when already present.
+                        foreach ($creature as $field => $value) {
+                            if (!array_key_exists($field, $merged[$name]) || $merged[$name][$field] === null || $merged[$name][$field] === '') {
+                                $merged[$name][$field] = $value;
+                                continue;
+                            }
+
+                            if (
+                                is_string($value)
+                                && is_string($merged[$name][$field])
+                                && strlen(trim($value)) > strlen(trim((string)$merged[$name][$field]))
+                            ) {
+                                $merged[$name][$field] = $value;
+                            }
+
+                            if (is_array($value) && empty($merged[$name][$field])) {
+                                $merged[$name][$field] = $value;
+                            }
+                        }
+
+                        $merged[$name]['name'] = $name;
+                    }
                 }
             }
         }
     }
-    return [];
+
+    return $merged;
 }
 
 /**
@@ -314,82 +353,42 @@ function getRegions(): array {
 function getCreaturesByRegion(): array {
     $creatureData = loadCreatureData();
 
-    // Prefer JSON encyclopedia data when available.
-    if (!empty($creatureData)) {
-        $grouped = [];
-        foreach ($creatureData as $key => $creature) {
-            if (!is_array($creature)) {
-                continue;
-            }
+    // Check if required tables exist
+    $creatures = [];
+    if (tableExists('pet_species') && tableExists('regions')) {
+        $creatures = executeQuery(" 
+            SELECT 
+                ps.species_id,
+                ps.species_name,
+                ps.base_hp,
+                ps.base_atk,
+                ps.base_def,
+                ps.base_init,
+                r.region_name,
+                r.region_id
+            FROM pet_species ps
+            INNER JOIN regions r ON r.region_id = ps.region_id
+            ORDER BY r.region_name, ps.species_name
+        ") ?? [];
+    }
 
-            $name = trim((string)($creature['name'] ?? $key));
-            if ($name === '') {
-                continue;
-            }
-
-            $region = trim((string)($creature['region'] ?? 'Unknown'));
-            if ($region === '') {
-                $region = 'Unknown';
-            }
-
-            $stats = is_array($creature['stats'] ?? null) ? $creature['stats'] : [];
-            $colors = array_values(array_filter(
-                is_array($creature['colors'] ?? null) ? $creature['colors'] : ['Blue'],
-                fn($color) => trim((string)$color) !== ''
-            ));
-
-            $grouped[$region][] = [
-                'id' => crc32($name),
-                'name' => $name,
-                'stats' => [
-                    'hp' => (int)($stats['hp'] ?? 0),
-                    'atk' => (int)($stats['atk'] ?? 0),
-                    'def' => (int)($stats['def'] ?? 0),
-                    'init' => (int)($stats['init'] ?? 0),
-                ],
-                'colors' => !empty($colors) ? $colors : ['Blue'],
-                'image' => getCreatureImagePath($name),
-                'description' => normalizeEncyclopediaField(
-                    $creature['description'] ?? null,
-                    'Details are being cataloged by the library staff.'
-                ),
-                'rarity' => normalizeEncyclopediaField($creature['rarity'] ?? null, 'Common'),
-                'size' => normalizeEncyclopediaField($creature['size'] ?? null, 'Medium'),
-                'diet' => normalizeEncyclopediaField($creature['diet'] ?? null, 'Omnivore'),
-                'region' => $region,
+    // Fallback when DB is unavailable: group JSON entries directly.
+    if (empty($creatures) && !empty($creatureData)) {
+        foreach ($creatureData as $name => $entry) {
+            $creatures[] = [
+                'species_id' => crc32($name),
+                'species_name' => $name,
+                'base_hp' => (int)($entry['stats']['hp'] ?? 0),
+                'base_atk' => (int)($entry['stats']['atk'] ?? 0),
+                'base_def' => (int)($entry['stats']['def'] ?? 0),
+                'base_init' => (int)($entry['stats']['init'] ?? 0),
+                'region_name' => normalizeEncyclopediaField($entry['region'] ?? null, 'Unknown'),
+                'region_id' => 0,
             ];
         }
-
-        foreach ($grouped as &$regionCreatures) {
-            usort($regionCreatures, fn($a, $b) => strcasecmp($a['name'], $b['name']));
-        }
-        unset($regionCreatures);
-
-        ksort($grouped, SORT_NATURAL | SORT_FLAG_CASE);
-        return $grouped;
     }
-    
-    // Check if required tables exist
-    if (!tableExists('pet_species') || !tableExists('regions')) {
-        return [];
-    }
-    
-    $creatures = executeQuery("
-        SELECT 
-            ps.species_id,
-            ps.species_name,
-            ps.base_hp,
-            ps.base_atk,
-            ps.base_def,
-            ps.base_init,
-            r.region_name,
-            r.region_id
-        FROM pet_species ps
-        INNER JOIN regions r ON r.region_id = ps.region_id
-        ORDER BY r.region_name, ps.species_name
-    ");
-    
-    if ($creatures === null || empty($creatures)) {
+
+    if (empty($creatures)) {
         return [];
     }
     
@@ -399,6 +398,10 @@ function getCreaturesByRegion(): array {
         
         // Merge with JSON data if available
         $jsonData = $creatureData[$creature['species_name']] ?? [];
+        $colors = array_values(array_filter(
+            is_array($jsonData['colors'] ?? null) ? $jsonData['colors'] : ['Blue'],
+            fn($color) => trim((string)$color) !== ''
+        ));
         
         $grouped[$region][] = [
             'id' => $creature['species_id'],
@@ -409,7 +412,7 @@ function getCreaturesByRegion(): array {
                 'def' => (int)(($jsonData['stats']['def'] ?? 0) > 0 ? $jsonData['stats']['def'] : $creature['base_def']),
                 'init' => (int)(($jsonData['stats']['init'] ?? 0) > 0 ? $jsonData['stats']['init'] : $creature['base_init']),
             ],
-            'colors' => ['Blue'],
+            'colors' => !empty($colors) ? $colors : ['Blue'],
             'image' => getCreatureImagePath((string)$creature['species_name']),
             'description' => normalizeEncyclopediaField($jsonData['description'] ?? null, 'Details are being cataloged by the library staff.'),
             'rarity' => normalizeEncyclopediaField($jsonData['rarity'] ?? null, 'Common'),
@@ -418,6 +421,13 @@ function getCreaturesByRegion(): array {
             'region' => $region,
         ];
     }
+
+    foreach ($grouped as &$regionCreatures) {
+        usort($regionCreatures, fn($a, $b) => strcasecmp($a['name'], $b['name']));
+    }
+    unset($regionCreatures);
+
+    ksort($grouped, SORT_NATURAL | SORT_FLAG_CASE);
     
     return $grouped;
 }
