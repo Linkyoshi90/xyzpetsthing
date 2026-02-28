@@ -138,6 +138,52 @@
     "weight": 4
   },
   {
+    "id": "healing_spring",
+    "title": "Hidden Healing Spring",
+    "message": "Your party finds a warm spring bubbling between mossy stones, and the water mends aches almost instantly.",
+    "effects": [
+      {
+        "type": "pet_heal",
+        "scope": "party",
+        "amount": 6
+      }
+    ],
+    "weight": 6
+  },
+  {
+    "id": "field_medic",
+    "title": "Traveling Field Medic",
+    "message": "A veteran ranger medic patches up one of your creatures before heading back into the wilds.",
+    "effects": [
+      {
+        "type": "pet_heal",
+        "scope": "single",
+        "amount": 12,
+        "cure_sickness": true
+      }
+    ],
+    "weight": 5
+  },
+  {
+    "id": "gentle_sunbreak",
+    "title": "Gentle Sunbreak",
+    "message": "Sunlight pierces the clouds, and your companions bask in the warmth until their spirits and wounds lift.",
+    "effects": [
+      {
+        "type": "pet_heal",
+        "scope": "party",
+        "amount": 4
+      },
+      {
+        "type": "pet_stat",
+        "scope": "party",
+        "stat": "happiness",
+        "delta": 1
+      }
+    ],
+    "weight": 5
+  },
+  {
     "id": "daycare_egg",
     "title": "Nursery News",
     "message": "A caretaker from the daycare rushes over, beaming.",

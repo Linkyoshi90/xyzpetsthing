@@ -131,6 +131,9 @@ function apply_random_event_effects(array $event, array $user, array $context = 
             case 'pet_damage':
                 $detail = handle_event_pet_damage_effect($user['id'], $effect);
                 break;
+            case 'pet_heal':
+                $detail = handle_event_pet_heal_effect($user['id'], $effect);
+                break;
             case 'pet_stat':
                 $detail = handle_event_pet_stat_effect($user['id'], $effect);
                 break;
@@ -286,6 +289,52 @@ function handle_event_pet_damage_effect(int $user_id, array $effect)
             (int)$after['hp_current'],
             (int)$after['hp_max'],
             !empty($after['sickness']) ? ', now feeling under the weather' : ''
+        );
+    }
+    return $details;
+}
+
+function handle_event_pet_heal_effect(int $user_id, array $effect)
+{
+    $amount = max(0, (int)($effect['amount'] ?? 0));
+    if ($amount === 0) {
+        return null;
+    }
+    $scope = $effect['scope'] ?? 'single';
+    $cureSickness = !empty($effect['cure_sickness']);
+    $pets = get_user_pets($user_id);
+    if (!$pets) {
+        return 'You look around for companions to heal, but no pets are present.';
+    }
+    $targets = [];
+    if ($scope === 'party') {
+        $targets = $pets;
+    } else {
+        $targets[] = $pets[array_rand($pets)];
+    }
+    $details = [];
+    foreach ($targets as $pet) {
+        $petId = (int)$pet['pet_instance_id'];
+        q(
+            "UPDATE pet_instances"
+            . " SET hp_current = LEAST(COALESCE(hp_max, hp_current), hp_current + ?)"
+            . ($cureSickness ? ", sickness = 0" : '')
+            . " WHERE pet_instance_id = ? AND owner_user_id = ?",
+            [$amount, $petId, $user_id]
+        );
+        $after = q(
+            "SELECT hp_current, COALESCE(hp_max, hp_current) AS hp_max, sickness"
+            . " FROM pet_instances WHERE pet_instance_id = ?",
+            [$petId]
+        )->fetch(PDO::FETCH_ASSOC);
+        $name = $pet['nickname'] ?: $pet['species_name'];
+        $details[] = sprintf(
+            '%s recovers %d HP (%d/%d HP%s).',
+            $name,
+            $amount,
+            (int)$after['hp_current'],
+            (int)$after['hp_max'],
+            !empty($after['sickness']) ? '' : ', feeling refreshed'
         );
     }
     return $details;
