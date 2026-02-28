@@ -1,7 +1,7 @@
 {
   "Adaro": {
     "name": "Adaro",
-    "region": "Rheinland",
+    "region": "Spice Route League",
     "colors": [
       "Red",
       "Blue",
@@ -15,11 +15,11 @@
       "def": 5,
       "init": 9
     },
-    "description": "A Adaro is a storied creature native to Rheinland."
+    "description": "Adaro are musically gifted underwater hunters and gatherers who haunt the warm coastal currents around the Spice Route League and the drowned rings of Pelagora. They are sleek, streamlined aquatic humanoids with webbed limbs and a powerful primary tail for speed. As they age, a second, finer tail begins as a ridge and gradually separates, acting as a steering fin and a display fan during courtship and ritual.\n\nTheir scales shed very rarely, and each shed is treated as an event. A single naturally shed Adaro scale, when worn close to the skin, grants the bearer the gift of breathing underwater for a short time. Legitimate, willingly gifted scales are prized trade goods in Pelagoran markets and island harbors, while taking a scale from a living Adaro is seen as a grave theft that risks the Sea's temper. Adaro pods live in loose, cooperative bands that hunt and gather together, using music as much as motion: clicks, whistles, and resonant hums carry through the water to coordinate drives on shoals, warn of predators, and mark safe routes.\n\nTheir reproductive behavior mirrors that of dolphins more than humans. Courtship is playful, social, and bound up with shared hunts and complex songs. Gestation lasts about nine months, but Adaro usually carry multiple young at once. Newborns are fully formed but small enough to have shared the womb, and they take to the water almost immediately under the watchful eyes of the pod. Driven by intense hunger and guided hunts, the young grow quickly; within a year, an Adaro juvenile typically reaches the size and basic strength of an adult, though they still lack experience and the full depth of song.\n\nIsland peoples along the Spice Route tell that Adaro arose where storm spirits and coastal hunters shared the same fears and hopes for the sea, and that the Harmontide itself drew those feelings into a new people. To the islanders, Adaro are both neighbors and omens: friendly pods mean safe seasons and rich catches, long absences hint at storms or deeper trouble. Over generations, Adaro have been known to form close romantic bonds with island dwellers, giving rise to tales of half-sea children, families split between shore and reef, and promises whispered where the surf covers both sets of footprints."
   },
   "Akaname": {
     "name": "Akaname",
-    "region": "Kemet",
+    "region": "Yamanokubo",
     "colors": [
       "Red",
       "Blue",
