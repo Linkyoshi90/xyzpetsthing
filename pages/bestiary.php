@@ -388,6 +388,34 @@ function getCreaturesByRegion(): array {
         }
     }
 
+    // DB can be incomplete for encyclopedia-only species, so always merge JSON
+    // entries that are missing from DB results.
+    $knownSpecies = [];
+    foreach ($creatures as $row) {
+        $name = trim((string)($row['species_name'] ?? ''));
+        if ($name !== '') {
+            $knownSpecies[strtolower($name)] = true;
+        }
+    }
+
+    foreach ($creatureData as $name => $entry) {
+        $normalized = strtolower(trim((string)$name));
+        if ($normalized === '' || isset($knownSpecies[$normalized])) {
+            continue;
+        }
+
+        $creatures[] = [
+            'species_id' => crc32($name),
+            'species_name' => $name,
+            'base_hp' => (int)($entry['stats']['hp'] ?? 0),
+            'base_atk' => (int)($entry['stats']['atk'] ?? 0),
+            'base_def' => (int)($entry['stats']['def'] ?? 0),
+            'base_init' => (int)($entry['stats']['init'] ?? 0),
+            'region_name' => normalizeEncyclopediaField($entry['region'] ?? null, 'Unknown'),
+            'region_id' => 0,
+        ];
+    }
+
     if (empty($creatures)) {
         return [];
     }
@@ -802,7 +830,7 @@ $totalPages = count($pages);
         <div class="h-full">
             <h2 class="text-2xl font-bold text-amber-900 font-serif mb-2 text-center">Index of Nations</h2>
             <p class="text-amber-600 text-sm text-center mb-4">Select a nation to jump directly to its page</p>
-            <ol id="index-list" class="space-y-1 text-sm"></ol>
+            <ol id="index-list" class="space-y-1 text-sm max-h-64 overflow-y-auto pr-2 custom-scrollbar"></ol>
             <div class="mt-6 pt-4 border-t border-amber-200">
                 <h3 class="text-sm font-bold text-amber-800 mb-3">Quick Navigation</h3>
                 <div class="grid grid-cols-2 gap-2 text-xs text-amber-600">
@@ -905,13 +933,13 @@ $totalPages = count($pages);
             <!-- Colors -->
             <div class="mb-4">
                 <span class="text-xs text-amber-600 block mb-2">Color Variants:</span>
-                <div id="creature-colors" class="flex flex-wrap gap-1"></div>
+                <div id="creature-colors" class="flex flex-wrap gap-1 max-h-16 overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
             
             <!-- Description -->
             <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-100">
                 <span class="text-xs text-amber-600 block mb-2 font-semibold">Description:</span>
-                <div id="creature-description" class="text-amber-800 text-sm leading-relaxed"></div>
+                <div id="creature-description" class="text-amber-800 text-sm leading-relaxed max-h-24 overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
         </div>
     </template>
