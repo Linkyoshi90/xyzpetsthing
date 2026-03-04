@@ -757,6 +757,20 @@ $totalPages = count($pages);
         .nav-arrow {
             transition: opacity 0.3s ease, background-color 0.2s ease;
         }
+
+        .creature-colors-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(max-content, 1fr));
+            gap: 0.25rem;
+            width: max-content;
+            min-width: 100%;
+            max-width: 100%;
+            max-height: 7rem;
+            overflow: auto;
+            padding-right: 0.5rem;
+            padding-bottom: 0.25rem;
+            align-content: start;
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-amber-900 via-amber-800 to-amber-900 flex items-center justify-center p-4 md:p-8 overflow-hidden">
@@ -1031,7 +1045,7 @@ $totalPages = count($pages);
             <!-- Colors -->
             <div class="mb-4">
                 <span class="text-xs text-amber-600 block mb-2">Color Variants:</span>
-                <div id="creature-colors" class="flex gap-1 overflow-x-auto pb-1 pr-2 custom-scrollbar whitespace-nowrap"></div>
+                <div id="creature-colors" class="creature-colors-grid custom-scrollbar"></div>
             </div>
             
             <!-- Description -->
@@ -1306,8 +1320,8 @@ $totalPages = count($pages);
                 colorsEl.querySelectorAll('button[data-color]').forEach((button) => {
                     const isActive = button.getAttribute('data-color') === color;
                     button.className = isActive
-                        ? 'px-2 py-1 bg-amber-200 border border-amber-400 rounded text-xs font-semibold text-amber-900 whitespace-nowrap cursor-pointer'
-                        : 'px-2 py-1 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded text-xs font-medium text-amber-800 whitespace-nowrap hover:bg-amber-100 cursor-pointer';
+                        ? 'px-2 py-1 bg-amber-200 border border-amber-400 rounded text-xs font-semibold text-amber-900 whitespace-nowrap cursor-pointer min-w-0'
+                        : 'px-2 py-1 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded text-xs font-medium text-amber-800 whitespace-nowrap hover:bg-amber-100 cursor-pointer min-w-0';
                 });
             };
 
@@ -1321,7 +1335,7 @@ $totalPages = count($pages);
                     const button = document.createElement('button');
                     button.type = 'button';
                     button.setAttribute('data-color', color);
-                    button.className = 'px-2 py-1 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded text-xs font-medium text-amber-800 whitespace-nowrap hover:bg-amber-100 cursor-pointer';
+                    button.className = 'px-2 py-1 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded text-xs font-medium text-amber-800 whitespace-nowrap hover:bg-amber-100 cursor-pointer min-w-0';
                     button.textContent = color;
                     button.addEventListener('click', () => {
                         selectedColor = color;
