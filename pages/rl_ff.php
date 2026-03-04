@@ -31,6 +31,11 @@ $rewardImages = [
     'nothing' => 'Fairy fading without leaving a gift',
 ];
 
+$rewardImageFiles = [
+    'give_golden_shovel' => file_exists(__DIR__.'/../images/rlff_f_shovel.webp') ? '/images/rlff_f_shovel.webp' : null,
+    'shovel_event' => file_exists(__DIR__.'/../images/rlff_f_shovel.webp') ? '/images/rlff_f_shovel.webp' : null,
+];
+
 function fairy_fountain_available_cash(int $uid): float
 {
     if ($uid === 0) {
@@ -498,7 +503,12 @@ if ($todayVisit) {
     <?php foreach ($rewardImages as $key => $desc): ?>
       <div class="fairy-reward">
         <div class="fairy-image-placeholder" data-reward="<?= htmlspecialchars($key) ?>">
-          🧚‍♀️ <strong><?= htmlspecialchars(str_replace('_', ' ', ucfirst($key))) ?></strong>
+          <?php if (!empty($rewardImageFiles[$key])): ?>
+            <img src="<?= htmlspecialchars($rewardImageFiles[$key]) ?>" alt="<?= htmlspecialchars($desc) ?>" class="reward-image">
+          <?php else: ?>
+            🧚‍♀️
+          <?php endif; ?>
+          <strong><?= htmlspecialchars(str_replace('_', ' ', ucfirst($key))) ?></strong>
           <div class="muted"><?= htmlspecialchars($desc) ?></div>
         </div>
       </div>
@@ -509,7 +519,12 @@ if ($todayVisit) {
     <div class="alert success">
       <strong>Image callout for this blessing:</strong>
       <div class="fairy-image-placeholder active" data-reward="<?= htmlspecialchars($rewardVisualKey) ?>">
-        🧚‍♀️ <?= htmlspecialchars($rewardImages[$rewardVisualKey]) ?>
+        <?php if (!empty($rewardImageFiles[$rewardVisualKey])): ?>
+          <img src="<?= htmlspecialchars($rewardImageFiles[$rewardVisualKey]) ?>" alt="<?= htmlspecialchars($rewardImages[$rewardVisualKey]) ?>" class="reward-image">
+        <?php else: ?>
+          🧚‍♀️
+        <?php endif; ?>
+        <?= htmlspecialchars($rewardImages[$rewardVisualKey]) ?>
       </div>
     </div>
   <?php endif; ?>
@@ -556,6 +571,13 @@ if ($todayVisit) {
   padding: 0.75rem;
   background: rgba(255,255,255,0.04);
   border-radius: 6px;
+}
+.fairy-image-placeholder .reward-image {
+  width: 100%;
+  max-width: 220px;
+  display: block;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
 }
 .fairy-image-placeholder.active {
   border: 1px solid #ffb3ff;
