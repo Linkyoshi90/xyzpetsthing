@@ -408,7 +408,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $messages[] = $rewardNote;
                             break;
                         default:
-                            $rewardNote = 'The fairy only smiled this time.';
+                            $rewardNote = 'The fairy is not happy.';
                             $messages[] = $rewardNote;
                             break;
                     }
@@ -462,7 +462,6 @@ if ($todayVisit) {
   <div class="fairy-pose">
     <img src="<?= htmlspecialchars($currentPoseImage) ?>" alt="Tengu fairy placeholder pose" class="pose-image">
     <div class="pose-label"><?= htmlspecialchars($currentPoseLabel) ?></div>
-    <div class="muted small">Default and given poses will update once the illustrated variants are ready.</div>
   </div>
   <?php if ($todayVisit): ?>
     <div class="alert success">
