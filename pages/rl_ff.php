@@ -10,9 +10,10 @@ $today = date('Y-m-d');
 $appearanceChance = 68; // percent
 $messages = [];
 $rewardVisualKey = null;
-$defaultPoseImage = '/images/rlff_f_default.webp';
+$defaultPoseImage = file_exists(__DIR__.'/../images/rlff.webp') ? '/images/rlff.webp' : '/images/rlff_f_default.webp';
 $givenPoseImage = '/images/rlff_f_given.webp';
 $happyPoseImage = '/images/rlff_f_given.webp';
+$contentPoseImage = file_exists(__DIR__.'/../images/rlff_f_content.webp') ? '/images/rlff_f_content.webp' : '/images/rlff_f_default.webp';
 $disappointedPoseImage = '/images/rlff_f_disappointed.webp';
 $sadPoseImage = '/images/rlff_f_mad.webp';
 
@@ -27,9 +28,49 @@ $rewardImages = [
     'feed_single_full' => 'Fairy filling one creature’s food bowl',
     'give_magic_potion' => 'Fairy presenting a bottled magical potion',
     'give_golden_shovel' => 'Fairy offering a gleaming golden shovel',
-    'nothing' => 'Fairy offering a disappointed frown',
+    'shovel_event' => 'Fairy asking about a golden, silver, then normal shovel',
     'nothing' => 'Fairy fading without leaving a gift',
 ];
+
+function fairy_fountain_available_cash(int $uid): float
+{
+    if ($uid === 0) {
+        return (float)temp_user_balance('cash');
+    }
+    return (float)(q('SELECT balance FROM user_balances WHERE user_id = ? AND currency_id = 1', [$uid])->fetchColumn() ?: 0);
+}
+
+function fairy_fountain_reaction(float $amount, float $availableCash): string
+{
+    $percent = $availableCash > 0 ? ($amount / $availableCash) * 100 : 0;
+    if ($amount < 50 && $percent < 5) {
+        return 'mad';
+    }
+    if ($amount > 50 && $percent < 10 && $percent > 5) {
+        return 'disappointed';
+    }
+    if ($amount > 1000 || $percent > 50) {
+        return 'given';
+    }
+    return 'content';
+}
+
+function fairy_fountain_pick_weighted(array $weights): string
+{
+    $total = array_sum($weights);
+    if ($total <= 0) {
+        return array_key_first($weights);
+    }
+    $roll = random_int(1, $total);
+    $running = 0;
+    foreach ($weights as $key => $weight) {
+        $running += (int)$weight;
+        if ($roll <= $running) {
+            return (string)$key;
+        }
+    }
+    return (string)array_key_last($weights);
+}
 
 function fairy_fountain_visit_row(int $uid, string $today, bool $isTemp): ?array
 {
@@ -123,6 +164,39 @@ function fairy_fountain_add_item_if_exists(int $uid, string $name): string
         [$uid, (int)$itemId]
     );
     return "You receive 1x $name.";
+}
+
+function fairy_fountain_add_golden_shovel_or_random(int $uid): string
+{
+    $itemId = q("SELECT item_id FROM items WHERE item_name = 'Golden Shovel' LIMIT 1")->fetchColumn();
+    if ($itemId) {
+        if ($uid === 0) {
+            temp_user_add_inventory_item((int)$itemId, 1);
+        } else {
+            q(
+                "INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)"
+                . " ON DUPLICATE KEY UPDATE quantity = quantity + 1",
+                [$uid, (int)$itemId]
+            );
+        }
+        return 'You receive 1x Golden Shovel.';
+    }
+
+    $fallback = q('SELECT item_id, item_name FROM items ORDER BY RAND() LIMIT 1')->fetch(PDO::FETCH_ASSOC);
+    if (!$fallback) {
+        return 'No item could be awarded right now.';
+    }
+
+    if ($uid === 0) {
+        temp_user_add_inventory_item((int)$fallback['item_id'], 1);
+    } else {
+        q(
+            "INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1)"
+            . " ON DUPLICATE KEY UPDATE quantity = quantity + 1",
+            [$uid, (int)$fallback['item_id']]
+        );
+    }
+    return 'Golden Shovel was unavailable, so you receive 1x '.$fallback['item_name'].'.';
 }
 
 function fairy_fountain_fill_food(array $pets, int $uid, bool $all, bool $isTemp): array
@@ -238,6 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($amount <= 0) {
             $messages[] = 'Offer at least 0.01 coins to wake the fountain.';
         } else {
+            $availableCash = fairy_fountain_available_cash($uid);
             $paid = fairy_fountain_adjust_balance($uid, $amount);
             if (!$paid) {
                 $messages[] = 'You do not have enough coins for that offering.';
@@ -247,22 +322,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $rewardKey = null;
                 $rewardNote = null;
                 $pets = get_user_pets($uid);
+                $reaction = fairy_fountain_reaction($amount, $availableCash);
+                $reactionLabel = $reaction;
 
                 if ($fairyAppears) {
-                    $rewardPool = [
-                        'heal_full_party',
-                        'heal_full_single',
-                        'heal_plus5_single',
-                        'heal_plus5_party',
-                        'heal_plus1_party',
-                        'heal_plus1_single',
-                        'feed_party_full',
-                        'feed_single_full',
-                        'give_magic_potion',
-                        'give_golden_shovel',
-                        'nothing',
-                    ];
-                    $rewardKey = $rewardPool[array_rand($rewardPool)];
+                    if ($reaction === 'mad') {
+                        $rewardKey = 'nothing';
+                        $messages[] = 'The fairy looks mad at the tiny offering and vanishes without helping.';
+                        $rewardNote = 'Mad reaction: no reward.';
+                    } elseif ($reaction === 'disappointed') {
+                        $rewardKey = fairy_fountain_pick_weighted([
+                            'heal_full_single' => 70,
+                            'heal_full_party' => 30,
+                        ]);
+                        $messages[] = 'The fairy looks slightly disappointed, but still offers a small blessing.';
+                    } elseif ($reaction === 'given') {
+                        $rewardKey = fairy_fountain_pick_weighted([
+                            'heal_full_party' => 50,
+                            'heal_full_single' => 15,
+                            'heal_plus5_party' => 10,
+                            'feed_party_full' => 10,
+                            'give_magic_potion' => 8,
+                            'shovel_event' => 7,
+                        ]);
+                        $messages[] = 'The fairy beams with joy at your generosity!';
+                    } else {
+                        $rewardKey = fairy_fountain_pick_weighted([
+                            'heal_full_single' => 20,
+                            'heal_plus5_single' => 20,
+                            'heal_plus5_party' => 15,
+                            'heal_plus1_party' => 10,
+                            'heal_plus1_single' => 10,
+                            'feed_party_full' => 10,
+                            'feed_single_full' => 7,
+                            'give_magic_potion' => 5,
+                            'shovel_event' => 3,
+                        ]);
+                    }
+
                     $rewardVisualKey = $rewardKey;
                     switch ($rewardKey) {
                         case 'heal_full_party':
@@ -305,15 +402,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             $rewardNote = fairy_fountain_add_item_if_exists($uid, 'Golden Shovel');
                             $messages[] = $rewardNote;
                             break;
+                        case 'shovel_event':
+                            $messages[] = '"Have you dropped this golden shovel? No? Well, this silver one, then? No? This normal shovel... Surely not that one? You did? You\'re honest. I like you. Take this golden shovel as well!"';
+                            $rewardNote = fairy_fountain_add_golden_shovel_or_random($uid);
+                            $messages[] = $rewardNote;
+                            break;
                         default:
                             $rewardNote = 'The fairy only smiled this time.';
                             $messages[] = $rewardNote;
                             break;
                     }
                 } else {
+                    $reactionLabel = 'none';
                     $rewardKey = 'none';
                     $rewardNote = 'The coins sink quietly. No fairy answered today.';
                     $messages[] = $rewardNote;
+                }
+
+                if ($fairyAppears && $rewardNote !== null) {
+                    $rewardNote = 'Reaction: '.$reactionLabel.' | '.$rewardNote;
                 }
 
                 fairy_fountain_record_visit($uid, $today, $amount, $rewardKey, $rewardNote, $isTemp);
@@ -324,8 +431,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $todayVisit = fairy_fountain_visit_row($uid, $today, $isTemp);
-$currentPoseImage = $todayVisit ? $givenPoseImage : $defaultPoseImage;
-$currentPoseLabel = $todayVisit ? 'Given pose' : 'Default pose';
+$currentPoseImage = $defaultPoseImage;
+$currentPoseLabel = 'Default pose';
+if ($todayVisit) {
+    $visitNote = (string)($todayVisit['reward_note'] ?? '');
+    if (str_contains($visitNote, 'Reaction: mad')) {
+        $currentPoseImage = $sadPoseImage;
+        $currentPoseLabel = 'Mad reaction';
+    } elseif (str_contains($visitNote, 'Reaction: disappointed')) {
+        $currentPoseImage = $disappointedPoseImage;
+        $currentPoseLabel = 'Disappointed reaction';
+    } elseif (str_contains($visitNote, 'Reaction: given')) {
+        $currentPoseImage = $happyPoseImage;
+        $currentPoseLabel = 'Happy reaction';
+    } elseif (str_contains($visitNote, 'Reaction: content')) {
+        $currentPoseImage = $contentPoseImage;
+        $currentPoseLabel = 'Content reaction';
+    }
+}
 ?>
 
 <h1>Rheinland - Fairy Fountain</h1>
