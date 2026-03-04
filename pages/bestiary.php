@@ -786,6 +786,38 @@ $totalPages = count($pages);
             overflow-y: auto;
             padding-right: 0.5rem;
         }
+
+        .creature-image-frame {
+            height: calc(var(--page-content-height) * 0.3);
+        }
+
+        .page-panel {
+            position: relative;
+            padding: 1.5rem;
+            min-width: 0;
+        }
+
+        .page-panel-left {
+            padding-right: 2.75rem;
+        }
+
+        .page-panel-right {
+            padding-left: 2.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .page-panel {
+                padding: 2rem;
+            }
+
+            .page-panel-left {
+                padding-right: 3.25rem;
+            }
+
+            .page-panel-right {
+                padding-left: 3.25rem;
+            }
+        }
     </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-amber-900 via-amber-800 to-amber-900 flex items-center justify-center p-4 md:p-8 overflow-hidden">
@@ -877,10 +909,10 @@ $totalPages = count($pages);
                 </div>
                 
                 <!-- Pages container -->
-                <div class="relative bg-gradient-to-br from-amber-50 via-amber-100 to-amber-50 rounded-lg shadow-2xl overflow-hidden flex" style="height: var(--book-height); width: var(--book-width);">
+                <div class="relative bg-gradient-to-br from-amber-50 via-amber-100 to-amber-50 rounded-lg shadow-2xl overflow-hidden grid grid-cols-2" style="height: var(--book-height); width: var(--book-width);">
                     
                     <!-- Left page -->
-                    <div class="flex-1 relative p-6 md:p-8 border-r border-amber-200/50">
+                    <div class="page-panel page-panel-left border-r border-amber-200/50">
                         <!-- Page texture -->
                         <div class="absolute inset-0 opacity-30 paper-texture"></div>
                         
@@ -899,7 +931,7 @@ $totalPages = count($pages);
                     </div>
                     
                     <!-- Right page -->
-                    <div class="flex-1 relative p-6 md:p-8">
+                    <div class="page-panel page-panel-right">
                         <!-- Page texture -->
                         <div class="absolute inset-0 opacity-30 paper-texture"></div>
                         
@@ -1000,7 +1032,7 @@ $totalPages = count($pages);
             </div>
             
             <!-- Creature Image -->
-            <div class="relative w-full h-40 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden border-2 border-amber-200">
+            <div class="relative w-full creature-image-frame bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden border-2 border-amber-200">
                 <div class="absolute inset-0 opacity-20">
                     <div class="absolute top-2 left-2 w-16 h-16 border-2 border-amber-400 rounded-full"></div>
                     <div class="absolute bottom-4 right-4 w-12 h-12 border-2 border-amber-400 rounded-full"></div>
@@ -1008,7 +1040,8 @@ $totalPages = count($pages);
                 </div>
                 <img id="creature-image" src="" alt="" class="relative z-10 h-full w-full object-contain p-2" loading="lazy" />
             </div>
-            
+
+            <div class="fixed-scroll-section custom-scrollbar">
             <!-- Stats Grid -->
             <div class="grid grid-cols-4 gap-2 mb-4">
                 <div class="text-center">
@@ -1066,7 +1099,8 @@ $totalPages = count($pages);
             <!-- Description -->
             <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-100">
                 <span class="text-xs text-amber-600 block mb-2 font-semibold">Description:</span>
-                <div id="creature-description" class="text-amber-800 text-sm leading-relaxed max-h-24 overflow-y-auto pr-2 custom-scrollbar"></div>
+                <div id="creature-description" class="text-amber-800 text-sm leading-relaxed"></div>
+            </div>
             </div>
         </div>
     </template>
