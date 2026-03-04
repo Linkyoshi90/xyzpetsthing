@@ -11,7 +11,6 @@ $appearanceChance = 68; // percent
 $messages = [];
 $rewardVisualKey = null;
 $defaultPoseImage = file_exists(__DIR__.'/../images/rlff.webp') ? '/images/rlff.webp' : '/images/rlff_f_default.webp';
-$givenPoseImage = '/images/rlff_f_given.webp';
 $happyPoseImage = '/images/rlff_f_given.webp';
 $contentPoseImage = file_exists(__DIR__.'/../images/rlff_f_content.webp') ? '/images/rlff_f_content.webp' : '/images/rlff_f_default.webp';
 $disappointedPoseImage = '/images/rlff_f_disappointed.webp';
