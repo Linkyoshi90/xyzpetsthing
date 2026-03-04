@@ -503,11 +503,7 @@ if ($todayVisit) {
     <?php foreach ($rewardImages as $key => $desc): ?>
       <div class="fairy-reward">
         <div class="fairy-image-placeholder" data-reward="<?= htmlspecialchars($key) ?>">
-          <?php if (!empty($rewardImageFiles[$key])): ?>
-            <img src="<?= htmlspecialchars($rewardImageFiles[$key]) ?>" alt="<?= htmlspecialchars($desc) ?>" class="reward-image">
-          <?php else: ?>
             🧚‍♀️
-          <?php endif; ?>
           <strong><?= htmlspecialchars(str_replace('_', ' ', ucfirst($key))) ?></strong>
           <div class="muted"><?= htmlspecialchars($desc) ?></div>
         </div>
