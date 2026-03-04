@@ -336,6 +336,103 @@ function getCreatureImagePath(string $speciesName): string {
 }
 
 /**
+ * Normalize text to a filesystem/database slug.
+ */
+function bestiarySlugify(string $value): string {
+    $slug = strtolower((string)preg_replace('/[^a-z0-9]+/i', '_', $value));
+    return trim($slug, '_');
+}
+
+/**
+ * Load pet colors from the database with normalized forms for matching.
+ */
+function getPetColorCatalog(): array {
+    if (!tableExists('pet_colors')) {
+        return [];
+    }
+
+    $rows = executeQuery('SELECT color_name FROM pet_colors') ?? [];
+    $colors = [];
+    foreach ($rows as $row) {
+        $name = trim((string)($row['color_name'] ?? ''));
+        if ($name === '') {
+            continue;
+        }
+
+        $slug = bestiarySlugify($name);
+        if ($slug === '') {
+            continue;
+        }
+
+        $colors[] = [
+            'name' => $name,
+            'slug' => $slug,
+            'normalized' => str_replace('_', ' ', $slug),
+        ];
+    }
+
+    return $colors;
+}
+
+/**
+ * Map species color images to real DB-backed color names.
+ */
+function getCreatureColorImageMap(string $speciesName, array $dbColors): array {
+    $speciesSlug = bestiarySlugify($speciesName);
+    if ($speciesSlug === '') {
+        return [];
+    }
+
+    $imageFiles = glob(__DIR__ . '/../images/' . $speciesSlug . '_f_*.webp') ?: [];
+    if (empty($imageFiles)) {
+        return [];
+    }
+
+    $mapped = [];
+    foreach ($imageFiles as $file) {
+        $basename = basename($file);
+        if (!preg_match('/^' . preg_quote($speciesSlug, '/') . '_f_(.+)\.webp$/i', $basename, $matches)) {
+            continue;
+        }
+
+        $imageColorSlug = bestiarySlugify((string)$matches[1]);
+        if ($imageColorSlug === '') {
+            continue;
+        }
+        $imageColorNormalized = str_replace('_', ' ', $imageColorSlug);
+
+        $matchedColorName = null;
+        foreach ($dbColors as $dbColor) {
+            if (($dbColor['slug'] ?? '') === $imageColorSlug || ($dbColor['normalized'] ?? '') === $imageColorNormalized) {
+                $matchedColorName = $dbColor['name'];
+                break;
+            }
+        }
+
+        if ($matchedColorName === null) {
+            foreach ($dbColors as $dbColor) {
+                if (
+                    str_contains((string)($dbColor['slug'] ?? ''), $imageColorSlug)
+                    || str_contains((string)($dbColor['normalized'] ?? ''), $imageColorNormalized)
+                ) {
+                    $matchedColorName = $dbColor['name'];
+                    break;
+                }
+            }
+        }
+
+        if ($matchedColorName === null) {
+            continue;
+        }
+
+        $mapped[$matchedColorName] = 'images/' . $basename;
+    }
+
+    uksort($mapped, 'strcasecmp');
+    return $mapped;
+}
+
+/**
  * Get regions from database
  */
 function getRegions(): array {
@@ -352,6 +449,7 @@ function getRegions(): array {
  */
 function getCreaturesByRegion(): array {
     $creatureData = loadCreatureData();
+    $dbColors = getPetColorCatalog();
 
     // Check if required tables exist
     $creatures = [];
@@ -426,10 +524,9 @@ function getCreaturesByRegion(): array {
         
         // Merge with JSON data if available
         $jsonData = $creatureData[$creature['species_name']] ?? [];
-        $colors = array_values(array_filter(
-            is_array($jsonData['colors'] ?? null) ? $jsonData['colors'] : ['Blue'],
-            fn($color) => trim((string)$color) !== ''
-        ));
+        $colorImages = getCreatureColorImageMap((string)$creature['species_name'], $dbColors);
+        $colors = array_keys($colorImages);
+        $defaultImage = !empty($colorImages) ? reset($colorImages) : getCreatureImagePath((string)$creature['species_name']);
         
         $grouped[$region][] = [
             'id' => $creature['species_id'],
@@ -440,8 +537,9 @@ function getCreaturesByRegion(): array {
                 'def' => (int)(($jsonData['stats']['def'] ?? 0) > 0 ? $jsonData['stats']['def'] : $creature['base_def']),
                 'init' => (int)(($jsonData['stats']['init'] ?? 0) > 0 ? $jsonData['stats']['init'] : $creature['base_init']),
             ],
-            'colors' => !empty($colors) ? $colors : ['Blue'],
-            'image' => getCreatureImagePath((string)$creature['species_name']),
+            'colors' => $colors,
+            'color_images' => $colorImages,
+            'image' => $defaultImage,
             'description' => normalizeEncyclopediaField($jsonData['description'] ?? null, 'Details are being cataloged by the library staff.'),
             'rarity' => normalizeEncyclopediaField($jsonData['rarity'] ?? null, 'Common'),
             'size' => normalizeEncyclopediaField($jsonData['size'] ?? null, 'Medium'),
@@ -933,7 +1031,7 @@ $totalPages = count($pages);
             <!-- Colors -->
             <div class="mb-4">
                 <span class="text-xs text-amber-600 block mb-2">Color Variants:</span>
-                <div id="creature-colors" class="flex flex-wrap gap-1 max-h-16 overflow-y-auto pr-2 custom-scrollbar"></div>
+                <div id="creature-colors" class="flex gap-1 overflow-x-auto pb-1 pr-2 custom-scrollbar whitespace-nowrap"></div>
             </div>
             
             <!-- Description -->
@@ -1196,12 +1294,44 @@ $totalPages = count($pages);
             
             // Colors
             const colorsEl = content.querySelector('#creature-colors');
-            creature.colors.forEach(color => {
-                const span = document.createElement('span');
-                span.className = 'px-2 py-1 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded text-xs font-medium text-amber-800';
-                span.textContent = color;
-                colorsEl.appendChild(span);
-            });
+            const colorImageMap = creature.color_images || {};
+            const availableColors = creature.colors || [];
+            let selectedColor = availableColors[0] || '';
+
+            const setActiveColor = (color) => {
+                const imagePath = colorImageMap[color] || creature.image;
+                creatureImage.src = imagePath;
+                creatureImage.alt = color ? `${creature.name} (${color})` : creature.name;
+
+                colorsEl.querySelectorAll('button[data-color]').forEach((button) => {
+                    const isActive = button.getAttribute('data-color') === color;
+                    button.className = isActive
+                        ? 'px-2 py-1 bg-amber-200 border border-amber-400 rounded text-xs font-semibold text-amber-900 whitespace-nowrap cursor-pointer'
+                        : 'px-2 py-1 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded text-xs font-medium text-amber-800 whitespace-nowrap hover:bg-amber-100 cursor-pointer';
+                });
+            };
+
+            if (availableColors.length === 0) {
+                const emptyLabel = document.createElement('span');
+                emptyLabel.className = 'text-xs italic text-amber-600';
+                emptyLabel.textContent = 'No color variants available';
+                colorsEl.appendChild(emptyLabel);
+            } else {
+                availableColors.forEach((color) => {
+                    const button = document.createElement('button');
+                    button.type = 'button';
+                    button.setAttribute('data-color', color);
+                    button.className = 'px-2 py-1 bg-gradient-to-r from-amber-100 to-amber-50 border border-amber-200 rounded text-xs font-medium text-amber-800 whitespace-nowrap hover:bg-amber-100 cursor-pointer';
+                    button.textContent = color;
+                    button.addEventListener('click', () => {
+                        selectedColor = color;
+                        setActiveColor(selectedColor);
+                    });
+                    colorsEl.appendChild(button);
+                });
+
+                setActiveColor(selectedColor);
+            }
             
             // Description
             content.querySelector('#creature-description').innerHTML = parseFormattedText(creature.description);
