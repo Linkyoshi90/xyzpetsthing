@@ -10,8 +10,11 @@ $today = date('Y-m-d');
 $appearanceChance = 68; // percent
 $messages = [];
 $rewardVisualKey = null;
-$defaultPoseImage = '/images/tengu_f_blue.webp';
-$givenPoseImage = '/images/tengu_f_blue.webp';
+$defaultPoseImage = '/images/rlff_f_default.webp';
+$givenPoseImage = '/images/rlff_f_given.webp';
+$happyPoseImage = '/images/rlff_f_given.webp';
+$disappointedPoseImage = '/images/rlff_f_disappointed.webp';
+$sadPoseImage = '/images/rlff_f_mad.webp';
 
 $rewardImages = [
     'heal_full_party' => 'Fairy mending every creature at once',
@@ -24,6 +27,7 @@ $rewardImages = [
     'feed_single_full' => 'Fairy filling one creature’s food bowl',
     'give_magic_potion' => 'Fairy presenting a bottled magical potion',
     'give_golden_shovel' => 'Fairy offering a gleaming golden shovel',
+    'nothing' => 'Fairy offering a disappointed frown',
     'nothing' => 'Fairy fading without leaving a gift',
 ];
 
