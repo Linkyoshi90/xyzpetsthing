@@ -15,7 +15,10 @@
       "def": 5,
       "init": 9
     },
-    "description": "Adaro are musically gifted underwater hunters and gatherers who haunt the warm coastal currents around the Spice Route League and the drowned rings of Pelagora. They are sleek, streamlined aquatic humanoids with webbed limbs and a powerful primary tail for speed. As they age, a second, finer tail begins as a ridge and gradually separates, acting as a steering fin and a display fan during courtship and ritual.\n\nTheir scales shed very rarely, and each shed is treated as an event. A single naturally shed Adaro scale, when worn close to the skin, grants the bearer the gift of breathing underwater for a short time. Legitimate, willingly gifted scales are prized trade goods in Pelagoran markets and island harbors, while taking a scale from a living Adaro is seen as a grave theft that risks the Sea's temper. Adaro pods live in loose, cooperative bands that hunt and gather together, using music as much as motion: clicks, whistles, and resonant hums carry through the water to coordinate drives on shoals, warn of predators, and mark safe routes.\n\nTheir reproductive behavior mirrors that of dolphins more than humans. Courtship is playful, social, and bound up with shared hunts and complex songs. Gestation lasts about nine months, but Adaro usually carry multiple young at once. Newborns are fully formed but small enough to have shared the womb, and they take to the water almost immediately under the watchful eyes of the pod. Driven by intense hunger and guided hunts, the young grow quickly; within a year, an Adaro juvenile typically reaches the size and basic strength of an adult, though they still lack experience and the full depth of song.\n\nIsland peoples along the Spice Route tell that Adaro arose where storm spirits and coastal hunters shared the same fears and hopes for the sea, and that the Harmontide itself drew those feelings into a new people. To the islanders, Adaro are both neighbors and omens: friendly pods mean safe seasons and rich catches, long absences hint at storms or deeper trouble. Over generations, Adaro have been known to form close romantic bonds with island dwellers, giving rise to tales of half-sea children, families split between shore and reef, and promises whispered where the surf covers both sets of footprints."
+    "description": "Adaro are musically gifted underwater hunters and gatherers who haunt the warm coastal currents around the Spice Route League and the drowned rings of Pelagora. They are sleek, streamlined aquatic humanoids with webbed limbs and a powerful primary tail for speed. As they age, a second, finer tail begins as a ridge and gradually separates, acting as a steering fin and a display fan during courtship and ritual.\n\nTheir scales shed very rarely, and each shed is treated as an event. A single naturally shed Adaro scale, when worn close to the skin, grants the bearer the gift of breathing underwater for a short time. Legitimate, willingly gifted scales are prized trade goods in Pelagoran markets and island harbors, while taking a scale from a living Adaro is seen as a grave theft that risks the Sea's temper. Adaro pods live in loose, cooperative bands that hunt and gather together, using music as much as motion: clicks, whistles, and resonant hums carry through the water to coordinate drives on shoals, warn of predators, and mark safe routes.\n\nTheir reproductive behavior mirrors that of dolphins more than humans. Courtship is playful, social, and bound up with shared hunts and complex songs. Gestation lasts about nine months, but Adaro usually carry multiple young at once. Newborns are fully formed but small enough to have shared the womb, and they take to the water almost immediately under the watchful eyes of the pod. Driven by intense hunger and guided hunts, the young grow quickly; within a year, an Adaro juvenile typically reaches the size and basic strength of an adult, though they still lack experience and the full depth of song.\n\nIsland peoples along the Spice Route tell that Adaro arose where storm spirits and coastal hunters shared the same fears and hopes for the sea, and that the Harmontide itself drew those feelings into a new people. To the islanders, Adaro are both neighbors and omens: friendly pods mean safe seasons and rich catches, long absences hint at storms or deeper trouble. Over generations, Adaro have been known to form close romantic bonds with island dwellers, giving rise to tales of half-sea children, families split between shore and reef, and promises whispered where the surf covers both sets of footprints.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Akaname": {
     "name": "Akaname",
@@ -33,7 +36,10 @@
       "def": 7,
       "init": 10
     },
-    "description": "A Akaname is a storied creature native to Kemet."
+    "description": "A Akaname is a storied creature native to Kemet.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Ahuizotl": {
     "name": "Ahuizotl",
@@ -51,7 +57,10 @@
       "def": 6,
       "init": 6
     },
-    "description": "A Ahuizotl is a storied creature native to Nornheim."
+    "description": "A Ahuizotl is a storied creature native to Nornheim.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Amarok": {
     "name": "Amarok",
@@ -69,7 +78,10 @@
       "def": 8,
       "init": 3
     },
-    "description": "A Amarok is a storied creature native to Spice Route League."
+    "description": "A Amarok is a storied creature native to Spice Route League.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Amaru": {
     "name": "Amaru",
@@ -87,7 +99,10 @@
       "def": 7,
       "init": 3
     },
-    "description": "A Amaru is a storied creature native to Yara Nations."
+    "description": "A Amaru is a storied creature native to Yara Nations.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Angel": {
     "name": "Angel",
@@ -105,7 +120,10 @@
       "def": 6,
       "init": 7
     },
-    "description": "A Angel is a storied creature native to Crescent Caliphate."
+    "description": "A Angel is a storied creature native to Crescent Caliphate.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Anubis": {
     "name": "Anubis",
@@ -123,7 +141,10 @@
       "def": 8,
       "init": 4
     },
-    "description": "A Anubis is a storied creature native to Sovereign Tribes of the Ancestral Plains."
+    "description": "A Anubis is a storied creature native to Sovereign Tribes of the Ancestral Plains.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Argentinosaurus": {
     "name": "Argentinosaurus",
@@ -141,7 +162,10 @@
       "def": 7,
       "init": 2
     },
-    "description": "A Argentinosaurus is a storied creature native to Yara Nations."
+    "description": "A Argentinosaurus is a storied creature native to Yara Nations.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Azureus": {
     "name": "Azureus",
@@ -159,7 +183,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Azureus is a storied creature native to Red Sun Commonwealth."
+    "description": "A Azureus is a storied creature native to Red Sun Commonwealth.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Bahamut": {
     "name": "Bahamut",
@@ -177,7 +204,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Bahamut is a storied creature native to Rodinian Tsardom."
+    "description": "A Bahamut is a storied creature native to Rodinian Tsardom.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Banshee": {
     "name": "Banshee",
@@ -195,7 +225,10 @@
       "def": 5,
       "init": 12
     },
-    "description": "A Banshee is a storied creature native to Bretonreach."
+    "description": "A Banshee is a storied creature native to Bretonreach.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Black Turtle": {
     "name": "Black Turtle",
@@ -213,7 +246,10 @@
       "def": 7,
       "init": 3
     },
-    "description": "A Black Turtle is a storied creature native to Hammurabia."
+    "description": "A Black Turtle is a storied creature native to Hammurabia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Bunyip": {
     "name": "Bunyip",
@@ -231,7 +267,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Bunyip is a storied creature native to Xochimex."
+    "description": "A Bunyip is a storied creature native to Xochimex.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Capybara": {
     "name": "Capybara",
@@ -249,7 +288,10 @@
       "def": 9,
       "init": 3
     },
-    "description": "A Capybara is a storied creature native to Yamanokubo."
+    "description": "A Capybara is a storied creature native to Yamanokubo.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Centaur": {
     "name": "Centaur",
@@ -267,7 +309,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Centaur is a storied creature native to Aegia Aeterna."
+    "description": "A Centaur is a storied creature native to Aegia Aeterna.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Charro Negro": {
     "name": "Charro Negro",
@@ -285,7 +330,10 @@
       "def": 6,
       "init": 8
     },
-    "description": "A Charro Negro is a storied creature native to Lotus-Dragon Kingdom."
+    "description": "A Charro Negro is a storied creature native to Lotus-Dragon Kingdom.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Chupacabra": {
     "name": "Chupacabra",
@@ -303,7 +351,10 @@
       "def": 6,
       "init": 6
     },
-    "description": "A Chupacabra is a storied creature native to Lotus-Dragon Kingdom."
+    "description": "A Chupacabra is a storied creature native to Lotus-Dragon Kingdom.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Cipactli": {
     "name": "Cipactli",
@@ -321,7 +372,10 @@
       "def": 6,
       "init": 6
     },
-    "description": "A Cipactli is a storied creature native to Nornheim."
+    "description": "A Cipactli is a storied creature native to Nornheim.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Crab man": {
     "name": "Crab man",
@@ -339,7 +393,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Crab man is a storied creature native to Rheinland."
+    "description": "A Crab man is a storied creature native to Rheinland.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Curupira": {
     "name": "Curupira",
@@ -357,7 +414,10 @@
       "def": 10,
       "init": 4
     },
-    "description": "A Curupira is a storied creature native to Yamanokubo."
+    "description": "A Curupira is a storied creature native to Yamanokubo.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Demon": {
     "name": "Demon",
@@ -375,7 +435,10 @@
       "def": 6,
       "init": 7
     },
-    "description": "A Demon is a storied creature native to Crescent Caliphate."
+    "description": "A Demon is a storied creature native to Crescent Caliphate.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Dolphin": {
     "name": "Dolphin",
@@ -393,7 +456,10 @@
       "def": 5,
       "init": 9
     },
-    "description": "A Dolphin is a storied creature native to Sila Council."
+    "description": "A Dolphin is a storied creature native to Sila Council.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Drop Bear": {
     "name": "Drop Bear",
@@ -411,7 +477,10 @@
       "def": 6,
       "init": 4
     },
-    "description": "A Drop Bear is a storied creature native to United free Republic of Borealia."
+    "description": "A Drop Bear is a storied creature native to United free Republic of Borealia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Dullahan": {
     "name": "Dullahan",
@@ -429,7 +498,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Dullahan is a storied creature native to Bretonreach."
+    "description": "A Dullahan is a storied creature native to Bretonreach.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Fishman": {
     "name": "Fishman",
@@ -447,7 +519,10 @@
       "def": 5,
       "init": 9
     },
-    "description": "A Fishman is a storied creature native to Yara Nations."
+    "description": "A Fishman is a storied creature native to Yara Nations.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Gandharva": {
     "name": "Gandharva",
@@ -465,7 +540,10 @@
       "def": 5,
       "init": 10
     },
-    "description": "A Gandharva is a storied creature native to Itzam Empire."
+    "description": "A Gandharva is a storied creature native to Itzam Empire.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Genie": {
     "name": "Genie",
@@ -483,7 +561,10 @@
       "def": 6,
       "init": 7
     },
-    "description": "A Genie is a storied creature native to Rodinian Tsardom."
+    "description": "A Genie is a storied creature native to Rodinian Tsardom.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Girtablilu": {
     "name": "Girtablilu",
@@ -501,7 +582,10 @@
       "def": 5,
       "init": 8
     },
-    "description": "A Girtablilu is a storied creature native to Sapa Inti Empire."
+    "description": "A Girtablilu is a storied creature native to Sapa Inti Empire.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Golem": {
     "name": "Golem",
@@ -519,7 +603,10 @@
       "def": 10,
       "init": 4
     },
-    "description": "A Golem is a storied creature native to Sila Council."
+    "description": "A Golem is a storied creature native to Sila Council.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Horned Serpent Uktena": {
     "name": "Horned Serpent Uktena",
@@ -537,7 +624,10 @@
       "def": 7,
       "init": 3
     },
-    "description": "A Horned Serpent Uktena is a storied creature native to Gran Columbia."
+    "description": "A Horned Serpent Uktena is a storied creature native to Gran Columbia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Jack-o-lantern": {
     "name": "Jack-o-lantern",
@@ -555,7 +645,10 @@
       "def": 5,
       "init": 12
     },
-    "description": "A Jack-o-lantern is a storied creature native to Eretz-Shalem League."
+    "description": "A Jack-o-lantern is a storied creature native to Eretz-Shalem League.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Jiang-Shi": {
     "name": "Jiang-Shi",
@@ -573,7 +666,10 @@
       "def": 5,
       "init": 8
     },
-    "description": "A Jiang-Shi is a storied creature native to Hammurabia."
+    "description": "A Jiang-Shi is a storied creature native to Hammurabia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Kangaroo": {
     "name": "Kangaroo",
@@ -591,7 +687,10 @@
       "def": 6,
       "init": 8
     },
-    "description": "A Kangaroo is a storied creature native to United free Republic of Borealia."
+    "description": "A Kangaroo is a storied creature native to United free Republic of Borealia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Kappa": {
     "name": "Kappa",
@@ -609,7 +708,10 @@
       "def": 7,
       "init": 8
     },
-    "description": "A Kappa is a storied creature native to Kemet."
+    "description": "A Kappa is a storied creature native to Kemet.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Keelut": {
     "name": "Keelut",
@@ -627,7 +729,10 @@
       "def": 8,
       "init": 3
     },
-    "description": "A Keelut is a storied creature native to Spice Route League."
+    "description": "A Keelut is a storied creature native to Spice Route League.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Kelpie": {
     "name": "Kelpie",
@@ -645,7 +750,10 @@
       "def": 7,
       "init": 8
     },
-    "description": "A Kelpie is a storied creature native to Bretonreach."
+    "description": "A Kelpie is a storied creature native to Bretonreach.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Kitsune": {
     "name": "Kitsune",
@@ -663,7 +771,10 @@
       "def": 6,
       "init": 10
     },
-    "description": "A Kitsune is a storied creature native to Kemet."
+    "description": "A Kitsune is a storied creature native to Kemet.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Kraken": {
     "name": "Kraken",
@@ -681,7 +792,10 @@
       "def": 7,
       "init": 3
     },
-    "description": "A Kraken is a storied creature native to Baharamandal."
+    "description": "A Kraken is a storied creature native to Baharamandal.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "La Llorona": {
     "name": "La Llorona",
@@ -699,7 +813,10 @@
       "def": 6,
       "init": 8
     },
-    "description": "A La Llorona is a storied creature native to Lotus-Dragon Kingdom."
+    "description": "A La Llorona is a storied creature native to Lotus-Dragon Kingdom.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Lamassu": {
     "name": "Lamassu",
@@ -717,7 +834,10 @@
       "def": 10,
       "init": 4
     },
-    "description": "A Lamassu is a storied creature native to Sapa Inti Empire."
+    "description": "A Lamassu is a storied creature native to Sapa Inti Empire.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Lamia": {
     "name": "Lamia",
@@ -735,7 +855,10 @@
       "def": 7,
       "init": 3
     },
-    "description": "A Lamia is a storied creature native to Aegia Aeterna."
+    "description": "A Lamia is a storied creature native to Aegia Aeterna.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Leshy": {
     "name": "Leshy",
@@ -753,7 +876,10 @@
       "def": 10,
       "init": 4
     },
-    "description": "A Leshy is a storied creature native to Eagle Serpent Dominion."
+    "description": "A Leshy is a storied creature native to Eagle Serpent Dominion.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Lich": {
     "name": "Lich",
@@ -771,7 +897,10 @@
       "def": 7,
       "init": 6
     },
-    "description": "A Lich is a storied creature native to Eretz-Shalem League."
+    "description": "A Lich is a storied creature native to Eretz-Shalem League.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Lilith": {
     "name": "Lilith",
@@ -789,7 +918,10 @@
       "def": 6,
       "init": 7
     },
-    "description": "A Lilith is a storied creature native to Sila Council."
+    "description": "A Lilith is a storied creature native to Sila Council.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Min-Min Lights": {
     "name": "Min-Min Lights",
@@ -807,7 +939,10 @@
       "def": 5,
       "init": 12
     },
-    "description": "A Min-Min Lights is a storied creature native to United free Republic of Borealia."
+    "description": "A Min-Min Lights is a storied creature native to United free Republic of Borealia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Naga": {
     "name": "Naga",
@@ -825,7 +960,10 @@
       "def": 7,
       "init": 3
     },
-    "description": "A Naga is a storied creature native to Itzam Empire."
+    "description": "A Naga is a storied creature native to Itzam Empire.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Ocelot": {
     "name": "Ocelot",
@@ -843,7 +981,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Ocelot is a storied creature native to Nornheim."
+    "description": "A Ocelot is a storied creature native to Nornheim.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Polar Bear": {
     "name": "Polar Bear",
@@ -861,7 +1002,10 @@
       "def": 8,
       "init": 3
     },
-    "description": "A Polar Bear is a storied creature native to Spice Route League."
+    "description": "A Polar Bear is a storied creature native to Spice Route League.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Quetzalcoatl": {
     "name": "Quetzalcoatl",
@@ -879,7 +1023,10 @@
       "def": 6,
       "init": 6
     },
-    "description": "A Quetzalcoatl is a storied creature native to Nornheim."
+    "description": "A Quetzalcoatl is a storied creature native to Nornheim.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Rainbow Serpent": {
     "name": "Rainbow Serpent",
@@ -897,7 +1044,10 @@
       "def": 7,
       "init": 3
     },
-    "description": "A Rainbow Serpent is a storied creature native to Xochimex."
+    "description": "A Rainbow Serpent is a storied creature native to Xochimex.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Ratatoskr": {
     "name": "Ratatoskr",
@@ -915,7 +1065,10 @@
       "def": 6,
       "init": 10
     },
-    "description": "A Ratatoskr is a storied creature native to Baharamandal."
+    "description": "A Ratatoskr is a storied creature native to Baharamandal.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Spider-Crab": {
     "name": "Spider-Crab",
@@ -933,7 +1086,10 @@
       "def": 9,
       "init": 4
     },
-    "description": "A Spider-Crab is a storied creature native to Kemet."
+    "description": "A Spider-Crab is a storied creature native to Kemet.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Succubus": {
     "name": "Succubus",
@@ -951,7 +1107,10 @@
       "def": 6,
       "init": 7
     },
-    "description": "A Succubus is a storied creature native to Crescent Caliphate."
+    "description": "A Succubus is a storied creature native to Crescent Caliphate.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Taniwha": {
     "name": "Taniwha",
@@ -969,7 +1128,10 @@
       "def": 8,
       "init": 3
     },
-    "description": "A Taniwha is a storied creature native to Rheinland."
+    "description": "A Taniwha is a storied creature native to Rheinland.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Tapir": {
     "name": "Tapir",
@@ -987,7 +1149,10 @@
       "def": 8,
       "init": 3
     },
-    "description": "A Tapir is a storied creature native to Red Sun Commonwealth."
+    "description": "A Tapir is a storied creature native to Red Sun Commonwealth.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Tengu": {
     "name": "Tengu",
@@ -1005,7 +1170,10 @@
       "def": 5,
       "init": 10
     },
-    "description": "A Tengu is a storied creature native to Kemet."
+    "description": "A Tengu is a storied creature native to Kemet.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Thunderbird": {
     "name": "Thunderbird",
@@ -1023,7 +1191,10 @@
       "def": 5,
       "init": 6
     },
-    "description": "A Thunderbird is a storied creature native to Gran Columbia."
+    "description": "A Thunderbird is a storied creature native to Gran Columbia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Vermillion Bird": {
     "name": "Vermillion Bird",
@@ -1041,7 +1212,10 @@
       "def": 6,
       "init": 8
     },
-    "description": "A Vermillion Bird is a storied creature native to Hammurabia."
+    "description": "A Vermillion Bird is a storied creature native to Hammurabia.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Vodyanoy": {
     "name": "Vodyanoy",
@@ -1059,7 +1233,10 @@
       "def": 9,
       "init": 3
     },
-    "description": "A Vodyanoy is a storied creature native to Eagle Serpent Dominion."
+    "description": "A Vodyanoy is a storied creature native to Eagle Serpent Dominion.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Wadjet": {
     "name": "Wadjet",
@@ -1077,7 +1254,10 @@
       "def": 8,
       "init": 4
     },
-    "description": "A Wadjet is a storied creature native to Sovereign Tribes of the Ancestral Plains."
+    "description": "A Wadjet is a storied creature native to Sovereign Tribes of the Ancestral Plains.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Wayob": {
     "name": "Wayob",
@@ -1095,7 +1275,10 @@
       "def": 6,
       "init": 10
     },
-    "description": "A Wayob is a storied creature native to Red Sun Commonwealth."
+    "description": "A Wayob is a storied creature native to Red Sun Commonwealth.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Will-o-Wisp": {
     "name": "Will-o-Wisp",
@@ -1113,7 +1296,10 @@
       "def": 5,
       "init": 12
     },
-    "description": "A Will-o-Wisp is a storied creature native to Bretonreach."
+    "description": "A Will-o-Wisp is a storied creature native to Bretonreach.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Yuki-Onna": {
     "name": "Yuki-Onna",
@@ -1131,7 +1317,10 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Yuki-Onna is a storied creature native to Kemet."
+    "description": "A Yuki-Onna is a storied creature native to Kemet.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Alisnapor": {
     "name": "Alisnapor",
@@ -1149,7 +1338,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Alisnapor are being compiled in the library archives."
+    "description": "Details about Alisnapor are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Anomalocaris": {
     "name": "Anomalocaris",
@@ -1167,7 +1359,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Anomalocaris are being compiled in the library archives."
+    "description": "Details about Anomalocaris are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Bee": {
     "name": "Bee",
@@ -1185,7 +1380,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Bee are being compiled in the library archives."
+    "description": "Details about Bee are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Blaze Cat": {
     "name": "Blaze Cat",
@@ -1203,7 +1401,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Blaze Cat are being compiled in the library archives."
+    "description": "Details about Blaze Cat are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Bullywug": {
     "name": "Bullywug",
@@ -1221,7 +1422,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Bullywug are being compiled in the library archives."
+    "description": "Details about Bullywug are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Daeodon": {
     "name": "Daeodon",
@@ -1239,7 +1443,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Daeodon are being compiled in the library archives."
+    "description": "Details about Daeodon are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Death": {
     "name": "Death",
@@ -1257,7 +1464,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Death are being compiled in the library archives."
+    "description": "Details about Death are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Elf": {
     "name": "Elf",
@@ -1275,7 +1485,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Elf are being compiled in the library archives."
+    "description": "Details about Elf are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Famine": {
     "name": "Famine",
@@ -1293,7 +1506,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Famine are being compiled in the library archives."
+    "description": "Details about Famine are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Fire Giant": {
     "name": "Fire Giant",
@@ -1311,7 +1527,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Fire Giant are being compiled in the library archives."
+    "description": "Details about Fire Giant are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Frost Giant": {
     "name": "Frost Giant",
@@ -1329,7 +1548,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Frost Giant are being compiled in the library archives."
+    "description": "Details about Frost Giant are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Fury": {
     "name": "Fury",
@@ -1347,7 +1569,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Fury are being compiled in the library archives."
+    "description": "Details about Fury are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Klabuster": {
     "name": "Klabuster",
@@ -1365,7 +1590,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Klabuster are being compiled in the library archives."
+    "description": "Details about Klabuster are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Landharpy": {
     "name": "Landharpy",
@@ -1383,7 +1611,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Landharpy are being compiled in the library archives."
+    "description": "Details about Landharpy are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Mimic": {
     "name": "Mimic",
@@ -1401,7 +1632,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Mimic are being compiled in the library archives."
+    "description": "Details about Mimic are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Pestilence": {
     "name": "Pestilence",
@@ -1419,7 +1653,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Pestilence are being compiled in the library archives."
+    "description": "Details about Pestilence are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Slidred": {
     "name": "Slidred",
@@ -1437,7 +1674,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Slidred are being compiled in the library archives."
+    "description": "Details about Slidred are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "War": {
     "name": "War",
@@ -1455,7 +1695,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about War are being compiled in the library archives."
+    "description": "Details about War are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Waterlil": {
     "name": "Waterlil",
@@ -1473,7 +1716,10 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Waterlil are being compiled in the library archives."
+    "description": "Details about Waterlil are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   },
   "Yatagarasu": {
     "name": "Yatagarasu",
@@ -1491,6 +1737,9 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Yatagarasu are being compiled in the library archives."
+    "description": "Details about Yatagarasu are being compiled in the library archives.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   }
 }

@@ -698,6 +698,7 @@ $totalPages = count($pages);
         :root {
             --book-width: 900px;
             --book-height: 600px;
+            --page-content-height: 510px;
         }
         
         body {
@@ -770,6 +771,52 @@ $totalPages = count($pages);
             padding-right: 0.5rem;
             padding-bottom: 0.25rem;
             align-content: start;
+        }
+
+        .page-layout {
+            height: var(--page-content-height);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .fixed-scroll-section {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .creature-image-frame {
+            height: calc(var(--page-content-height) * 0.3);
+        }
+
+        .page-panel {
+            position: relative;
+            padding: 1.5rem;
+            min-width: 0;
+        }
+
+        .page-panel-left {
+            padding-right: 2.75rem;
+        }
+
+        .page-panel-right {
+            padding-left: 2.75rem;
+        }
+
+        @media (min-width: 768px) {
+            .page-panel {
+                padding: 2rem;
+            }
+
+            .page-panel-left {
+                padding-right: 3.25rem;
+            }
+
+            .page-panel-right {
+                padding-left: 3.25rem;
+            }
         }
     </style>
 </head>
@@ -862,10 +909,10 @@ $totalPages = count($pages);
                 </div>
                 
                 <!-- Pages container -->
-                <div class="relative bg-gradient-to-br from-amber-50 via-amber-100 to-amber-50 rounded-lg shadow-2xl overflow-hidden flex" style="min-height: 600px; width: var(--book-width);">
+                <div class="relative bg-gradient-to-br from-amber-50 via-amber-100 to-amber-50 rounded-lg shadow-2xl overflow-hidden grid grid-cols-2" style="height: var(--book-height); width: var(--book-width);">
                     
                     <!-- Left page -->
-                    <div class="flex-1 relative p-6 md:p-8 border-r border-amber-200/50">
+                    <div class="page-panel page-panel-left border-r border-amber-200/50">
                         <!-- Page texture -->
                         <div class="absolute inset-0 opacity-30 paper-texture"></div>
                         
@@ -884,7 +931,7 @@ $totalPages = count($pages);
                     </div>
                     
                     <!-- Right page -->
-                    <div class="flex-1 relative p-6 md:p-8">
+                    <div class="page-panel page-panel-right">
                         <!-- Page texture -->
                         <div class="absolute inset-0 opacity-30 paper-texture"></div>
                         
@@ -939,10 +986,10 @@ $totalPages = count($pages);
     
     <!-- Index Page Template -->
     <template id="template-index">
-        <div class="h-full">
+        <div class="page-layout">
             <h2 class="text-2xl font-bold text-amber-900 font-serif mb-2 text-center">Index of Nations</h2>
             <p class="text-amber-600 text-sm text-center mb-4">Select a nation to jump directly to its page</p>
-            <ol id="index-list" class="space-y-1 text-sm max-h-64 overflow-y-auto pr-2 custom-scrollbar"></ol>
+            <ol id="index-list" class="space-y-1 text-sm fixed-scroll-section custom-scrollbar"></ol>
             <div class="mt-6 pt-4 border-t border-amber-200">
                 <h3 class="text-sm font-bold text-amber-800 mb-3">Quick Navigation</h3>
                 <div class="grid grid-cols-2 gap-2 text-xs text-amber-600">
@@ -955,7 +1002,7 @@ $totalPages = count($pages);
     
     <!-- Region Page Template -->
     <template id="template-region">
-        <div class="h-full">
+        <div class="page-layout">
             <div class="flex items-center gap-3 mb-4">
                 <span id="region-emoji" class="text-4xl"></span>
                 <div>
@@ -969,23 +1016,23 @@ $totalPages = count($pages);
                 </svg>
                 Back to Index
             </button>
-            <div class="border-t border-amber-200 pt-4">
+            <div class="border-t border-amber-200 pt-4 flex-1 min-h-0 flex flex-col">
                 <h3 class="text-lg font-bold text-amber-800 mb-3">Creatures of this Nation</h3>
-                <div id="region-creatures" class="space-y-2"></div>
+                <div id="region-creatures" class="space-y-2 fixed-scroll-section custom-scrollbar"></div>
             </div>
         </div>
     </template>
     
     <!-- Creature Page Template -->
     <template id="template-creature">
-        <div class="h-full">
+        <div class="page-layout">
             <div class="flex items-center justify-between mb-4">
                 <h2 id="creature-name" class="text-2xl font-bold text-amber-900 font-serif"></h2>
                 <span id="creature-rarity" class="px-2 py-1 rounded text-xs font-semibold"></span>
             </div>
             
             <!-- Creature Image -->
-            <div class="relative w-full h-40 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden border-2 border-amber-200">
+            <div class="relative w-full creature-image-frame bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg mb-4 flex items-center justify-center overflow-hidden border-2 border-amber-200">
                 <div class="absolute inset-0 opacity-20">
                     <div class="absolute top-2 left-2 w-16 h-16 border-2 border-amber-400 rounded-full"></div>
                     <div class="absolute bottom-4 right-4 w-12 h-12 border-2 border-amber-400 rounded-full"></div>
@@ -993,7 +1040,8 @@ $totalPages = count($pages);
                 </div>
                 <img id="creature-image" src="" alt="" class="relative z-10 h-full w-full object-contain p-2" loading="lazy" />
             </div>
-            
+
+            <div class="fixed-scroll-section custom-scrollbar">
             <!-- Stats Grid -->
             <div class="grid grid-cols-4 gap-2 mb-4">
                 <div class="text-center">
@@ -1051,7 +1099,8 @@ $totalPages = count($pages);
             <!-- Description -->
             <div class="bg-amber-50/50 p-3 rounded-lg border border-amber-100">
                 <span class="text-xs text-amber-600 block mb-2 font-semibold">Description:</span>
-                <div id="creature-description" class="text-amber-800 text-sm leading-relaxed max-h-24 overflow-y-auto pr-2 custom-scrollbar"></div>
+                <div id="creature-description" class="text-amber-800 text-sm leading-relaxed"></div>
+            </div>
             </div>
         </div>
     </template>
