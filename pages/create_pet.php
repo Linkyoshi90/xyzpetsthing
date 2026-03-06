@@ -183,8 +183,8 @@ function slugify($str)
             <?php if ($entries): ?>
               <?php foreach ($entries as $i => $s): $slug = slugify($s['species_name']); ?>
                 <div class="species-option<?= ($s['species_id'] === ($species[0]['species_id'] ?? null)) ? ' selected' : '' ?>" data-id="<?= $s['species_id'] ?>">
-                  <img src="images/<?= $slug ?>_f_blue.webp" alt="<?= htmlspecialchars($s['species_name']) ?>"
-                       onerror="this.src='images/tengu_f_blue.webp'" />
+                  <img src="images/creatures/<?= $slug ?>_f_blue.webp" alt="<?= htmlspecialchars($s['species_name']) ?>"
+                       onerror="this.src='images/creatures/tengu_f_blue.webp'" />
                   <div class="mini"><?= htmlspecialchars($s['species_name']) ?></div>
                 </div>
               <?php endforeach; ?>
@@ -198,8 +198,8 @@ function slugify($str)
 
     <!-- Preview and controls -->
     <div class="preview">
-      <img id="previewImage" src="images/<?= slugify($species[0]['species_name'] ?? 'tengu') ?>_f_red.webp"
-           onerror="this.src='images/tengu_f_blue.webp'" alt="preview" class="preview-img" />
+      <img id="previewImage" src="images/creatures/<?= slugify($species[0]['species_name'] ?? 'tengu') ?>_f_red.webp"
+           onerror="this.src='images/creatures/tengu_f_blue.webp'" alt="preview" class="preview-img" />
 
       <div class="color-selector">
         <?php foreach ($colors as $cid => $cname): ?>
@@ -248,8 +248,8 @@ function updatePreview(){
   const slug = slugify(selectedSpecies.species_name);
   const colorName = colors[selectedColor];
   const img = document.getElementById('previewImage');
-  img.src = `images/${slug}_${selectedGender}_${colorName}.webp`;
-  img.onerror = () => { img.onerror = null; img.src = 'images/tengu_f_blue.webp'; };
+  img.src = `images/creatures/${slug}_${selectedGender}_${colorName}.webp`;
+  img.onerror = () => { img.onerror = null; img.src = 'images/creatures/tengu_f_blue.webp'; };
 
   document.getElementById('speciesName').textContent = selectedSpecies.species_name;
   document.getElementById('statHp').textContent = selectedSpecies.base_hp;

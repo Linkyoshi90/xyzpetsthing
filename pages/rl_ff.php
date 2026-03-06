@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_login();
 require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/temp_user.php';
@@ -10,11 +10,11 @@ $today = date('Y-m-d');
 $appearanceChance = 68; // percent
 $messages = [];
 $rewardVisualKey = null;
-$defaultPoseImage = file_exists(__DIR__.'/../images/rlff.webp') ? '/images/rlff.webp' : '/images/rlff_f_default.webp';
-$happyPoseImage = '/images/rlff_f_given.webp';
-$contentPoseImage = file_exists(__DIR__.'/../images/rlff_f_content.webp') ? '/images/rlff_f_content.webp' : '/images/rlff_f_default.webp';
-$disappointedPoseImage = '/images/rlff_f_disappointed.webp';
-$sadPoseImage = '/images/rlff_f_mad.webp';
+$defaultPoseImage = file_exists(__DIR__.'/../images/creatures/rlff.webp') ? '/images/creatures/rlff.webp' : '/images/creatures/rlff_f_default.webp';
+$happyPoseImage = '/images/creatures/rlff_f_given.webp';
+$contentPoseImage = file_exists(__DIR__.'/../images/creatures/rlff_f_content.webp') ? '/images/creatures/rlff_f_content.webp' : '/images/creatures/rlff_f_default.webp';
+$disappointedPoseImage = '/images/creatures/rlff_f_disappointed.webp';
+$sadPoseImage = '/images/creatures/rlff_f_mad.webp';
 
 $rewardImages = [
     'heal_full_party' => 'Fairy mending every creature at once',
@@ -24,7 +24,7 @@ $rewardImages = [
     'heal_plus1_party' => 'Fairy giving a faint +1 HP blessing to the group',
     'heal_plus1_single' => 'Fairy whispering a +1 HP tip to one creature',
     'feed_party_full' => 'Fairy overflowing every food bowl',
-    'feed_single_full' => 'Fairy filling one creature’s food bowl',
+    'feed_single_full' => 'Fairy filling one creature�s food bowl',
     'give_magic_potion' => 'Fairy presenting a bottled magical potion',
     'give_golden_shovel' => 'Fairy offering a gleaming golden shovel',
     'shovel_event' => 'Fairy asking about a golden, silver, then normal shovel',
@@ -32,8 +32,8 @@ $rewardImages = [
 ];
 
 $rewardImageFiles = [
-    'give_golden_shovel' => file_exists(__DIR__.'/../images/rlff_f_shovel.webp') ? '/images/rlff_f_shovel.webp' : null,
-    'shovel_event' => file_exists(__DIR__.'/../images/rlff_f_shovel.webp') ? '/images/rlff_f_shovel.webp' : null,
+    'give_golden_shovel' => file_exists(__DIR__.'/../images/creatures/rlff_f_shovel.webp') ? '/images/creatures/rlff_f_shovel.webp' : null,
+    'shovel_event' => file_exists(__DIR__.'/../images/creatures/rlff_f_shovel.webp') ? '/images/creatures/rlff_f_shovel.webp' : null,
 ];
 
 function fairy_fountain_available_cash(int $uid): float
@@ -503,7 +503,7 @@ if ($todayVisit) {
     <?php foreach ($rewardImages as $key => $desc): ?>
       <div class="fairy-reward">
         <div class="fairy-image-placeholder" data-reward="<?= htmlspecialchars($key) ?>">
-            🧚‍♀️
+            &#x1F9DA;&#x200D;&#x2640;&#xFE0F;
           <strong><?= htmlspecialchars(str_replace('_', ' ', ucfirst($key))) ?></strong>
           <div class="muted"><?= htmlspecialchars($desc) ?></div>
         </div>
@@ -518,7 +518,7 @@ if ($todayVisit) {
         <?php if (!empty($rewardImageFiles[$rewardVisualKey])): ?>
           <img src="<?= htmlspecialchars($rewardImageFiles[$rewardVisualKey]) ?>" alt="<?= htmlspecialchars($rewardImages[$rewardVisualKey]) ?>" class="reward-image">
         <?php else: ?>
-          🧚‍♀️
+          &#x1F9DA;&#x200D;&#x2640;&#xFE0F;
         <?php endif; ?>
         <?= htmlspecialchars($rewardImages[$rewardVisualKey]) ?>
       </div>

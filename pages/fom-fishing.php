@@ -87,7 +87,7 @@ if (
     <div class="card glass">
         <h1>Grachten Fishing (Daily)</h1>
         <p class="muted">A free daily fishing session in the overflow moats of Frankenondermeer.</p>
-        <img src="images/harmontide-fom-grachten.webp" alt="View of the grachten" class="world-map" />
+        <img src="images/maps/harmontide-fom-grachten.webp" alt="View of the grachten" class="world-map" />
 
         <?php if ($isTempUser): ?>
             <p class="muted">Create a full account to take part in daily grachten fishing.</p>

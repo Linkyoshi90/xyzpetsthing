@@ -60,7 +60,7 @@ $cityCards = [
         <a class="country-map-back-link" href="?pg=map">← Back to world map</a>
 
         <div class="country-map-media" id="auroniaMapMedia" style="aspect-ratio: 477 / 720;">
-            <img src="images/harmontide-auronia-smol.png" alt="Auronia map" class="country-map-image" draggable="false">
+            <img src="images/maps/harmontide-auronia-smol.png" alt="Auronia map" class="country-map-image" draggable="false">
 
             <svg viewBox="0 0 477 720" preserveAspectRatio="none" class="country-map-overlay">
                 <?php foreach ($auroniaMapAreas as $index => $area):

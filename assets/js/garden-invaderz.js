@@ -42,11 +42,11 @@ function playSound(sound) {
 const sprites = {
     player: loadImage('images/games/player.png'),
     enemy: {
-        green: loadImage('images/centaur_f_green.webp'),
-        blue: loadImage('images/centaur_f_blue.webp'),
-        red: loadImage('images/centaur_f_red.webp'),
-        purple: loadImage('images/centaur_f_purple.webp'),
-        yellow: loadImage('images/yuki_onna_f_yellow.webp')
+        green: loadImage('images/creatures/centaur_f_green.webp'),
+        blue: loadImage('images/creatures/centaur_f_blue.webp'),
+        red: loadImage('images/creatures/centaur_f_red.webp'),
+        purple: loadImage('images/creatures/centaur_f_purple.webp'),
+        yellow: loadImage('images/creatures/yuki_onna_f_yellow.webp')
     },
     bonus: loadImage('images/games/bonus.png'),
     powerup: {

@@ -184,7 +184,7 @@ $regionPets = array_values(array_filter(
 
 $previewPet = $regionPets[0] ?? null;
 $previewColor = $previewPet['color_name'] ?? 'Blue';
-$previewImage = $previewPet ? pet_image_url($previewPet['species_name'], $previewColor) : 'images/tengu_f_blue.png';
+$previewImage = $previewPet ? pet_image_url($previewPet['species_name'], $previewColor) : 'images/creatures/tengu_f_blue.png';
 
 $regionCreatures = q(
     'SELECT species_name FROM pet_species WHERE region_id = ? ORDER BY species_name',
@@ -200,7 +200,7 @@ foreach ($regionCreatures as $creatureName) {
     $slug = $slugify($creatureName);
     $variants = [];
 
-    foreach (glob(__DIR__ . '/../images/' . $slug . '_*_*.webp') as $file) {
+    foreach (glob(__DIR__ . '/../images/creatures/' . $slug . '_*_*.webp') as $file) {
         $base = basename($file, '.webp');
         if (preg_match('/^' . preg_quote($slug, '/') . '_([mf])_(.+)$/i', $base, $m)) {
             $variants[] = strtolower($m[1] . '_' . $m[2]);
@@ -264,7 +264,7 @@ foreach ($regionCreatures as $creatureName) {
     </div>
 
     <div class="preview card glass">
-      <img id="petPreview" class="preview-img" src="<?= htmlspecialchars($previewImage) ?>" alt="Pet preview" onerror="this.src='images/tengu_f_blue.webp'">
+      <img id="petPreview" class="preview-img" src="<?= htmlspecialchars($previewImage) ?>" alt="Pet preview" onerror="this.src='images/creatures/tengu_f_blue.webp'">
       <div class="preview-meta">
         <div>Current color: <span id="currentColor">&nbsp;</span></div>
         <div>New color: <span id="newColor">&nbsp;</span></div>
@@ -286,7 +286,7 @@ foreach ($regionCreatures as $creatureName) {
           <h3><?= htmlspecialchars($creature['name']) ?></h3>
           <div class="creature-slideshow" data-slug="<?= htmlspecialchars($creature['slug'], ENT_QUOTES) ?>" data-variants='<?= htmlspecialchars(json_encode($creature['variants']), ENT_QUOTES) ?>'>
             <button type="button" class="variant-nav prev" aria-label="Previous <?= htmlspecialchars($creature['name']) ?> variant">&#9664;</button>
-            <img src="images/<?= htmlspecialchars($creature['slug']) ?>_<?= htmlspecialchars($firstVariant) ?>.webp" alt="<?= htmlspecialchars($creature['name']) ?> preview" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/tengu_f_blue.webp';">
+            <img src="images/creatures/<?= htmlspecialchars($creature['slug']) ?>_<?= htmlspecialchars($firstVariant) ?>.webp" alt="<?= htmlspecialchars($creature['name']) ?> preview" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='images/creatures/tengu_f_blue.webp';">
             <button type="button" class="variant-nav next" aria-label="Next <?= htmlspecialchars($creature['name']) ?> variant">&#9654;</button>
           </div>
         </article>
@@ -385,8 +385,8 @@ foreach ($regionCreatures as $creatureName) {
 
     const speciesSlug = slugify(pet.species);
     const colorSlug = slugify(targetColor);
-    previewImg.src = `images/${speciesSlug}_f_${colorSlug}.webp`;
-    previewImg.onerror = () => { previewImg.onerror = null; previewImg.src = 'images/tengu_f_blue.webp'; };
+    previewImg.src = `images/creatures/${speciesSlug}_f_${colorSlug}.webp`;
+    previewImg.onerror = () => { previewImg.onerror = null; previewImg.src = 'images/creatures/tengu_f_blue.webp'; };
   }
 
   if (petSelect) {
@@ -398,7 +398,7 @@ foreach ($regionCreatures as $creatureName) {
 
   updatePreview();
 
-  const FALLBACK = 'images/tengu_f_blue.webp';
+  const FALLBACK = 'images/creatures/tengu_f_blue.webp';
   document.querySelectorAll('.creature-slideshow').forEach(slider => {
     const slug = slider.dataset.slug;
     let variants;
@@ -416,7 +416,7 @@ foreach ($regionCreatures as $creatureName) {
     const next = slider.querySelector('.variant-nav.next');
 
     const show = () => {
-      img.src = `images/${slug}_${variants[index]}.webp`;
+      img.src = `images/creatures/${slug}_${variants[index]}.webp`;
       img.onerror = () => { img.onerror = null; img.src = FALLBACK; };
     };
 

@@ -224,7 +224,7 @@
     "snail-truth": {
       "title": "Truth of the Snail Goddess",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/yurei_f_realistic.webp\" alt=\"Hanako Mayoi, the yurei of the night school\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">A gentle yurei with a cracked shell charm.</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/yurei_f_realistic.webp\" alt=\"Hanako Mayoi, the yurei of the night school\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">A gentle yurei with a cracked shell charm.</figcaption></figure></div>",
         "You tell her about the shrine: the snail goddess who crossed the road on Mother's Day, struck and returned as a yurei.",
         "She lifts her face. Her eyes are calm, the gentlest blue. \"Hanako Mayoi is a name that helps people remember me,\" she says. \"I was slow. I still am.\""
       ],
@@ -236,7 +236,7 @@
     "hanako-meet": {
       "title": "Hanako Mayoi",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/yurei_f_realistic.webp\" alt=\"Hanako Mayoi, ghost girl of the abandoned school\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Hanako Mayoi appears in the stairwell glow.</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/yurei_f_realistic.webp\" alt=\"Hanako Mayoi, ghost girl of the abandoned school\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Hanako Mayoi appears in the stairwell glow.</figcaption></figure></div>",
         "She steps from the shadow, a ghost girl with a cracked shell charm at her belt. The hallway quiets, waiting.",
         "\"I wander when the bell forgets me,\" Hanako whispers. \"Thank you for coming so late.\""
       ],

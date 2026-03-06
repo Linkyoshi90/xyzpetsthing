@@ -9,9 +9,9 @@ $uid = (int)(current_user()['id'] ?? 0);
 function petting2_image_path(string $species_name, ?string $color_name): string {
     $species_slug = strtolower(preg_replace('/[^a-z0-9]+/i', '_', $species_name));
     $color_slug = $color_name ? strtolower(preg_replace('/[^a-z0-9]+/i', '_', $color_name)) : 'blue';
-    $path = "images/{$species_slug}_f_{$color_slug}.webp";
+    $path = "images/creatures/{$species_slug}_f_{$color_slug}.webp";
     if (!file_exists(__DIR__ . '/../' . $path)) {
-        return 'images/tengu_f_blue.png';
+        return 'images/creatures/tengu_f_blue.png';
     }
     return $path;
 }
@@ -456,7 +456,7 @@ foreach ($pets as $pet) {
       creatureImage.src = pet.image;
       creatureImage.alt = pet.name;
       creatureImage.onerror = () => {
-        creatureImage.src = 'images/tengu_f_blue.png';
+        creatureImage.src = 'images/creatures/tengu_f_blue.png';
       };
 
       document.querySelectorAll('.creature-list button').forEach((btn, idx) => {

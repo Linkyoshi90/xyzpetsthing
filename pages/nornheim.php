@@ -832,7 +832,7 @@ body {
                     <div class="map-wrapper" id="mapWrapper">
                         <!-- UPDATE THIS PATH TO YOUR IMAGE -->
                         <img
-                            src="images/harmontide-skeldgard.webp"
+                            src="images/maps/harmontide-skeldgard.webp"
                             alt="Map of Skeldgard, Nornheim"
                             class="map-image"
                             draggable="false"

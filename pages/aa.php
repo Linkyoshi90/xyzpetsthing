@@ -774,7 +774,7 @@ body {
                     <div class="map-wrapper" id="mapWrapper">
                         <!-- UPDATE THIS PATH TO YOUR IMAGE -->
                         <img
-                            src="images/harmontide-aa.webp"
+                            src="images/maps/harmontide-aa.webp"
                             alt="World map of Heliadora"
                             class="map-image"
                             draggable="false"

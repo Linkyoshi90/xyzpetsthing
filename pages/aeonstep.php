@@ -75,7 +75,7 @@ $mapAreas = [
         <a class="map-back-link" href="?pg=sie">← Back to Sapa Inti Empire</a>
 
         <div class="map-wrapper">
-            <img src="images/harmontide-aeonstep.webp" alt="Aeonstep Plateau map" class="map-image" />
+            <img src="images/maps/harmontide-aeonstep.webp" alt="Aeonstep Plateau map" class="map-image" />
             <div class="map-overlay">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                     <?php foreach ($mapAreas as $area): ?>

@@ -49,7 +49,7 @@ $cityCards = [
         <a class="country-map-back-link" href="?pg=map">← Back to world map</a>
 
         <div class="country-map-media" id="continentMapMedia" style="aspect-ratio: 1123 / 1262;">
-            <img src="images/harmontide-orienthem.png" alt="Orienthem map" class="country-map-image" draggable="false">
+            <img src="images/maps/harmontide-orienthem.png" alt="Orienthem map" class="country-map-image" draggable="false">
 
             <svg viewBox="0 0 1123 1262" preserveAspectRatio="none" class="country-map-overlay">
                 <?php foreach ($orienthemMapAreas as $index => $area):

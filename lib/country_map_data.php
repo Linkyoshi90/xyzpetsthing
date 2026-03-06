@@ -11,7 +11,7 @@ function get_country_map_config(string $slug): ?array {
         'baharamandal' => [
             'title' => 'Baharamandal - Padmanagara',
             'subtitle' => 'City of the Lotus',
-            'image' => 'images/harmontide-padmanagara.webp',
+            'image' => 'images/maps/harmontide-padmanagara.webp',
             'lore' => 'Padmanagara is a river-city of temples, scholarship, and market craft where beauty is treated as civic duty.',
             'lore_sections' => [
                 [
@@ -53,7 +53,7 @@ function get_country_map_config(string $slug): ?array {
         'bretonreach' => [
             'title' => 'Bretonreach - Avalore',
             'subtitle' => 'The Bastion of Stormwalls',
-            'image' => 'images/harmontide-br.webp',
+            'image' => 'images/maps/harmontide-br.webp',
             'lore' => 'Avalore is a fortress-port where guild law, sea trade, and watchful walls shape daily life.',
             'lore_sections' => [
                 [
@@ -95,7 +95,7 @@ function get_country_map_config(string $slug): ?array {
         'cc' => [
             'title' => 'Crescent Caliphate - Ansurah',
             'subtitle' => 'Moonlit Markets and Minarets',
-            'image' => 'images/harmontide-cc.webp',
+            'image' => 'images/maps/harmontide-cc.webp',
             'lore' => 'Ansurah is known for scholarship, caravans, and cosmopolitan bazaars under crescent towers.',
             'lore_sections' => [
                 [
@@ -136,7 +136,7 @@ function get_country_map_config(string $slug): ?array {
         'esd' => [
             'title' => 'Eagle Serpent Dominion - Coatlxochi',
             'subtitle' => 'Feathers, Stone, and Sun',
-            'image' => 'images/harmontide-esd.webp',
+            'image' => 'images/maps/harmontide-esd.webp',
             'lore' => 'Coatlxochi blends ceremonial plazas with martial tradition and serpent-eagle iconography.',
             'lore_sections' => [
                 [
@@ -177,7 +177,7 @@ function get_country_map_config(string $slug): ?array {
         'esl' => [
             'title' => 'Eretz-Shalem League - Shalemdor',
             'subtitle' => 'Covenants and Citadels',
-            'image' => 'images/harmontide-esl.webp',
+            'image' => 'images/maps/harmontide-esl.webp',
             'lore' => 'Shalemdor is a covenant city where law, trade, and pilgrimage routes converge.',
             'lore_sections' => [
                 [
@@ -218,7 +218,7 @@ function get_country_map_config(string $slug): ?array {
         'fom' => [
             'title' => 'Frankenondermeer',
             'subtitle' => 'Dikes, windmills, and low-country canals',
-            'image' => 'images/harmontide-fom.webp',
+            'image' => 'images/maps/harmontide-fom.webp',
             'lore' => 'Frankenondermeer is Rheinland\'s low-country sibling: wind, canals, and flood-smart towns built on stubborn engineering.',
             'lore_sections' => [
                 [
@@ -259,7 +259,7 @@ function get_country_map_config(string $slug): ?array {
         'gc' => [
             'title' => 'Gran Columbia - Solvine',
             'subtitle' => 'City of Sun-Winds',
-            'image' => 'images/harmontide-gc.webp',
+            'image' => 'images/maps/harmontide-gc.webp',
             'lore' => 'Solvine is a bright trading city with strong civic plazas and highland-coast culture.',
             'lore_sections' => [
                 [
@@ -300,7 +300,7 @@ function get_country_map_config(string $slug): ?array {
         'hammurabia' => [
             'title' => 'Hammurabia - Ziggurab',
             'subtitle' => 'Steps of Bronze Law',
-            'image' => 'images/harmontide-hammurabia.webp',
+            'image' => 'images/maps/harmontide-hammurabia.webp',
             'lore' => 'Ziggurab rises in terraced districts where scribes and merchants keep meticulous records.',
             'lore_sections' => [
                 [
@@ -341,7 +341,7 @@ function get_country_map_config(string $slug): ?array {
         'ie' => [
             'title' => 'Itzam Empire - Itzankaan',
             'subtitle' => 'Jade Courts and Canals',
-            'image' => 'images/harmontide-ie.webp',
+            'image' => 'images/maps/harmontide-ie.webp',
             'lore' => 'Itzankaan pairs imperial ceremony with vibrant waterway life and star-calendar observances.',
             'lore_sections' => [
                 [
@@ -382,7 +382,7 @@ function get_country_map_config(string $slug): ?array {
         'kemet' => [
             'title' => 'Kemet - Ankhmeru',
             'subtitle' => 'River Crown of Sand and Stone',
-            'image' => 'images/harmontide-k.webp',
+            'image' => 'images/maps/harmontide-k.webp',
             'lore' => 'Ankhmeru is a Nile-like capital of monuments, scholars, and river-borne markets.',
             'lore_sections' => [
                 [
@@ -424,7 +424,7 @@ function get_country_map_config(string $slug): ?array {
         'ldk' => [
             'title' => 'Lotus-Dragon Kingdom - Shenhedu',
             'subtitle' => 'Silk, Steel, and Lanterns',
-            'image' => 'images/harmontide-ldk.webp',
+            'image' => 'images/maps/harmontide-ldk.webp',
             'lore' => 'Shenhedu balances imperial ritual, artisan guilds, and riverfront commerce.',
             'lore_sections' => [
                 [
@@ -466,7 +466,7 @@ function get_country_map_config(string $slug): ?array {
         'rheinland' => [
             'title' => 'Rheinland - Rheingard',
             'subtitle' => 'Iron Rivers, Ordered Streets',
-            'image' => 'images/harmontide-rheingard.webp',
+            'image' => 'images/maps/harmontide-rheingard.webp',
             'lore' => 'Rheingard is an industrial capital of strict timetables, workshops, and fortress bridges.',
             'lore_sections' => [
                 [
@@ -509,7 +509,7 @@ function get_country_map_config(string $slug): ?array {
         'rsc' => [
             'title' => 'Red Sun Commonwealth - Redwind',
             'subtitle' => 'Crimson Towers and Coin-Fairs',
-            'image' => 'images/harmontide-rsc.webp',
+            'image' => 'images/maps/harmontide-rsc.webp',
             'lore' => 'Redwind is a proud commonwealth capital known for market games and showman culture.',
             'lore_sections' => [
                 [
@@ -551,7 +551,7 @@ function get_country_map_config(string $slug): ?array {
         'rt' => [
             'title' => 'Rodinian Tsardom - Velesgrad',
             'subtitle' => 'Frostdomes and Gilded Courts',
-            'image' => 'images/harmontide-rt.webp',
+            'image' => 'images/maps/harmontide-rt.webp',
             'lore' => 'Velesgrad is a tsardom capital of grand avenues, onion domes, and winter festivals.',
             'lore_sections' => [
                 [
@@ -592,7 +592,7 @@ function get_country_map_config(string $slug): ?array {
         'sc' => [
             'title' => 'Sila Council - Qilaktuk',
             'subtitle' => 'Aurora Council at the Ice Edge',
-            'image' => 'images/harmontide-sc.webp',
+            'image' => 'images/maps/harmontide-sc.webp',
             'lore' => 'Qilaktuk is a northern council-city shaped by sea ice, seasonal travel, and shared stewardship.',
             'lore_sections' => [
                 [
@@ -633,7 +633,7 @@ function get_country_map_config(string $slug): ?array {
         'sie' => [
             'title' => 'Sapa Inti Empire - Intirumi',
             'subtitle' => 'The High Sun Seat',
-            'image' => 'images/harmontide-sie.webp',
+            'image' => 'images/maps/harmontide-sie.webp',
             'lore' => 'Intirumi perches in mountain terraces where ritual roads and market stairs intertwine.',
             'lore_sections' => [
                 [
@@ -674,7 +674,7 @@ function get_country_map_config(string $slug): ?array {
         'srl' => [
             'title' => 'Spice Route League - Navakai',
             'subtitle' => 'Harbor of Sails and Spice',
-            'image' => 'images/harmontide-srl.webp',
+            'image' => 'images/maps/harmontide-srl.webp',
             'lore' => 'Navakai thrives on sea trade, spice guilds, and vibrant dockside markets.',
             'lore_sections' => [
                 [
@@ -715,7 +715,7 @@ function get_country_map_config(string $slug): ?array {
         'pelagora' => [
             'title' => 'Spice Route League - Pelagora',
             'subtitle' => 'Ringed Sea-Town of the Heart Mirror',
-            'image' => is_file(__DIR__.'/../images/harmontide-pelagora.webp') ? 'images/harmontide-pelagora.webp' : 'images/harmontide-srl.webp',
+            'image' => is_file(__DIR__.'/../images/maps/harmontide-pelagora.webp') ? 'images/maps/harmontide-pelagora.webp' : 'images/maps/harmontide-srl.webp',
             'lore' => 'Pelagora is a ringed sea-town that remembers when it was a capital, split between stone and tide around a still, deep lagoon.',
             'lore_sections' => [
                 [
@@ -742,7 +742,7 @@ function get_country_map_config(string $slug): ?array {
         'stap' => [
             'title' => 'Sovereign Tribes - Turtlestar',
             'subtitle' => 'Circle Fires and Open Plains',
-            'image' => 'images/harmontide-stap.webp',
+            'image' => 'images/maps/harmontide-stap.webp',
             'lore' => 'Turtlestar is a plains capital organized around council circles, trade paths, and sky festivals.',
             'lore_sections' => [
                 [
@@ -783,7 +783,7 @@ function get_country_map_config(string $slug): ?array {
         'urb' => [
             'title' => 'United free Republic of Borealia - Meridian Arc',
             'subtitle' => 'Free Ports and Arc-Lights',
-            'image' => 'images/harmontide-urb.webp',
+            'image' => 'images/maps/harmontide-urb.webp',
             'lore' => 'Meridian Arc is a republican metropolis balancing trade rights, free districts, and civic debate.',
             'lore_sections' => [
                 [
@@ -826,7 +826,7 @@ function get_country_map_config(string $slug): ?array {
         'xochimex' => [
             'title' => 'Xochimex - Xochival',
             'subtitle' => 'Festival Canals and Flowers',
-            'image' => 'images/harmontide-xochimex.webp',
+            'image' => 'images/maps/harmontide-xochimex.webp',
             'lore' => 'Xochival is a festival-rich city of flower markets, music, and floating neighborhoods.',
             'lore_sections' => [
                 [
@@ -867,7 +867,7 @@ function get_country_map_config(string $slug): ?array {
         'yamanokubo' => [
             'title' => 'Yamanokubo - Amatera',
             'subtitle' => 'Neon Lanes and Shrine Hills',
-            'image' => 'images/harmontide-yamanokubo.webp',
+            'image' => 'images/maps/harmontide-yamanokubo.webp',
             'lore' => 'Amatera blends old shrine hills with high-energy nightlife and story-rich backstreets.',
             'lore_sections' => [
                 [
@@ -911,7 +911,7 @@ function get_country_map_config(string $slug): ?array {
         'yn' => [
             'title' => 'Yara Nations - Warraluma',
             'subtitle' => 'Where River Meets Song',
-            'image' => 'images/harmontide-yn.webp',
+            'image' => 'images/maps/harmontide-yn.webp',
             'lore' => 'Warraluma stands between river and escarpment, with Country-led stewardship and gathering grounds.',
             'lore_sections' => [
                 [

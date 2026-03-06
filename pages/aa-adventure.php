@@ -76,7 +76,7 @@
     "sun-gate": {
       "title": "Sun Gate Approach",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Sythria of the Long Sun, a lamia oracle\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Sythria watches from the ruins.</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/lamia_f_oracle.webp\" alt=\"Sythria of the Long Sun, a lamia oracle\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Sythria watches from the ruins.</figcaption></figure></div>",
         "You crest a dune to find the tumbled arches of Heliodora, a city once mirrored in gold. Heat shimmers where streets used to be.",
         "Among the fallen columns, a shape coils and straightens-an old lamia with eyes like coins left too long in the sea."
       ],
@@ -89,7 +89,7 @@
     "lamia-hello": {
       "title": "Meeting the Elder",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Portrait of Sythria, the lamia oracle\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Sythria of the Long Sun</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/lamia_f_oracle.webp\" alt=\"Portrait of Sythria, the lamia oracle\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Sythria of the Long Sun</figcaption></figure></div>",
         "She names herself Sythria of the Long Sun. Her voice is a sand-soft rattle. 'Treasure sleeps below the catacombs,' she says, 'but the city remembers who takes and who returns.'",
         "She taps a bronze token against your palm-warm, thrumming with a tiny heartbeat."
       ],
@@ -102,7 +102,7 @@
     "lamia-parley": {
       "title": "Tea in the Shade",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Sythria sharing water under an obelisk\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">A hymn older than the sand.</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/lamia_f_oracle.webp\" alt=\"Sythria sharing water under an obelisk\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">A hymn older than the sand.</figcaption></figure></div>",
         "You share water under a leaning obelisk. Sythria hums an old hymn; the obelisk hums back.",
         "'The treasure is a promise made heavy,' she murmurs. 'Down there, promises grow teeth.'"
       ],
@@ -126,7 +126,7 @@
     "sun-token": {
       "title": "Token of the Long Sun",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Sythria presenting a bronze token\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">The token thrums in your palm.</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/lamia_f_oracle.webp\" alt=\"Sythria presenting a bronze token\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">The token thrums in your palm.</figcaption></figure></div>",
         "The bronze bears a spiral sun on one side and a coiled tail on the other. When you flip it, the air tastes of citrus and dust.",
         "'It will open what light has forgotten,' Sythria says. 'But it opens you, too.'"
       ],
@@ -173,7 +173,7 @@
     "lamia-guide": {
       "title": "Sythria Leads",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Sythria guiding through the catacombs\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Follow the heartbeat pace.</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/lamia_f_oracle.webp\" alt=\"Sythria guiding through the catacombs\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">Follow the heartbeat pace.</figcaption></figure></div>",
         "Her scales whisper over the steps. She sets a pace like a heartbeat: da-dum, da-dum. 'When the city tests you,' she says, 'answer with truth or song.'",
         "The torchlight puddles into the first chamber."
       ],
@@ -425,7 +425,7 @@
     "return-topside": {
       "title": "Under the Leaning Obelisk",
       "body": [
-        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/lamia_f_oracle.webp\" alt=\"Sythria waiting at the obelisk\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">'Heliodora remembers.'</figcaption></figure></div>",
+        "<div class=\"scene-media\"><figure class=\"scene-portrait\"><img src=\"images/creatures/lamia_f_oracle.webp\" alt=\"Sythria waiting at the obelisk\" loading=\"lazy\" decoding=\"async\"><figcaption class=\"muted\">'Heliodora remembers.'</figcaption></figure></div>",
         "Sythria waits where you left her. If you carry the mirror, she smiles without teeth. If you left it, she smiles with all of them.",
         "'Heliodora remembers,' she says. 'So will you.'"
       ],

@@ -281,10 +281,10 @@ function getCreatureImagePath(string $speciesName): string {
     $speciesSlug = trim($speciesSlug, '_');
 
     $candidates = [
-        "images/{$speciesSlug}_f_blue.webp",
-        "images/{$speciesSlug}_f_blue.png",
-        "images/{$speciesSlug}_f_blue.jpg",
-        'images/tengu_f_blue.png',
+        "images/creatures/{$speciesSlug}_f_blue.webp",
+        "images/creatures/{$speciesSlug}_f_blue.png",
+        "images/creatures/{$speciesSlug}_f_blue.jpg",
+        'images/creatures/tengu_f_blue.png',
     ];
 
     foreach ($candidates as $path) {
@@ -293,7 +293,7 @@ function getCreatureImagePath(string $speciesName): string {
         }
     }
 
-    return 'images/tengu_f_blue.png';
+    return 'images/creatures/tengu_f_blue.png';
 }
 
 /**
@@ -1138,7 +1138,7 @@ $totalPages = count($pages);
             creatureImage.src = creature.image;
             creatureImage.alt = `${creature.name} (female, blue)`;
             creatureImage.onerror = () => {
-                creatureImage.src = 'images/tengu_f_blue.png';
+                creatureImage.src = 'images/creatures/tengu_f_blue.png';
             };
             
             const rarityEl = content.querySelector('#creature-rarity');
