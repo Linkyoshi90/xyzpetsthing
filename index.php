@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/lib/errors.php';
+require_once __DIR__.'/lib/polyfills.php';
 require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 require_once __DIR__.'/lib/input.php';
