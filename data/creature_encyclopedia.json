@@ -309,7 +309,7 @@
       "def": 8,
       "init": 6
     },
-    "description": "A Centaur is a storied creature native to Aegia Aeterna.",
+    "description": "Among the elder traditions of Aegia Aeterna, a small and mournful body of lore distinguishes the common Centaur from the rarer blood of Chiron. The latter were said to be gentler in disposition, learned in physic, music, and the reading of heavenly signs, and were long regarded as the last proof that the divided form of man and horse need not be governed by savagery alone. Yet this lineage, never numerous, declined with cruel steadiness. Their mares foaled less often, their valleys emptied, and the old tutors of heroes passed into memory.\n\nIn later centuries, it was whispered that Chiron's descendants sought preservation through union with humankind. From these mournful crossings came daughters in the full ancestral form, and sons who appeared wholly human, bearing only a thinned remainder of the old blood. Such sons were often said to inherit peculiar gifts: a physician's hand, a wanderer's restlessness, an instinctive knowledge of reins, rhythm, or the moods of frightened beasts. But they could not restore what had been lost. Thus the line endured only by surrendering itself, each generation surviving at the cost of becoming less completely what it had been.\n\nFor this reason, the Centaurs of Chiron's house are remembered less as monsters than as a dying people, noble in origin and grievous in decline, whose final legacy was not their strength, but the sorrow with which they resisted erasure.",
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
@@ -1597,7 +1597,7 @@
   },
   "Landharpy": {
     "name": "Landharpy",
-    "region": "Unknown",
+    "region": "Aegia Aeterna",
     "colors": [
       "Red",
       "Blue",
@@ -1611,14 +1611,35 @@
       "def": 0,
       "init": 0
     },
-    "description": "Details about Landharpy are being compiled in the library archives.",
+    "description": "Working on it.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Harpy": {
+    "name": "Harpy",
+    "region": "Aegia Aeterna",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "The Harpies of Aegia Aeterna were once familiar to sailors, who knew them as companions of the cliffs and headlands. They sang from columns of air beside merchant sails, stole fruit from open crates, and sometimes left gifts upon the piers of ports they held dear. Such gifts were strange by human measure, often consisting of scavenged trifles, weather-bleached remains, or cherished objects taken from elsewhere and offered anew. Among Harpies, this was no insult, but a declaration of happiness: to sing over a harbor and leave part of one's found beauty there was to claim kinship with it.\n\nWhat undid this peace was not war in the ordinary sense, but offense. A gesture made in gladness was received as obscenity, sacrilege, or threat, and neither side thereafter understood the other well enough to heal the breach. The people of Aegia Aeterna came to remember Harpies as foul winged meddlers, despoilers of feast and altar. The Harpies, for their part, withdrew to harsher rookeries and answered suspicion with theft, shrieking, and contempt.\n\nFor this reason, their history is mourned by a few Aegian scholars as one of the oldest failures of hospitality. The Harpy did not become monstrous in a single day. She was taught monstrousness by the long discipline of being misread.",
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
   },
   "Mimic": {
     "name": "Mimic",
-    "region": "Unknown",
+    "region": "Aegia Aeterna",
     "colors": [
       "Red",
       "Blue",
@@ -1743,3 +1764,5 @@
     "diet": "Unknown"
   }
 }
+
+
