@@ -1741,5 +1741,824 @@
     "rarity": "Unknown",
     "size": "Unknown",
     "diet": "Unknown"
+  },
+  "Apsara": {
+    "name": "Apsara",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Apsara is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Archelon": {
+    "name": "Archelon",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Archelon is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Argentowlis": {
+    "name": "Argentowlis",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Argentowlis is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Armadillo": {
+    "name": "Armadillo",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Armadillo is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Brownie": {
+    "name": "Brownie",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Brownie is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Camel": {
+    "name": "Camel",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Camel is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Doggo": {
+    "name": "Doggo",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Doggo is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Dugong": {
+    "name": "Dugong",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Dugong is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Fernstalker": {
+    "name": "Fernstalker",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Fernstalker is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Gigantopithecus": {
+    "name": "Gigantopithecus",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Gigantopithecus is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Hairypterix": {
+    "name": "Hairypterix",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Hairypterix is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Harpy": {
+    "name": "Harpy",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Harpy is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Kachina": {
+    "name": "Kachina",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Kachina is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "La Mano Peluda": {
+    "name": "La Mano Peluda",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A La Mano Peluda is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Manticore": {
+    "name": "Manticore",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Manticore is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Moo": {
+    "name": "Moo",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Moo is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Moopie": {
+    "name": "Moopie",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Moopie is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Nightmarcher": {
+    "name": "Nightmarcher",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Nightmarcher is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Oryx": {
+    "name": "Oryx",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Oryx is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Papillon": {
+    "name": "Papillon",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Papillon is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Pegasus": {
+    "name": "Pegasus",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Pegasus is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Penguin": {
+    "name": "Penguin",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Penguin is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Pishtaco": {
+    "name": "Pishtaco",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Pishtaco is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Rheintalensis": {
+    "name": "Rheintalensis",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Rheintalensis is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Rhiwool": {
+    "name": "Rhiwool",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Rhiwool is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Sabre": {
+    "name": "Sabre",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Sabre is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Sea Turtle": {
+    "name": "Sea Turtle",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Sea Turtle is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Smilodon": {
+    "name": "Smilodon",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Smilodon is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Spinosaur": {
+    "name": "Spinosaur",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Spinosaur is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Spoodr": {
+    "name": "Spoodr",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Spoodr is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Sunwukong": {
+    "name": "Sunwukong",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Sunwukong is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Tiddalik": {
+    "name": "Tiddalik",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Tiddalik is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Toucan": {
+    "name": "Toucan",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Toucan is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Turtfolk": {
+    "name": "Turtfolk",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Turtfolk is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Turtworld": {
+    "name": "Turtworld",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Turtworld is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Tuskin": {
+    "name": "Tuskin",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Tuskin is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Tusktaur": {
+    "name": "Tusktaur",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Tusktaur is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Urchskin": {
+    "name": "Urchskin",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Urchskin is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Ziz": {
+    "name": "Ziz",
+    "region": "Unknown",
+    "colors": [
+      "Red",
+      "Blue",
+      "Green",
+      "Yellow",
+      "Purple"
+    ],
+    "stats": {
+      "hp": 0,
+      "atk": 0,
+      "def": 0,
+      "init": 0
+    },
+    "description": "A Ziz is a storied creature of unknown origin.",
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
   }
 }
