@@ -168,8 +168,8 @@ function get_country_map_config(string $slug): ?array {
                     'html' => '<p>Let the city teach you its steps: right foot on the causeway, left on the boat, eyes on the banners. Eat what the gardens offer, tip the water carriers, and keep a flower for the precinct stairs. If you pay too much at the Sun Crown, call it a gift to the balance that lets eagles and serpents share a flag. The lake will remember your courtesy.</p>',
                 ],
             ],
-            'back_label' => 'Back to Gulfbelt',
-            'back_href' => '?pg=gulfbelt',
+            'back_label' => 'Back to Verdania',
+            'back_href' => '?pg=verdania',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Color your companions with dominion palettes.', 'action' => 'Explore', 'href' => '?pg=esd_paint_shack', 'color' => '#ef4444', 'points' => country_map_rect_points(260, 470, 220, 170, $w, $h)],
             ],
@@ -665,8 +665,8 @@ function get_country_map_config(string $slug): ?array {
                     'html' => '<p>Intirumi keeps its voice low and its stones true. Walk kindly, pay your share, help where a hand will do, and keep a flower for the temple stairs. If you overpay with the sun in your eyes, call it gratitude for walls that do not fall and roads that go everywhere. The mountain will remember your steps.</p>',
                 ],
             ],
-            'back_label' => 'Back to Gulfbelt',
-            'back_href' => '?pg=gulfbelt',
+            'back_label' => 'Back to Verdania',
+            'back_href' => '?pg=verdania',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Sapa Inti pet paints.', 'action' => 'Explore', 'href' => '?pg=sie_paint_shack', 'color' => '#f59e0b', 'points' => country_map_rect_points(250, 500, 245, 165, $w, $h)],
             ],
