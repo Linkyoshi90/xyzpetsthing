@@ -88,8 +88,8 @@ function get_country_map_config(string $slug): ?array {
             'back_label' => 'Back to Auronia',
             'back_href' => '?pg=auronia',
             'areas' => [
-                ['name' => 'Paint Shack', 'description' => 'Apply Bretonreach paints and heraldic finishes.', 'action' => 'Explore', 'href' => '?pg=br_paint_shack', 'color' => '#3b82f6', 'points' => country_map_rect_points(240, 470, 230, 170, $w, $h)],
-                ['name' => 'Everything Store', 'description' => 'A famous all-purpose market in Avalore.', 'action' => 'Enter', 'href' => '?pg=br-everything-store', 'color' => '#f59e0b', 'points' => country_map_rect_points(680, 360, 260, 180, $w, $h)],
+                ['name' => 'Paint Shack', 'description' => 'Apply Bretonreach paints and heraldic finishes.', 'action' => 'Explore', 'href' => '?pg=br_paint_shack', 'color' => '#3b82f6', 'points' => country_map_to_percent_points([826, 119, 746, 137, 731, 161, 741, 179, 772, 194, 835, 179, 840, 155, 850, 148], $w, $h)],
+                ['name' => 'Everything Store', 'description' => 'A famous all-purpose market in Avalore.', 'action' => 'Enter', 'href' => '?pg=br-everything-store', 'color' => '#f59e0b', 'points' => country_map_to_percent_points([187, 260, 242, 282, 293, 277, 342, 258, 342, 224, 354, 211, 270, 122, 255, 134, 181, 201], $w, $h)],
             ],
         ],
         'cc' => [
