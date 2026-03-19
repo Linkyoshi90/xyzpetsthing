@@ -93,6 +93,103 @@ function get_page_location_map(): array {
     ];
 }
 
+
+function get_page_parent_map_map(): array {
+    return [
+        'aa' => 'aa',
+        'aa-adventure' => 'aa',
+        'aa-library' => 'aa',
+        'aa-pizza' => 'aa',
+        'aa_paint_shack' => 'aa',
+        'aa-wof' => 'aa',
+        'aest-shop' => 'aeonstep',
+        'aeonstep' => 'aeonstep',
+        'baharamandal' => 'baharamandal',
+        'bm_paint_shack' => 'baharamandal',
+        'bm_pt' => 'baharamandal',
+        'bretonreach' => 'bretonreach',
+        'br-everything-store' => 'bretonreach',
+        'br_paint_shack' => 'bretonreach',
+        'cc' => 'cc',
+        'cc_paint_shack' => 'cc',
+        'esd' => 'esd',
+        'esd_paint_shack' => 'esd',
+        'esl' => 'esl',
+        'esl_paint_shack' => 'esl',
+        'fom' => 'fom',
+        'fom-fishing' => 'fom',
+        'gc' => 'gc',
+        'gc_paint_shack' => 'gc',
+        'hammurabia' => 'hammurabia',
+        'h_paint_shack' => 'hammurabia',
+        'ie' => 'ie',
+        'ie_paint_shack' => 'ie',
+        'kemet' => 'kemet',
+        'k-adventure' => 'kemet',
+        'k_paint_shack' => 'kemet',
+        'k_shelter' => 'kemet',
+        'ldk' => 'ldk',
+        'ldk_breeding' => 'ldk',
+        'ldk_paint_shack' => 'ldk',
+        'nornheim' => 'nornheim',
+        'nh_paint_shack' => 'nornheim',
+        'pelagora' => 'pelagora',
+        'rheinland' => 'rheinland',
+        'rl_ff' => 'rheinland',
+        'rl_paint_shack' => 'rheinland',
+        'rsc' => 'rsc',
+        'rsc-wof' => 'rsc',
+        'rsc_paint_shack' => 'rsc',
+        'rt' => 'rt',
+        'rt_paint_shack' => 'rt',
+        'sc' => 'sc',
+        'sc_paint_shack' => 'sc',
+        'sie' => 'sie',
+        'sie_paint_shack' => 'sie',
+        'srl' => 'srl',
+        'srl_paint_shack' => 'srl',
+        'stap' => 'stap',
+        'stap_paint_shack' => 'stap',
+        'urb' => 'urb',
+        'urb-adventure' => 'urb',
+        'urb-adventure2' => 'urb',
+        'urb_paint_shack' => 'urb',
+        'xm_paint_shack' => 'xochimex',
+        'xochimex' => 'xochimex',
+        'yamanokubo' => 'yamanokubo',
+        'yn' => 'yn',
+        'yn_paint_shack' => 'yn',
+        'ynk-adventure' => 'yamanokubo',
+        'ynk-adventure2' => 'yamanokubo',
+        'ynk-ramen' => 'yamanokubo',
+        'ynk_paint_shack' => 'yamanokubo',
+    ];
+}
+
+function get_page_back_to_country_map(string $pg): ?array {
+    $pageParents = get_page_parent_map_map();
+    if (!isset($pageParents[$pg])) {
+        return null;
+    }
+
+    $parentPage = $pageParents[$pg];
+    if ($parentPage === $pg) {
+        return null;
+    }
+
+    $parentLocation = get_page_location($parentPage);
+    if ($parentLocation === null) {
+        return null;
+    }
+
+    return [
+        'href' => '?pg=' . $parentPage,
+        'label' => '← Back to ' . $parentLocation['nation'],
+        'nation' => $parentLocation['nation'],
+        'page' => $parentPage,
+    ];
+}
+
 function get_page_location(string $pg): ?array {
     $pageToNation = get_page_location_map();
     if (!isset($pageToNation[$pg])) {

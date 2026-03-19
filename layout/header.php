@@ -3,6 +3,7 @@ $u = current_user();
 $header_pet = null;
 $random_event = null;
 $page_location = null;
+$page_back_to_country = null;
 $speech_dialogues = [];
 $pet_location_like = null;
 if ($u) {
@@ -18,6 +19,7 @@ if ($u) {
         $random_event = maybe_trigger_random_event($u, (string)($pg ?? ''));
     }
     $page_location = get_page_location($pg ?? '');
+    $page_back_to_country = get_page_back_to_country_map($pg ?? '');
     $speech_dialogues = load_speech_dialogues();
     if ($header_pet && $page_location) {
         $pet_location_like = get_pet_location_like_value($header_pet, $page_location);
@@ -182,3 +184,10 @@ window.addEventListener('DOMContentLoaded', function () {
 </script>
 <?php endif; ?>
 <main class="container <?= ($pg === 'map') ? 'map-container' : '' ?>">
+<?php if ($page_back_to_country): ?>
+<div class="country-subpage-back-wrap">
+  <a class="country-subpage-back-link" href="<?= htmlspecialchars($page_back_to_country['href']) ?>">
+    <?= htmlspecialchars($page_back_to_country['label']) ?>
+  </a>
+</div>
+<?php endif; ?>
