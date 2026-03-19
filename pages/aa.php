@@ -41,7 +41,7 @@ $mapAreas = [
         'description' => 'Here you can paint your creatures from this region. Local artisans have perfected techniques passed down through generations of Aegian craftsmen.',
         'action' => 'Explore',
         'href' => '?pg=aa_paint_shack',
-        'points' => toPercentPoints([443, 453, 208, 555, 193, 714, 333, 811, 619, 668, 558, 627, 570, 510], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        'points' => toPercentPoints([456, 457, 222, 556, 197, 721, 341, 811, 595, 670, 551, 639, 568, 514], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#8b5cf6' // Purple
     ],
     [
@@ -50,7 +50,7 @@ $mapAreas = [
         'description' => 'Explore the ancient ruins of Heliadora, where crumbling marble columns tell tales of a civilization that valued democracy and civic virtue above all.',
         'action' => 'Begin Adventure',
         'href' => '?pg=aa-adventure',
-        'points' => toPercentPoints([1052, 2, 1051, 36, 1303, 120, 1316, 160, 1349, 151, 1405, 169, 1531, 199, 1531, 2], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        'points' => toPercentPoints([1114, 48, 1191, 91, 1313, 10, 1134, 5], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#f59e0b' // Amber
     ],
     [
@@ -59,7 +59,7 @@ $mapAreas = [
         'description' => 'Brick-fired pies, sun-braised olives, and red sauce argued over by civic poets. The famous Nonna Slice with sun-basil and charred crust is not to be missed.',
         'action' => 'Enter',
         'href' => '?pg=aa-pizza',
-        'points' => toPercentPoints([333, 337, 326, 209, 486, 148, 593, 183, 588, 299, 642, 326, 631, 369, 470, 434, 415, 413], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        'points' => toPercentPoints([592, 190, 492, 155, 334, 219, 334, 350, 458, 437, 642, 354, 592, 299], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#ef4444' // Red
     ],
     [
@@ -68,7 +68,7 @@ $mapAreas = [
         'description' => 'Spin for stacked pizza prizes! Only 50 coins to play. Winners have been known to leave with a month\'s supply of margherita.',
         'action' => 'Spin',
         'href' => '?pg=aa-wof',
-        'points' => toPercentPoints([552, 99, 647, 135, 716, 59, 703, 6, 582, 15], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        'points' => toPercentPoints([656, 10, 591, 33, 591, 119, 671, 142, 675, 82, 703, 68, 702, 25], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#22c55e' // Green
     ],
     [
@@ -77,7 +77,7 @@ $mapAreas = [
         'description' => 'A marble reading hall where scribes loan illuminated epics and civic treatises. Home to the famous Vow-Stones where oaths are sworn.',
         'action' => 'Browse',
         'href' => '?pg=aa-library',
-        'points' => toPercentPoints([249, 367, 321, 326, 320, 206, 489, 140, 542, 160, 545, 25, 448, 2, 404, 10, 119, 102, 122, 239, 86, 285], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        'points' => toPercentPoints([410, 8, 116, 106, 100, 294, 269, 362, 332, 336, 329, 210, 488, 146, 535, 164, 549, 53, 455, 5], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#3b82f6' // Blue
     ]
 ];
