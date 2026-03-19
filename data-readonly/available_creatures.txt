@@ -45,6 +45,7 @@ Fishman
 Frost Giant
 Fury
 Gandharva
+Gaitress
 Genie
 Gigantopithecus
 Girtablilu
@@ -57,6 +58,7 @@ Jiang-Shi
 Kachina
 Kangaroo
 Kappa
+Kasurenijimi
 Keelut
 Kelpie
 Kitsune
@@ -72,6 +74,7 @@ Lich
 Lilith
 Manticore
 Mimic
+Meloncollie
 Min-Min Lights
 Moo
 Moopie

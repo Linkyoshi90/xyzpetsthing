@@ -1236,6 +1236,27 @@
     "size": "Unknown",
     "diet": "Unknown"
   },
+  "Gaitress": {
+    "description": "Gaitress is a disquieting apparition made only of a poised pair of legs, striding into being as the physical residue of a dream too indulgent to stay unreal. It moves with impossible balance and dancer-sharp precision, turning desire into momentum and vulnerability into speed.",
+    "stats": {
+      "hp": 9,
+      "atk": 14,
+      "def": 6,
+      "init": 17
+    },
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "purple",
+      "red",
+      "white",
+      "yellow"
+    ],
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
   "Genie": {
     "description": "TODO: Add encyclopedia description.",
     "stats": {
@@ -1541,6 +1562,26 @@
       "red",
       "skyblue",
       "sunset",
+      "yellow"
+    ],
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Kasurenijimi": {
+    "description": "Kasurenijimi appears as a high school girl whose face has been violently scribbled over, as though memory, self-image, and public gaze have all tried to erase her at once. She embodies body dysmorphia as a haunting social pressure, soft-spoken but distortive, warping how others perceive both her and themselves.",
+    "stats": {
+      "hp": 11,
+      "atk": 8,
+      "def": 7,
+      "init": 13
+    },
+    "colors": [
+      "black",
+      "blue",
+      "green",
+      "purple",
+      "red",
       "yellow"
     ],
     "rarity": "Unknown",
@@ -1970,6 +2011,21 @@
       "realistic",
       "red",
       "yellow"
+    ],
+    "rarity": "Unknown",
+    "size": "Unknown",
+    "diet": "Unknown"
+  },
+  "Meloncollie": {
+    "description": "Meloncollie is a border collie fused with a watermelon by the toxic air and runaway mutagens of the URB's urban atmosphere. Beneath its cheerful rind and eager herding instincts is a resilient scavenger that stores moisture, shrugs off smog, and watches city alleys with mournful, intelligent eyes.",
+    "stats": {
+      "hp": 15,
+      "atk": 10,
+      "def": 12,
+      "init": 9
+    },
+    "colors": [
+      "green"
     ],
     "rarity": "Unknown",
     "size": "Unknown",
