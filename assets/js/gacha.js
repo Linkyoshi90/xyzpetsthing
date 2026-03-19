@@ -2,15 +2,24 @@
   const data = window.gachaData || {};
   const items = Array.isArray(data.items) ? data.items : [];
   const cost = data.cost ?? 100;
+  const endpoint = typeof data.endpoint === 'string' && data.endpoint ? data.endpoint : window.location.href;
+  const currencyLabel = typeof data.currencyLabel === 'string' && data.currencyLabel ? data.currencyLabel : 'Dosh';
 
   const spinButton = document.getElementById('gacha-spin');
   const machine = document.getElementById('gacha-machine');
   const coin = document.getElementById('gacha-coin');
   const capsuleArea = document.getElementById('capsule-area');
+  const status = document.getElementById('gacha-status');
 
   if (!spinButton || !machine || !coin || !capsuleArea) return;
 
   let busy = false;
+
+  const setStatus = (message) => {
+    if (status) {
+      status.textContent = message || '';
+    }
+  };
 
   const clearCapsules = () => {
     const existing = capsuleArea.querySelector('.gacha-capsule');
@@ -21,7 +30,7 @@
     if (price === null || price === undefined || price === '') return 'No price set';
     const numberPrice = Number(price);
     if (Number.isNaN(numberPrice)) return 'No price set';
-    return `${Math.round(numberPrice).toLocaleString()} Dosh`;
+    return `${Math.round(numberPrice).toLocaleString()} ${currencyLabel}`;
   };
 
   const revealCapsule = (capsule, item) => {
@@ -31,6 +40,8 @@
     label.hidden = true;
     priceTag.hidden = false;
     priceTag.innerHTML = `<strong>${item.item_name || 'Mystery item'}</strong><small>${formatPrice(item.base_price)}</small>`;
+    capsule.setAttribute('aria-label', `${item.item_name || 'Mystery item'} capsule reward`);
+    setStatus(`Prize revealed: ${item.item_name || 'Mystery item'}.`);
   };
 
   const buildCapsule = (item) => {
@@ -44,13 +55,13 @@
       <span class="capsule-price" hidden></span>
     `;
     capsule.setAttribute('aria-label', 'Mystery capsule');
-    capsule.addEventListener('click', () => revealCapsule(capsule, item));
+    capsule.addEventListener('click', () => revealCapsule(capsule, item), { once: true });
     return capsule;
   };
 
   const animateCoin = () => {
     coin.classList.remove('drop');
-    void coin.offsetWidth; // force reflow
+    void coin.offsetWidth;
     coin.classList.add('drop');
   };
 
@@ -60,7 +71,7 @@
     machine.classList.add('wiggle');
   };
 
-  const spin = () => {
+  const spin = async () => {
     if (busy) return;
     if (!items.length) {
       alert('No items loaded from the database yet.');
@@ -68,27 +79,50 @@
     }
 
     busy = true;
+    spinButton.disabled = true;
     clearCapsules();
+    setStatus(`Spinning... Cost: ${Math.round(cost)} ${currencyLabel}.`);
     animateCoin();
     animateMachine();
 
-    setTimeout(() => {
-      const roll = items[Math.floor(Math.random() * items.length)];
-      const capsule = buildCapsule(roll);
-      capsuleArea.appendChild(capsule);
-      capsule.focus({ preventScroll: true });
-      busy = false;
-    }, 1200);
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'fetch',
+        },
+        body: JSON.stringify({ action: 'spin' }),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload || payload.success !== true || !payload.item) {
+        throw new Error((payload && payload.error) || 'Unable to complete the gacha spin.');
+      }
+
+      setTimeout(() => {
+        const capsule = buildCapsule(payload.item);
+        capsuleArea.appendChild(capsule);
+        capsule.focus({ preventScroll: true });
+        setStatus(payload.message || `You got ${payload.item.item_name || 'a mystery item'}! Click the capsule to reveal it.`);
+      }, 1200);
+    } catch (error) {
+      setStatus(error && error.message ? error.message : 'Unable to complete the gacha spin.');
+      alert(error && error.message ? error.message : 'Unable to complete the gacha spin.');
+    } finally {
+      setTimeout(() => {
+        busy = false;
+        spinButton.disabled = false;
+      }, 1200);
+    }
   };
 
   spinButton.addEventListener('click', spin);
 
-  // Update cost label if a data attribute is present
-  const costBadges = document.querySelectorAll('.gacha-cost, .gacha-cost .currency-label');
-  if (costBadges.length && cost) {
-    const badge = document.querySelector('.gacha-cost');
-    if (badge) {
-      badge.firstChild.nodeValue = `${Math.round(cost)}`;
+  const badge = document.querySelector('.gacha-cost');
+  if (badge && cost) {
+    const firstNode = badge.firstChild;
+    if (firstNode && firstNode.nodeType === Node.TEXT_NODE) {
+      firstNode.nodeValue = `${Math.round(cost)}`;
     }
   }
 })();
