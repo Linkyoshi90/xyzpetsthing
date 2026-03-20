@@ -2,6 +2,54 @@
 require_once __DIR__.'/../auth.php';
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/../lib/temp_user.php';
+
+function is_gacha_post_request(): bool
+{
+    return ($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST';
+}
+
+function gacha_prepare_json_request(): void
+{
+    if (!is_gacha_post_request()) {
+        return;
+    }
+
+    ini_set('display_errors', '0');
+
+    set_exception_handler(static function (Throwable $e): void {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json; charset=utf-8');
+        }
+
+        echo '{"success":false,"error":"Unable to complete the gacha spin."}';
+        exit;
+    });
+
+    register_shutdown_function(static function (): void {
+        $error = error_get_last();
+        if (!$error || !in_array($error['type'], [E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR], true)) {
+            return;
+        }
+
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        if (!headers_sent()) {
+            http_response_code(500);
+            header('Content-Type: application/json; charset=utf-8');
+        }
+
+        echo '{"success":false,"error":"Unable to complete the gacha spin."}';
+    });
+}
+
+gacha_prepare_json_request();
 require_login();
 
 const GACHA_CURRENCY_ID = 1;
@@ -40,7 +88,6 @@ function gacha_json_response(array $payload, int $status = 200): void
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    ini_set('display_errors', '0');
     while (ob_get_level() > 0) {
         ob_end_clean();
     }
