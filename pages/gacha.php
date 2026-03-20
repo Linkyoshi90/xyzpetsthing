@@ -18,13 +18,35 @@ foreach ($items as $item) {
     ];
 }
 
+function gacha_json_response(array $payload, int $status = 200): void
+{
+    if (!headers_sent()) {
+        http_response_code($status);
+        header('Content-Type: application/json; charset=utf-8');
+    }
+
+    $flags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_INVALID_UTF8_SUBSTITUTE;
+    $json = json_encode($payload, $flags);
+
+    if ($json === false) {
+        $json = '{"success":false,"error":"Unable to encode the gacha response."}';
+        if (!headers_sent()) {
+            http_response_code(500);
+        }
+    }
+
+    echo $json;
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json');
+    ini_set('display_errors', '0');
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
 
     if (!$itemsById) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'error' => 'No gacha items are configured right now.']);
-        exit;
+        gacha_json_response(['success' => false, 'error' => 'No gacha items are configured right now.'], 400);
     }
 
     $awardedItem = null;
@@ -41,12 +63,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (is_temp_user()) {
             $currentBalance = (float)temp_user_balance('cash');
             if ($currentBalance < $cost) {
-                http_response_code(400);
-                echo json_encode([
+                gacha_json_response([
                     'success' => false,
                     'error' => 'You need '.number_format($cost).' '.APP_CURRENCY_LONG_NAME.' to spin the gacha machine.',
-                ]);
-                exit;
+                ], 400);
             }
 
             temp_user_adjust_balance('cash', -$cost);
@@ -68,16 +88,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if ($currentBalance < $cost) {
                 $pdo->rollBack();
-                http_response_code(400);
-                echo json_encode([
+                gacha_json_response([
                     'success' => false,
                     'error' => 'You need '.number_format($cost).' '.APP_CURRENCY_LONG_NAME.' to spin the gacha machine.',
-                ]);
-                exit;
+                ], 400);
             }
 
             $deductStmt = $pdo->prepare('UPDATE user_balances SET balance = balance - ? WHERE user_id = ? AND currency_id = ?');
             $deductStmt->execute([$cost, $uid, GACHA_CURRENCY_ID]);
+            if ($deductStmt->rowCount() === 0) {
+                $pdo->rollBack();
+                gacha_json_response([
+                    'success' => false,
+                    'error' => 'You need '.number_format($cost).' '.APP_CURRENCY_LONG_NAME.' to spin the gacha machine.',
+                ], 400);
+            }
 
             $ledgerStmt = $pdo->prepare('INSERT INTO currency_ledger (user_id, currency_id, amount_delta, reason, metadata) VALUES (?, ?, ?, ?, ?)');
             $ledgerStmt->execute([
@@ -90,6 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $itemStmt = $pdo->prepare('INSERT INTO user_inventory (user_id, item_id, quantity) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE quantity = quantity + 1');
             $itemStmt->execute([$uid, $awardedItemId]);
+            if ($itemStmt->rowCount() === 0) {
+                throw new RuntimeException('Inventory update failed.');
+            }
             $pdo->commit();
 
             $balanceRows = q('SELECT currency_id, balance FROM user_balances WHERE user_id = ? AND currency_id IN (1,2)', [$uid])->fetchAll(PDO::FETCH_ASSOC);
@@ -104,7 +132,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user']['gems'] = $balances['gems'];
         }
 
-        echo json_encode([
+        gacha_json_response([
             'success' => true,
             'item' => [
                 'item_id' => $awardedItemId,
@@ -118,10 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($pdo) && $pdo instanceof PDO && $pdo->inTransaction()) {
             $pdo->rollBack();
         }
-        http_response_code(500);
-        echo json_encode(['success' => false, 'error' => 'Unable to complete the gacha spin.']);
+        gacha_json_response(['success' => false, 'error' => 'Unable to complete the gacha spin.'], 500);
     }
-    exit;
 }
 ?>
 <link rel="stylesheet" href="assets/css/gacha.css">

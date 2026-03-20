@@ -71,6 +71,17 @@
     machine.classList.add('wiggle');
   };
 
+  const parseJsonResponse = async (response) => {
+    const raw = await response.text();
+
+    try {
+      return raw ? JSON.parse(raw) : null;
+    } catch (error) {
+      const snippet = raw.replace(/\s+/g, ' ').trim().slice(0, 180);
+      throw new Error(snippet || `Server returned invalid JSON (HTTP ${response.status}).`);
+    }
+  };
+
   const spin = async () => {
     if (busy) return;
     if (!items.length) {
@@ -89,12 +100,13 @@
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
+          'Accept': 'application/json',
           'Content-Type': 'application/json',
           'X-Requested-With': 'fetch',
         },
         body: JSON.stringify({ action: 'spin' }),
       });
-      const payload = await response.json();
+      const payload = await parseJsonResponse(response);
       if (!response.ok || !payload || payload.success !== true || !payload.item) {
         throw new Error((payload && payload.error) || 'Unable to complete the gacha spin.');
       }
