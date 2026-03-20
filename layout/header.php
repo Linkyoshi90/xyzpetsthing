@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 $u = current_user();
 $header_pet = null;
 $random_event = null;

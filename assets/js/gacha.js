@@ -73,11 +73,12 @@
 
   const parseJsonResponse = async (response) => {
     const raw = await response.text();
+    const normalized = raw.replace(/^﻿/, '');
 
     try {
-      return raw ? JSON.parse(raw) : null;
+      return normalized ? JSON.parse(normalized) : null;
     } catch (error) {
-      const snippet = raw.replace(/\s+/g, ' ').trim().slice(0, 180);
+      const snippet = normalized.replace(/\s+/g, ' ').trim().slice(0, 180);
       throw new Error(snippet || `Server returned invalid JSON (HTTP ${response.status}).`);
     }
   };
