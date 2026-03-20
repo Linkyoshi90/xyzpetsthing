@@ -258,12 +258,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php endif; ?>
   </section>
 </section>
+<?php
+$scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+$scriptDir = str_replace('\\', '/', rtrim(dirname($scriptName), '/'));
+$gachaApiPath = ($scriptDir !== '' && $scriptDir !== '.') ? $scriptDir.'/gacha_spin.php' : '/gacha_spin.php';
+$gachaScriptPath = __DIR__.'/../assets/js/gacha.js';
+$gachaScriptVersion = file_exists($gachaScriptPath) ? (string)filemtime($gachaScriptPath) : '1';
+?>
 <script>
   window.gachaData = {
     cost: <?= json_encode($cost, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-    endpoint: <?= json_encode('?pg=gacha', JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+    endpoint: <?= json_encode($gachaApiPath, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
     currencyLabel: <?= json_encode(APP_CURRENCY_LONG_NAME, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
     items: <?= json_encode(array_values($itemsById), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
   };
 </script>
-<script defer src="assets/js/gacha.js"></script>
+<script defer src="assets/js/gacha.js?v=<?= urlencode($gachaScriptVersion) ?>"></script>
