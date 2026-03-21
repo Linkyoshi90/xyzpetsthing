@@ -21,6 +21,12 @@
     }
   };
 
+  const updateBalances = (balances) => {
+    if (balances && typeof window.updateCurrencyDisplay === 'function') {
+      window.updateCurrencyDisplay(balances);
+    }
+  };
+
   const clearCapsules = () => {
     const existing = capsuleArea.querySelector('.gacha-capsule');
     if (existing) existing.remove();
@@ -111,6 +117,8 @@
       if (!response.ok || !payload || payload.success !== true || !payload.item) {
         throw new Error((payload && payload.error) || 'Unable to complete the gacha spin.');
       }
+
+      updateBalances(payload.balances);
 
       setTimeout(() => {
         const capsule = buildCapsule(payload.item);

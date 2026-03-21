@@ -6,7 +6,6 @@ require_login();
 
 const GACHA_CURRENCY_ID = 1;
 const GACHA_COST = 100;
-const GACHA_PAINT_CATEGORY_ID = 5;
 
 function gacha_json_response(array $payload, int $status = 200): void
 {
@@ -40,7 +39,7 @@ while (ob_get_level() > 0) {
 }
 
 $cost = GACHA_COST;
-$itemSql = 'SELECT item_id, item_name, base_price FROM items WHERE category_id <> '.GACHA_PAINT_CATEGORY_ID.' AND item_id NOT IN (4,6,7,8,9,10,11,12,13,23,24) ORDER BY item_id';
+$itemSql = "SELECT item_id, item_name, base_price FROM items WHERE item_name NOT LIKE '%Paint%' AND item_id NOT IN (4,6,7,8,9,10,11,12,13,23,24) ORDER BY item_id";
 $items = q($itemSql)->fetchAll(PDO::FETCH_ASSOC);
 
 if (!$items) {
