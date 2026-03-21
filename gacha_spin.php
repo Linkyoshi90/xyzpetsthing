@@ -5,6 +5,8 @@ require_once __DIR__.'/lib/temp_user.php';
 require_login();
 
 const GACHA_CURRENCY_ID = 1;
+const GACHA_COST = 100;
+const GACHA_PAINT_CATEGORY_ID = 5;
 
 function gacha_json_response(array $payload, int $status = 200): void
 {
@@ -37,8 +39,8 @@ while (ob_get_level() > 0) {
     ob_end_clean();
 }
 
-$cost = 25;
-$itemSql = 'SELECT item_id, item_name, base_price FROM items WHERE item_id NOT IN (4,6,7,8,9,10,11,12,13,23,24) ORDER BY item_id';
+$cost = GACHA_COST;
+$itemSql = 'SELECT item_id, item_name, base_price FROM items WHERE category_id <> '.GACHA_PAINT_CATEGORY_ID.' AND item_id NOT IN (4,6,7,8,9,10,11,12,13,23,24) ORDER BY item_id';
 $items = q($itemSql)->fetchAll(PDO::FETCH_ASSOC);
 
 if (!$items) {
