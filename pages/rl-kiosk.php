@@ -3,7 +3,7 @@ require_login();
 require_once __DIR__.'/../lib/shops.php';
 require_once __DIR__.'/../lib/input.php';
 
-$shopId = 8;
+$shopId = 9;
 $shop = shop_get($shopId) ?? ['shop_id' => $shopId, 'shop_name' => "Karl's grosser Kiosk"];
 
 $inventory = shop_inventory($shopId);
