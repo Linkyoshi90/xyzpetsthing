@@ -502,6 +502,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=auronia',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Rheinland palette and trims.', 'action' => 'Explore', 'href' => '?pg=rl_paint_shack', 'color' => '#64748b', 'points' => country_map_rect_points(235, 500, 250, 170, $w, $h)],
+                ['name' => 'Karl\'s grosser Kiosk', 'description' => 'A snug kiosk counter with Scratch tickets, small baggies of sweets, and quick provisions for the road.', 'action' => 'Browse', 'href' => '?pg=rl-kiosk', 'color' => '#f59e0b', 'points' => country_map_rect_points(280, 285, 260, 160, $w, $h)],
                 ['name' => 'Frankenondermeer', 'description' => 'Visit the low-country canals of Frankenondermeer.', 'action' => 'Explore', 'href' => '?pg=fom', 'color' => '#14b8a6', 'points' => country_map_rect_points(620, 360, 280, 170, $w, $h)],
                 ['name' => 'Fairy Fountain', 'description' => 'A moonlit cave where coins wake a shy river fairy.', 'action' => 'Enter the cave', 'href' => '?pg=rl_ff', 'color' => '#38bdf8', 'points' => country_map_rect_points(980, 250, 230, 150, $w, $h)],
             ],
