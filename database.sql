@@ -1,11 +1,11 @@
-﻿-- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Apr 12, 2026 at 04:57 PM
--- Server version: 8.0.42-0ubuntu0.20.04.1
--- PHP Version: 8.2.28
+-- Erstellungszeit: 22. Apr 2026 um 19:39
+-- Server-Version: 8.0.42-0ubuntu0.20.04.1
+-- PHP-Version: 8.2.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `ch53461_xyzpetsthing`
+-- Datenbank: `ch53461_xyzpetsthing`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `abandoned_pets`
+-- Tabellenstruktur für Tabelle `abandoned_pets`
 --
 
 CREATE TABLE `abandoned_pets` (
@@ -36,7 +36,7 @@ CREATE TABLE `abandoned_pets` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `abandoned_pets`
+-- Daten für Tabelle `abandoned_pets`
 --
 
 INSERT INTO `abandoned_pets` (`ap_id`, `creature_id`, `old_player_id`, `creature_name`, `abandoned_at`) VALUES
@@ -45,7 +45,7 @@ INSERT INTO `abandoned_pets` (`ap_id`, `creature_id`, `old_player_id`, `creature
 -- --------------------------------------------------------
 
 --
--- Table structure for table `creature_name_votes`
+-- Tabellenstruktur für Tabelle `creature_name_votes`
 --
 
 CREATE TABLE `creature_name_votes` (
@@ -55,7 +55,7 @@ CREATE TABLE `creature_name_votes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `creature_name_votes`
+-- Daten für Tabelle `creature_name_votes`
 --
 
 INSERT INTO `creature_name_votes` (`user_id`, `selection_json`, `submitted_at`) VALUES
@@ -65,7 +65,7 @@ INSERT INTO `creature_name_votes` (`user_id`, `selection_json`, `submitted_at`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `currencies`
+-- Tabellenstruktur für Tabelle `currencies`
 --
 
 CREATE TABLE `currencies` (
@@ -75,7 +75,7 @@ CREATE TABLE `currencies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `currencies`
+-- Daten für Tabelle `currencies`
 --
 
 INSERT INTO `currencies` (`currency_id`, `currency_code`, `display_name`) VALUES
@@ -85,7 +85,7 @@ INSERT INTO `currencies` (`currency_id`, `currency_code`, `display_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `currency_ledger`
+-- Tabellenstruktur für Tabelle `currency_ledger`
 --
 
 CREATE TABLE `currency_ledger` (
@@ -99,7 +99,7 @@ CREATE TABLE `currency_ledger` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `currency_ledger`
+-- Daten für Tabelle `currency_ledger`
 --
 
 INSERT INTO `currency_ledger` (`ledger_id`, `user_id`, `currency_id`, `amount_delta`, `reason`, `metadata`, `created_at`) VALUES
@@ -436,12 +436,14 @@ INSERT INTO `currency_ledger` (`ledger_id`, `user_id`, `currency_id`, `amount_de
 (337, 5, 1, 801712241.11, 'bank_interest', '{\"rate\": 0.025}', '2026-04-04 11:40:12'),
 (338, 5, 1, 821755047.14, 'bank_interest', '{\"rate\": 0.025}', '2026-04-07 05:27:59'),
 (339, 5, 1, 842298923.32, 'bank_interest', '{\"rate\": 0.025}', '2026-04-11 20:40:58'),
-(340, 5, 1, 863356396.40, 'bank_interest', '{\"rate\": 0.025}', '2026-04-12 07:20:31');
+(340, 5, 1, 863356396.40, 'bank_interest', '{\"rate\": 0.025}', '2026-04-12 07:20:31'),
+(341, 5, 1, 884940306.31, 'bank_interest', '{\"rate\": 0.025}', '2026-04-13 06:19:20'),
+(342, 5, 1, 907063813.97, 'bank_interest', '{\"rate\": 0.025}', '2026-04-22 13:06:41');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `daily_fom_fishing_runs`
+-- Tabellenstruktur für Tabelle `daily_fom_fishing_runs`
 --
 
 CREATE TABLE `daily_fom_fishing_runs` (
@@ -452,7 +454,7 @@ CREATE TABLE `daily_fom_fishing_runs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `daily_fom_fishing_runs`
+-- Daten für Tabelle `daily_fom_fishing_runs`
 --
 
 INSERT INTO `daily_fom_fishing_runs` (`user_id`, `run_date`, `caught_item_id`, `completed_at`) VALUES
@@ -464,7 +466,7 @@ INSERT INTO `daily_fom_fishing_runs` (`user_id`, `run_date`, `caught_item_id`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `daily_sudoku_runs`
+-- Tabellenstruktur für Tabelle `daily_sudoku_runs`
 --
 
 CREATE TABLE `daily_sudoku_runs` (
@@ -477,7 +479,7 @@ CREATE TABLE `daily_sudoku_runs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `daily_sudoku_runs`
+-- Daten für Tabelle `daily_sudoku_runs`
 --
 
 INSERT INTO `daily_sudoku_runs` (`user_id`, `run_date`, `difficulty_percent`, `base_score`, `final_score`, `completed_at`) VALUES
@@ -490,7 +492,7 @@ INSERT INTO `daily_sudoku_runs` (`user_id`, `run_date`, `difficulty_percent`, `b
 -- --------------------------------------------------------
 
 --
--- Table structure for table `elements`
+-- Tabellenstruktur für Tabelle `elements`
 --
 
 CREATE TABLE `elements` (
@@ -499,7 +501,7 @@ CREATE TABLE `elements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `elements`
+-- Daten für Tabelle `elements`
 --
 
 INSERT INTO `elements` (`element_id`, `element_name`) VALUES
@@ -525,7 +527,7 @@ INSERT INTO `elements` (`element_id`, `element_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `element_calc`
+-- Tabellenstruktur für Tabelle `element_calc`
 --
 
 CREATE TABLE `element_calc` (
@@ -535,7 +537,7 @@ CREATE TABLE `element_calc` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `element_calc`
+-- Daten für Tabelle `element_calc`
 --
 
 INSERT INTO `element_calc` (`element_id`, `target_element_id`, `effectiveness`) VALUES
@@ -867,7 +869,7 @@ INSERT INTO `element_calc` (`element_id`, `target_element_id`, `effectiveness`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `fairy_fountain_visits`
+-- Tabellenstruktur für Tabelle `fairy_fountain_visits`
 --
 
 CREATE TABLE `fairy_fountain_visits` (
@@ -880,7 +882,7 @@ CREATE TABLE `fairy_fountain_visits` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `fairy_fountain_visits`
+-- Daten für Tabelle `fairy_fountain_visits`
 --
 
 INSERT INTO `fairy_fountain_visits` (`user_id`, `visit_date`, `deposited_amount`, `reward_key`, `reward_note`, `created_at`) VALUES
@@ -890,7 +892,7 @@ INSERT INTO `fairy_fountain_visits` (`user_id`, `visit_date`, `deposited_amount`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `food_preferences`
+-- Tabellenstruktur für Tabelle `food_preferences`
 --
 
 CREATE TABLE `food_preferences` (
@@ -901,7 +903,7 @@ CREATE TABLE `food_preferences` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `food_preferences`
+-- Daten für Tabelle `food_preferences`
 --
 
 INSERT INTO `food_preferences` (`food_pref_id`, `species_id`, `item_id`, `like_scale`) VALUES
@@ -915,7 +917,7 @@ INSERT INTO `food_preferences` (`food_pref_id`, `species_id`, `item_id`, `like_s
 -- --------------------------------------------------------
 
 --
--- Table structure for table `items`
+-- Tabellenstruktur für Tabelle `items`
 --
 
 CREATE TABLE `items` (
@@ -932,7 +934,7 @@ CREATE TABLE `items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `items`
+-- Daten für Tabelle `items`
 --
 
 INSERT INTO `items` (`item_id`, `item_name`, `item_description`, `base_price`, `rarity_id`, `category_id`, `max_stack`, `tradable`, `created_at`, `replenish`) VALUES
@@ -1161,7 +1163,7 @@ INSERT INTO `items` (`item_id`, `item_name`, `item_description`, `base_price`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `item_categories`
+-- Tabellenstruktur für Tabelle `item_categories`
 --
 
 CREATE TABLE `item_categories` (
@@ -1170,7 +1172,7 @@ CREATE TABLE `item_categories` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `item_categories`
+-- Daten für Tabelle `item_categories`
 --
 
 INSERT INTO `item_categories` (`category_id`, `category_name`) VALUES
@@ -1185,7 +1187,7 @@ INSERT INTO `item_categories` (`category_id`, `category_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `item_instances`
+-- Tabellenstruktur für Tabelle `item_instances`
 --
 
 CREATE TABLE `item_instances` (
@@ -1198,7 +1200,7 @@ CREATE TABLE `item_instances` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `item_instances`
+-- Daten für Tabelle `item_instances`
 --
 
 INSERT INTO `item_instances` (`instance_id`, `item_id`, `owner_user_id`, `durability`, `bound_to_user`, `created_at`) VALUES
@@ -1207,7 +1209,7 @@ INSERT INTO `item_instances` (`instance_id`, `item_id`, `owner_user_id`, `durabi
 -- --------------------------------------------------------
 
 --
--- Table structure for table `item_rarities`
+-- Tabellenstruktur für Tabelle `item_rarities`
 --
 
 CREATE TABLE `item_rarities` (
@@ -1217,7 +1219,7 @@ CREATE TABLE `item_rarities` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `item_rarities`
+-- Daten für Tabelle `item_rarities`
 --
 
 INSERT INTO `item_rarities` (`rarity_id`, `rarity_name`, `rarity_rank`) VALUES
@@ -1232,7 +1234,7 @@ INSERT INTO `item_rarities` (`rarity_id`, `rarity_name`, `rarity_rank`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `moves`
+-- Tabellenstruktur für Tabelle `moves`
 --
 
 CREATE TABLE `moves` (
@@ -1256,7 +1258,7 @@ CREATE TABLE `moves` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `moves`
+-- Daten für Tabelle `moves`
 --
 
 INSERT INTO `moves` (`move_id`, `move_key`, `move_name`, `element_id`, `category`, `power`, `accuracy_percent`, `pp`, `priority`, `target_mode`, `contact`, `crit_stage_bonus`, `effect_key`, `effect_chance_percent`, `min_hits`, `max_hits`, `created_at`) VALUES
@@ -1284,7 +1286,7 @@ INSERT INTO `moves` (`move_id`, `move_key`, `move_name`, `element_id`, `category
 -- --------------------------------------------------------
 
 --
--- Table structure for table `npc_trainers`
+-- Tabellenstruktur für Tabelle `npc_trainers`
 --
 
 CREATE TABLE `npc_trainers` (
@@ -1296,7 +1298,7 @@ CREATE TABLE `npc_trainers` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pet_colors`
+-- Tabellenstruktur für Tabelle `pet_colors`
 --
 
 CREATE TABLE `pet_colors` (
@@ -1305,7 +1307,7 @@ CREATE TABLE `pet_colors` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `pet_colors`
+-- Daten für Tabelle `pet_colors`
 --
 
 INSERT INTO `pet_colors` (`color_id`, `color_name`) VALUES
@@ -1411,7 +1413,7 @@ INSERT INTO `pet_colors` (`color_id`, `color_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pet_cosmetics`
+-- Tabellenstruktur für Tabelle `pet_cosmetics`
 --
 
 CREATE TABLE `pet_cosmetics` (
@@ -1425,7 +1427,7 @@ CREATE TABLE `pet_cosmetics` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `pet_cosmetics`
+-- Daten für Tabelle `pet_cosmetics`
 --
 
 INSERT INTO `pet_cosmetics` (`Id`, `pet_instance_id`, `item_id`, `xcoord`, `ycoord`, `size`, `rotation`) VALUES
@@ -1436,7 +1438,7 @@ INSERT INTO `pet_cosmetics` (`Id`, `pet_instance_id`, `item_id`, `xcoord`, `ycoo
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pet_equipment`
+-- Tabellenstruktur für Tabelle `pet_equipment`
 --
 
 CREATE TABLE `pet_equipment` (
@@ -1446,7 +1448,7 @@ CREATE TABLE `pet_equipment` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `pet_equipment`
+-- Daten für Tabelle `pet_equipment`
 --
 
 INSERT INTO `pet_equipment` (`pet_instance_id`, `slot`, `item_instance_id`) VALUES
@@ -1455,7 +1457,7 @@ INSERT INTO `pet_equipment` (`pet_instance_id`, `slot`, `item_instance_id`) VALU
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pet_instances`
+-- Tabellenstruktur für Tabelle `pet_instances`
 --
 
 CREATE TABLE `pet_instances` (
@@ -1481,7 +1483,7 @@ CREATE TABLE `pet_instances` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `pet_instances`
+-- Daten für Tabelle `pet_instances`
 --
 
 INSERT INTO `pet_instances` (`pet_instance_id`, `owner_user_id`, `species_id`, `nickname`, `color_id`, `level`, `experience`, `hp_current`, `hp_max`, `atk`, `def`, `initiative`, `inactive`, `gender`, `hunger`, `happiness`, `intelligence`, `sickness`, `created_at`) VALUES
@@ -1514,12 +1516,16 @@ INSERT INTO `pet_instances` (`pet_instance_id`, `owner_user_id`, `species_id`, `
 (34, 17, 183, 'Hitler', 5, 1, 0, 12, 12, 12, 11, 7, 0, 'f', 0, 50, 0, 0, '2025-12-23 14:21:41'),
 (35, 13, 257, 'SchniSchnaSchnäpor', 5, 1, 0, 0, 6, 18, 18, 2, 0, 'f', 0, 60, 1, 0, '2026-01-13 12:44:54'),
 (36, 13, 256, 'Slidi', 3, 1, 0, 0, 6, 5, 12, 15, 0, 'f', 0, 50, 1, 0, '2026-01-14 11:02:02'),
-(37, 18, 196, 'Forever NF', 2, 1, 0, 13, 13, 14, 11, 9, 0, 'f', 0, 50, 0, 0, '2026-01-16 23:43:52');
+(37, 18, 196, 'Forever NF', 2, 1, 0, 13, 13, 14, 11, 9, 0, 'f', 0, 50, 0, 0, '2026-01-16 23:43:52'),
+(38, 5, 365, 'BfhTest', 6, 12, 0, NULL, NULL, NULL, NULL, NULL, 0, 'F', 0, 50, 0, 0, '2026-04-22 12:31:48'),
+(39, 5, 297, NULL, NULL, 1, 0, NULL, NULL, NULL, NULL, NULL, 0, 'U', 0, 50, 0, 0, '2026-04-22 12:31:48'),
+(40, 5, 365, 'BfhTest', 6, 12, 0, NULL, NULL, NULL, NULL, NULL, 0, 'F', 0, 50, 0, 0, '2026-04-22 12:31:53'),
+(41, 5, 297, NULL, NULL, 1, 0, NULL, NULL, NULL, NULL, NULL, 0, 'U', 0, 50, 0, 0, '2026-04-22 12:31:53');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pet_like_city`
+-- Tabellenstruktur für Tabelle `pet_like_city`
 --
 
 CREATE TABLE `pet_like_city` (
@@ -1530,7 +1536,7 @@ CREATE TABLE `pet_like_city` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `pet_like_city`
+-- Daten für Tabelle `pet_like_city`
 --
 
 INSERT INTO `pet_like_city` (`PLCid`, `pet_id`, `country_id`, `like`) VALUES
@@ -2978,7 +2984,7 @@ INSERT INTO `pet_like_city` (`PLCid`, `pet_id`, `country_id`, `like`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `pet_species`
+-- Tabellenstruktur für Tabelle `pet_species`
 --
 
 CREATE TABLE `pet_species` (
@@ -2992,7 +2998,7 @@ CREATE TABLE `pet_species` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `pet_species`
+-- Daten für Tabelle `pet_species`
 --
 
 INSERT INTO `pet_species` (`species_id`, `species_name`, `region_id`, `base_hp`, `base_atk`, `base_def`, `base_init`) VALUES
@@ -3209,7 +3215,7 @@ INSERT INTO `pet_species` (`species_id`, `species_name`, `region_id`, `base_hp`,
 -- --------------------------------------------------------
 
 --
--- Table structure for table `picnic_tree_items`
+-- Tabellenstruktur für Tabelle `picnic_tree_items`
 --
 
 CREATE TABLE `picnic_tree_items` (
@@ -3224,7 +3230,7 @@ CREATE TABLE `picnic_tree_items` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `player_unlocked_species`
+-- Tabellenstruktur für Tabelle `player_unlocked_species`
 --
 
 CREATE TABLE `player_unlocked_species` (
@@ -3235,7 +3241,7 @@ CREATE TABLE `player_unlocked_species` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `player_unlocked_species`
+-- Daten für Tabelle `player_unlocked_species`
 --
 
 INSERT INTO `player_unlocked_species` (`entryId`, `player_id`, `unlocked_species_id`, `created_at`) VALUES
@@ -3306,7 +3312,29 @@ INSERT INTO `player_unlocked_species` (`entryId`, `player_id`, `unlocked_species
 -- --------------------------------------------------------
 
 --
--- Table structure for table `regions`
+-- Tabellenstruktur für Tabelle `random_encounters`
+--
+
+CREATE TABLE `random_encounters` (
+  `encounter_id` bigint UNSIGNED NOT NULL,
+  `region_id` smallint UNSIGNED NOT NULL,
+  `species_id` smallint UNSIGNED NOT NULL,
+  `time_from` timestamp NOT NULL,
+  `time_until` timestamp NOT NULL,
+  `encounter_chance` decimal(5,2) NOT NULL
+) ;
+
+--
+-- Daten für Tabelle `random_encounters`
+--
+
+INSERT INTO `random_encounters` (`encounter_id`, `region_id`, `species_id`, `time_from`, `time_until`, `encounter_chance`) VALUES
+(1, 1, 59, '1999-12-31 23:01:00', '2000-01-01 22:59:00', 70.00);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `regions`
 --
 
 CREATE TABLE `regions` (
@@ -3315,7 +3343,7 @@ CREATE TABLE `regions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `regions`
+-- Daten für Tabelle `regions`
 --
 
 INSERT INTO `regions` (`region_id`, `region_name`) VALUES
@@ -3349,7 +3377,7 @@ INSERT INTO `regions` (`region_id`, `region_name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `rsc_wheel_spins`
+-- Tabellenstruktur für Tabelle `rsc_wheel_spins`
 --
 
 CREATE TABLE `rsc_wheel_spins` (
@@ -3358,7 +3386,7 @@ CREATE TABLE `rsc_wheel_spins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `rsc_wheel_spins`
+-- Daten für Tabelle `rsc_wheel_spins`
 --
 
 INSERT INTO `rsc_wheel_spins` (`user_id`, `last_spin_at`) VALUES
@@ -3367,7 +3395,7 @@ INSERT INTO `rsc_wheel_spins` (`user_id`, `last_spin_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shops`
+-- Tabellenstruktur für Tabelle `shops`
 --
 
 CREATE TABLE `shops` (
@@ -3380,7 +3408,7 @@ CREATE TABLE `shops` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `shops`
+-- Daten für Tabelle `shops`
 --
 
 INSERT INTO `shops` (`shop_id`, `shop_name`, `region_id`, `is_npc`, `restock_every_minutes`, `last_restok_at`) VALUES
@@ -3397,7 +3425,7 @@ INSERT INTO `shops` (`shop_id`, `shop_name`, `region_id`, `is_npc`, `restock_eve
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shop_inventory`
+-- Tabellenstruktur für Tabelle `shop_inventory`
 --
 
 CREATE TABLE `shop_inventory` (
@@ -3408,7 +3436,7 @@ CREATE TABLE `shop_inventory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `shop_inventory`
+-- Daten für Tabelle `shop_inventory`
 --
 
 INSERT INTO `shop_inventory` (`shop_id`, `item_id`, `price`, `stock`) VALUES
@@ -3434,7 +3462,7 @@ INSERT INTO `shop_inventory` (`shop_id`, `item_id`, `price`, `stock`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `shop_transactions`
+-- Tabellenstruktur für Tabelle `shop_transactions`
 --
 
 CREATE TABLE `shop_transactions` (
@@ -3449,7 +3477,7 @@ CREATE TABLE `shop_transactions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `shop_transactions`
+-- Daten für Tabelle `shop_transactions`
 --
 
 INSERT INTO `shop_transactions` (`transaction_id`, `shop_id`, `user_id`, `item_id`, `quantity`, `unit_price`, `currency_id`, `created_at`) VALUES
@@ -3458,7 +3486,7 @@ INSERT INTO `shop_transactions` (`transaction_id`, `shop_id`, `user_id`, `item_i
 -- --------------------------------------------------------
 
 --
--- Table structure for table `species_elements`
+-- Tabellenstruktur für Tabelle `species_elements`
 --
 
 CREATE TABLE `species_elements` (
@@ -3467,7 +3495,7 @@ CREATE TABLE `species_elements` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Dumping data for table `species_elements`
+-- Daten für Tabelle `species_elements`
 --
 
 INSERT INTO `species_elements` (`species_id`, `element_id`) VALUES
@@ -3726,7 +3754,29 @@ INSERT INTO `species_elements` (`species_id`, `element_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `trainer_roster`
+-- Tabellenstruktur für Tabelle `trainers`
+--
+
+CREATE TABLE `trainers` (
+  `trainer_id` int NOT NULL,
+  `class_name` varchar(35) NOT NULL,
+  `trainer_name` varchar(35) NOT NULL,
+  `encounter_line` text NOT NULL,
+  `defeat_line` text NOT NULL,
+  `defeat_currency` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+--
+-- Daten für Tabelle `trainers`
+--
+
+INSERT INTO `trainers` (`trainer_id`, `class_name`, `trainer_name`, `encounter_line`, `defeat_line`, `defeat_currency`) VALUES
+(1, 'Testing case ', 'Blumsbert', 'Hello, I am a test!', 'Test is done. Hope you were successful!', 42069);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `trainer_roster`
 --
 
 CREATE TABLE `trainer_roster` (
@@ -3735,10 +3785,18 @@ CREATE TABLE `trainer_roster` (
   `roster_position` tinyint UNSIGNED NOT NULL DEFAULT '1'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
+--
+-- Daten für Tabelle `trainer_roster`
+--
+
+INSERT INTO `trainer_roster` (`trainer_id`, `pet_instance_id`, `roster_position`) VALUES
+(1, 1, 1),
+(1, 2, 2);
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Tabellenstruktur für Tabelle `users`
 --
 
 CREATE TABLE `users` (
@@ -3751,7 +3809,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `users`
+-- Daten für Tabelle `users`
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `created_at`, `updated_at`) VALUES
@@ -3776,7 +3834,7 @@ INSERT INTO `users` (`user_id`, `username`, `email`, `password_hash`, `created_a
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_balances`
+-- Tabellenstruktur für Tabelle `user_balances`
 --
 
 CREATE TABLE `user_balances` (
@@ -3786,7 +3844,7 @@ CREATE TABLE `user_balances` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `user_balances`
+-- Daten für Tabelle `user_balances`
 --
 
 INSERT INTO `user_balances` (`user_id`, `currency_id`, `balance`) VALUES
@@ -3813,7 +3871,7 @@ INSERT INTO `user_balances` (`user_id`, `currency_id`, `balance`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_bank`
+-- Tabellenstruktur für Tabelle `user_bank`
 --
 
 CREATE TABLE `user_bank` (
@@ -3824,7 +3882,7 @@ CREATE TABLE `user_bank` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `user_bank`
+-- Daten für Tabelle `user_bank`
 --
 
 INSERT INTO `user_bank` (`user_id`, `currency_id`, `balance`, `interest`) VALUES
@@ -3833,13 +3891,13 @@ INSERT INTO `user_bank` (`user_id`, `currency_id`, `balance`, `interest`) VALUES
 (13, 1, 107340.55, 20260325.00),
 (12, 1, 2138.00, 20251116.00),
 (14, 1, 2562.50, 20251120.00),
-(5, 1, 35397612252.55, 20260412.00),
+(5, 1, 37189616372.83, 20260422.00),
 (18, 1, 0.50, 20260117.00);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_direct_messages`
+-- Tabellenstruktur für Tabelle `user_direct_messages`
 --
 
 CREATE TABLE `user_direct_messages` (
@@ -3853,7 +3911,7 @@ CREATE TABLE `user_direct_messages` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_friends`
+-- Tabellenstruktur für Tabelle `user_friends`
 --
 
 CREATE TABLE `user_friends` (
@@ -3863,7 +3921,7 @@ CREATE TABLE `user_friends` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `user_friends`
+-- Daten für Tabelle `user_friends`
 --
 
 INSERT INTO `user_friends` (`connection_id`, `user_id`, `friend_id`) VALUES
@@ -3872,7 +3930,7 @@ INSERT INTO `user_friends` (`connection_id`, `user_id`, `friend_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_inventory`
+-- Tabellenstruktur für Tabelle `user_inventory`
 --
 
 CREATE TABLE `user_inventory` (
@@ -3883,7 +3941,7 @@ CREATE TABLE `user_inventory` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `user_inventory`
+-- Daten für Tabelle `user_inventory`
 --
 
 INSERT INTO `user_inventory` (`user_id`, `item_id`, `quantity`, `acquired_at`) VALUES
@@ -4009,7 +4067,7 @@ INSERT INTO `user_inventory` (`user_id`, `item_id`, `quantity`, `acquired_at`) V
 -- --------------------------------------------------------
 
 --
--- Table structure for table `user_map_unlocks`
+-- Tabellenstruktur für Tabelle `user_map_unlocks`
 --
 
 CREATE TABLE `user_map_unlocks` (
@@ -4019,7 +4077,7 @@ CREATE TABLE `user_map_unlocks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data for table `user_map_unlocks`
+-- Daten für Tabelle `user_map_unlocks`
 --
 
 INSERT INTO `user_map_unlocks` (`user_id`, `map_key`, `unlocked_at`) VALUES
@@ -4031,7 +4089,7 @@ INSERT INTO `user_map_unlocks` (`user_id`, `map_key`, `unlocked_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `wheel_of_fate_spins`
+-- Tabellenstruktur für Tabelle `wheel_of_fate_spins`
 --
 
 CREATE TABLE `wheel_of_fate_spins` (
@@ -4040,7 +4098,7 @@ CREATE TABLE `wheel_of_fate_spins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
--- Dumping data for table `wheel_of_fate_spins`
+-- Daten für Tabelle `wheel_of_fate_spins`
 --
 
 INSERT INTO `wheel_of_fate_spins` (`user_id`, `last_spin_at`) VALUES
@@ -4054,11 +4112,11 @@ INSERT INTO `wheel_of_fate_spins` (`user_id`, `last_spin_at`) VALUES
 (18, '2026-01-17 00:51:09');
 
 --
--- Indexes for dumped tables
+-- Indizes der exportierten Tabellen
 --
 
 --
--- Indexes for table `abandoned_pets`
+-- Indizes für die Tabelle `abandoned_pets`
 --
 ALTER TABLE `abandoned_pets`
   ADD PRIMARY KEY (`ap_id`),
@@ -4066,20 +4124,20 @@ ALTER TABLE `abandoned_pets`
   ADD KEY `ix_abandoned_old_player` (`old_player_id`);
 
 --
--- Indexes for table `creature_name_votes`
+-- Indizes für die Tabelle `creature_name_votes`
 --
 ALTER TABLE `creature_name_votes`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- Indexes for table `currencies`
+-- Indizes für die Tabelle `currencies`
 --
 ALTER TABLE `currencies`
   ADD PRIMARY KEY (`currency_id`),
   ADD UNIQUE KEY `uq_currency_code` (`currency_code`);
 
 --
--- Indexes for table `currency_ledger`
+-- Indizes für die Tabelle `currency_ledger`
 --
 ALTER TABLE `currency_ledger`
   ADD PRIMARY KEY (`ledger_id`),
@@ -4087,40 +4145,40 @@ ALTER TABLE `currency_ledger`
   ADD KEY `fk_ledger_currency` (`currency_id`);
 
 --
--- Indexes for table `daily_fom_fishing_runs`
+-- Indizes für die Tabelle `daily_fom_fishing_runs`
 --
 ALTER TABLE `daily_fom_fishing_runs`
   ADD PRIMARY KEY (`user_id`,`run_date`),
   ADD KEY `ix_daily_fom_fishing_item` (`caught_item_id`);
 
 --
--- Indexes for table `daily_sudoku_runs`
+-- Indizes für die Tabelle `daily_sudoku_runs`
 --
 ALTER TABLE `daily_sudoku_runs`
   ADD PRIMARY KEY (`user_id`,`run_date`);
 
 --
--- Indexes for table `elements`
+-- Indizes für die Tabelle `elements`
 --
 ALTER TABLE `elements`
   ADD PRIMARY KEY (`element_id`),
   ADD UNIQUE KEY `uq_elements_name` (`element_name`);
 
 --
--- Indexes for table `element_calc`
+-- Indizes für die Tabelle `element_calc`
 --
 ALTER TABLE `element_calc`
   ADD PRIMARY KEY (`element_id`,`target_element_id`),
   ADD KEY `ix_element_calc_target` (`target_element_id`);
 
 --
--- Indexes for table `fairy_fountain_visits`
+-- Indizes für die Tabelle `fairy_fountain_visits`
 --
 ALTER TABLE `fairy_fountain_visits`
   ADD PRIMARY KEY (`user_id`,`visit_date`);
 
 --
--- Indexes for table `food_preferences`
+-- Indizes für die Tabelle `food_preferences`
 --
 ALTER TABLE `food_preferences`
   ADD PRIMARY KEY (`food_pref_id`),
@@ -4128,7 +4186,7 @@ ALTER TABLE `food_preferences`
   ADD KEY `fk_food_pref_item` (`item_id`);
 
 --
--- Indexes for table `items`
+-- Indizes für die Tabelle `items`
 --
 ALTER TABLE `items`
   ADD PRIMARY KEY (`item_id`),
@@ -4138,14 +4196,14 @@ ALTER TABLE `items`
 ALTER TABLE `items` ADD FULLTEXT KEY `ft_items_name_desc` (`item_name`,`item_description`);
 
 --
--- Indexes for table `item_categories`
+-- Indizes für die Tabelle `item_categories`
 --
 ALTER TABLE `item_categories`
   ADD PRIMARY KEY (`category_id`),
   ADD UNIQUE KEY `uq_category_name` (`category_name`);
 
 --
--- Indexes for table `item_instances`
+-- Indizes für die Tabelle `item_instances`
 --
 ALTER TABLE `item_instances`
   ADD PRIMARY KEY (`instance_id`),
@@ -4153,14 +4211,14 @@ ALTER TABLE `item_instances`
   ADD KEY `fk_iteminst_item` (`item_id`);
 
 --
--- Indexes for table `item_rarities`
+-- Indizes für die Tabelle `item_rarities`
 --
 ALTER TABLE `item_rarities`
   ADD PRIMARY KEY (`rarity_id`),
   ADD UNIQUE KEY `uq_rarity_name` (`rarity_name`);
 
 --
--- Indexes for table `moves`
+-- Indizes für die Tabelle `moves`
 --
 ALTER TABLE `moves`
   ADD PRIMARY KEY (`move_id`),
@@ -4171,33 +4229,33 @@ ALTER TABLE `moves`
   ADD KEY `ix_moves_power` (`power`);
 
 --
--- Indexes for table `npc_trainers`
+-- Indizes für die Tabelle `npc_trainers`
 --
 ALTER TABLE `npc_trainers`
   ADD PRIMARY KEY (`trainer_id`);
 
 --
--- Indexes for table `pet_colors`
+-- Indizes für die Tabelle `pet_colors`
 --
 ALTER TABLE `pet_colors`
   ADD PRIMARY KEY (`color_id`),
   ADD UNIQUE KEY `uq_color_name` (`color_name`);
 
 --
--- Indexes for table `pet_cosmetics`
+-- Indizes für die Tabelle `pet_cosmetics`
 --
 ALTER TABLE `pet_cosmetics`
   ADD PRIMARY KEY (`Id`);
 
 --
--- Indexes for table `pet_equipment`
+-- Indizes für die Tabelle `pet_equipment`
 --
 ALTER TABLE `pet_equipment`
   ADD PRIMARY KEY (`pet_instance_id`,`slot`),
   ADD KEY `fk_pe_inst` (`item_instance_id`);
 
 --
--- Indexes for table `pet_instances`
+-- Indizes für die Tabelle `pet_instances`
 --
 ALTER TABLE `pet_instances`
   ADD PRIMARY KEY (`pet_instance_id`),
@@ -4206,7 +4264,7 @@ ALTER TABLE `pet_instances`
   ADD KEY `fk_petinst_color` (`color_id`);
 
 --
--- Indexes for table `pet_like_city`
+-- Indizes für die Tabelle `pet_like_city`
 --
 ALTER TABLE `pet_like_city`
   ADD PRIMARY KEY (`PLCid`),
@@ -4214,7 +4272,7 @@ ALTER TABLE `pet_like_city`
   ADD KEY `fk_plc_country` (`country_id`);
 
 --
--- Indexes for table `pet_species`
+-- Indizes für die Tabelle `pet_species`
 --
 ALTER TABLE `pet_species`
   ADD PRIMARY KEY (`species_id`),
@@ -4222,14 +4280,14 @@ ALTER TABLE `pet_species`
   ADD KEY `fk_species_region` (`region_id`);
 
 --
--- Indexes for table `picnic_tree_items`
+-- Indizes für die Tabelle `picnic_tree_items`
 --
 ALTER TABLE `picnic_tree_items`
   ADD PRIMARY KEY (`picnic_item_id`),
   ADD UNIQUE KEY `uq_picnic_item` (`item_id`);
 
 --
--- Indexes for table `player_unlocked_species`
+-- Indizes für die Tabelle `player_unlocked_species`
 --
 ALTER TABLE `player_unlocked_species`
   ADD PRIMARY KEY (`entryId`),
@@ -4238,34 +4296,43 @@ ALTER TABLE `player_unlocked_species`
   ADD KEY `ix_player_unlocked_species` (`unlocked_species_id`);
 
 --
--- Indexes for table `regions`
+-- Indizes für die Tabelle `random_encounters`
+--
+ALTER TABLE `random_encounters`
+  ADD PRIMARY KEY (`encounter_id`),
+  ADD KEY `ix_re_region` (`region_id`),
+  ADD KEY `ix_re_species` (`species_id`),
+  ADD KEY `ix_re_window` (`time_from`,`time_until`);
+
+--
+-- Indizes für die Tabelle `regions`
 --
 ALTER TABLE `regions`
   ADD PRIMARY KEY (`region_id`),
   ADD UNIQUE KEY `uq_region_name` (`region_name`);
 
 --
--- Indexes for table `rsc_wheel_spins`
+-- Indizes für die Tabelle `rsc_wheel_spins`
 --
 ALTER TABLE `rsc_wheel_spins`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- Indexes for table `shops`
+-- Indizes für die Tabelle `shops`
 --
 ALTER TABLE `shops`
   ADD PRIMARY KEY (`shop_id`),
   ADD KEY `ix_shops_region` (`region_id`);
 
 --
--- Indexes for table `shop_inventory`
+-- Indizes für die Tabelle `shop_inventory`
 --
 ALTER TABLE `shop_inventory`
   ADD PRIMARY KEY (`shop_id`,`item_id`),
   ADD KEY `fk_shopinv_item` (`item_id`);
 
 --
--- Indexes for table `shop_transactions`
+-- Indizes für die Tabelle `shop_transactions`
 --
 ALTER TABLE `shop_transactions`
   ADD PRIMARY KEY (`transaction_id`),
@@ -4275,14 +4342,20 @@ ALTER TABLE `shop_transactions`
   ADD KEY `fk_shoptx_currency` (`currency_id`);
 
 --
--- Indexes for table `species_elements`
+-- Indizes für die Tabelle `species_elements`
 --
 ALTER TABLE `species_elements`
   ADD PRIMARY KEY (`species_id`,`element_id`),
   ADD KEY `ix_species_elements_element` (`element_id`);
 
 --
--- Indexes for table `trainer_roster`
+-- Indizes für die Tabelle `trainers`
+--
+ALTER TABLE `trainers`
+  ADD PRIMARY KEY (`trainer_id`);
+
+--
+-- Indizes für die Tabelle `trainer_roster`
 --
 ALTER TABLE `trainer_roster`
   ADD PRIMARY KEY (`trainer_id`,`pet_instance_id`),
@@ -4290,7 +4363,7 @@ ALTER TABLE `trainer_roster`
   ADD KEY `ix_trainer_roster_pet` (`pet_instance_id`);
 
 --
--- Indexes for table `users`
+-- Indizes für die Tabelle `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`user_id`),
@@ -4298,20 +4371,20 @@ ALTER TABLE `users`
   ADD UNIQUE KEY `uq_users_email` (`email`);
 
 --
--- Indexes for table `user_balances`
+-- Indizes für die Tabelle `user_balances`
 --
 ALTER TABLE `user_balances`
   ADD PRIMARY KEY (`user_id`,`currency_id`),
   ADD KEY `fk_bal_currency` (`currency_id`);
 
 --
--- Indexes for table `user_bank`
+-- Indizes für die Tabelle `user_bank`
 --
 ALTER TABLE `user_bank`
   ADD PRIMARY KEY (`user_id`,`currency_id`);
 
 --
--- Indexes for table `user_direct_messages`
+-- Indizes für die Tabelle `user_direct_messages`
 --
 ALTER TABLE `user_direct_messages`
   ADD PRIMARY KEY (`message_id`),
@@ -4319,7 +4392,7 @@ ALTER TABLE `user_direct_messages`
   ADD KEY `ix_dm_recipient_sender` (`recipient_id`,`sender_id`,`created_at`);
 
 --
--- Indexes for table `user_friends`
+-- Indizes für die Tabelle `user_friends`
 --
 ALTER TABLE `user_friends`
   ADD PRIMARY KEY (`connection_id`),
@@ -4327,7 +4400,7 @@ ALTER TABLE `user_friends`
   ADD KEY `fk_friend_friend` (`friend_id`);
 
 --
--- Indexes for table `user_inventory`
+-- Indizes für die Tabelle `user_inventory`
 --
 ALTER TABLE `user_inventory`
   ADD PRIMARY KEY (`user_id`,`item_id`),
@@ -4335,239 +4408,251 @@ ALTER TABLE `user_inventory`
   ADD KEY `fk_inv_item` (`item_id`);
 
 --
--- Indexes for table `user_map_unlocks`
+-- Indizes für die Tabelle `user_map_unlocks`
 --
 ALTER TABLE `user_map_unlocks`
   ADD PRIMARY KEY (`user_id`,`map_key`),
   ADD KEY `ix_map_unlock_map_key` (`map_key`);
 
 --
--- Indexes for table `wheel_of_fate_spins`
+-- Indizes für die Tabelle `wheel_of_fate_spins`
 --
 ALTER TABLE `wheel_of_fate_spins`
   ADD PRIMARY KEY (`user_id`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT für exportierte Tabellen
 --
 
 --
--- AUTO_INCREMENT for table `abandoned_pets`
+-- AUTO_INCREMENT für Tabelle `abandoned_pets`
 --
 ALTER TABLE `abandoned_pets`
   MODIFY `ap_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `currencies`
+-- AUTO_INCREMENT für Tabelle `currencies`
 --
 ALTER TABLE `currencies`
   MODIFY `currency_id` tinyint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `currency_ledger`
+-- AUTO_INCREMENT für Tabelle `currency_ledger`
 --
 ALTER TABLE `currency_ledger`
-  MODIFY `ledger_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=341;
+  MODIFY `ledger_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=343;
 
 --
--- AUTO_INCREMENT for table `elements`
+-- AUTO_INCREMENT für Tabelle `elements`
 --
 ALTER TABLE `elements`
   MODIFY `element_id` smallint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `food_preferences`
+-- AUTO_INCREMENT für Tabelle `food_preferences`
 --
 ALTER TABLE `food_preferences`
   MODIFY `food_pref_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `items`
+-- AUTO_INCREMENT für Tabelle `items`
 --
 ALTER TABLE `items`
   MODIFY `item_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=223;
 
 --
--- AUTO_INCREMENT for table `item_categories`
+-- AUTO_INCREMENT für Tabelle `item_categories`
 --
 ALTER TABLE `item_categories`
   MODIFY `category_id` smallint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `item_instances`
+-- AUTO_INCREMENT für Tabelle `item_instances`
 --
 ALTER TABLE `item_instances`
   MODIFY `instance_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `item_rarities`
+-- AUTO_INCREMENT für Tabelle `item_rarities`
 --
 ALTER TABLE `item_rarities`
   MODIFY `rarity_id` smallint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT for table `moves`
+-- AUTO_INCREMENT für Tabelle `moves`
 --
 ALTER TABLE `moves`
   MODIFY `move_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
--- AUTO_INCREMENT for table `npc_trainers`
+-- AUTO_INCREMENT für Tabelle `npc_trainers`
 --
 ALTER TABLE `npc_trainers`
   MODIFY `trainer_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `pet_colors`
+-- AUTO_INCREMENT für Tabelle `pet_colors`
 --
 ALTER TABLE `pet_colors`
   MODIFY `color_id` smallint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
--- AUTO_INCREMENT for table `pet_cosmetics`
+-- AUTO_INCREMENT für Tabelle `pet_cosmetics`
 --
 ALTER TABLE `pet_cosmetics`
   MODIFY `Id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
--- AUTO_INCREMENT for table `pet_instances`
+-- AUTO_INCREMENT für Tabelle `pet_instances`
 --
 ALTER TABLE `pet_instances`
-  MODIFY `pet_instance_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `pet_instance_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
 
 --
--- AUTO_INCREMENT for table `pet_like_city`
+-- AUTO_INCREMENT für Tabelle `pet_like_city`
 --
 ALTER TABLE `pet_like_city`
   MODIFY `PLCid` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1441;
 
 --
--- AUTO_INCREMENT for table `pet_species`
+-- AUTO_INCREMENT für Tabelle `pet_species`
 --
 ALTER TABLE `pet_species`
   MODIFY `species_id` smallint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=395;
 
 --
--- AUTO_INCREMENT for table `picnic_tree_items`
+-- AUTO_INCREMENT für Tabelle `picnic_tree_items`
 --
 ALTER TABLE `picnic_tree_items`
   MODIFY `picnic_item_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `player_unlocked_species`
+-- AUTO_INCREMENT für Tabelle `player_unlocked_species`
 --
 ALTER TABLE `player_unlocked_species`
   MODIFY `entryId` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=64;
 
 --
--- AUTO_INCREMENT for table `regions`
+-- AUTO_INCREMENT für Tabelle `random_encounters`
+--
+ALTER TABLE `random_encounters`
+  MODIFY `encounter_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `regions`
 --
 ALTER TABLE `regions`
   MODIFY `region_id` smallint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
--- AUTO_INCREMENT for table `shops`
+-- AUTO_INCREMENT für Tabelle `shops`
 --
 ALTER TABLE `shops`
   MODIFY `shop_id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT for table `shop_transactions`
+-- AUTO_INCREMENT für Tabelle `shop_transactions`
 --
 ALTER TABLE `shop_transactions`
   MODIFY `transaction_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT für Tabelle `trainers`
+--
+ALTER TABLE `trainers`
+  MODIFY `trainer_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT für Tabelle `users`
 --
 ALTER TABLE `users`
   MODIFY `user_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT for table `user_direct_messages`
+-- AUTO_INCREMENT für Tabelle `user_direct_messages`
 --
 ALTER TABLE `user_direct_messages`
   MODIFY `message_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `user_friends`
+-- AUTO_INCREMENT für Tabelle `user_friends`
 --
 ALTER TABLE `user_friends`
   MODIFY `connection_id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- Constraints for dumped tables
+-- Constraints der exportierten Tabellen
 --
 
 --
--- Constraints for table `abandoned_pets`
+-- Constraints der Tabelle `abandoned_pets`
 --
 ALTER TABLE `abandoned_pets`
   ADD CONSTRAINT `fk_abandoned_old_player` FOREIGN KEY (`old_player_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_abandoned_pet` FOREIGN KEY (`creature_id`) REFERENCES `pet_instances` (`pet_instance_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `creature_name_votes`
+-- Constraints der Tabelle `creature_name_votes`
 --
 ALTER TABLE `creature_name_votes`
   ADD CONSTRAINT `fk_namevote_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `currency_ledger`
+-- Constraints der Tabelle `currency_ledger`
 --
 ALTER TABLE `currency_ledger`
   ADD CONSTRAINT `fk_ledger_currency` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`currency_id`),
   ADD CONSTRAINT `fk_ledger_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
--- Constraints for table `daily_fom_fishing_runs`
+-- Constraints der Tabelle `daily_fom_fishing_runs`
 --
 ALTER TABLE `daily_fom_fishing_runs`
   ADD CONSTRAINT `fk_daily_fom_fishing_item` FOREIGN KEY (`caught_item_id`) REFERENCES `items` (`item_id`),
   ADD CONSTRAINT `fk_daily_fom_fishing_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `daily_sudoku_runs`
+-- Constraints der Tabelle `daily_sudoku_runs`
 --
 ALTER TABLE `daily_sudoku_runs`
   ADD CONSTRAINT `fk_daily_sudoku_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `food_preferences`
+-- Constraints der Tabelle `food_preferences`
 --
 ALTER TABLE `food_preferences`
   ADD CONSTRAINT `fk_food_pref_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_food_pref_species` FOREIGN KEY (`species_id`) REFERENCES `pet_species` (`species_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `items`
+-- Constraints der Tabelle `items`
 --
 ALTER TABLE `items`
   ADD CONSTRAINT `fk_items_category` FOREIGN KEY (`category_id`) REFERENCES `item_categories` (`category_id`),
   ADD CONSTRAINT `fk_items_rarity` FOREIGN KEY (`rarity_id`) REFERENCES `item_rarities` (`rarity_id`);
 
 --
--- Constraints for table `item_instances`
+-- Constraints der Tabelle `item_instances`
 --
 ALTER TABLE `item_instances`
   ADD CONSTRAINT `fk_iteminst_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`),
   ADD CONSTRAINT `fk_iteminst_owner` FOREIGN KEY (`owner_user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `moves`
+-- Constraints der Tabelle `moves`
 --
 ALTER TABLE `moves`
   ADD CONSTRAINT `fk_moves_element` FOREIGN KEY (`element_id`) REFERENCES `elements` (`element_id`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `pet_equipment`
+-- Constraints der Tabelle `pet_equipment`
 --
 ALTER TABLE `pet_equipment`
   ADD CONSTRAINT `fk_pe_inst` FOREIGN KEY (`item_instance_id`) REFERENCES `item_instances` (`instance_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_pe_pet` FOREIGN KEY (`pet_instance_id`) REFERENCES `pet_instances` (`pet_instance_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `pet_instances`
+-- Constraints der Tabelle `pet_instances`
 --
 ALTER TABLE `pet_instances`
   ADD CONSTRAINT `fk_petinst_color` FOREIGN KEY (`color_id`) REFERENCES `pet_colors` (`color_id`),
@@ -4575,46 +4660,53 @@ ALTER TABLE `pet_instances`
   ADD CONSTRAINT `fk_petinst_species` FOREIGN KEY (`species_id`) REFERENCES `pet_species` (`species_id`);
 
 --
--- Constraints for table `pet_like_city`
+-- Constraints der Tabelle `pet_like_city`
 --
 ALTER TABLE `pet_like_city`
   ADD CONSTRAINT `fk_plc_country` FOREIGN KEY (`country_id`) REFERENCES `regions` (`region_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_plc_pet` FOREIGN KEY (`pet_id`) REFERENCES `pet_species` (`species_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `pet_species`
+-- Constraints der Tabelle `pet_species`
 --
 ALTER TABLE `pet_species`
   ADD CONSTRAINT `fk_species_region` FOREIGN KEY (`region_id`) REFERENCES `regions` (`region_id`);
 
 --
--- Constraints for table `picnic_tree_items`
+-- Constraints der Tabelle `picnic_tree_items`
 --
 ALTER TABLE `picnic_tree_items`
   ADD CONSTRAINT `fk_picnic_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`);
 
 --
--- Constraints for table `player_unlocked_species`
+-- Constraints der Tabelle `player_unlocked_species`
 --
 ALTER TABLE `player_unlocked_species`
   ADD CONSTRAINT `fk_player_unlocked_player` FOREIGN KEY (`player_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_player_unlocked_species` FOREIGN KEY (`unlocked_species_id`) REFERENCES `pet_species` (`species_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `shops`
+-- Constraints der Tabelle `random_encounters`
+--
+ALTER TABLE `random_encounters`
+  ADD CONSTRAINT `fk_re_region` FOREIGN KEY (`region_id`) REFERENCES `regions` (`region_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_re_species` FOREIGN KEY (`species_id`) REFERENCES `pet_species` (`species_id`) ON DELETE CASCADE;
+
+--
+-- Constraints der Tabelle `shops`
 --
 ALTER TABLE `shops`
   ADD CONSTRAINT `fk_shop_region` FOREIGN KEY (`region_id`) REFERENCES `regions` (`region_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `shop_inventory`
+-- Constraints der Tabelle `shop_inventory`
 --
 ALTER TABLE `shop_inventory`
   ADD CONSTRAINT `fk_shopinv_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`),
   ADD CONSTRAINT `fk_shopinv_shop` FOREIGN KEY (`shop_id`) REFERENCES `shops` (`shop_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `shop_transactions`
+-- Constraints der Tabelle `shop_transactions`
 --
 ALTER TABLE `shop_transactions`
   ADD CONSTRAINT `fk_shoptx_currency` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`currency_id`),
@@ -4623,41 +4715,41 @@ ALTER TABLE `shop_transactions`
   ADD CONSTRAINT `fk_shoptx_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
--- Constraints for table `user_balances`
+-- Constraints der Tabelle `user_balances`
 --
 ALTER TABLE `user_balances`
   ADD CONSTRAINT `fk_bal_currency` FOREIGN KEY (`currency_id`) REFERENCES `currencies` (`currency_id`),
   ADD CONSTRAINT `fk_bal_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_direct_messages`
+-- Constraints der Tabelle `user_direct_messages`
 --
 ALTER TABLE `user_direct_messages`
   ADD CONSTRAINT `fk_dm_recipient` FOREIGN KEY (`recipient_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_dm_sender` FOREIGN KEY (`sender_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_friends`
+-- Constraints der Tabelle `user_friends`
 --
 ALTER TABLE `user_friends`
   ADD CONSTRAINT `fk_friend_friend` FOREIGN KEY (`friend_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `fk_friend_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_inventory`
+-- Constraints der Tabelle `user_inventory`
 --
 ALTER TABLE `user_inventory`
   ADD CONSTRAINT `fk_inv_item` FOREIGN KEY (`item_id`) REFERENCES `items` (`item_id`),
   ADD CONSTRAINT `fk_inv_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `user_map_unlocks`
+-- Constraints der Tabelle `user_map_unlocks`
 --
 ALTER TABLE `user_map_unlocks`
   ADD CONSTRAINT `fk_map_unlock_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `wheel_of_fate_spins`
+-- Constraints der Tabelle `wheel_of_fate_spins`
 --
 ALTER TABLE `wheel_of_fate_spins`
   ADD CONSTRAINT `fk_wheel_spin_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE;
