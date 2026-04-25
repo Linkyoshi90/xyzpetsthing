@@ -51,6 +51,7 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
   </div>
   <div class="card glass">
     <h3>Trainer Battle</h3>
-    <a class="btn" href="?pg=battle_minigame">Encounter</a>
+    <p class="muted">Trigger a random trainer encounter and throw your creature team into a fast elemental duel.</p>
+    <a class="btn" href="?pg=battle_minigame">Trigger Encounter</a>
   </div>
 </div>

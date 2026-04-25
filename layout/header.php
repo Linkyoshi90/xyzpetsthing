@@ -34,9 +34,15 @@ if ($u) {
 <?php if (($pg ?? '') === 'encyclopedia'): ?>
 <link rel="stylesheet" href="assets/css/encyclopedia.css">
 <?php endif; ?>
+<?php if (($pg ?? '') === 'battle_minigame'): ?>
+<link rel="stylesheet" href="assets/css/battle-minigame.css">
+<?php endif; ?>
 <script defer src="assets/js/theme.js"></script>
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>
+<?php if (($pg ?? '') === 'battle_minigame'): ?>
+<script defer src="assets/js/battle-minigame.js"></script>
+<?php endif; ?>
 <?php
 $documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
 $appRoot = realpath(__DIR__.'/..');
