@@ -53,6 +53,11 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'ynk_paint_shack','ynk-adventure','ynk-adventure2','ynk-ramen',
     'yn_paint_shack',
 ];
+if(!in_array($pg,$allowed,true)) $pg = 'login';
+if($pg === 'petting' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require __DIR__.'/pages/petting.php';
+  exit;
+}
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
 }
@@ -103,7 +108,6 @@ if($pg === 'dress' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
 }
-if(!in_array($pg,$allowed)) $pg = 'login';
 include __DIR__.'/layout/header.php';
 
 try {
