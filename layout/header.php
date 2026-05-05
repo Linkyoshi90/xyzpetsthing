@@ -86,7 +86,7 @@ $GLOBALS['app_chat_action_path'] = $chatActionPath;
 </script>
 <?php endif; ?>
 <?php
-$game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'wheel-of-fate', 'battle_minigame'];
+$game_pages = ['fruitstack', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'wheel-of-fate', 'battle_minigame', 'drop_game'];
 $no_bubble_pages = array_merge($game_pages, ['encyclopedia']);
 if (!in_array($pg ?? '', $no_bubble_pages, true)):
 ?>

@@ -15,7 +15,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     // Games
     'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
     'wanted-alive','blackjack','paddle-panic','sudoku',
-    'fishing','minigolf','battle_minigame',
+    'fishing','minigolf','battle_minigame','drop_game',
     // Continents
     'auronia','borealia','dawnmarch','gulfbelt','moana_crown',
     'orienthem','saharene','tundria','uluru','verdania',

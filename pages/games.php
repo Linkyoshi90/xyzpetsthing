@@ -14,6 +14,11 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
     <a class="btn" href="?pg=fruitstack">Play</a>
   </div>
   <div class="card glass">
+    <h3>Drop Game Collider Lab</h3>
+    <p class="muted">Test Suica-style item drops with sprite-shaped physics colliders.</p>
+    <a class="btn" href="?pg=drop_game">Play</a>
+  </div>
+  <div class="card glass">
     <h3>Garden Invaderz</h3>
     <a class="btn" href="?pg=garden-invaderz">Play</a>
   </div>
