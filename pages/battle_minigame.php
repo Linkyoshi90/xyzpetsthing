@@ -72,6 +72,20 @@ function battle_load_species_elements(array $species_ids): array {
     return $out;
 }
 
+function battle_trainer_graphic_url(int $trainer_id): string {
+    $fallback = 'images/creatures/tengu_f_blue.webp';
+    if ($trainer_id <= 0) {
+        return $fallback;
+    }
+
+    $trainer_graphic = 'images/trainers/' . $trainer_id . '.webp';
+    if (is_file(__DIR__ . '/../' . $trainer_graphic)) {
+        return $trainer_graphic;
+    }
+
+    return $fallback;
+}
+
 function battle_normalize_pet(array $pet, array $element_lookup): array {
     $level = max(1, (int)($pet['level'] ?? 1));
     $max_hp = (int)($pet['hp_max'] ?? 0);
@@ -166,6 +180,7 @@ function battle_load_random_trainer(): ?array {
         'defeatLine' => (string)$trainer['defeat_line'],
         'defeatCurrency' => max(0, (int)$trainer['defeat_currency']),
         'initials' => battle_name_initials(trim($class_name . ' ' . $trainer_name)),
+        'graphic' => battle_trainer_graphic_url((int)$trainer['trainer_id']),
     ];
 }
 
@@ -541,7 +556,9 @@ $battle_payload = [
     <div class="battle-intro" id="battle-intro">
       <div class="battle-intro-panel">
         <p class="battle-intro-kicker">Random Encounter</p>
-        <div class="battle-intro-crest" id="intro-crest"><?= htmlspecialchars($trainer['initials'] ?? 'HT') ?></div>
+        <div class="battle-intro-crest" id="intro-crest">
+          <img src="<?= htmlspecialchars($trainer['graphic'] ?? 'images/creatures/tengu_f_blue.webp') ?>" alt="<?= htmlspecialchars($trainer['displayName'] ?? 'Trainer') ?>">
+        </div>
         <h1 id="intro-title"><?= htmlspecialchars($trainer['displayName'] ?? '') ?></h1>
         <p class="battle-intro-line" id="intro-line"><?= htmlspecialchars($trainer['encounterLine'] ?? '') ?></p>
         <button class="btn battle-intro-start" id="intro-start" type="button">Start Battle</button>
@@ -559,9 +576,6 @@ $battle_payload = [
     <div class="battle-announcer" id="battle-announcer" aria-live="assertive"></div>
 
     <div class="battle-field">
-      <div class="battle-platform npc"></div>
-      <div class="battle-platform player"></div>
-
       <div class="battle-combatant npc" id="npc-combatant">
         <div class="battle-status-card">
           <div class="battle-status-topline">
@@ -579,7 +593,7 @@ $battle_payload = [
         </div>
         <div class="battle-creature-shell">
           <div class="battle-summon-ring"></div>
-          <img class="battle-creature" id="npc-image" src="" alt="">
+          <img class="battle-creature npc-creature" id="npc-image" src="" alt="">
         </div>
       </div>
 
@@ -600,7 +614,7 @@ $battle_payload = [
         </div>
         <div class="battle-creature-shell">
           <div class="battle-summon-ring"></div>
-          <img class="battle-creature" id="player-image" src="" alt="">
+          <img class="battle-creature player-creature" id="player-image" src="" alt="">
         </div>
       </div>
     </div>
