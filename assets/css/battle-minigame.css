@@ -120,12 +120,13 @@
   font-size: 0.78rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  color: black;
 }
 
 .battle-intro-kicker,
 .battle-feed-label,
 .battle-menu-hint {
-  color: rgba(234, 243, 253, 0.72);
+  color: black;
 }
 
 .battle-intro-crest,
@@ -146,6 +147,17 @@
   font-size: 1.9rem;
   font-weight: 800;
   letter-spacing: 0.08em;
+  overflow: hidden;
+}
+
+.battle-intro-crest img {
+  box-sizing: border-box;
+  width: calc(100% - 14px);
+  height: calc(100% - 14px);
+  border: 1px solid rgba(255, 255, 255, 0.44);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.16);
+  object-fit: contain;
 }
 
 .battle-intro h1 {
@@ -198,6 +210,10 @@
   color: #122336;
 }
 
+.battle-banner-label {
+  color: #000;
+}
+
 .battle-encounter-crest {
   width: 54px;
   height: 54px;
@@ -234,35 +250,6 @@
 .battle-field {
   position: absolute;
   inset: 0;
-}
-
-.battle-platform {
-  position: absolute;
-  width: min(38vw, 380px);
-  height: 80px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, rgba(255, 255, 255, 0.34), transparent 60%),
-    rgba(39, 78, 41, 0.28);
-  filter: blur(0.2px);
-}
-
-.battle-platform::after {
-  content: "";
-  position: absolute;
-  inset: 8px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-}
-
-.battle-platform.npc {
-  top: 196px;
-  right: 9%;
-}
-
-.battle-platform.player {
-  bottom: 72px;
-  left: 7%;
 }
 
 .battle-combatant {
@@ -324,6 +311,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  color: black;
 }
 
 .battle-status-topline strong {
@@ -387,10 +375,43 @@
   place-items: center;
   min-height: 240px;
   margin-top: 10px;
+  isolation: isolate;
+}
+
+.battle-creature-shell::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  z-index: 0;
+  width: min(110%, 290px);
+  height: 72px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.34), transparent 60%),
+    rgba(39, 78, 41, 0.28);
+  filter: blur(0.2px);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.battle-creature-shell::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  z-index: 0;
+  width: min(95%, 246px);
+  height: 52px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
 .battle-summon-ring {
   position: absolute;
+  z-index: 2;
   width: 180px;
   height: 180px;
   border-radius: 50%;
@@ -410,10 +431,21 @@
 .battle-creature {
   position: relative;
   z-index: 1;
+  align-self: end;
   max-width: min(28vw, 246px);
   max-height: 240px;
   object-fit: contain;
+  object-position: center bottom;
   filter: drop-shadow(0 14px 20px rgba(10, 23, 34, 0.26));
+  transform-origin: center;
+}
+
+    .battle-creature.player-creature {
+        transform: scaleX(-1);
+    }
+
+.npc-creature {
+  transform: none;
 }
 
 .battle-impact,
@@ -765,16 +797,6 @@
   .battle-encounter-banner {
     min-width: 0;
     width: calc(100% - 24px);
-  }
-
-  .battle-platform.npc {
-    top: 224px;
-    right: 2%;
-  }
-
-  .battle-platform.player {
-    bottom: 108px;
-    left: 0;
   }
 
   .battle-combatant {

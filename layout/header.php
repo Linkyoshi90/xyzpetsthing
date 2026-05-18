@@ -35,13 +35,15 @@ if ($u) {
 <link rel="stylesheet" href="assets/css/encyclopedia.css">
 <?php endif; ?>
 <?php if (($pg ?? '') === 'battle_minigame'): ?>
-<link rel="stylesheet" href="assets/css/battle-minigame.css">
+<?php $battle_css_version = is_file(__DIR__.'/../assets/css/battle-minigame.css') ? filemtime(__DIR__.'/../assets/css/battle-minigame.css') : 1; ?>
+<link rel="stylesheet" href="assets/css/battle-minigame.css?v=<?= $battle_css_version ?>">
 <?php endif; ?>
 <script defer src="assets/js/theme.js"></script>
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>
 <?php if (($pg ?? '') === 'battle_minigame'): ?>
-<script defer src="assets/js/battle-minigame.js"></script>
+<?php $battle_js_version = is_file(__DIR__.'/../assets/js/battle-minigame.js') ? filemtime(__DIR__.'/../assets/js/battle-minigame.js') : 1; ?>
+<script defer src="assets/js/battle-minigame.js?v=<?= $battle_js_version ?>"></script>
 <?php endif; ?>
 <?php
 $documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';

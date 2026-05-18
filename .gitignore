@@ -430,3 +430,4 @@ FodyWeavers.xsd
 # Custom logic
 /.vs
 *.wav
+.vs
