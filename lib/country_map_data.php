@@ -735,10 +735,27 @@ function get_country_map_config(string $slug): ?array {
                     'title' => 'Sea’s Temper and the Heart Mirror',
                     'html' => '<p>Emotion in Pelagora moves like water. Joy rings loudly across curved stone; grief sinks fast and deep. When envy or greed run unchecked, locals say the sea responds: waves slap higher on the outer ring, carved dolphins darken with salt, and low bronze bells under the water toll on their own. Visitors learn quickly to bargain fair, share catch, and leave bragging on land.</p><p>At Pelagora’s center rests the <strong>Heart Mirror</strong>, a lagoon that can reflect sky and rings so perfectly the city seems suspended between worlds. On rare still nights, elders say it shows Pelagora before the sinking—every ring whole, every tower bright. Travelers who stay long enough leave feeling the rings’ shape in their own thoughts.</p>',
                 ],
+                [
+                    'title' => 'Tideglass Aquatics',
+                    'html' => '<p>The ring-quay market keeps a small but famous aquatics counter where divers, net-menders, and cautious travelers buy saltproof tools. Everything on the public shelf is tagged by guild rule as <strong>Aquatic</strong>, <strong>Pelagoric</strong>, <strong>Pelagora</strong>, or <strong>Underwater</strong>, so no one confuses honest lagoon gear with painted mainland souvenirs.</p>',
+                ],
+                [
+                    'title' => 'Drowned Stacks and Floodstairs',
+                    'html' => '<p>The <strong>Drowned Stacks Library</strong> copies lore from waxed tablets before mildew can claim it. Across the lower arc, the <strong>Floodstairs Diver Guild</strong> keeps a daily register for safe salvage: one name, one tide window, one witness bell. The guild does not promise treasure, only that someone will count your bubbles and haul you back if pride gets heavier than air.</p>',
+                ],
+                [
+                    'title' => 'Bell Nights',
+                    'html' => '<p>On still nights, families hang shell chimes from the old bridges and lower lamps toward the submerged streets. The ritual is part mourning, part weather sense: if a lamp flame leans blue, the next tide is treated gently; if the drowned bells answer, every boat comes home before moonrise.</p>',
+                ],
             ],
             'back_label' => 'Back to Spice Route League',
             'back_href' => '?pg=srl',
-            'areas' => [],
+            'areas' => [
+                ['name' => 'Tideglass Aquatics', 'description' => 'A ring-quay shop for Aquatic, Pelagoric, Pelagora, and Underwater goods.', 'action' => 'Shop', 'href' => '?pg=pelagora-shop', 'color' => '#2dd4bf', 'points' => country_map_rect_points(170, 470, 245, 165, $w, $h)],
+                ['name' => 'Heart Mirror Fishing', 'description' => 'A daily cast into Pelagora\'s central lagoon for strange local catches.', 'action' => 'Fish', 'href' => '?pg=pelagora-fishing', 'color' => '#38bdf8', 'points' => country_map_rect_points(600, 430, 330, 210, $w, $h)],
+                ['name' => 'Drowned Stacks Library', 'description' => 'Borrow lore books copied from shell tablets and waterproofed ledgers.', 'action' => 'Browse', 'href' => '?pg=pelagora-library', 'color' => '#a78bfa', 'points' => country_map_rect_points(350, 135, 230, 150, $w, $h)],
+                ['name' => 'Floodstairs Diver Guild', 'description' => 'Book a daily salvage dive through the lower galleries of the old ring-city.', 'action' => 'Dive', 'href' => '?pg=pelagora-divers', 'color' => '#f59e0b', 'points' => country_map_rect_points(955, 585, 280, 155, $w, $h)],
+            ],
         ],
         'stap' => [
             'title' => 'Sovereign Tribes - Turtlestar',
