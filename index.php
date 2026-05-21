@@ -13,9 +13,9 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'petting2','map','vote','games','friends','bank','user-chat','paint_shack','gacha',
     'user-guide','encyclopedia','petting_fullscreen','pettingBla',
     // Games
-    'wheel-of-fate','fruitstack','garden-invaderz','runngunner',
+    'wheel-of-fate','fruitstack','harmonflap','garden-invaderz','runngunner',
     'wanted-alive','blackjack','paddle-panic','sudoku',
-    'fishing','minigolf','battle_minigame','drop_game',
+    'fishing','minigolf','battle_minigame','drop_game','harmonflap',
     // Continents
     'auronia','borealia','dawnmarch','gulfbelt','moana_crown',
     'orienthem','saharene','tundria','uluru','verdania',
