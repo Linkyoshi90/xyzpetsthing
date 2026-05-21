@@ -12,6 +12,7 @@ $uid = current_user()['id'];
 $rates = [
     'gardeninvaderz' => 0.5,
     'fruitstack' => 1.2,
+	'harmonflap' => 50, 
     'runngunner' => 0.8,
     'wantedalive' => 5,
     'paddlepanic' => 0.9,

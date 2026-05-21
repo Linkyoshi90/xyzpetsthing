@@ -3,7 +3,7 @@ require_once __DIR__.'/../auth.php';
 require_login();
 
 $creatures_file = __DIR__.'/../data-readonly/available_creatures.txt';
-$images_dir = __DIR__.'/../images';
+$images_dir = __DIR__.'/../images/creatures';
 
 function hunt_slugify(string $name): string {
     $slug = strtolower($name);
@@ -48,7 +48,7 @@ foreach ($creature_names as $name) {
     foreach ($image_files as $file) {
         $lower = strtolower($file);
         if (strpos($lower, $slug.'_') === 0) {
-            $matches[] = 'images/'.$file;
+            $matches[] = 'images/creatures/'.$file;
         }
     }
     if ($matches) {
