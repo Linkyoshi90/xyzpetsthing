@@ -43,7 +43,7 @@ function pet_image_url(string $species_name, ?string $color_name): string {
     $color_slug = $color_name ? strtolower(preg_replace('/[^a-z0-9]+/i', '_', $color_name)) : '';
     $path = "images/creatures/{$species_slug}_f_{$color_slug}.webp";
     if (!file_exists(__DIR__ . '/../' . $path)) {
-        return 'images/creatures/tengu_f_blue.png';
+        return 'images/creatures/tengu_f_blue.webp';
     }
     return $path;
 }

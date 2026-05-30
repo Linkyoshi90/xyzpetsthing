@@ -245,7 +245,7 @@
     }
 
     function spawnPipe() {
-        const pipeWidth = clamp(width * 0.078, 58, 82);
+        const pipeWidth = clamp(width * 0.058, 42, 62);
         const gapSize = clamp(height * (0.31 - Math.min(score, 22) * 0.002), 128, 178);
         const topMargin = Math.max(34, height * 0.08);
         const bottomMargin = groundHeight + Math.max(44, height * 0.08);
@@ -253,11 +253,11 @@
         const gapTop = topMargin + Math.random() * Math.max(1, gapTopMax - topMargin);
 
         const pair = document.createElement('div');
-        pair.className = 'harmonflap-pipe-pair';
-        pair.style.setProperty('--pipe-width', pipeWidth + 'px');
+        pair.className = 'harmonflap-tree-pair';
+        pair.style.setProperty('--tree-width', pipeWidth + 'px');
         pair.style.setProperty('--gap-top', gapTop + 'px');
         pair.style.setProperty('--gap-size', gapSize + 'px');
-        pair.innerHTML = '<div class="harmonflap-pipe harmonflap-pipe--top"></div><div class="harmonflap-pipe harmonflap-pipe--bottom"></div>';
+        pair.innerHTML = '<div class="harmonflap-tree harmonflap-tree--top"></div><div class="harmonflap-tree harmonflap-tree--bottom"></div>';
         stage.insertBefore(pair, overlay);
 
         const pipe = {

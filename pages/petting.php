@@ -23,6 +23,7 @@ function petting_fetch_pet_row(PDO $pdo, int $userId, int $petId, bool $forUpdat
                    pi.nickname,
                    pi.hunger,
                    pi.happiness,
+                   pi.intelligence,
                    pi.hp_current,
                    pi.hp_max,
                    ps.species_name
@@ -48,6 +49,7 @@ function petting_build_pet_state(array $pet): array
         'health' => $health,
         'maxHealth' => $maxHealth,
         'happiness' => max(0, min((int)($pet['happiness'] ?? 0), 100)),
+        'intelligence' => max(0, (int)($pet['intelligence'] ?? 0)),
     ];
 }
 
@@ -63,6 +65,25 @@ function petting_fetch_inventory_item(PDO $pdo, int $userId, int $itemId, string
              WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = ?";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([$userId, $itemId, $categoryName]);
+    $item = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $item ?: null;
+}
+
+function petting_fetch_book_inventory_item(PDO $pdo, int $userId, int $itemId): ?array
+{
+    $sql = "SELECT ui.item_id,
+                   ui.quantity,
+                   i.item_name,
+                   COALESCE(i.replenish, 0) AS replenish
+              FROM user_inventory ui
+              JOIN items i ON i.item_id = ui.item_id
+              LEFT JOIN item_categories ic ON ic.category_id = i.category_id
+             WHERE ui.user_id = ?
+               AND ui.item_id = ?
+               AND (ic.category_name = 'Book' OR i.item_name LIKE '%Book%')";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$userId, $itemId]);
     $item = $stmt->fetch(PDO::FETCH_ASSOC);
 
     return $item ?: null;
@@ -250,6 +271,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             petting_json_response(['ok' => false, 'message' => 'Healing failed. Please try again.'], 500);
         }
     }
+
+    if ($action === 'read') {
+        $petId = input_int($_POST['pet_id'] ?? 0, 1);
+        $itemId = input_int($_POST['item_id'] ?? 0, 1);
+
+        try {
+            $pet = petting_fetch_pet_row($pdo, $uid, $petId);
+            if (!$pet) {
+                petting_json_response(['ok' => false, 'message' => 'That pet is not available.'], 404);
+            }
+
+            $item = petting_fetch_book_inventory_item($pdo, $uid, $itemId);
+            if (!$item || (int)$item['quantity'] <= 0) {
+                petting_json_response(['ok' => false, 'message' => 'That book is no longer available.'], 409);
+            }
+
+            $currentState = petting_build_pet_state($pet);
+            $intelligenceGain = max(0, (int)$item['replenish']);
+            $nextIntelligence = $currentState['intelligence'] + $intelligenceGain;
+
+            $updatePet = $pdo->prepare(
+                "UPDATE pet_instances
+                    SET intelligence = COALESCE(intelligence, 0) + ?
+                  WHERE pet_instance_id = ? AND owner_user_id = ?"
+            );
+            $updatePet->execute([$intelligenceGain, $petId, $uid]);
+
+            $nextQuantity = petting_consume_inventory_item($pdo, $uid, $itemId, (int)$item['quantity']);
+
+            $pet['intelligence'] = $nextIntelligence;
+
+            petting_json_response([
+                'ok' => true,
+                'pet' => petting_build_pet_state($pet),
+                'item' => ['id' => $itemId, 'quantity' => $nextQuantity],
+                'effects' => ['intelligenceGain' => $intelligenceGain],
+                'message' => $currentState['name'] . ' learned from ' . $item['item_name'] . '.',
+            ]);
+        } catch (Throwable $e) {
+            app_add_error_from_exception($e, 'Petting read action failed:');
+            petting_json_response(['ok' => false, 'message' => 'Reading failed. Please try again.'], 500);
+        }
+    }
 }
 
 $pets = get_user_pets($uid);
@@ -271,6 +335,14 @@ $healing = q(
     . " JOIN items i ON i.item_id = ui.item_id"
     . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
     . " WHERE ui.user_id = ? AND ic.category_name = 'Potion' AND ui.quantity > 0 ORDER BY i.item_name",
+    [$uid]
+)->fetchAll(PDO::FETCH_ASSOC);
+
+$books = q(
+    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
+    . " JOIN items i ON i.item_id = ui.item_id"
+    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
+    . " WHERE ui.user_id = ? AND (ic.category_name = 'Book' OR i.item_name LIKE '%Book%') AND ui.quantity > 0 ORDER BY i.item_name",
     [$uid]
 )->fetchAll(PDO::FETCH_ASSOC);
 
@@ -307,6 +379,7 @@ $pets_payload = array_map(static function (array $pet): array {
         'health' => (int)($pet['hp_current'] ?? 0),
         'maxHealth' => max(1, (int)($pet['hp_max'] ?? 100)),
         'happiness' => (int)($pet['happiness'] ?? 0),
+        'intelligence' => (int)($pet['intelligence'] ?? 0),
         'preferences' => new stdClass(),
     ];
 }, $pets);
@@ -334,6 +407,17 @@ $healing_payload = array_map(static function (array $item) use ($pick_emoji): ar
         'heal' => max(1, (int)($item['replenish'] ?? 1)),
     ];
 }, $healing);
+
+$book_payload = array_map(static function (array $item): array {
+    $imageFile = shop_find_item_image((string)$item['item_name']);
+    return [
+        'id' => (int)$item['item_id'],
+        'name' => $item['item_name'],
+        'image' => 'images/items/' . rawurlencode($imageFile),
+        'quantity' => (int)$item['quantity'],
+        'intelligence' => max(0, (int)($item['replenish'] ?? 0)),
+    ];
+}, $books);
 ?>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -343,7 +427,8 @@ window.pettingBlaData = {
     activePetId: <?= (int)$pets_payload[0]['id'] ?>,
     pets: <?= json_encode($pets_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
     food: <?= json_encode($food_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-    healing: <?= json_encode($healing_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
+    healing: <?= json_encode($healing_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+    books: <?= json_encode($book_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
 };
 </script>
 
@@ -1451,7 +1536,11 @@ window.pettingBlaData = {
                 🧪
                 <span class="badge" id="healBadge">3</span>
             </button>
-            <button class="control-btn" id="petBtn" title="Switch Pet">
+            <button class="control-btn" id="bookBtn" title="Books">
+                &#128218;
+                <span class="badge" id="bookBadge">0</span>
+            </button>
+            <button class="control-btn" id="petBtn" title="Pets and Frisbee">
                 🐾
             </button>
         </div>
@@ -1474,6 +1563,17 @@ window.pettingBlaData = {
                 <button class="panel-close" id="healClose">✕</button>
             </div>
             <div class="item-grid" id="healGrid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Books Panel -->
+        <div class="slide-panel slide-panel-top" id="bookPanel">
+            <div class="panel-header">
+                <span class="panel-title">Books</span>
+                <button class="panel-close" id="bookClose">x</button>
+            </div>
+            <div class="item-grid" id="bookGrid">
                 <!-- Populated by JS -->
             </div>
         </div>
@@ -2096,6 +2196,7 @@ window.pettingBlaData = {
     originalContainer.outerHTML = originalContainer.outerHTML;
 
     const gameData = window.pettingBlaData;
+    gameData.books = Array.isArray(gameData.books) ? gameData.books : [];
     const requestedPetId = Number(new URLSearchParams(window.location.search).get('id') || 0);
     if (requestedPetId && gameData.pets.some((pet) => pet.id === requestedPetId)) {
         gameData.activePetId = requestedPetId;
@@ -2118,15 +2219,20 @@ window.pettingBlaData = {
     const happinessValue = document.getElementById('happinessValue');
     const foodBtn = document.getElementById('foodBtn');
     const healBtn = document.getElementById('healBtn');
+    const bookBtn = document.getElementById('bookBtn');
+    const frisbeeBtn = document.getElementById('frisbeeBtn');
     const petBtn = document.getElementById('petBtn');
     const foodPanel = document.getElementById('foodPanel');
     const healPanel = document.getElementById('healPanel');
+    const bookPanel = document.getElementById('bookPanel');
     const petPanel = document.getElementById('petPanel');
     const foodGrid = document.getElementById('foodGrid');
     const healGrid = document.getElementById('healGrid');
+    const bookGrid = document.getElementById('bookGrid');
     const petGrid = document.getElementById('petGrid');
     const foodBadge = document.getElementById('foodBadge');
     const healBadge = document.getElementById('healBadge');
+    const bookBadge = document.getElementById('bookBadge');
     const pettingHud = document.getElementById('pettingHud');
     const pettingHudText = document.getElementById('pettingHudText');
     const petToolBtn = document.getElementById('petToolBtn');
@@ -2139,7 +2245,11 @@ window.pettingBlaData = {
         pageHeaderTitle.textContent = 'Petting Mode';
     }
     if (pageHeaderText) {
-        pageHeaderText.textContent = 'Click your pet to zoom in, pet them by moving across their body, clean grime with the shower tool, and click the meadow to zoom back out.';
+        pageHeaderText.textContent = 'Click your pet to zoom in, read books from your bag, toss the frisbee across the meadow, and clean grime with the shower tool.';
+    }
+    const petPanelTitle = petPanel.querySelector('.panel-title');
+    if (petPanelTitle) {
+        petPanelTitle.textContent = 'Pets and Frisbee';
     }
 
     let draggingItem = null;
@@ -2148,6 +2258,8 @@ window.pettingBlaData = {
     let notificationTimer = null;
     let pettingMode = false;
     let activeTool = 'pet';
+    let frisbeeArmed = false;
+    let frisbeeBusy = false;
     let lastStrokePoint = null;
     let lastPetGainAt = 0;
     let lastSprayAt = 0;
@@ -2193,6 +2305,9 @@ window.pettingBlaData = {
         }
         if (typeof serverPet.happiness === 'number') {
             localPet.happiness = clamp(serverPet.happiness, 0, 100);
+        }
+        if (typeof serverPet.intelligence === 'number') {
+            localPet.intelligence = Math.max(0, serverPet.intelligence);
         }
 
         return localPet;
@@ -2347,8 +2462,10 @@ window.pettingBlaData = {
     function updateBadges() {
         const totalFood = gameData.food.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
         const totalHealing = gameData.healing.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
+        const totalBooks = gameData.books.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
         foodBadge.textContent = String(totalFood);
         healBadge.textContent = String(totalHealing);
+        bookBadge.textContent = String(totalBooks);
         updateGrimeBadge();
     }
 
@@ -2423,10 +2540,14 @@ window.pettingBlaData = {
     function closeAllPanels() {
         foodPanel.classList.remove('show');
         healPanel.classList.remove('show');
+        bookPanel.classList.remove('show');
         petPanel.classList.remove('show');
         foodBtn.classList.remove('active');
         healBtn.classList.remove('active');
+        bookBtn.classList.remove('active');
         petBtn.classList.remove('active');
+        frisbeeArmed = false;
+        setFrisbeeControlActive(false);
     }
 
     function togglePanel(panel, button) {
@@ -2494,8 +2615,47 @@ window.pettingBlaData = {
         });
     }
 
+    function renderBookGrid() {
+        bookGrid.innerHTML = '';
+        const availableBooks = gameData.books.filter((item) => Number(item.quantity || 0) > 0);
+        if (availableBooks.length === 0) {
+            bookGrid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-icon">Books</div>
+                    <p>No books in inventory.</p>
+                </div>
+            `;
+            return;
+        }
+
+        availableBooks.forEach((item) => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.dataset.itemId = String(item.id);
+            card.dataset.type = 'book';
+            card.innerHTML = `
+                <img class="item-icon" src="${item.image}" alt="${item.name}">
+                <div class="item-name">${item.name}</div>
+                <div class="item-quantity">x${item.quantity} | +${item.intelligence} intelligence</div>
+            `;
+            card.addEventListener('pointerdown', (event) => startDrag(event, item, 'book'));
+            bookGrid.appendChild(card);
+        });
+    }
+
     function renderPetGrid() {
         petGrid.innerHTML = '';
+        const toyCard = document.createElement('div');
+        toyCard.className = `pet-card ${frisbeeArmed ? 'active' : ''}`;
+        toyCard.dataset.action = 'frisbee';
+        toyCard.innerHTML = `
+            <div class="pet-icon" style="display:flex;align-items:center;justify-content:center;font-size:2.2rem;">&#9711;</div>
+            <div class="pet-name">Frisbee</div>
+            <div class="pet-level">Throw and fetch</div>
+        `;
+        toyCard.addEventListener('click', armFrisbee);
+        petGrid.appendChild(toyCard);
+
         gameData.pets.forEach((pet) => {
             const card = document.createElement('div');
             card.className = `pet-card ${pet.id === gameData.activePetId ? 'active' : ''}`;
@@ -2503,7 +2663,7 @@ window.pettingBlaData = {
             card.innerHTML = `
                 <img class="pet-icon" src="${pet.image}" alt="${pet.name}">
                 <div class="pet-name">${pet.name}</div>
-                <div class="pet-level">Level ${pet.level}</div>
+                <div class="pet-level">Level ${pet.level} | Int ${pet.intelligence || 0}</div>
             `;
             card.addEventListener('click', () => switchPet(pet.id));
             petGrid.appendChild(card);
@@ -2512,6 +2672,10 @@ window.pettingBlaData = {
 
     function startDrag(event, item, type) {
         event.preventDefault();
+        if (frisbeeBusy) {
+            return;
+        }
+        clearFrisbeeAim();
         draggingItem = { item, type };
         dragProxy = document.createElement('div');
         dragProxy.className = 'drag-proxy';
@@ -2554,11 +2718,15 @@ window.pettingBlaData = {
         if (droppedOnPet && draggingItem) {
             if (draggingItem.type === 'food') {
                 void feedPet(draggingItem.item, event.clientX, event.clientY);
-            } else {
+            } else if (draggingItem.type === 'healing') {
                 void healPet(draggingItem.item, event.clientX, event.clientY);
+            } else if (draggingItem.type === 'book') {
+                void readBook(draggingItem.item, event.clientX, event.clientY);
             }
         } else if (draggingItem && draggingItem.type === 'food') {
             createCrumbs(event.clientX, event.clientY);
+        } else if (draggingItem && draggingItem.type === 'book') {
+            showNotification('Drop a book on your pet to read together.');
         }
 
         if (dragProxy) {
@@ -2654,6 +2822,209 @@ window.pettingBlaData = {
         } finally {
             item.pending = false;
             renderHealGrid();
+        }
+    }
+
+    async function readBook(item, clientX, clientY) {
+        const pet = getActivePet();
+        if (!pet || item.pending) {
+            return;
+        }
+
+        item.pending = true;
+        try {
+            const data = await postAction('read', { pet_id: pet.id, item_id: item.id });
+            if (!data.ok) {
+                if (data.pet) {
+                    syncPetFromServer(data.pet);
+                    updateStatusBars();
+                    renderPetGrid();
+                }
+                showNotification(data.message || 'Reading could not be completed.');
+                return;
+            }
+
+            syncPetFromServer(data.pet);
+            syncInventoryQuantity(gameData.books, data.item);
+            updatePetDisplay();
+            updateBadges();
+            renderBookGrid();
+            renderPetGrid();
+
+            createEatingAnimation(item, clientX, clientY);
+            petSprite.classList.add('happy');
+            setTimeout(() => petSprite.classList.remove('happy'), 600);
+            setTimeout(() => {
+                createSparkles(5);
+                createHearts(1, '#ba68c8');
+            }, 180);
+
+            const gain = Number(data.effects?.intelligenceGain ?? item.intelligence ?? 0);
+            showNotification(data.message || `${pet.name} gained ${gain} intelligence.`);
+        } catch (error) {
+            showNotification('Reading failed. Please try again.');
+        } finally {
+            item.pending = false;
+            renderBookGrid();
+        }
+    }
+
+    function delay(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function setFrisbeeControlActive(active) {
+        if (frisbeeBtn) {
+            frisbeeBtn.classList.toggle('active', active);
+        }
+
+        const toyCard = petGrid.querySelector('[data-action="frisbee"]');
+        if (toyCard) {
+            toyCard.classList.toggle('active', active);
+        }
+    }
+
+    function clearFrisbeeAim() {
+        frisbeeArmed = false;
+        setFrisbeeControlActive(false);
+    }
+
+    function armFrisbee() {
+        if (frisbeeBusy) {
+            return;
+        }
+
+        if (pettingMode) {
+            exitPettingMode();
+        }
+        closeAllPanels();
+        frisbeeArmed = true;
+        setFrisbeeControlActive(true);
+        showNotification('Click the meadow to throw the frisbee.');
+    }
+
+    function getPetCenterPoint() {
+        const petRect = petSprite.getBoundingClientRect();
+        const stageRect = petStage.getBoundingClientRect();
+        return {
+            x: petRect.left - stageRect.left + petRect.width / 2,
+            y: petRect.top - stageRect.top + petRect.height * 0.42,
+        };
+    }
+
+    function createFrisbeeElement() {
+        const frisbee = document.createElement('div');
+        frisbee.setAttribute('aria-hidden', 'true');
+        Object.assign(frisbee.style, {
+            position: 'absolute',
+            left: '0px',
+            top: '0px',
+            width: '48px',
+            height: '16px',
+            borderRadius: '999px',
+            border: '3px solid rgba(255, 255, 255, 0.95)',
+            background: 'linear-gradient(135deg, #ff6b9d, #4fc3f7)',
+            boxShadow: '0 8px 18px rgba(0, 0, 0, 0.24)',
+            pointerEvents: 'none',
+            zIndex: '26',
+            transform: 'translate(-50%, -50%)',
+            transformOrigin: '50% 50%',
+        });
+        effectsLayer.appendChild(frisbee);
+        return frisbee;
+    }
+
+    function animateFrisbee(frisbee, start, end, duration, arcHeight) {
+        return new Promise((resolve) => {
+            const startedAt = performance.now();
+            function frame(now) {
+                const progress = clamp((now - startedAt) / duration, 0, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const x = start.x + (end.x - start.x) * eased;
+                const y = start.y + (end.y - start.y) * eased - Math.sin(progress * Math.PI) * arcHeight;
+                frisbee.style.left = `${x}px`;
+                frisbee.style.top = `${y}px`;
+                frisbee.style.transform = `translate(-50%, -50%) rotate(${Math.round(progress * 1080)}deg) scale(${1 + Math.sin(progress * Math.PI) * 0.18})`;
+
+                if (progress < 1) {
+                    requestAnimationFrame(frame);
+                    return;
+                }
+                resolve();
+            }
+            requestAnimationFrame(frame);
+        });
+    }
+
+    function grantFrisbeeHappiness(pet, amount) {
+        const previous = pet.happiness;
+        pet.happiness = clamp(pet.happiness + amount, 0, 100);
+        const gained = pet.happiness - previous;
+        updateStatusBars();
+        if (gained > 0) {
+            enqueuePetGain(pet.id, gained);
+        }
+        return gained;
+    }
+
+    async function throwFrisbee(targetX, targetY) {
+        const pet = getActivePet();
+        if (!pet || frisbeeBusy) {
+            return;
+        }
+
+        clearFrisbeeAim();
+        clearTimeout(idleTimer);
+        frisbeeBusy = true;
+
+        const stageRect = petStage.getBoundingClientRect();
+        const start = getPetCenterPoint();
+        const target = {
+            x: clamp(targetX, 48, stageRect.width - 48),
+            y: clamp(targetY, 96, stageRect.height - 48),
+        };
+        const originalLeft = parseFloat(getComputedStyle(petSprite).left) || getStageTargetPosition().left;
+        const originalBottom = parseFloat(getComputedStyle(petSprite).bottom) || getStageTargetPosition().bottom;
+        const home = {
+            x: originalLeft,
+            y: stageRect.height - originalBottom - 86,
+        };
+        const distance = Math.hypot(target.x - start.x, target.y - start.y);
+        const tooFar = distance > Math.min(440, stageRect.width * 0.42);
+        const frisbee = createFrisbeeElement();
+
+        try {
+            if (!tooFar) {
+                hopTo(target.x, stageRect.height - target.y);
+                await animateFrisbee(frisbee, start, target, 720, 92);
+                frisbee.remove();
+                petSprite.classList.add('happy');
+                setTimeout(() => petSprite.classList.remove('happy'), 600);
+                createSparkles(4);
+                if (grantFrisbeeHappiness(pet, 3) > 0) {
+                    createHearts(1);
+                }
+                showNotification(`${pet.name} caught the frisbee.`);
+                return;
+            }
+
+            await animateFrisbee(frisbee, start, target, 860, 116);
+            showNotification('That throw went far. Fetch!');
+            await delay(260);
+            hopTo(target.x, stageRect.height - target.y);
+            await delay(520);
+            createDustPuff(target.x, target.y);
+            await animateFrisbee(frisbee, target, home, 620, 38);
+            frisbee.remove();
+            hopTo(originalLeft, originalBottom);
+            if (grantFrisbeeHappiness(pet, 2) > 0) {
+                createHearts(1, '#4fc3f7');
+            }
+            showNotification(`${pet.name} fetched the frisbee.`);
+        } finally {
+            frisbee.remove();
+            frisbeeBusy = false;
+            resetIdleTimer();
         }
     }
 
@@ -3039,9 +3410,14 @@ window.pettingBlaData = {
 
     foodBtn.addEventListener('click', () => togglePanel(foodPanel, foodBtn));
     healBtn.addEventListener('click', () => togglePanel(healPanel, healBtn));
+    bookBtn.addEventListener('click', () => togglePanel(bookPanel, bookBtn));
+    if (frisbeeBtn) {
+        frisbeeBtn.addEventListener('click', armFrisbee);
+    }
     petBtn.addEventListener('click', () => togglePanel(petPanel, petBtn));
     document.getElementById('foodClose').addEventListener('click', closeAllPanels);
     document.getElementById('healClose').addEventListener('click', closeAllPanels);
+    document.getElementById('bookClose').addEventListener('click', closeAllPanels);
     document.getElementById('petClose').addEventListener('click', closeAllPanels);
     petToolBtn.addEventListener('click', () => setActiveTool('pet'));
     washToolBtn.addEventListener('click', () => {
@@ -3052,6 +3428,11 @@ window.pettingBlaData = {
 
     petSprite.addEventListener('click', (event) => {
         if (draggingItem) {
+            return;
+        }
+        if (frisbeeArmed) {
+            event.stopPropagation();
+            showNotification('Throw the frisbee into the meadow.');
             return;
         }
         event.stopPropagation();
@@ -3080,6 +3461,22 @@ window.pettingBlaData = {
         if (draggingItem) {
             return;
         }
+        if (frisbeeBusy) {
+            return;
+        }
+
+        const stageRect = petStage.getBoundingClientRect();
+        const clickX = event.clientX - stageRect.left;
+        const clickY = event.clientY - stageRect.top;
+
+        if (frisbeeArmed) {
+            if (isPointOnPet(event.clientX, event.clientY)) {
+                showNotification('Throw the frisbee into the meadow.');
+                return;
+            }
+            void throwFrisbee(clickX, clickY);
+            return;
+        }
 
         if (pettingMode) {
             if (!isPointOnPet(event.clientX, event.clientY)) {
@@ -3092,9 +3489,6 @@ window.pettingBlaData = {
             return;
         }
 
-        const stageRect = petStage.getBoundingClientRect();
-        const clickX = event.clientX - stageRect.left;
-        const clickY = event.clientY - stageRect.top;
         createPetIndicator(event.clientX, event.clientY);
         hopTo(clickX, stageRect.height - clickY);
         resetIdleTimer();
@@ -3105,6 +3499,7 @@ window.pettingBlaData = {
         updateBadges();
         renderFoodGrid();
         renderHealGrid();
+        renderBookGrid();
         renderPetGrid();
         positionPetForCurrentMode();
         resetIdleTimer();

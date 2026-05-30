@@ -86,6 +86,81 @@ function battle_trainer_graphic_url(int $trainer_id): string {
     return $fallback;
 }
 
+function battle_fetch_wild_encounter_rows(int $region_id, bool $active_only): array {
+    if ($region_id <= 0) {
+        return [];
+    }
+
+    $conditions = [];
+    $params = [];
+
+    $conditions[] = 're.region_id = ?';
+    $params[] = $region_id;
+
+    if ($active_only) {
+        $conditions[] = 'NOW() BETWEEN re.time_from AND re.time_until';
+    }
+
+    $where = $conditions ? ('WHERE ' . implode(' AND ', $conditions)) : '';
+
+    return q(
+        "SELECT re.encounter_id,
+                re.region_id,
+                re.species_id,
+                re.time_from,
+                re.time_until,
+                re.encounter_chance,
+                ps.species_name,
+                ps.base_hp,
+                ps.base_atk,
+                ps.base_def,
+                ps.base_init,
+                r.region_name
+           FROM random_encounters re
+           JOIN pet_species ps
+             ON ps.species_id = re.species_id
+            AND ps.region_id = re.region_id
+           LEFT JOIN regions r ON r.region_id = re.region_id
+          {$where}
+          ORDER BY re.encounter_id",
+        $params
+    )->fetchAll(PDO::FETCH_ASSOC);
+}
+
+function battle_pick_weighted_encounter(array $rows): ?array {
+    if (!$rows) {
+        return null;
+    }
+
+    $total = 0.0;
+    foreach ($rows as $row) {
+        $total += max(0.01, (float)($row['encounter_chance'] ?? 0));
+    }
+
+    if ($total <= 0) {
+        return $rows[array_key_first($rows)] ?? null;
+    }
+
+    $roll = (mt_rand(1, 1000000) / 1000000) * $total;
+    $accum = 0.0;
+    foreach ($rows as $row) {
+        $accum += max(0.01, (float)($row['encounter_chance'] ?? 0));
+        if ($roll <= $accum) {
+            return $row;
+        }
+    }
+
+    return $rows[array_key_last($rows)] ?? null;
+}
+
+function battle_load_random_wild_encounter(int $region_id = 0): ?array {
+    if ($region_id <= 0) {
+        return null;
+    }
+
+    return battle_pick_weighted_encounter(battle_fetch_wild_encounter_rows($region_id, true));
+}
+
 function battle_normalize_pet(array $pet, array $element_lookup): array {
     $level = max(1, (int)($pet['level'] ?? 1));
     $max_hp = (int)($pet['hp_max'] ?? 0);
@@ -125,6 +200,35 @@ function battle_normalize_pet(array $pet, array $element_lookup): array {
         'image' => pet_image_url((string)($pet['species_name'] ?? ''), $pet['color_name'] ?? null),
         'moves' => [],
     ];
+}
+
+function battle_normalize_wild_pet(array $encounter, array $element_lookup): array {
+    $species_id = (int)($encounter['species_id'] ?? 0);
+    $species_name = (string)($encounter['species_name'] ?? 'Creature');
+    $level = mt_rand(3, 8);
+    $base_hp = (int)($encounter['base_hp'] ?? 10);
+    $max_hp = max(20, ($base_hp * 5) + ($level * 4));
+    $elements_by_species = battle_load_species_elements([$species_id]);
+
+    return battle_normalize_pet([
+        'pet_instance_id' => 100000 + (int)($encounter['encounter_id'] ?? 0),
+        'species_id' => $species_id,
+        'nickname' => 'Wild ' . $species_name,
+        'color_id' => 2,
+        'color_name' => 'Blue',
+        'level' => $level,
+        'hp_current' => $max_hp,
+        'hp_max' => $max_hp,
+        'atk' => (int)($encounter['base_atk'] ?? 8) + $level,
+        'def' => (int)($encounter['base_def'] ?? 5) + max(1, intdiv($level, 2)),
+        'initiative' => (int)($encounter['base_init'] ?? 5) + max(1, intdiv($level, 2)),
+        'species_name' => $species_name,
+        'base_hp' => $base_hp,
+        'base_atk' => (int)($encounter['base_atk'] ?? 8),
+        'base_def' => (int)($encounter['base_def'] ?? 5),
+        'base_init' => (int)($encounter['base_init'] ?? 5),
+        'elements' => $elements_by_species[$species_id] ?? [],
+    ], $element_lookup);
 }
 
 function battle_load_team_for_user(int $user_id, array $element_lookup): array {
@@ -184,6 +288,26 @@ function battle_load_random_trainer(): ?array {
     ];
 }
 
+function battle_wild_opponent_from_encounter(array $encounter, array $wild_pet): array {
+    $species_name = (string)($encounter['species_name'] ?? $wild_pet['species'] ?? 'Creature');
+    $region_name = trim((string)($encounter['region_name'] ?? ''));
+    $place = $region_name !== '' ? $region_name : 'the wilds';
+
+    return [
+        'id' => 0,
+        'encounterId' => (int)($encounter['encounter_id'] ?? 0),
+        'className' => 'Wild Creature',
+        'name' => $species_name,
+        'displayName' => 'Wild ' . $species_name,
+        'encounterLine' => sprintf('A wild %s emerges from %s and challenges your lead creature.', $species_name, $place),
+        'defeatLine' => sprintf('The wild %s retreats back into %s.', $species_name, $place),
+        'defeatCurrency' => 0,
+        'initials' => battle_name_initials($species_name),
+        'graphic' => (string)($wild_pet['image'] ?? 'images/creatures/tengu_f_blue.webp'),
+        'isWild' => true,
+    ];
+}
+
 function battle_load_trainer_team(int $trainer_id, array $element_lookup): array {
     $rows = q(
         "SELECT pi.pet_instance_id, pi.species_id, pi.nickname, pi.color_id, pi.level,
@@ -211,11 +335,14 @@ function battle_load_trainer_team(int $trainer_id, array $element_lookup): array
 function battle_load_attack_pool(array $element_lookup): array {
     $rows = q(
         "SELECT move_id AS id,
+                move_key,
                 move_name AS name,
+                category,
                 power,
                 element_id,
                 accuracy_percent,
-                priority
+                priority,
+                contact
            FROM moves
           WHERE power IS NOT NULL
             AND category <> 'status'
@@ -225,11 +352,14 @@ function battle_load_attack_pool(array $element_lookup): array {
     if (!$rows) {
         $rows = q(
             "SELECT attack_id AS id,
+                    LOWER(REPLACE(attack_name, ' ', '_')) AS move_key,
                     attack_name AS name,
+                    'physical' AS category,
                     base_damage AS power,
                     element_id,
                     100.00 AS accuracy_percent,
-                    0 AS priority
+                    0 AS priority,
+                    1 AS contact
                FROM attacks
               ORDER BY base_damage, attack_id"
         )->fetchAll(PDO::FETCH_ASSOC);
@@ -237,10 +367,10 @@ function battle_load_attack_pool(array $element_lookup): array {
 
     if (!$rows) {
         $rows = [
-            ['id' => 1, 'name' => 'Tackle', 'power' => 40, 'element_id' => 1, 'accuracy_percent' => 100, 'priority' => 0],
-            ['id' => 2, 'name' => 'Quick Attack', 'power' => 40, 'element_id' => 1, 'accuracy_percent' => 100, 'priority' => 1],
-            ['id' => 3, 'name' => 'Ember', 'power' => 40, 'element_id' => 2, 'accuracy_percent' => 100, 'priority' => 0],
-            ['id' => 4, 'name' => 'Water Gun', 'power' => 40, 'element_id' => 3, 'accuracy_percent' => 100, 'priority' => 0],
+            ['id' => 1, 'move_key' => 'tackle', 'name' => 'Tackle', 'category' => 'physical', 'power' => 40, 'element_id' => 1, 'accuracy_percent' => 100, 'priority' => 0, 'contact' => 1],
+            ['id' => 2, 'move_key' => 'quick_attack', 'name' => 'Quick Attack', 'category' => 'physical', 'power' => 40, 'element_id' => 1, 'accuracy_percent' => 100, 'priority' => 1, 'contact' => 1],
+            ['id' => 3, 'move_key' => 'ember', 'name' => 'Ember', 'category' => 'special', 'power' => 40, 'element_id' => 2, 'accuracy_percent' => 100, 'priority' => 0, 'contact' => 0],
+            ['id' => 4, 'move_key' => 'water_gun', 'name' => 'Water Gun', 'category' => 'special', 'power' => 40, 'element_id' => 3, 'accuracy_percent' => 100, 'priority' => 0, 'contact' => 0],
         ];
     }
 
@@ -248,12 +378,15 @@ function battle_load_attack_pool(array $element_lookup): array {
         $element_id = (int)($row['element_id'] ?? 1);
         return [
             'id' => (int)($row['id'] ?? 0),
+            'key' => (string)($row['move_key'] ?? ''),
             'name' => (string)($row['name'] ?? 'Strike'),
+            'category' => (string)($row['category'] ?? 'physical'),
             'power' => max(1, (int)($row['power'] ?? 1)),
             'elementId' => $element_id,
             'elementName' => $element_lookup[$element_id] ?? ('Element ' . $element_id),
             'accuracy' => (float)($row['accuracy_percent'] ?? 100),
             'priority' => (int)($row['priority'] ?? 0),
+            'contact' => !empty($row['contact']),
         ];
     }, $rows);
 }
@@ -374,7 +507,8 @@ function battle_require_active_session(string $token, int $trainer_id = 0): arra
         battle_json_response(['ok' => false, 'message' => 'This battle session is no longer valid.']);
     }
 
-    if ($trainer_id > 0 && (int)($battle['trainer_id'] ?? 0) !== $trainer_id) {
+    $expected_trainer_id = (int)($battle['trainer_id'] ?? 0);
+    if (($trainer_id > 0 || $expected_trainer_id > 0) && $expected_trainer_id !== $trainer_id) {
         battle_json_response(['ok' => false, 'message' => 'The trainer encounter could not be verified.']);
     }
 
@@ -502,10 +636,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $element_lookup = battle_load_element_lookup();
-$trainer = battle_load_random_trainer();
+$battle_kind = ((string)($_GET['battle'] ?? '') === 'wild') ? 'wild' : 'trainer';
+$requested_region_id = max(0, (int)($_GET['region_id'] ?? 0));
+$trainer = null;
+$trainer_team = [];
+
+if ($battle_kind === 'wild') {
+    $wild_encounter = battle_load_random_wild_encounter($requested_region_id);
+    if ($wild_encounter) {
+        $wild_pet = battle_normalize_wild_pet($wild_encounter, $element_lookup);
+        $trainer = battle_wild_opponent_from_encounter($wild_encounter, $wild_pet);
+        $trainer_team = [$wild_pet];
+    }
+} else {
+    $trainer = battle_load_random_trainer();
+    $trainer_team = $trainer ? battle_load_trainer_team($trainer['id'], $element_lookup) : [];
+}
+
 $attack_pool = battle_load_attack_pool($element_lookup);
 $player_team = battle_load_team_for_user($user_id, $element_lookup);
-$trainer_team = $trainer ? battle_load_trainer_team($trainer['id'], $element_lookup) : [];
 $player_team = battle_assign_moves($player_team, $attack_pool);
 $trainer_team = battle_assign_moves($trainer_team, $attack_pool);
 $items = battle_load_battle_items($user_id);
@@ -518,6 +667,7 @@ if ($battle_ready) {
         'token' => $battle_token,
         'trainer_id' => $trainer['id'],
         'reward' => $trainer['defeatCurrency'],
+        'battle_kind' => $battle_kind,
         'awarded' => false,
     ];
 } else {
@@ -534,14 +684,17 @@ $battle_payload = [
     'token' => $battle_token,
     'returnUrl' => 'index.php?pg=games',
     'currencyLabel' => APP_CURRENCY_SHORT_NAME,
+    'battleKind' => $battle_kind,
 ];
 ?>
 
 <?php if (!$battle_ready): ?>
 <section class="battle-blocker glass">
-  <h1>Trainer Battle</h1>
+  <h1><?= $battle_kind === 'wild' ? 'Wild Battle' : 'Trainer Battle' ?></h1>
   <p class="muted">
-    This encounter needs one logged-in creature, one trainer entry, and a trainer roster before the battle can begin.
+    <?= $battle_kind === 'wild'
+        ? 'This encounter needs one logged-in creature and at least one random wild encounter row before the battle can begin.'
+        : 'This encounter needs one logged-in creature, one trainer entry, and a trainer roster before the battle can begin.' ?>
   </p>
   <a class="btn" href="index.php?pg=games">Back to Games</a>
 </section>
@@ -555,7 +708,7 @@ $battle_payload = [
 
     <div class="battle-intro" id="battle-intro">
       <div class="battle-intro-panel">
-        <p class="battle-intro-kicker">Random Encounter</p>
+        <p class="battle-intro-kicker"><?= $battle_kind === 'wild' ? 'Wild Encounter' : 'Random Encounter' ?></p>
         <div class="battle-intro-crest" id="intro-crest">
           <img src="<?= htmlspecialchars($trainer['graphic'] ?? 'images/creatures/tengu_f_blue.webp') ?>" alt="<?= htmlspecialchars($trainer['displayName'] ?? 'Trainer') ?>">
         </div>

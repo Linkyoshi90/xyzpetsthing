@@ -51,8 +51,9 @@ function maybe_trigger_random_event(array $user, string $page = ''): ?array
 
     $userId = (int)($user['id'] ?? 0);
     $nation = $location['nation'] ?? '';
+    $regionHasBattle = null;
 
-    $eligibleEvents = array_values(array_filter($events, static function (array $event) use ($isExploring, $nation, $userId): bool {
+    $eligibleEvents = array_values(array_filter($events, static function (array $event) use ($isExploring, $nation, $userId, &$regionHasBattle): bool {
         $conditions = $event['conditions'] ?? [];
         if (!is_array($conditions)) {
             return true;
@@ -65,6 +66,17 @@ function maybe_trigger_random_event(array $user, string $page = ''): ?array
         }
         if (!empty($conditions['requires_locked_map']) && has_map_unlock($userId, (string)$conditions['requires_locked_map'])) {
             return false;
+        }
+        if (!empty($conditions['requires_region_battle']) || random_event_has_effect_type($event, 'battle')) {
+            if (!$isExploring || $nation === '') {
+                return false;
+            }
+            if ($regionHasBattle === null) {
+                $regionHasBattle = random_event_region_has_wild_battle($nation);
+            }
+            if (!$regionHasBattle) {
+                return false;
+            }
         }
         return true;
     }));
@@ -82,6 +94,22 @@ function maybe_trigger_random_event(array $user, string $page = ''): ?array
         'location' => $location,
         'is_exploring' => $isExploring,
     ]);
+}
+
+function random_event_has_effect_type(array $event, string $type): bool
+{
+    $effects = $event['effects'] ?? [];
+    if (!is_array($effects)) {
+        return false;
+    }
+
+    foreach ($effects as $effect) {
+        if (is_array($effect) && ($effect['type'] ?? '') === $type) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function pick_weighted_event(array $events): ?array
@@ -151,6 +179,9 @@ function apply_random_event_effects(array $event, array $user, array $context = 
                 break;
             case 'unlock_map':
                 $detail = handle_event_unlock_map_effect($user['id'], $effect);
+                break;
+            case 'battle':
+                $detail = handle_event_battle_effect($effect, $context);
                 break;
             default:
                 $detail = null;
@@ -633,6 +664,80 @@ function handle_event_unlock_map_effect(int $user_id, array $effect): ?array
         'details' => [sprintf('You discovered %s.', $mapName)],
         'actions' => [
             ['label' => $actionLabel, 'url' => $url],
+        ],
+    ];
+}
+
+function random_event_region_id_by_name(string $regionName): int
+{
+    $regionName = trim($regionName);
+    if ($regionName === '') {
+        return 0;
+    }
+
+    return (int)q(
+        "SELECT region_id
+           FROM regions
+          WHERE region_name = ?
+          LIMIT 1",
+        [$regionName]
+    )->fetchColumn();
+}
+
+function random_event_region_has_wild_battle(string $regionName): bool
+{
+    $regionName = trim($regionName);
+    if ($regionName === '') {
+        return false;
+    }
+
+    $count = (int)q(
+        "SELECT COUNT(*)
+           FROM random_encounters re
+           JOIN regions r
+             ON r.region_id = re.region_id
+           JOIN pet_species ps
+             ON ps.species_id = re.species_id
+            AND ps.region_id = re.region_id
+          WHERE r.region_name = ?
+            AND NOW() BETWEEN re.time_from AND re.time_until",
+        [$regionName]
+    )->fetchColumn();
+
+    return $count > 0;
+}
+
+function handle_event_battle_effect(array $effect, array $context = []): ?array
+{
+    $battleType = strtolower(trim((string)($effect['battle_type'] ?? 'wild')));
+    if ($battleType !== 'wild') {
+        return null;
+    }
+
+    if (empty($context['is_exploring'])) {
+        return null;
+    }
+
+    $regionName = trim((string)($context['location']['nation'] ?? ''));
+    $regionId = random_event_region_id_by_name($regionName);
+    if ($regionId <= 0 || !random_event_region_has_wild_battle($regionName)) {
+        return null;
+    }
+
+    $detail = trim((string)($effect['detail'] ?? 'A wild creature is ready to battle.'));
+    $actionLabel = trim((string)($effect['action_label'] ?? 'Start battle'));
+
+    return [
+        'details' => [$detail],
+        'actions' => [
+            [
+                'label' => $actionLabel !== '' ? $actionLabel : 'Start battle',
+                'url' => 'index.php?' . http_build_query([
+                    'pg' => 'battle_minigame',
+                    'battle' => 'wild',
+                    'region_id' => $regionId,
+                ]),
+            ],
         ],
     ];
 }

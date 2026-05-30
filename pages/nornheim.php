@@ -60,6 +60,15 @@ $mapAreas = [
         // ADJUSTED: Red markings - upper middle portion of map (between large hall and church)
         'points' => toPercentPoints([342, 86, 384, 94, 416, 132, 412, 186, 374, 214, 336, 188, 326, 132], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
         'color' => '#a855f7' // Purple - mysterious/horror
+    ],
+    [
+        'id' => 'nh-frostmarket',
+        'name' => 'Skeldgard Frostmarket',
+        'description' => 'A cold-weather market for preserved foods, carved charms, and aurora-night supplies.',
+        'action' => 'Shop',
+        'href' => '?pg=nh-frostmarket',
+        'points' => toPercentPoints([510, 320, 590, 320, 620, 370, 580, 420, 510, 400, 485, 350], $ORIGINAL_WIDTH, $ORIGINAL_HEIGHT),
+        'color' => '#38bdf8' // Frost blue
     ]
 ];
 

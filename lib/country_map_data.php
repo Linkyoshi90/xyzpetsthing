@@ -48,6 +48,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Paint your local pets with Baharamandal palettes.', 'action' => 'Explore', 'href' => '?pg=bm_paint_shack', 'color' => '#8b5cf6', 'points' => country_map_rect_points(190, 520, 260, 175, $w, $h)],
                 ['name' => 'Picnic Tree', 'description' => 'Pick up random goodies from Padmanagara\'s community tree.', 'action' => 'Visit', 'href' => '?pg=bm_pt', 'color' => '#22c55e', 'points' => country_map_rect_points(520, 420, 240, 160, $w, $h)],
+                ['name' => 'Mandala Market Stall', 'description' => 'A bright bazaar stall for temple-market treats and river-city craft.', 'action' => 'Shop', 'href' => '?pg=bm-market', 'color' => '#f59e0b', 'points' => country_map_rect_points(880, 430, 260, 165, $w, $h)],
             ],
         ],
         'bretonreach' => [
@@ -131,6 +132,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=orienthem',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Caliphate-inspired pigments and motifs.', 'action' => 'Explore', 'href' => '?pg=cc_paint_shack', 'color' => '#06b6d4', 'points' => country_map_rect_points(260, 500, 250, 180, $w, $h)],
+                ['name' => 'Souq al-Hilal Provisions', 'description' => 'Canvas-shaded shelves of caravan goods, sweets, and market trinkets.', 'action' => 'Shop', 'href' => '?pg=cc-souq', 'color' => '#f59e0b', 'points' => country_map_rect_points(720, 390, 280, 175, $w, $h)],
             ],
         ],
         'esd' => [
@@ -172,6 +174,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=verdania',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Color your companions with dominion palettes.', 'action' => 'Explore', 'href' => '?pg=esd_paint_shack', 'color' => '#ef4444', 'points' => country_map_rect_points(260, 470, 220, 170, $w, $h)],
+                ['name' => 'Feather and Flint Exchange', 'description' => 'Market stones, cacao comforts, and feather-bright keepsakes.', 'action' => 'Shop', 'href' => '?pg=esd-feather-flint', 'color' => '#22c55e', 'points' => country_map_rect_points(650, 360, 280, 175, $w, $h)],
             ],
         ],
         'esl' => [
@@ -213,6 +216,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=orienthem',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Paint your pets in Shalemdor style.', 'action' => 'Explore', 'href' => '?pg=esl_paint_shack', 'color' => '#a855f7', 'points' => country_map_rect_points(220, 520, 230, 160, $w, $h)],
+                ['name' => 'Olive Lamp Goods', 'description' => 'A warm counter for orchard staples, lamp supplies, and scholar snacks.', 'action' => 'Shop', 'href' => '?pg=esl-olive-lamp', 'color' => '#84cc16', 'points' => country_map_rect_points(690, 360, 270, 170, $w, $h)],
             ],
         ],
         'fom' => [
@@ -254,6 +258,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=rheinland',
             'areas' => [
                 ['name' => 'Grachten Fishing', 'description' => 'Head to the canal event site for your daily cast.', 'action' => 'Go Fishing', 'href' => '?pg=fom-fishing', 'color' => '#22d3ee', 'points' => country_map_rect_points(670, 360, 280, 170, $w, $h)],
+                ['name' => 'Keerstide Lockside Shop', 'description' => 'A lockside nook for canal snacks, boat charms, and low-country odds and ends.', 'action' => 'Shop', 'href' => '?pg=fom-lockside-shop', 'color' => '#f59e0b', 'points' => country_map_rect_points(270, 430, 280, 170, $w, $h)],
             ],
         ],
         'gc' => [
@@ -295,6 +300,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=verdania',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Gran Columbia regional colors and themes.', 'action' => 'Explore', 'href' => '?pg=gc_paint_shack', 'color' => '#f97316', 'points' => country_map_rect_points(250, 480, 230, 170, $w, $h)],
+                ['name' => 'Solvine Plaza Kiosk', 'description' => 'Plaza staples, festival fruit, and little river-valley keepsakes.', 'action' => 'Shop', 'href' => '?pg=gc-plaza-kiosk', 'color' => '#22c55e', 'points' => country_map_rect_points(690, 360, 270, 170, $w, $h)],
             ],
         ],
         'hammurabia' => [
@@ -336,6 +342,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=orienthem',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Regional paints from the workshops of Ziggurab.', 'action' => 'Explore', 'href' => '?pg=h_paint_shack', 'color' => '#84cc16', 'points' => country_map_rect_points(230, 510, 250, 170, $w, $h)],
+                ['name' => 'Ziggurat Ledger House', 'description' => 'Clay-sealed packets, date treats, and goods tallied in careful rows.', 'action' => 'Shop', 'href' => '?pg=h-ledger-house', 'color' => '#f59e0b', 'points' => country_map_rect_points(700, 370, 270, 170, $w, $h)],
             ],
         ],
         'ie' => [
@@ -377,6 +384,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=gulfbelt',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Empire colors for local creatures.', 'action' => 'Explore', 'href' => '?pg=ie_paint_shack', 'color' => '#14b8a6', 'points' => country_map_rect_points(230, 500, 245, 175, $w, $h)],
+                ['name' => 'Canopy Relic Post', 'description' => 'Rainforest market goods, carved charms, and canopy trail supplies.', 'action' => 'Shop', 'href' => '?pg=ie-canopy-relic', 'color' => '#22c55e', 'points' => country_map_rect_points(690, 360, 270, 170, $w, $h)],
             ],
         ],
         'kemet' => [
@@ -419,6 +427,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Kemet-inspired patterns and paint.', 'action' => 'Explore', 'href' => '?pg=k_paint_shack', 'color' => '#eab308', 'points' => country_map_rect_points(250, 480, 250, 170, $w, $h)],
                 ['name' => 'Shelter Adventure', 'description' => 'Investigate strange happenings in the local shelter.', 'action' => 'Begin', 'href' => '?pg=k-adventure', 'color' => '#6366f1', 'points' => country_map_rect_points(720, 320, 250, 170, $w, $h)],
+                ['name' => 'Ankhmeru Bazaar Tent', 'description' => 'A desert market tent with lotus sweets, linen wraps, and oasis supplies.', 'action' => 'Shop', 'href' => '?pg=k-bazaar-tent', 'color' => '#f97316', 'points' => country_map_rect_points(1040, 470, 260, 165, $w, $h)],
             ],
         ],
         'ldk' => [
@@ -461,6 +470,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Lotus-Dragon paints and motifs.', 'action' => 'Explore', 'href' => '?pg=ldk_paint_shack', 'color' => '#ec4899', 'points' => country_map_rect_points(250, 500, 230, 165, $w, $h)],
                 ['name' => 'Breeding Pavilion', 'description' => 'Visit the breeding pavilion of Shenhedu.', 'action' => 'Visit', 'href' => '?pg=ldk_breeding', 'color' => '#06b6d4', 'points' => country_map_rect_points(700, 350, 250, 170, $w, $h)],
+                ['name' => 'Shenhedu Tea and Trinkets', 'description' => 'A tea-house shop for small dragon-lotus comforts and keepsakes.', 'action' => 'Shop', 'href' => '?pg=ldk-tea-trinkets', 'color' => '#22c55e', 'points' => country_map_rect_points(1030, 480, 270, 165, $w, $h)],
             ],
         ],
         'rheinland' => [
@@ -547,6 +557,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Paint local pets with Redwind tones.', 'action' => 'Explore', 'href' => '?pg=rsc_paint_shack', 'color' => '#ef4444', 'points' => country_map_rect_points(250, 500, 240, 170, $w, $h)],
                 ['name' => 'Wheel of Fate', 'description' => 'Spin for rewards in the city carnival district.', 'action' => 'Spin', 'href' => '?pg=rsc-wof', 'color' => '#22c55e', 'points' => country_map_rect_points(700, 330, 240, 170, $w, $h)],
+                ['name' => 'Redwind Roadhouse Store', 'description' => 'Roadside provisions, bright snacks, and red-dust travel goods.', 'action' => 'Shop', 'href' => '?pg=rsc-roadhouse', 'color' => '#f97316', 'points' => country_map_rect_points(1040, 480, 260, 165, $w, $h)],
             ],
         ],
         'rt' => [
@@ -588,6 +599,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=auronia',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Tsardom-inspired coat colors.', 'action' => 'Explore', 'href' => '?pg=rt_paint_shack', 'color' => '#60a5fa', 'points' => country_map_rect_points(230, 500, 250, 170, $w, $h)],
+                ['name' => 'Velesgrad Winter Pantry', 'description' => 'A warm pantry of winter fare, carved keepsakes, and stove-side supplies.', 'action' => 'Shop', 'href' => '?pg=rt-winter-pantry', 'color' => '#f59e0b', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
             ],
         ],
         'sc' => [
@@ -629,6 +641,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=tundria',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Icy colors and arctic motifs.', 'action' => 'Explore', 'href' => '?pg=sc_paint_shack', 'color' => '#22d3ee', 'points' => country_map_rect_points(250, 500, 240, 170, $w, $h)],
+                ['name' => 'Qilaktuk Ice Cache', 'description' => 'Cold-store provisions, carved snow goods, and aurora-night supplies.', 'action' => 'Shop', 'href' => '?pg=sc-ice-cache', 'color' => '#38bdf8', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
             ],
         ],
         'sie' => [
@@ -670,6 +683,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=verdania',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Sapa Inti pet paints.', 'action' => 'Explore', 'href' => '?pg=sie_paint_shack', 'color' => '#f59e0b', 'points' => country_map_rect_points(250, 500, 245, 165, $w, $h)],
+                ['name' => 'Intirumi Sun Terrace Goods', 'description' => 'Terrace-market supplies, sun-warmed snacks, and mountain woven pieces.', 'action' => 'Shop', 'href' => '?pg=sie-sun-terrace', 'color' => '#22c55e', 'points' => country_map_rect_points(690, 360, 270, 170, $w, $h)],
             ],
         ],
         'srl' => [
@@ -711,6 +725,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=moana_crown',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Spice Route League custom colors.', 'action' => 'Explore', 'href' => '?pg=srl_paint_shack', 'color' => '#f43f5e', 'points' => country_map_rect_points(250, 500, 250, 170, $w, $h)],
+                ['name' => 'Navakai Spice Dock', 'description' => 'Dockside trade goods, spice packets, and island market snacks.', 'action' => 'Shop', 'href' => '?pg=srl-spice-dock', 'color' => '#f59e0b', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
             ],
         ],
         'pelagora' => [
@@ -796,6 +811,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=borealia',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Ancestral Plains region paints.', 'action' => 'Explore', 'href' => '?pg=stap_paint_shack', 'color' => '#f97316', 'points' => country_map_rect_points(250, 510, 250, 165, $w, $h)],
+                ['name' => 'Turtlestar Trading Blanket', 'description' => 'A blanket market for plains staples, beadwork, and camp comforts.', 'action' => 'Shop', 'href' => '?pg=stap-trading-blanket', 'color' => '#22c55e', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
             ],
         ],
         'urb' => [
@@ -839,6 +855,7 @@ function get_country_map_config(string $slug): ?array {
                 ['name' => 'Meridian Arc Paint Shack', 'description' => 'Here you can paint your URB creatures.', 'action' => 'Explore', 'href' => '?pg=urb_paint_shack', 'color' => '#3b82f6', 'points' => country_map_rect_points(240, 500, 250, 170, $w, $h)],
                 ['name' => 'Meridian Arc Adventure', 'description' => 'Explore the capital.', 'action' => 'Explore', 'href' => '?pg=urb-adventure2', 'color' => '#a855f7', 'points' => country_map_rect_points(690, 340, 250, 170, $w, $h)],
                 ['name' => 'Abandoned Farm Adventure', 'description' => 'Explore an abandoned farm.', 'action' => 'Explore', 'href' => '?pg=urb-adventure', 'color' => '#fb7185', 'points' => country_map_rect_points(980, 260, 220, 150, $w, $h)],
+                ['name' => 'Meridian Corner Mart', 'description' => 'A neat city-corner shop for everyday Borealian supplies.', 'action' => 'Shop', 'href' => '?pg=urb-corner-mart', 'color' => '#22c55e', 'points' => country_map_rect_points(1060, 500, 250, 160, $w, $h)],
             ],
         ],
         'xochimex' => [
@@ -880,6 +897,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=gulfbelt',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Here you can paint your Xochimex creatures.', 'action' => 'Explore', 'href' => '?pg=xm_paint_shack', 'color' => '#10b981', 'points' => country_map_rect_points(240, 500, 250, 165, $w, $h)],
+                ['name' => 'Xochival Flower Market', 'description' => 'A lively market stop for marigold goods, street snacks, and plaza finds.', 'action' => 'Shop', 'href' => '?pg=xm-flower-market', 'color' => '#f97316', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
             ],
         ],
         'yamanokubo' => [
@@ -965,6 +983,7 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=uluru',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Here you can paint your Yara Nations creatures.', 'action' => 'Explore', 'href' => '?pg=yn_paint_shack', 'color' => '#06b6d4', 'points' => country_map_rect_points(250, 500, 250, 170, $w, $h)],
+                ['name' => 'Warraluma Keeping Place Shop', 'description' => 'A respectful market counter for local provisions, craft, and Country-led goods.', 'action' => 'Shop', 'href' => '?pg=yn-keeping-place-shop', 'color' => '#f59e0b', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
             ],
         ],
     ];

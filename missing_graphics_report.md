@@ -1,0 +1,242 @@
+# Missing Graphics Report
+
+## Sources And Rules
+
+- Items source: `sql/items.sql`
+- Item graphics source: `images/items`
+- Item matching rule: mirrors `shop_find_item_image()` in `lib/shops.php`
+- Creature source: `database.sql` table `pet_species`
+- Creature graphics source: `images/creatures`
+- Creature matching rule: a species is considered to have graphics if any file starts with its slug, for example `lamia_f_blue.webp`
+- Note: `data-readonly/available_creatures.txt` currently has no species missing all creature graphics.
+
+## Summary
+
+- Items missing resolvable graphics: 119 of 339
+- Creatures missing any graphics: 82 of 209
+- Creature with partial art but missing the default blue app image: Meloncollie has `meloncollie_f_green.webp`, but no `meloncollie_f_blue.webp`
+- `sql/pelagora_content.sql` defines item IDs 223-234 differently from `sql/items.sql`; the main item list below uses `sql/items.sql` as the current catalog source.
+
+## Items Missing Graphics
+
+- 123 - 16-Bit Paint (near asset exists: `images/items/16bit Paint.webp`)
+- 223 - More Healing Potion
+- 224 - Full Heal
+- 225 - Of Explosions and other cool Stuff
+- 226 - Lotus Sweet
+- 227 - Sandalwood Charm
+- 228 - River Dye Phial
+- 229 - Brass Luck Lamp
+- 230 - Caravan Supply Bundle
+- 231 - Brass Moon Lantern
+- 232 - Date Honey Cakes
+- 233 - Rosemint Cooling Sherbet
+- 234 - Desert Travel Cloak
+- 235 - Blue Moon-Tile Trinket
+- 236 - Obsidian Edge Tool
+- 237 - Spiced Cacao Gourd
+- 238 - Quetzal Feather Charm
+- 239 - Maize Festival Cakes
+- 240 - Sunstone Ceremony Token
+- 241 - Pressed Olive Oil Flask
+- 242 - Cedar Scroll Case
+- 243 - Sesame Ring Bread
+- 244 - Little Brass Sabbath Lamp
+- 245 - Mountain Herb Tea Blend
+- 246 - Covenant Knot Charm
+- 247 - Canal Crisp Snack Cone
+- 248 - Waterproof Reed Satchel
+- 249 - Lockkeeper Fishing Bait
+- 250 - Dike-Warden Charm
+- 251 - Smoked Canal Fish
+- 252 - Waxed Rain Cape
+- 253 - Guava River Juice
+- 254 - Woven Plaza Bracelet
+- 255 - Arepa Plaza Snack
+- 256 - River-Map Postcard Set
+- 257 - Jungle-Flower Perfume
+- 258 - Clay Ledger Tablet
+- 259 - Reed Scribe Pens
+- 260 - Bronze Seal Stamp
+- 261 - Date Wine Cup
+- 262 - Lapis Market Beads
+- 263 - Lawgiver Token Set
+- 264 - Rainforest Bitter Herbs
+- 265 - Carved Jade Bead
+- 266 - Temple Map Scrap
+- 267 - Spiced Jungle Cacao
+- 268 - Braided Vine Rope
+- 269 - Canopy Survival Kit
+- 270 - Scarab Luck Charm
+- 271 - Linen Sun Wrap
+- 272 - Honeyed Fig Cake
+- 273 - River Reed Bundle
+- 274 - Desert Glass Shard
+- 275 - Painted Canopic Miniature
+- 276 - Steamed Peach Bun
+- 277 - Jade Comb
+- 278 - Dragon-Knot Charm
+- 279 - Calligrapher Ink Brush
+- 280 - Red Paper Lantern
+- 281 - Lucky Tea Tin
+- 282 - Smoked Fjord Fish
+- 283 - Wool Snowcloak
+- 284 - Carved Rune Stone
+- 285 - Aurora Glass Shard
+- 286 - Bone Button Set
+- 287 - Hot Berry Mead
+- 288 - Redwind Meat Pie
+- 289 - Sun-Bleached Hat
+- 290 - Enamel Road Mug
+- 291 - Outback Trail Map
+- 292 - Carnival Ticket Roll
+- 293 - Dusty Road Survival Kit
+- 294 - Black Rye Bread
+- 295 - Snowberry Preserves
+- 296 - Lacquer Keepsake Box
+- 297 - Fur-Lined Mitts
+- 298 - Painted Winter Egg
+- 299 - Samovar Tea Brick
+- 300 - Woven Sun Sash
+- 301 - Quinoa Honey Cake
+- 302 - Alpaca Wool Charm
+- 303 - Gold-Thread Sun Token
+- 304 - Mountain Mint Bundle
+- 305 - Seal-Oil Lamp
+- 306 - Carved Bone Charm
+- 307 - Snow Goggles
+- 308 - Dried Arctic Fish
+- 309 - Fur Warm Boots
+- 310 - Aurora Bead String
+- 311 - Prairie Beadwork Strip
+- 312 - Blue Corn Cake
+- 313 - Woven Seed Pouch
+- 314 - Prairie Sage Bundle
+- 315 - Story Circle Token
+- 316 - Trail Blessing Charm
+- 317 - Mixed Spice Packet
+- 318 - Reef Pearl
+- 319 - Banana Leaf Boat Snack
+- 320 - Shell Bracelet
+- 321 - Trade Flag Pennant
+- 322 - Tropical Tonic Bottle
+- 323 - Corner Mart Coffee
+- 324 - Commuter Snack Pack
+- 325 - Neon Keychain
+- 326 - City Sticker Sheet
+- 327 - Transit Day Card
+- 328 - Cheap Sunglasses
+- 329 - Marigold Garland
+- 330 - Lucha Mask
+- 331 - Canal Corn Snack
+- 332 - Spiced Hot Chocolate
+- 333 - Painted Clay Cup
+- 334 - City Luck Charm
+- 335 - Lemon Myrtle Bush Tea
+- 336 - Handwoven Reed Basket
+- 337 - River-Safe Gear Kit
+- 338 - Painted Meeting Token
+- 339 - Ranger Track Map
+- 340 - Maker Goods Bundle
+
+## Creatures Missing Any Graphics
+
+- 313 - Marmotaur (`marmotaur`)
+- 314 - Strigowl (`strigowl`)
+- 315 - Skjoldram (`skjoldram`)
+- 316 - Pineskrell (`pineskrell`)
+- 317 - Boghare (`boghare`)
+- 318 - Rookmourn (`rookmourn`)
+- 319 - Clockhare (`clockhare`)
+- 320 - Stagel (`stagel`)
+- 321 - Sobolnik (`sobolnik`)
+- 322 - Gribboar (`gribboar`)
+- 323 - Pumpkingull (`pumpkingull`)
+- 324 - Snowloper (`snowloper`)
+- 325 - Prairhorn (`prairhorn`)
+- 326 - Dustbison (`dustbison`)
+- 327 - Silkcoon (`silkcoon`)
+- 328 - Bambadger (`bambadger`)
+- 329 - Peaflare (`peaflare`)
+- 330 - Palmyr (`palmyr`)
+- 331 - Shibari (`shibari`)
+- 332 - Momoshika (`momoshika`)
+- 333 - Coatimano (`coatimano`)
+- 334 - Axolume (`axolume`)
+- 335 - Jaglare (`jaglare`)
+- 336 - Macawtl (`macawtl`)
+- 337 - Ceibler (`ceibler`)
+- 338 - Motmora (`motmora`)
+- 339 - Dunefennec (`dunefennec`)
+- 340 - Caraviper (`caraviper`)
+- 341 - Reedbull (`reedbull`)
+- 342 - Ibisking (`ibisking`)
+- 343 - Rockhyrax (`rockhyrax`)
+- 344 - Datebat (`datebat`)
+- 345 - Ibiset (`ibiset`)
+- 346 - Crocora (`crocora`)
+- 347 - Moonseal (`moonseal`)
+- 348 - Terniq (`terniq`)
+- 349 - Emberu (`emberu`)
+- 350 - Wattlefox (`wattlefox`)
+- 351 - Cassowrath (`cassowrath`)
+- 352 - Gliderune (`gliderune`)
+- 353 - Slothren (`slothren`)
+- 354 - Riverdillo (`riverdillo`)
+- 355 - Vicuñero (`vicu_ero`)
+- 356 - Condorune (`condorune`)
+- 357 - Dodobold (`dodobold`)
+- 358 - Squirricerat (`squirricerat`)
+- 359 - Reeffin (`reeffin`)
+- 360 - Mantarrow (`mantarrow`)
+- 361 - Nenekea (`nenekea`)
+- 362 - Cocoskink (`cocoskink`)
+- 363 - Frondbat (`frondbat`)
+- 364 - Talosling (`talosling`)
+- 365 - Aegis Boar (`aegis_boar`)
+- 366 - Tarnhelm (`tarnhelm`)
+- 367 - Bellmare (`bellmare`)
+- 368 - Reliquary Dove (`reliquary_dove`)
+- 369 - Iron Kobold (`iron_kobold`)
+- 370 - Koschei Chain (`koschei_chain`)
+- 371 - Tin Jack (`tin_jack`)
+- 372 - Peacepipe Bison (`peacepipe_bison`)
+- 373 - Bronzejaw Ox (`bronzejaw_ox`)
+- 374 - Ark Seraph (`ark_seraph`)
+- 375 - Scarabronze (`scarabronze`)
+- 376 - Aurorantler (`aurorantler`)
+- 377 - Mirror Crane (`mirror_crane`)
+- 378 - Sword Koi (`sword_koi`)
+- 379 - Temple Mantis (`temple_mantis`)
+- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound`)
+- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent`)
+- 382 - Censer Lion (`censer_lion`)
+- 383 - Date Palm Beetle (`date_palm_beetle`)
+- 384 - Conch Mail Turtle (`conch_mail_turtle`)
+- 385 - Ironbeak (`ironbeak`)
+- 386 - Tin Squirrel (`tin_squirrel`)
+- 387 - Anvil Tortoise (`anvil_tortoise`)
+- 388 - Needlehog (`needlehog`)
+- 389 - Mailtoad (`mailtoad`)
+- 390 - Sawfin (`sawfin`)
+- 391 - Brasshorn Ram (`brasshorn_ram`)
+- 392 - Coin Magpie (`coin_magpie`)
+- 393 - Rust Otter (`rust_otter`)
+- 394 - Halberelk (`halberelk`)
+
+## Pelagora Seed Names Also Missing Graphics
+
+These names come from `sql/pelagora_content.sql`, which conflicts with item IDs 223-234 in `sql/items.sql`.
+
+- 223 - Aquatic Breathing Kelp
+- 224 - Pelagoric Pearl Snack
+- 225 - Pelagora Tide Compass
+- 226 - Underwater Lantern Oil
+- 227 - Pelagoric Mirrorfish
+- 228 - Underwater Bellfish
+- 229 - Aquatic Shellcoin
+- 230 - Pelagora Ring Eel
+- 231 - Underwater Bells of Pelagora Book
+- 232 - Pelagoric Ring Ledger Book
+- 233 - Aquatic Oaths of the Heart Mirror Book
+- 234 - Pelagora Before the Sinking Book

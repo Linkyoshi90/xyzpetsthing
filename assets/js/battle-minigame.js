@@ -67,6 +67,7 @@
     playerHpText: document.getElementById('player-hp-text'),
     playerHpFill: document.getElementById('player-hp-fill'),
     playerImage: document.getElementById('player-image'),
+    stage: root.querySelector('.battle-stage'),
   };
 
   const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -75,7 +76,23 @@
   const currentNpc = () => state.trainerTeam[state.trainerIndex] || null;
   const firstLivingIndex = (team) => team.findIndex((creature) => creature.hp > 0);
   const currencyLabel = typeof data.currencyLabel === 'string' && data.currencyLabel ? data.currencyLabel : 'Dosh';
-  const fallbackMove = { id: 0, name: 'Tackle', power: 40, elementId: 1, elementName: 'Vulgaris' };
+  const fallbackMove = { id: 0, key: 'tackle', name: 'Tackle', category: 'physical', contact: true, power: 40, elementId: 1, elementName: 'Vulgaris' };
+  const isWildBattle = data.battleKind === 'wild';
+  const elementPalettes = {
+    1: { core: '#f8fafc', glow: 'rgba(255, 255, 255, 0.56)' },
+    2: { core: '#ff8a3d', glow: 'rgba(255, 116, 48, 0.58)' },
+    3: { core: '#4cc9f0', glow: 'rgba(76, 201, 240, 0.56)' },
+    4: { core: '#ffe066', glow: 'rgba(255, 224, 102, 0.62)' },
+    5: { core: '#63d471', glow: 'rgba(99, 212, 113, 0.55)' },
+    6: { core: '#bde0fe', glow: 'rgba(189, 224, 254, 0.54)' },
+    8: { core: '#b8a58f', glow: 'rgba(184, 165, 143, 0.52)' },
+    9: { core: '#d6a4ff', glow: 'rgba(214, 164, 255, 0.56)' },
+    11: { core: '#b8f06a', glow: 'rgba(184, 240, 106, 0.52)' },
+    12: { core: '#ffcf99', glow: 'rgba(255, 207, 153, 0.55)' },
+    13: { core: '#d7f7ff', glow: 'rgba(125, 226, 255, 0.64)' },
+    15: { core: '#8388a8', glow: 'rgba(131, 136, 168, 0.55)' },
+    17: { core: '#9ad0ff', glow: 'rgba(154, 208, 255, 0.56)' },
+  };
 
   function escapeHtml(value) {
     return String(value)
@@ -99,6 +116,230 @@
     announcerTimer = window.setTimeout(() => {
       el.announcer.classList.remove('is-visible');
     }, 1050);
+  }
+
+  function prefersReducedMotion() {
+    return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  }
+
+  async function runAnimation(node, keyframes, options) {
+    if (!node || typeof node.animate !== 'function' || prefersReducedMotion()) {
+      await wait(Number(options && options.duration) || 120);
+      return;
+    }
+
+    const animation = node.animate(keyframes, options);
+    try {
+      await animation.finished;
+    } catch (error) {
+      // The node may be removed if the round ends early.
+    }
+  }
+
+  function moveKey(move) {
+    return String((move && (move.key || move.moveKey || move.name)) || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '_')
+      .replace(/^_+|_+$/g, '');
+  }
+
+  function paletteForMove(move) {
+    return elementPalettes[Number(move && move.elementId)] || elementPalettes[1];
+  }
+
+  function effectHost() {
+    return el.stage || root;
+  }
+
+  function makeEffectNode(tagName) {
+    const node = document.createElement(tagName || 'div');
+    node.setAttribute('aria-hidden', 'true');
+    Object.assign(node.style, {
+      position: 'absolute',
+      pointerEvents: 'none',
+      zIndex: '15',
+    });
+    effectHost().appendChild(node);
+    return node;
+  }
+
+  function combatPoint(side, role) {
+    const host = side === 'player' ? el.player : el.npc;
+    const shell = host ? host.querySelector('.battle-creature-shell') : null;
+    const source = shell || host;
+    const stageRect = effectHost().getBoundingClientRect();
+    const rect = source.getBoundingClientRect();
+    const sourceRatio = side === 'player' ? 0.72 : 0.28;
+    const targetRatio = side === 'player' ? 0.58 : 0.42;
+    const xRatio = role === 'source' ? sourceRatio : targetRatio;
+
+    return {
+      x: rect.left - stageRect.left + (rect.width * xRatio),
+      y: rect.top - stageRect.top + (rect.height * 0.56),
+    };
+  }
+
+  async function playSlashAnimation(targetSide, move) {
+    const center = combatPoint(targetSide, 'target');
+    const palette = paletteForMove(move);
+    const angle = targetSide === 'player' ? -24 : 24;
+    const slash = makeEffectNode('div');
+    Object.assign(slash.style, {
+      left: `${center.x - 42}px`,
+      top: `${center.y - 8}px`,
+      width: '84px',
+      height: '14px',
+      borderRadius: '999px',
+      background: `linear-gradient(90deg, rgba(255, 255, 255, 0), ${palette.core}, rgba(255, 255, 255, 0))`,
+      boxShadow: `0 0 22px ${palette.glow}`,
+      transform: `rotate(${angle}deg) scaleX(0.2)`,
+    });
+
+    await runAnimation(slash, [
+      { opacity: 0, transform: `rotate(${angle}deg) scaleX(0.2)` },
+      { opacity: 1, transform: `rotate(${angle}deg) scaleX(1.12)` },
+      { opacity: 0, transform: `rotate(${angle}deg) scaleX(0.72) translateY(-12px)` },
+    ], { duration: 240, easing: 'cubic-bezier(0.2, 0.8, 0.25, 1)' });
+    slash.remove();
+  }
+
+  async function playProjectileAnimation(attackerSide, targetSide, move) {
+    const start = combatPoint(attackerSide, 'source');
+    const end = combatPoint(targetSide, 'target');
+    const palette = paletteForMove(move);
+    const orb = makeEffectNode('div');
+    Object.assign(orb.style, {
+      left: `${start.x - 9}px`,
+      top: `${start.y - 9}px`,
+      width: '18px',
+      height: '18px',
+      borderRadius: '999px',
+      background: `radial-gradient(circle at 35% 35%, #fff, ${palette.core} 48%, rgba(255, 255, 255, 0) 72%)`,
+      boxShadow: `0 0 18px ${palette.glow}, 0 0 34px ${palette.glow}`,
+    });
+
+    await runAnimation(orb, [
+      { opacity: 0, transform: 'translate3d(0, 0, 0) scale(0.45)' },
+      { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' },
+      { opacity: 1, transform: `translate3d(${end.x - start.x}px, ${end.y - start.y}px, 0) scale(1.18)` },
+      { opacity: 0, transform: `translate3d(${end.x - start.x}px, ${end.y - start.y}px, 0) scale(0.72)` },
+    ], { duration: 360, easing: 'cubic-bezier(0.18, 0.84, 0.28, 1)' });
+    orb.remove();
+  }
+
+  async function playIceBurst(targetSide) {
+    const center = combatPoint(targetSide, 'target');
+    const pieces = [];
+    const ring = makeEffectNode('div');
+    Object.assign(ring.style, {
+      left: `${center.x - 48}px`,
+      top: `${center.y - 48}px`,
+      width: '96px',
+      height: '96px',
+      borderRadius: '999px',
+      border: '2px solid rgba(204, 246, 255, 0.9)',
+      background: 'radial-gradient(circle, rgba(230, 251, 255, 0.62), rgba(125, 226, 255, 0.18) 46%, rgba(125, 226, 255, 0) 72%)',
+      boxShadow: '0 0 28px rgba(125, 226, 255, 0.52), inset 0 0 18px rgba(255, 255, 255, 0.72)',
+    });
+    pieces.push(runAnimation(ring, [
+      { opacity: 0, transform: 'scale(0.35)' },
+      { opacity: 1, transform: 'scale(0.85)' },
+      { opacity: 0, transform: 'scale(1.5)' },
+    ], { duration: 420, easing: 'ease-out' }).then(() => ring.remove()));
+
+    for (let index = 0; index < 10; index += 1) {
+      const angle = (Math.PI * 2 * index) / 10;
+      const distance = 30 + ((index % 4) * 9);
+      const shard = makeEffectNode('div');
+      const size = 6 + ((index % 3) * 3);
+      Object.assign(shard.style, {
+        left: `${center.x - (size / 2)}px`,
+        top: `${center.y - (size / 2)}px`,
+        width: `${size}px`,
+        height: `${size + 8}px`,
+        borderRadius: '3px 3px 8px 8px',
+        background: 'linear-gradient(180deg, #fff, #c7f5ff 55%, rgba(125, 226, 255, 0.36))',
+        boxShadow: '0 0 14px rgba(125, 226, 255, 0.58)',
+        transform: `rotate(${angle}rad) scale(0.45)`,
+      });
+      pieces.push(runAnimation(shard, [
+        { opacity: 0, transform: `rotate(${angle}rad) translate3d(0, 0, 0) scale(0.35)` },
+        { opacity: 1, transform: `rotate(${angle}rad) translate3d(${Math.cos(angle) * 14}px, ${Math.sin(angle) * 14}px, 0) scale(1)` },
+        { opacity: 0, transform: `rotate(${angle}rad) translate3d(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px, 0) scale(0.35)` },
+      ], { duration: 460, easing: 'cubic-bezier(0.18, 0.76, 0.28, 1)' }).then(() => shard.remove()));
+    }
+
+    await Promise.all(pieces);
+  }
+
+  async function playIceBeamAnimation(attackerSide, targetSide) {
+    const start = combatPoint(attackerSide, 'source');
+    const end = combatPoint(targetSide, 'target');
+    const dx = end.x - start.x;
+    const dy = end.y - start.y;
+    const length = Math.max(24, Math.sqrt((dx * dx) + (dy * dy)));
+    const angle = Math.atan2(dy, dx);
+    const beam = makeEffectNode('div');
+    Object.assign(beam.style, {
+      left: `${start.x}px`,
+      top: `${start.y - 7}px`,
+      width: `${length}px`,
+      height: '14px',
+      borderRadius: '999px',
+      transformOrigin: '0 50%',
+      transform: `rotate(${angle}rad) scaleX(0)`,
+      background: 'linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(246, 253, 255, 0.96) 14%, rgba(158, 237, 255, 0.9) 58%, rgba(255, 255, 255, 0.78))',
+      boxShadow: '0 0 16px rgba(125, 226, 255, 0.78), 0 0 34px rgba(125, 226, 255, 0.45)',
+    });
+    const beamAnimation = runAnimation(beam, [
+      { opacity: 0, transform: `rotate(${angle}rad) scaleX(0)` },
+      { opacity: 1, transform: `rotate(${angle}rad) scaleX(1)` },
+      { opacity: 1, transform: `rotate(${angle}rad) scaleX(1)` },
+      { opacity: 0, transform: `rotate(${angle}rad) scaleX(1)` },
+    ], { duration: 420, easing: 'cubic-bezier(0.12, 0.82, 0.24, 1)' }).then(() => beam.remove());
+
+    await wait(190);
+    await Promise.all([beamAnimation, playIceBurst(targetSide)]);
+  }
+
+  async function playAttackAnimation(attackerSide, targetSide, move) {
+    if (prefersReducedMotion()) {
+      await wait(120);
+      return;
+    }
+
+    if (moveKey(move) === 'ice_beam') {
+      await playIceBeamAnimation(attackerSide, targetSide);
+      return;
+    }
+
+    if (move && (move.contact || move.category === 'physical')) {
+      await playSlashAnimation(targetSide, move);
+      return;
+    }
+
+    await playProjectileAnimation(attackerSide, targetSide, move);
+  }
+
+  async function playDamageBlink(targetSide, move) {
+    const image = targetSide === 'player' ? el.playerImage : el.npcImage;
+    if (!image) {
+      return;
+    }
+
+    const icy = moveKey(move) === 'ice_beam' || Number(move && move.elementId) === 13;
+    const brightFrame = icy
+      ? { opacity: 0.68, filter: 'brightness(1.9) saturate(0.55) drop-shadow(0 0 18px rgba(125, 226, 255, 0.9))' }
+      : { opacity: 0.58, filter: 'brightness(1.85) saturate(0.72)' };
+
+    await runAnimation(image, [
+      { opacity: 1, filter: 'none' },
+      brightFrame,
+      { opacity: 1, filter: 'none' },
+      brightFrame,
+      { opacity: 1, filter: 'none' },
+    ], { duration: 300, easing: 'steps(4, end)' });
   }
 
   function addLog(message) {
@@ -362,7 +603,8 @@
     addLog(`${attacker.name} used ${move.name}.`);
 
     attackerEl.classList.add('is-acting');
-    await wait(140);
+    await wait(110);
+    await playAttackAnimation(attackerSide, targetSide, move);
     attackerEl.classList.remove('is-acting');
 
     const result = calculateDamage(move, target);
@@ -371,7 +613,9 @@
     spawnImpact(targetSide);
     spawnNumber(targetSide, result.totalDamage, result.totalDamage === 0 ? 'zero' : '');
     targetEl.classList.add('is-hit');
+    const blink = playDamageBlink(targetSide, move);
     await updateHpDisplay(targetSide, target, true);
+    await blink;
     await wait(90);
     targetEl.classList.remove('is-hit');
 
@@ -714,7 +958,7 @@
       playSummon('npc');
       const incoming = currentNpc();
       if (incoming) {
-        addLog(`${data.trainer.name} sent out ${incoming.name}.`);
+        addLog(isWildBattle ? `${incoming.name} presses forward.` : `${data.trainer.name} sent out ${incoming.name}.`);
         showAnnouncer(`${incoming.name} enters the field!`);
       }
       await wait(220);
@@ -739,7 +983,7 @@
       `${fallenName} is down. Do you want to send out another creature?`,
       [
         menuOption('Yes', 'Open the creature roster.', () => openCreaturesMenu(true)),
-        menuOption('No', 'Retreat from the encounter.', () => fleeBattle('You chose to retreat from the trainer battle.')),
+        menuOption('No', 'Retreat from the encounter.', () => fleeBattle(isWildBattle ? 'You retreated from the wild encounter.' : 'You chose to retreat from the trainer battle.')),
       ]
     );
   }
@@ -808,7 +1052,7 @@
     state.battleEnded = true;
     state.locked = true;
     setTurnIndicator('Defeat');
-    addLog('Your team has fallen. The trainer battle is over.');
+    addLog(isWildBattle ? 'Your team has fallen. The wild encounter is over.' : 'Your team has fallen. The trainer battle is over.');
     showAnnouncer('Defeat');
     await wait(1500);
     window.location.href = data.returnUrl || 'index.php?pg=games';
@@ -822,8 +1066,10 @@
     state.battleEnded = true;
     state.locked = true;
     setTurnIndicator('Victory');
-    addLog(`${data.trainer.displayName}: ${data.trainer.defeatLine}`);
-    addLog(`You received ${data.trainer.defeatCurrency} ${currencyLabel}.`);
+    addLog(isWildBattle ? data.trainer.defeatLine : `${data.trainer.displayName}: ${data.trainer.defeatLine}`);
+    if (Number(data.trainer.defeatCurrency || 0) > 0) {
+      addLog(`You received ${data.trainer.defeatCurrency} ${currencyLabel}.`);
+    }
     showAnnouncer('Victory!');
 
     if (!state.awarding) {
@@ -845,8 +1091,8 @@
     setDetail(`
       <h3 class="battle-detail-title">Victory</h3>
       <p class="battle-detail-empty">
-        ${escapeHtml(data.trainer.displayName || 'Trainer')} has been defeated. The reward has been added to your wallet
-        and the encounter will close in a moment.
+        ${escapeHtml(data.trainer.displayName || 'Opponent')} has been defeated.
+        ${Number(data.trainer.defeatCurrency || 0) > 0 ? 'The reward has been added to your wallet and the encounter will close in a moment.' : 'The encounter will close in a moment.'}
       </p>
     `);
 
@@ -917,15 +1163,15 @@
     syncField();
     el.banner.classList.add('is-live');
     el.intro.classList.add('is-hidden');
-    showAnnouncer('Trainer encounter!');
+    showAnnouncer(isWildBattle ? 'Wild encounter!' : 'Trainer encounter!');
     await wait(180);
-    addLog(`${data.trainer.displayName} steps into your path.`);
+    addLog(isWildBattle ? `${data.trainer.displayName} appears!` : `${data.trainer.displayName} steps into your path.`);
     addLog(data.trainer.encounterLine);
 
     playSummon('npc');
     await wait(220);
     if (currentNpc()) {
-      addLog(`${data.trainer.name} sent out ${currentNpc().name}.`);
+      addLog(isWildBattle ? `${currentNpc().name} takes the field.` : `${data.trainer.name} sent out ${currentNpc().name}.`);
     }
 
     playSummon('player');
@@ -942,7 +1188,7 @@
     syncField();
     setTurnIndicator('Awaiting clash');
     setDetail(defaultDetailHtml());
-    addLog('A trainer battle is about to begin.');
+    addLog(isWildBattle ? 'A wild creature battle is about to begin.' : 'A trainer battle is about to begin.');
     el.start.addEventListener('click', startEncounter);
     bindKeyboardNavigation();
   }

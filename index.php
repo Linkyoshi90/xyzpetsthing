@@ -53,6 +53,12 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'xm_paint_shack',
     'ynk_paint_shack','ynk-adventure','ynk-adventure2','ynk-ramen',
     'yn_paint_shack',
+    // regional shops
+    'bm-market','cc-souq','esd-feather-flint','esl-olive-lamp','fom-lockside-shop',
+    'gc-plaza-kiosk','h-ledger-house','ie-canopy-relic','k-bazaar-tent',
+    'ldk-tea-trinkets','nh-frostmarket','rsc-roadhouse','rt-winter-pantry',
+    'sc-ice-cache','sie-sun-terrace','srl-spice-dock','stap-trading-blanket',
+    'urb-corner-mart','xm-flower-market','yn-keeping-place-shop',
 ];
 if(!in_array($pg,$allowed,true)) $pg = 'login';
 if($pg === 'petting' && $_SERVER['REQUEST_METHOD'] === 'POST') {

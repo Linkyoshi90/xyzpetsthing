@@ -221,6 +221,60 @@
     "weight": 20
   },
   {
+    "id": "wild_battle_rustling_grass",
+    "title": "Rustling Grass",
+    "message": "The grass beside the trail starts moving against the wind. Something is watching your party closely.",
+    "conditions": {
+      "requires_exploration": true,
+      "requires_region_battle": true
+    },
+    "effects": [
+      {
+        "type": "battle",
+        "battle_type": "wild",
+        "detail": "A wild creature springs out and blocks the path.",
+        "action_label": "Start wild battle"
+      }
+    ],
+    "weight": 10
+  },
+  {
+    "id": "wild_battle_challenger",
+    "title": "A Challenger Appears",
+    "message": "A nearby creature stamps, bristles, and refuses to let your lead companion pass without a contest.",
+    "conditions": {
+      "requires_exploration": true,
+      "requires_region_battle": true
+    },
+    "effects": [
+      {
+        "type": "battle",
+        "battle_type": "wild",
+        "detail": "This is a creature-only battle. No trainer is involved.",
+        "action_label": "Accept challenge"
+      }
+    ],
+    "weight": 8
+  },
+  {
+    "id": "wild_battle_territory",
+    "title": "Territory Dispute",
+    "message": "Your route cuts across a creature's favorite patch of ground, and it makes its displeasure very clear.",
+    "conditions": {
+      "requires_exploration": true,
+      "requires_region_battle": true
+    },
+    "effects": [
+      {
+        "type": "battle",
+        "battle_type": "wild",
+        "detail": "The creature is defending its territory and challenges your party.",
+        "action_label": "Stand your ground"
+      }
+    ],
+    "weight": 7
+  },
+  {
     "id": "aeonstep_rockslide",
     "title": "The Mountain Shudders",
     "message": "Near a cave trail in Intirumi, the ground gives a deep rumble. A sudden rock slide tears open the cliffside. When the dust clears, a hidden path climbs toward a high, sunlit shelf. You follow it and map the newly revealed Aeonstep Plateau.",
