@@ -1,9 +1,11 @@
 <?php
-require_once __DIR__.'/../lib/regional_shop_page.php';
+require_login();
+require_once __DIR__.'/../lib/country_map_data.php';
 
-render_regional_shop_front([
-    'shop_id' => 18,
-    'fallback_name' => 'Ankhmeru Bazaar Tent',
-    'intro' => 'Scarab charms, linen wraps, honey cakes, river reeds, desert glass, and miniatures.',
-    'aria_label' => 'Available Ankhmeru Bazaar goods',
-]);
+$config = get_country_map_config(basename(__FILE__, '.php'));
+if ($config === null) {
+    echo '<div class="card glass"><h2>Map unavailable</h2><p class="muted">This bazaar map configuration is missing.</p></div>';
+    return;
+}
+
+render_country_interactive_map($config);

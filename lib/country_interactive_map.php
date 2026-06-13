@@ -35,15 +35,21 @@ function render_country_interactive_map(array $config): void {
     $height = (int)($config['height'] ?? 811);
     $particles = country_map_particles((int)($config['particle_count'] ?? 16));
     $areas = $config['areas'] ?? [];
+    $hasAreas = count($areas) > 0;
     $backLabel = $config['back_label'] ?? null;
     $backHref = $config['back_href'] ?? null;
-    $showPanel = array_key_exists('show_panel', $config) ? (bool)$config['show_panel'] : true;
+    $showPanel = $hasAreas && (array_key_exists('show_panel', $config) ? (bool)$config['show_panel'] : true);
+    $hint = array_key_exists('hint', $config)
+        ? trim((string)$config['hint'])
+        : ($hasAreas ? 'Click highlighted areas to explore. Double-click to open.' : '');
     ?>
 <div class="country-map-page">
     <div class="country-map-header">
         <h1><?= htmlspecialchars($config['title']) ?></h1>
         <p class="subtitle"><?= htmlspecialchars($config['subtitle'] ?? '') ?></p>
-        <p class="hint">Click highlighted areas to explore. Double-click to open.</p>
+        <?php if ($hint !== ''): ?>
+            <p class="hint"><?= htmlspecialchars($hint) ?></p>
+        <?php endif; ?>
     </div>
 
     <div class="country-map-wrap">
@@ -62,21 +68,23 @@ function render_country_interactive_map(array $config): void {
                         <?php endforeach; ?>
                     </div>
 
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="country-map-overlay">
-                        <?php foreach ($areas as $index => $area): ?>
-                            <polygon
-                                class="country-map-area"
-                                points="<?= htmlspecialchars($area['points']) ?>"
-                                style="--area-color: <?= htmlspecialchars($area['color']) ?>;"
-                                data-id="<?= htmlspecialchars((string)$index) ?>"
-                                data-name="<?= htmlspecialchars($area['name']) ?>"
-                                data-description="<?= htmlspecialchars($area['description']) ?>"
-                                data-action="<?= htmlspecialchars($area['action']) ?>"
-                                data-href="<?= htmlspecialchars($area['href']) ?>"
-                            ></polygon>
-                        <?php endforeach; ?>
-                    </svg>
-                    <div class="country-map-tooltip" id="countryMapTooltip"></div>
+                    <?php if ($hasAreas): ?>
+                        <svg viewBox="0 0 100 100" preserveAspectRatio="none" class="country-map-overlay">
+                            <?php foreach ($areas as $index => $area): ?>
+                                <polygon
+                                    class="country-map-area"
+                                    points="<?= htmlspecialchars($area['points']) ?>"
+                                    style="--area-color: <?= htmlspecialchars($area['color']) ?>;"
+                                    data-id="<?= htmlspecialchars((string)$index) ?>"
+                                    data-name="<?= htmlspecialchars($area['name']) ?>"
+                                    data-description="<?= htmlspecialchars($area['description']) ?>"
+                                    data-action="<?= htmlspecialchars($area['action']) ?>"
+                                    data-href="<?= htmlspecialchars($area['href']) ?>"
+                                ></polygon>
+                            <?php endforeach; ?>
+                        </svg>
+                        <div class="country-map-tooltip" id="countryMapTooltip"></div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -98,18 +106,20 @@ function render_country_interactive_map(array $config): void {
         <?php endif; ?>
     </div>
 
-    <div class="country-map-legend">
-        <?php foreach ($areas as $index => $area): ?>
-            <button
-                type="button"
-                class="country-map-legend-item"
-                data-area-id="<?= htmlspecialchars((string)$index) ?>"
-                style="--legend-color: <?= htmlspecialchars($area['color']) ?>;"
-            >
-                <span></span><?= htmlspecialchars($area['name']) ?>
-            </button>
-        <?php endforeach; ?>
-    </div>
+    <?php if ($hasAreas): ?>
+        <div class="country-map-legend">
+            <?php foreach ($areas as $index => $area): ?>
+                <button
+                    type="button"
+                    class="country-map-legend-item"
+                    data-area-id="<?= htmlspecialchars((string)$index) ?>"
+                    style="--legend-color: <?= htmlspecialchars($area['color']) ?>;"
+                >
+                    <span></span><?= htmlspecialchars($area['name']) ?>
+                </button>
+            <?php endforeach; ?>
+        </div>
+    <?php endif; ?>
 
     <?php if (!empty($config['lore_sections']) && is_array($config['lore_sections'])): ?>
         <div class="country-map-lore-section">

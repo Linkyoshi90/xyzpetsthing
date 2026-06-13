@@ -1,0 +1,258 @@
+{
+  "schema_version": 1,
+  "game_title": "Harmontide Circuit",
+  "board_key": "redwind_harbor_circuit",
+  "board_name": "Redwind Harbor Circuit",
+  "ruleset_key": "mvp_short_branching_v1",
+  "reward_profile_key": "mvp_seasonal_small_cash_v1",
+  "region": {
+    "country_key": "rsc",
+    "country_name": "Red Sun Commonwealth",
+    "city_name": "Redwind",
+    "map_page": "?pg=rsc",
+    "theme": "Harbor markets, ferry routes, beach carnival paths, and public coin-fairs."
+  },
+  "player_count": {
+    "min": 2,
+    "max": 4
+  },
+  "match": {
+    "max_rounds_per_player": 6,
+    "starting_cash": 1500,
+    "pass_start_bonus": 200,
+    "cash_floor": 0,
+    "allow_player_elimination": false,
+    "allow_debt": false,
+    "allow_trading": false,
+    "allow_auctions": false,
+    "allow_mortgages": false
+  },
+  "movement": {
+    "die_count": 1,
+    "die_sides": 6,
+    "branch_policy": "choose_edge_when_tile_has_multiple_outgoing_edges",
+    "branch_choice_required_during_turn": true
+  },
+  "upgrades": {
+    "max_level": 3,
+    "refund_percent": 0,
+    "rent_multiplier_by_level": [1.0, 1.55, 2.25, 3.1]
+  },
+  "loss_policy": {
+    "rent_loss": "cap_at_current_cash",
+    "event_loss": "cap_at_current_cash",
+    "tax_loss": "cap_at_current_cash"
+  },
+  "tiles": [
+    {
+      "index": 0,
+      "key": "glass_harbor_start",
+      "name": "Glass Harbor Start",
+      "type": "start",
+      "position": { "x": 50, "y": 92 },
+      "description": "Ferries stitch the harbor while players begin another circuit.",
+      "on_pass": { "effect": "gain_cash", "amount": 200 }
+    },
+    {
+      "index": 1,
+      "key": "busker_pitch",
+      "name": "Busker Pitch",
+      "type": "property",
+      "position": { "x": 32, "y": 84 },
+      "description": "A forecourt pitch where performers catch the ferry crowd.",
+      "property": {
+        "group": "quay",
+        "price": 120,
+        "base_rent": 20,
+        "upgrade_cost": 70,
+        "rent_by_level": [20, 31, 45, 62]
+      }
+    },
+    {
+      "index": 2,
+      "key": "ferry_triangle",
+      "name": "Ferry Triangle",
+      "type": "branch",
+      "position": { "x": 18, "y": 70 },
+      "description": "Three wharves split the route toward the arts forecourt or Breaker Bay."
+    },
+    {
+      "index": 3,
+      "key": "sun_shell_forecourt",
+      "name": "Sun Shell Forecourt",
+      "type": "property",
+      "position": { "x": 18, "y": 48 },
+      "description": "The sail-roofed arts house turns foot traffic into rent.",
+      "property": {
+        "group": "arts",
+        "price": 180,
+        "base_rent": 28,
+        "upgrade_cost": 90,
+        "rent_by_level": [28, 43, 63, 87]
+      }
+    },
+    {
+      "index": 4,
+      "key": "harbor_lights",
+      "name": "Harbor Lights",
+      "type": "event",
+      "position": { "x": 30, "y": 30 },
+      "description": "Lantern boats drift across the water and the crowd changes direction.",
+      "event_key": "harbor_lights"
+    },
+    {
+      "index": 5,
+      "key": "breaker_bay_kiosk",
+      "name": "Breaker Bay Kiosk",
+      "type": "property",
+      "position": { "x": 6, "y": 58 },
+      "description": "Salt, chips, sunscreen, and reliable beach traffic.",
+      "property": {
+        "group": "beach",
+        "price": 160,
+        "base_rent": 24,
+        "upgrade_cost": 80,
+        "rent_by_level": [24, 37, 54, 74]
+      }
+    },
+    {
+      "index": 6,
+      "key": "beach_cleanup_fine",
+      "name": "Beach Cleanup Fine",
+      "type": "tax",
+      "position": { "x": 10, "y": 36 },
+      "description": "The Surf Wardens issue a fast fine for messy pockets.",
+      "effect": { "type": "lose_cash", "amount": 90, "cap_at_cash_floor": true }
+    },
+    {
+      "index": 7,
+      "key": "bushline_reserve",
+      "name": "Bushline Reserve",
+      "type": "event",
+      "position": { "x": 22, "y": 16 },
+      "description": "A headland track opens into shade, sparks, and a few odd chances.",
+      "event_key": "bushline_reserve"
+    },
+    {
+      "index": 8,
+      "key": "redwind_arch_climb",
+      "name": "Redwind Arch Climb",
+      "type": "property",
+      "position": { "x": 46, "y": 12 },
+      "description": "A steel-span lookout with tours, clipped lines, and view taxes.",
+      "property": {
+        "group": "landmark",
+        "price": 240,
+        "base_rent": 40,
+        "upgrade_cost": 120,
+        "rent_by_level": [40, 62, 90, 124]
+      }
+    },
+    {
+      "index": 9,
+      "key": "laneway_crossing",
+      "name": "Laneway Crossing",
+      "type": "branch",
+      "position": { "x": 68, "y": 20 },
+      "description": "Espresso lanes split toward market stalls or the carnival district."
+    },
+    {
+      "index": 10,
+      "key": "outback_exchange_stall",
+      "name": "Outback Exchange Stall",
+      "type": "property",
+      "position": { "x": 84, "y": 32 },
+      "description": "A market hall stall trading mango crates, hats, and cold drinks.",
+      "property": {
+        "group": "market",
+        "price": 220,
+        "base_rent": 36,
+        "upgrade_cost": 110,
+        "rent_by_level": [36, 56, 81, 112]
+      }
+    },
+    {
+      "index": 11,
+      "key": "roadhouse_store",
+      "name": "Roadhouse Store",
+      "type": "property",
+      "position": { "x": 92, "y": 56 },
+      "description": "Bright snacks, road-trip provisions, and red-dust travel goods.",
+      "property": {
+        "group": "market",
+        "price": 260,
+        "base_rent": 44,
+        "upgrade_cost": 130,
+        "rent_by_level": [44, 68, 99, 136]
+      }
+    },
+    {
+      "index": 12,
+      "key": "wheel_of_fate",
+      "name": "Wheel of Fate",
+      "type": "event",
+      "position": { "x": 88, "y": 16 },
+      "description": "A carnival wheel spins bright, loud, and entirely server-side.",
+      "event_key": "wheel_of_fate"
+    },
+    {
+      "index": 13,
+      "key": "glass_harbor_quay",
+      "name": "Glass Harbor Quay",
+      "type": "property",
+      "position": { "x": 78, "y": 82 },
+      "description": "Waterside cafes, ferry queues, and a steady view-tax premium.",
+      "property": {
+        "group": "quay",
+        "price": 300,
+        "base_rent": 52,
+        "upgrade_cost": 150,
+        "rent_by_level": [52, 81, 117, 161]
+      }
+    }
+  ],
+  "edges": [
+    { "from": 0, "to": 1, "label": "Quay walk" },
+    { "from": 1, "to": 2, "label": "Toward the wharves" },
+    { "from": 2, "to": 3, "label": "Arts route" },
+    { "from": 2, "to": 5, "label": "Beach route" },
+    { "from": 3, "to": 4, "label": "Forecourt lanterns" },
+    { "from": 4, "to": 8, "label": "Arch steps" },
+    { "from": 5, "to": 6, "label": "Surf flags" },
+    { "from": 6, "to": 7, "label": "Headland track" },
+    { "from": 7, "to": 8, "label": "Reserve lookout" },
+    { "from": 8, "to": 9, "label": "Laneway drop" },
+    { "from": 9, "to": 10, "label": "Market route" },
+    { "from": 9, "to": 12, "label": "Carnival route" },
+    { "from": 10, "to": 11, "label": "Roadhouse run" },
+    { "from": 11, "to": 13, "label": "Back to the quay" },
+    { "from": 12, "to": 13, "label": "Prize lane" },
+    { "from": 13, "to": 0, "label": "Ferry loop" }
+  ],
+  "events": {
+    "harbor_lights": {
+      "resolution": "weighted_random",
+      "outcomes": [
+        { "weight": 45, "message": "A lantern sponsor tips your route.", "effect": { "type": "gain_cash", "amount": 90 } },
+        { "weight": 35, "message": "Crowds slow the quay and cost you snacks.", "effect": { "type": "lose_cash", "amount": 60, "cap_at_cash_floor": true } },
+        { "weight": 20, "message": "A ferry shortcut opens.", "effect": { "type": "move_relative", "steps": 1 } }
+      ]
+    },
+    "bushline_reserve": {
+      "resolution": "weighted_random",
+      "outcomes": [
+        { "weight": 40, "message": "You find a shaded vendor with fair prices.", "effect": { "type": "gain_cash", "amount": 70 } },
+        { "weight": 35, "message": "A sun-sense reminder saves you from a bigger fine.", "effect": { "type": "lose_cash", "amount": 50, "cap_at_cash_floor": true } },
+        { "weight": 25, "message": "The lookout points you toward the laneways.", "effect": { "type": "move_to_tile", "tile": 9 } }
+      ]
+    },
+    "wheel_of_fate": {
+      "resolution": "weighted_random",
+      "outcomes": [
+        { "weight": 35, "message": "The wheel lands on a clean win.", "effect": { "type": "gain_cash", "amount": 120 } },
+        { "weight": 35, "message": "The wheel demands another token.", "effect": { "type": "lose_cash", "amount": 80, "cap_at_cash_floor": true } },
+        { "weight": 30, "message": "A loud bell sends you back to the quay.", "effect": { "type": "move_to_tile", "tile": 13 } }
+      ]
+    }
+  }
+}

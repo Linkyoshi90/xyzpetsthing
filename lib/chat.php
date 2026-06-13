@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/../db.php';
+require_once __DIR__.'/friendships.php';
 
 const CHAT_CIPHER_METHOD = 'aes-256-gcm';
 const CHAT_SEPARATOR = ':';
@@ -46,29 +47,12 @@ function decrypt_chat_message(string $payload): ?string
 
 function get_user_friend_list(int $userId): array
 {
-    $sql = "SELECT CASE WHEN uf.user_id = :uid THEN uf.friend_id ELSE uf.user_id END AS friend_id,
-                   u.username
-              FROM user_friends uf
-              JOIN users u ON u.user_id = CASE WHEN uf.user_id = :uid THEN uf.friend_id ELSE uf.user_id END
-             WHERE uf.user_id = :uid OR uf.friend_id = :uid
-          ORDER BY u.username";
-    $st = db()->prepare($sql);
-    $st->execute([':uid' => $userId]);
-    $friends = [];
-    while ($row = $st->fetch(PDO::FETCH_ASSOC)) {
-        $friends[(int)$row['friend_id']] = [
-            'id' => (int)$row['friend_id'],
-            'username' => $row['username'],
-        ];
-    }
-    return $friends;
+    return friendship_get_friend_list($userId);
 }
 
 function users_are_friends(int $userId, int $friendId): bool
 {
-    $sql = "SELECT 1 FROM user_friends WHERE (user_id = ? AND friend_id = ?) OR (user_id = ? AND friend_id = ?) LIMIT 1";
-    $st = q($sql, [$userId, $friendId, $friendId, $userId]);
-    return (bool)$st->fetchColumn();
+    return friendship_users_are_friends($userId, $friendId);
 }
 
 function get_conversation(int $userId, int $friendId, int $limit = 100): array

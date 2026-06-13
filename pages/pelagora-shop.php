@@ -12,6 +12,7 @@ $notice = simple_shop_handle_purchase($shopId, $inventory, [
     'missing_item' => 'That aquatic good slipped out of stock.',
     'stock_limit' => 'You can only buy up to %d x %s before the tide bell rings.',
     'checkout_failed' => 'The shell register would not settle the order. Please try again.',
+    'checkout_success' => 'The tideglass clerk sets your basket by the shell register.',
     'success' => 'You bought %d x %s for %s %s.',
 ]);
 
@@ -29,4 +30,6 @@ render_simple_shop_page([
     'empty_text' => 'No Aquatic, Pelagoric, Pelagora, or Underwater goods are stocked right now.',
     'aria_label' => 'Available aquatic goods',
     'submit_label' => 'Buy',
+    'cart_help' => 'Adjust quantities or remove goods before the clerk rings them up.',
+    'cart_empty' => 'Select an aquatic good to begin filling your basket.',
 ]);

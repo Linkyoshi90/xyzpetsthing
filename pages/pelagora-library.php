@@ -11,6 +11,7 @@ $notice = simple_shop_handle_purchase($shopId, $inventory, [
     'missing_item' => 'That book is no longer on the public desk.',
     'stock_limit' => 'Only %d x %s can leave the stacks today.',
     'checkout_failed' => 'The lending ledger would not take the stamp. Please try again.',
+    'checkout_success' => 'The librarian prepares your reading room docket.',
     'success' => 'You borrowed %d x %s for %s %s.',
 ]);
 
@@ -28,6 +29,10 @@ render_simple_shop_page([
     'empty_text' => 'The public desk is empty while the librarians reshelve the dry cases.',
     'aria_label' => 'Available Pelagora lore books',
     'submit_label' => 'Borrow',
+    'cart_title' => 'Your Requests',
+    'cart_help' => 'Adjust quantities or remove volumes before you submit.',
+    'cart_empty' => 'Select a volume to begin building your request.',
+    'cart_aria_label' => 'Borrowing cart',
     'info_cards' => [
         [
             'title' => 'Reading Room',

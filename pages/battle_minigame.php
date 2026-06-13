@@ -4,6 +4,53 @@ require_once __DIR__ . '/../lib/pets.php';
 
 require_login();
 
+function battle_default_return_url(): string {
+    return 'index.php?pg=games';
+}
+
+function battle_return_url_from_request($value): string {
+    if (!is_scalar($value)) {
+        return battle_default_return_url();
+    }
+
+    $candidate = trim(str_replace("\0", '', (string)$value));
+    if ($candidate === '') {
+        return battle_default_return_url();
+    }
+
+    $parts = parse_url($candidate);
+    if ($parts === false || isset($parts['scheme']) || isset($parts['host']) || isset($parts['user']) || isset($parts['pass']) || isset($parts['port'])) {
+        return battle_default_return_url();
+    }
+
+    $path = (string)($parts['path'] ?? '');
+    $query = (string)($parts['query'] ?? '');
+    if ($path === '') {
+        return battle_default_return_url();
+    }
+
+    $normalizedPath = str_replace('\\', '/', $path);
+    $scriptName = str_replace('\\', '/', (string)($_SERVER['SCRIPT_NAME'] ?? 'index.php'));
+    $scriptBasename = basename($scriptName);
+    if (strncmp($normalizedPath, '/', 1) === 0) {
+        if ($normalizedPath !== $scriptName) {
+            return battle_default_return_url();
+        }
+    } else {
+        $normalizedRelativePath = ltrim($normalizedPath, './');
+        if ($normalizedRelativePath !== $scriptBasename) {
+            return battle_default_return_url();
+        }
+    }
+
+    parse_str($query, $queryParams);
+    if (($queryParams['pg'] ?? '') === 'battle_minigame') {
+        return battle_default_return_url();
+    }
+
+    return $query !== '' ? ($normalizedPath . '?' . $query) : $normalizedPath;
+}
+
 function battle_json_response(array $payload): void {
     header('Content-Type: application/json');
     echo json_encode($payload);
@@ -638,6 +685,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $element_lookup = battle_load_element_lookup();
 $battle_kind = ((string)($_GET['battle'] ?? '') === 'wild') ? 'wild' : 'trainer';
 $requested_region_id = max(0, (int)($_GET['region_id'] ?? 0));
+$return_url = battle_return_url_from_request($_GET['return_to'] ?? '');
 $trainer = null;
 $trainer_team = [];
 
@@ -682,7 +730,7 @@ $battle_payload = [
     'items' => $items,
     'effectiveness' => $effectiveness,
     'token' => $battle_token,
-    'returnUrl' => 'index.php?pg=games',
+    'returnUrl' => $return_url,
     'currencyLabel' => APP_CURRENCY_SHORT_NAME,
     'battleKind' => $battle_kind,
 ];
@@ -696,7 +744,7 @@ $battle_payload = [
         ? 'This encounter needs one logged-in creature and at least one random wild encounter row before the battle can begin.'
         : 'This encounter needs one logged-in creature, one trainer entry, and a trainer roster before the battle can begin.' ?>
   </p>
-  <a class="btn" href="index.php?pg=games">Back to Games</a>
+  <a class="btn" href="<?= htmlspecialchars($return_url) ?>">Go Back</a>
 </section>
 <?php else: ?>
 <section class="battle-shell" id="battle-app" aria-live="polite">

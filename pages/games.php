@@ -19,6 +19,11 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
     <a class="btn" href="?pg=harmonflap">Play</a>
   </div>
   <div class="card glass">
+    <h3>Picture Puzzle</h3>
+    <p class="muted">Swap picture tiles from easy to extremely tiny.</p>
+    <a class="btn" href="?pg=kid-puzzle">Play</a>
+  </div>
+  <div class="card glass">
     <h3>Drop Game Collider Lab</h3>
     <p class="muted">Test Suica-style item drops with sprite-shaped physics colliders.</p>
     <a class="btn" href="?pg=drop_game">Play</a>
@@ -38,6 +43,10 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
   <div class="card glass">
     <h3>Blackjack</h3>
     <a class="btn" href="?pg=blackjack">Play</a>
+  </div>
+  <div class="card glass">
+    <h3>Cups and Balls</h3>
+    <a class="btn" href="?pg=cups-and-balls">Play</a>
   </div>
   <div class="card glass">
     <h3>Wheel of Fate</h3>

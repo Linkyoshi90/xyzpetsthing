@@ -224,6 +224,93 @@
 - 393 - Rust Otter (`rust_otter`)
 - 394 - Halberelk (`halberelk`)
 
+## Creature Art Descriptions
+
+These are inferred starter descriptions for art direction, based on creature names, region IDs, and battle stat profiles. The current `pet_species` table does not include authored lore descriptions.
+
+- 313 - Marmotaur (`marmotaur`) - A stocky alpine marmot-centaur with burrowing claws, small horns, hoofed forelegs, and Aegian bronze tack.
+- 314 - Strigowl (`strigowl`) - A lean, fast owl guardian with stern round eyes, barred feathers, and a classical laurel or bronze accent.
+- 315 - Skjoldram (`skjoldram`) - A Nornheim ram whose curled horns form shield-like discs, with runic trim and frost-worn wool.
+- 316 - Pineskrell (`pineskrell`) - A quick pine-forest imp or squirrel spirit with cone-like armor plates, needle tufts, and bright watchful eyes.
+- 317 - Boghare (`boghare`) - A marsh hare with reed-like ears, peat-dark paws, and damp mossy fur suited to Bretonreach wetlands.
+- 318 - Rookmourn (`rookmourn`) - A black rook or crow spirit with mourning-veil feathers, pale eyes, and a ghostly graveyard silhouette.
+- 319 - Clockhare (`clockhare`) - A brass-and-fur clockwork hare with exposed gears, a winding key, and nervous, spring-loaded posture.
+- 320 - Stagel (`stagel`) - A sturdy stag with stained-glass antlers, carved hooves, and old Rheinland chapel or guildhall motifs.
+- 321 - Sobolnik (`sobolnik`) - A sable-like Rodinian forest creature with sleek dark fur, a fur-cap silhouette, and lacquer-red accents.
+- 322 - Gribboar (`gribboar`) - A boar with mushroom growths across its back, thick tusks, and damp woodland earth tones.
+- 323 - Pumpkingull (`pumpkingull`) - A gull with a jack-o-lantern belly, ragged autumn wings, and a mischievous harvest-festival expression.
+- 324 - Snowloper (`snowloper`) - A pale snowshoe hare or foxlike runner with oversized winter feet, frost-blue markings, and soft Borealian fur.
+- 325 - Prairhorn (`prairhorn`) - A pronghorn-inspired plains creature with beadwork markings, swept horns, and a balanced runner's stance.
+- 326 - Dustbison (`dustbison`) - A heavy bison with a dust-cloud mane, cracked-earth hooves, and ochre plains coloring.
+- 327 - Silkcoon (`silkcoon`) - A silkworm or cocoon creature wrapped in glossy threads, with tassel antennae and soft Lotus-Dragon colors.
+- 328 - Bambadger (`bambadger`) - A bamboo-striped badger with leaf armor, sturdy claws, and a calm but stubborn defensive posture.
+- 329 - Peaflare (`peaflare`) - A peacock whose tail blooms like jeweled flame, with warm Baharamandal colors and bright eye-spots.
+- 330 - Palmyr (`palmyr`) - A small palm-crested animal spirit with frond ears, henna-like markings, and a light desert-garden palette.
+- 331 - Shibari (`shibari`) - A Yamanokubo creature wrapped in decorative knot-cords and charm tassels, agile and ceremonial rather than armored.
+- 332 - Momoshika (`momoshika`) - A peach-colored deer with blossom markings, soft antlers, and a gentle shrine-forest presence.
+- 333 - Coatimano (`coatimano`) - A coati-like Xochimex trickster with a ringed tail, painted mask markings, and nimble grasping paws.
+- 334 - Axolume (`axolume`) - A glowing axolotl with lantern-like gills, translucent fins, and soft waterlight colors.
+- 335 - Jaglare (`jaglare`) - A jaguar with sun-bright eyes, obsidian spots, and an aggressive low hunting posture.
+- 336 - Macawtl (`macawtl`) - A feathered macaw-serpent hybrid with vivid wings, a curling tail, and Eagle Serpent ceremonial color.
+- 337 - Ceibler (`ceibler`) - A ceiba-tree forest creature with bark plates, rootlike feet, and small leaves or flowers sprouting from its back.
+- 338 - Motmora (`motmora`) - A nocturnal moth or motmot spirit with long tail streamers, deep jungle colors, and quick evasive energy.
+- 339 - Dunefennec (`dunefennec`) - A fennec fox adapted to dunes, with oversized ears, sand-colored fur, and a scarf or bead accent.
+- 340 - Caraviper (`caraviper`) - A desert viper with saddlebag markings, caravan-bell details, and a patient coiled silhouette.
+- 341 - Reedbull (`reedbull`) - A marsh bull with reed mane, clay-dark hide, and strong defensive shoulders.
+- 342 - Ibisking (`ibisking`) - A regal ibis with a small crown, long curved beak, and blue-gold Hammurabian trim.
+- 343 - Rockhyrax (`rockhyrax`) - A compact rock hyrax with stone-like plates, cliff-clinging paws, and warm desert rock colors.
+- 344 - Datebat (`datebat`) - A bat with date-palm wing shapes, fruit-cluster accents, and a quick dusky silhouette.
+- 345 - Ibiset (`ibiset`) - A Kemet ibis avatar with lapis and gold markings, a poised stance, and sacred scribe energy.
+- 346 - Crocora (`crocora`) - A crocodile-cobra hybrid with a hooded neck, armored back, and heavy riverbank bulk.
+- 347 - Moonseal (`moonseal`) - A seal with crescent moon markings, pale blue-gray fur, and a calm arctic-water expression.
+- 348 - Terniq (`terniq`) - A swift white tern with ice-blue feather tips, dark eye markings, and an agile cold-coast profile.
+- 349 - Emberu (`emberu`) - An emu-like bird with ember-tipped feathers, ash-gray legs, and a hot red-gold crest.
+- 350 - Wattlefox (`wattlefox`) - A fox with golden wattle blossoms around its ears and tail, warm fur, and alert Red Sun posture.
+- 351 - Cassowrath (`cassowrath`) - A fierce cassowary spirit with a blade-like casque, heavy talons, and stormy rainforest colors.
+- 352 - Gliderune (`gliderune`) - A sugar-glider-like creature with rune-marked wing membranes and a light, airborne pose.
+- 353 - Slothren (`slothren`) - A moss-backed sloth with leafy fur, slow wise eyes, and humid Gran Columbia forest tones.
+- 354 - Riverdillo (`riverdillo`) - A river armadillo with a wet shell, paddle-like paws, and mud-brown armor bands.
+- 355 - Vicunero (`vicu_ero`) - A nimble highland vicuna-like creature with woven sash accents, soft wool, and mountain-step colors.
+- 356 - Condorune (`condorune`) - A condor with rune-patterned wings, broad gliding posture, and high Andes ceremonial markings.
+- 357 - Dodobold (`dodobold`) - A dodo-kobold hybrid with a stout beak, little tool belt, and plateau scavenger charm.
+- 358 - Squirricerat (`squirricerat`) - A horned squirrel with a tiny ceratops frill, nut-hoarding cheeks, and sturdy little claws.
+- 359 - Reeffin (`reeffin`) - A reef fish or dolphin creature with coral-like fins, bright tropical markings, and sleek aquatic motion.
+- 360 - Mantarrow (`mantarrow`) - A manta ray with an arrowhead body shape, long trailing tail, and gliding Pelagora silhouette.
+- 361 - Nenekea (`nenekea`) - A bright island bird blending goose and parrot traits, with a hooked beak and spice-market colors.
+- 362 - Cocoskink (`cocoskink`) - A skink with coconut-shell armor, glossy scales, and a low sunning posture.
+- 363 - Frondbat (`frondbat`) - A bat with palm-frond wings, fruit-dark fur, and a quick darting tropical profile.
+- 364 - Talosling (`talosling`) - A small bronze automaton inspired by Talos, with riveted limbs and a warm inner glow.
+- 365 - Aegis Boar (`aegis_boar`) - A heavily armored boar with shield-like shoulder plates, bronze tusk guards, and a defensive charge pose.
+- 366 - Tarnhelm (`tarnhelm`) - A helmeted Nornheim tarn spirit with lake-dark metal, misty eye slits, and mirrored water highlights.
+- 367 - Bellmare (`bellmare`) - A ghostly mare with bell harnesses, pale mane ribbons, and a solemn Bretonreach folklore mood.
+- 368 - Reliquary Dove (`reliquary_dove`) - A dove with a gold reliquary breastplate, white wings, and sacred Rheinland church ornament.
+- 369 - Iron Kobold (`iron_kobold`) - A compact kobold in riveted iron armor, carrying miner or smith tools and a stubborn stance.
+- 370 - Koschei Chain (`koschei_chain`) - A chain-bound skeletal charm creature with iron links, old magic, and Rodinian winter colors.
+- 371 - Tin Jack (`tin_jack`) - A tin toy jack-in-the-box creature with spring limbs, painted panels, and a playful Borealian oddness.
+- 372 - Peacepipe Bison (`peacepipe_bison`) - A ceremonial bison with pipe-smoke motifs, beadwork bands, and a calm protective mass.
+- 373 - Bronzejaw Ox (`bronzejaw_ox`) - An ox with a bronze jawplate, heavy shoulders, and engraved Hammurabian metalwork.
+- 374 - Ark Seraph (`ark_seraph`) - A winged ark guardian with gold trim, folded cherub-like wings, and a solemn covenant presence.
+- 375 - Scarabronze (`scarabronze`) - A bronze scarab beetle with engraved shell plates, turquoise insets, and compact guardian energy.
+- 376 - Aurorantler (`aurorantler`) - A caribou or deer whose antlers glow like aurora ribbons over pale winter fur.
+- 377 - Mirror Crane (`mirror_crane`) - A crane with reflective feathers, lacquered red accents, and a poised water-garden stance.
+- 378 - Sword Koi (`sword_koi`) - A koi with blade-like fins, polished scales, and a disciplined duelist's motion.
+- 379 - Temple Mantis (`temple_mantis`) - A mantis with temple-guardian posture, carved-stone forearms, and saffron-green markings.
+- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound`) - A black stone war hound with blade-edged back plates and bright volcanic eyes.
+- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent`) - A serpent covered in turquoise mosaic scales, with jade eyes and a coiled temple-guardian stance.
+- 382 - Censer Lion (`censer_lion`) - A lion with an incense-smoke mane, brass censer ornaments, and a dignified desert shrine profile.
+- 383 - Date Palm Beetle (`date_palm_beetle`) - A beetle with palm-frond shell ridges, date-cluster markings, and glossy rainforest-brown armor.
+- 384 - Conch Mail Turtle (`conch_mail_turtle`) - A turtle armored in conch-shell mail, with coral trim and slow Pelagora guardian weight.
+- 385 - Ironbeak (`ironbeak`) - A strong Red Sun bird with an iron beak, dark metal casque, and bold red field markings.
+- 386 - Tin Squirrel (`tin_squirrel`) - A tinplate squirrel with a pinecone tail, tiny rivets, and quick mechanical paws.
+- 387 - Anvil Tortoise (`anvil_tortoise`) - A tortoise with an anvil-shaped shell, forge-dark skin, and a low immovable stance.
+- 388 - Needlehog (`needlehog`) - A hedgehog with sewing-needle quills, patchwork cloth accents, and a careful defensive curl.
+- 389 - Mailtoad (`mailtoad`) - A toad with chainmail-like warts, heavy throat pouch, and a squat armored guard pose.
+- 390 - Sawfin (`sawfin`) - A Pelagora fish or shark with a saw-blade dorsal fin, armored snout, and decisive cutting silhouette.
+- 391 - Brasshorn Ram (`brasshorn_ram`) - A Bretonreach ram with polished brass spiral horns, woolly bulk, and bell-metal ornament.
+- 392 - Coin Magpie (`coin_magpie`) - A magpie with coin-bright wing speckles, a collector's stare, and small shiny trinkets tucked in its feathers.
+- 393 - Rust Otter (`rust_otter`) - A river otter with oxidized metal patches, tool-user paws, and Rodinian dockyard colors.
+- 394 - Halberelk (`halberelk`) - An elk with halberd-shaped antlers, winter hide, and a dignified Sila Council sentinel pose.
+
 ## Pelagora Seed Names Also Missing Graphics
 
 These names come from `sql/pelagora_content.sql`, which conflicts with item IDs 223-234 in `sql/items.sql`.

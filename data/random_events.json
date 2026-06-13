@@ -192,7 +192,7 @@
         "type": "breeding_deposit"
       }
     ],
-    "weight": 5
+    "weight": 75
   },
   {
     "id": "daycare_tick",
@@ -201,10 +201,10 @@
     "effects": [
       {
         "type": "breeding_tick",
-        "chance": 1
+        "chance": 10
       }
     ],
-    "weight": 5
+    "weight": 75
   },
   {
     "id": "new_creature_sighting",
@@ -310,6 +310,26 @@
         "map_name": "Pelagora",
         "action_label": "Travel to Pelagora",
         "url": "?pg=pelagora"
+      }
+    ],
+    "weight": 8
+  },
+  {
+    "id": "stillwater_hollow_turnoff",
+    "title": "The Road Stops Being Repaired",
+    "message": "Past the bright edge of Meridian Arc, you notice a county road that no map wants to name. The pavement buckles, the fence posts lean inward, and a cracked church bell answers from a hollow where the fields do not move. By the time you find the town sign, the paint has almost peeled away: Stillwater Hollow.",
+    "conditions": {
+      "requires_exploration": true,
+      "requires_nation": "United free Republic of Borealia",
+      "requires_locked_map": "stillwater_hollow"
+    },
+    "effects": [
+      {
+        "type": "unlock_map",
+        "map_key": "stillwater_hollow",
+        "map_name": "Stillwater Hollow",
+        "action_label": "Travel to Stillwater Hollow",
+        "url": "?pg=stillwater-hollow"
       }
     ],
     "weight": 8

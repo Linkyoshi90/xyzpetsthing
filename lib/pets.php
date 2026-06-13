@@ -11,14 +11,19 @@ function get_user_pets(int $user_id, bool $include_inactive = false): array {
     if (!$include_inactive) {
         $where .= " AND COALESCE(pi.inactive, 0) = 0";
     }
+    $where .= " AND ap_owned.creature_id IS NULL";
     return q(
         "SELECT pi.pet_instance_id,
                 pi.species_id,
                 pi.nickname,
                 pi.color_id,
                 pi.level,
+                pi.experience,
                 pi.hp_current,
                 pi.hp_max,
+                pi.atk,
+                pi.def,
+                pi.initiative,
                 pi.gender,
                 pi.hunger,
                 pi.happiness,
@@ -27,12 +32,17 @@ function get_user_pets(int $user_id, bool $include_inactive = false): array {
                 pi.inactive,
                 ps.region_id,
                 ps.species_name,
+                ps.base_hp,
+                ps.base_atk,
+                ps.base_def,
+                ps.base_init,
                 r.region_name,
                 pc.color_name
            FROM pet_instances pi
            JOIN pet_species ps ON ps.species_id = pi.species_id
            LEFT JOIN regions r ON r.region_id = ps.region_id
            LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
+           LEFT JOIN abandoned_pets ap_owned ON ap_owned.creature_id = pi.pet_instance_id
           {$where}",
         [$user_id]
     )->fetchAll(PDO::FETCH_ASSOC);
@@ -181,7 +191,9 @@ function get_owned_pet(int $user_id, int $pet_id, bool $include_inactive = false
            FROM pet_instances pi
            JOIN pet_species ps ON ps.species_id = pi.species_id
            LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
-          WHERE pi.owner_user_id = ? AND pi.pet_instance_id = ?{$inactiveClause}",
+           LEFT JOIN abandoned_pets ap_owned ON ap_owned.creature_id = pi.pet_instance_id
+          WHERE pi.owner_user_id = ? AND pi.pet_instance_id = ?{$inactiveClause}
+            AND ap_owned.creature_id IS NULL",
         [$user_id, $pet_id]
     )->fetch(PDO::FETCH_ASSOC);
 

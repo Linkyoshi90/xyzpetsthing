@@ -63,7 +63,9 @@ function get_page_location_map(): array {
         'ie_paint_shack' => 'Itzam Empire',
         'kemet' => 'Kemet',
         'k-bazaar-tent' => 'Kemet',
+        'k-bazaar-goods' => 'Kemet',
         'k_paint_shack' => 'Kemet',
+        'cups-and-balls' => 'Kemet',
         'ldk' => 'Lotus-Dragon Kingdom',
         'ldk-tea-trinkets' => 'Lotus-Dragon Kingdom',
         'ldk_paint_shack' => 'Lotus-Dragon Kingdom',
@@ -101,8 +103,12 @@ function get_page_location_map(): array {
         'pelagora-divers' => 'Pelagora',
         'srl_paint_shack' => 'Spice Route League',
         'urb' => 'United free Republic of Borealia',
+        'urb-adventure' => 'United free Republic of Borealia',
+        'urb-adventure2' => 'United free Republic of Borealia',
         'urb-corner-mart' => 'United free Republic of Borealia',
         'urb_paint_shack' => 'United free Republic of Borealia',
+        'stillwater-hollow' => 'Stillwater Hollow',
+        'stcr-shop' => 'Stillwater Hollow',
         'xochimex' => 'Xochimex',
         'xm-flower-market' => 'Xochimex',
         'xm_paint_shack' => 'Xochimex',
@@ -159,8 +165,10 @@ function get_page_parent_map_map(): array {
         'kemet' => 'kemet',
         'k-adventure' => 'kemet',
         'k-bazaar-tent' => 'kemet',
+        'k-bazaar-goods' => 'k-bazaar-tent',
         'k_paint_shack' => 'kemet',
         'k_shelter' => 'kemet',
+        'cups-and-balls' => 'k-bazaar-tent',
         'ldk' => 'ldk',
         'ldk_breeding' => 'ldk',
         'ldk-tea-trinkets' => 'ldk',
@@ -200,6 +208,8 @@ function get_page_parent_map_map(): array {
         'urb-adventure2' => 'urb',
         'urb-corner-mart' => 'urb',
         'urb_paint_shack' => 'urb',
+        'stillwater-hollow' => 'urb',
+        'stcr-shop' => 'stillwater-hollow',
         'xm-flower-market' => 'xochimex',
         'xm_paint_shack' => 'xochimex',
         'xochimex' => 'xochimex',
@@ -212,6 +222,20 @@ function get_page_parent_map_map(): array {
         'ynk-ramen' => 'yamanokubo',
         'ynk_paint_shack' => 'yamanokubo',
     ];
+}
+
+function get_page_display_name(string $pg, ?array $location = null): string {
+    $labels = [
+        'k-bazaar-tent' => 'Kemet Bazaar Tent',
+        'k-bazaar-goods' => 'Bazaar Goods',
+        'cups-and-balls' => 'Cups and Balls',
+    ];
+
+    if (isset($labels[$pg])) {
+        return $labels[$pg];
+    }
+
+    return $location['nation'] ?? $pg;
 }
 
 function get_page_back_to_country_map(string $pg): ?array {
@@ -230,9 +254,11 @@ function get_page_back_to_country_map(string $pg): ?array {
         return null;
     }
 
+    $parentLabel = get_page_display_name($parentPage, $parentLocation);
+
     return [
         'href' => '?pg=' . $parentPage,
-        'label' => '← Back to ' . $parentLocation['nation'],
+        'label' => '← Back to ' . $parentLabel,
         'nation' => $parentLocation['nation'],
         'page' => $parentPage,
     ];

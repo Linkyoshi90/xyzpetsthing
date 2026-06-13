@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "reward_profile_key": "mvp_seasonal_small_cash_v1",
+  "name": "MVP Seasonal Points Plus Small Cash-Dosh",
+  "currency": {
+    "currency_id": 1,
+    "code": "DOSH",
+    "short_name": "Dosh",
+    "long_name": "Cash-Dosh"
+  },
+  "eligibility": {
+    "requires_persistent_user": true,
+    "temporary_users_can_play_unrewarded": true,
+    "minimum_turns_completed": 4,
+    "minimum_round_completion_percent": 0.66,
+    "forfeit_reward_policy": "no_cash_dosh_no_completion_bonus",
+    "cancelled_match_reward_policy": "no_rewards"
+  },
+  "seasonal_points": {
+    "primary_reward": true,
+    "placement_points": {
+      "1": 100,
+      "2": 75,
+      "3": 55,
+      "4": 40
+    },
+    "completion_bonus": 20,
+    "turn_completed_points": 3,
+    "turn_completed_points_cap": 18,
+    "friend_match_multiplier": 1.0,
+    "random_match_multiplier": 1.0
+  },
+  "cash_dosh": {
+    "secondary_reward": true,
+    "ledger_reason": "board_game_settlement",
+    "cap_scope": "board_game_only",
+    "placement_bonus": {
+      "1": 80,
+      "2": 55,
+      "3": 35,
+      "4": 25
+    },
+    "completion_bonus": 20,
+    "daily_cap": 250,
+    "weekly_cap": 1000,
+    "minimum_award": 0,
+    "rounding": "floor"
+  },
+  "metadata_required": [
+    "match_id",
+    "match_type",
+    "board_key",
+    "ruleset_key",
+    "season_key",
+    "placement",
+    "net_worth",
+    "turns_completed",
+    "cash_dosh_before_cap",
+    "cash_dosh_after_cap",
+    "daily_cap_remaining",
+    "weekly_cap_remaining"
+  ]
+}

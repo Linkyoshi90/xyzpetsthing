@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Build a list of available gender/variant combinations per creature
 $image_variants = [];
-foreach (glob(__DIR__ . '/../images/*_*_*.webp') as $file) {
+foreach (glob(__DIR__ . '/../images/creatures/*_*_*.webp') as $file) {
     $name = basename($file, '.webp');
     if (preg_match('/^(.*)_([mf])_(.+)$/', $name, $m)) {
         // Normalize the creature slug to lowercase so it matches the
@@ -382,11 +382,11 @@ Pishtaco: Pishtaxa, Cordillon, Nightprow, Andesly, Dusktrader
   const toTopBtn = $('#toTopBtn');
 
   // Default artwork image for every base (change this later per-base if desired)
-  const IMAGE_BASE = 'images/';
+  const IMAGE_BASE = 'images/creatures/';
   const DEFAULT_GENDER = 'f';
   const DEFAULT_VARIANT = 'blue';
   const IMAGE_EXT = '.webp';
-  const FALLBACK_IMAGE = 'images/tengu.webp';
+  const FALLBACK_IMAGE = 'images/not_available.webp';
   const IMAGE_VARIANTS = <?= json_encode($image_variants) ?>;
   const AVAILABLE_SPECIES = <?= json_encode($allowedSlugs) ?>;
   const variantsFor = (base) => {

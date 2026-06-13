@@ -18,6 +18,7 @@ function render_regional_shop_front(array $config): void
         'missing_item' => $config['missing_item'] ?? 'That item is no longer sold here.',
         'stock_limit' => $config['stock_limit'] ?? 'You can only buy up to %d x %s today.',
         'checkout_failed' => $config['checkout_failed'] ?? 'The counter could not complete the purchase. Please try again.',
+        'checkout_success' => $config['checkout_success'] ?? 'The clerk sets your basket aside at the counter.',
         'success' => $config['success'] ?? 'You bought %d x %s for %s %s.',
     ]);
 
@@ -35,5 +36,10 @@ function render_regional_shop_front(array $config): void
         'empty_text' => $config['empty_text'] ?? 'Nothing is stocked here right now.',
         'aria_label' => $config['aria_label'] ?? 'Available regional goods',
         'submit_label' => $config['submit_label'] ?? 'Buy',
+        'cart_title' => $config['cart_title'] ?? 'Your Basket',
+        'cart_help' => $config['cart_help'] ?? 'Adjust quantities or remove items before you pay.',
+        'cart_empty' => $config['cart_empty'] ?? 'Select an item to begin filling your basket.',
+        'cart_aria_label' => $config['cart_aria_label'] ?? 'Shopping basket',
+        'sending_text' => $config['sending_text'] ?? 'Sending your basket to the counter...',
     ]);
 }

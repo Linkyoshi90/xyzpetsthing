@@ -13,8 +13,8 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'petting2','map','vote','games','friends','bank','user-chat','paint_shack','gacha',
     'user-guide','encyclopedia','petting_fullscreen','pettingBla',
     // Games
-    'wheel-of-fate','fruitstack','harmonflap','garden-invaderz','runngunner',
-    'wanted-alive','blackjack','paddle-panic','sudoku',
+    'wheel-of-fate','fruitstack','harmonflap','kid-puzzle','garden-invaderz','runngunner',
+    'wanted-alive','blackjack','cups-and-balls','paddle-panic','sudoku',
     'fishing','minigolf','battle_minigame','drop_game','harmonflap',
     // Continents
     'auronia','borealia','dawnmarch','gulfbelt','moana_crown',
@@ -25,7 +25,7 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'ie','kemet','ldk','nornheim','pelagora','rsc',
     'rheinland','rt','sie','sc',
     'stap','srl',
-    'urb','xochimex','yamanokubo','yn',
+    'urb','stillwater-hollow','xochimex','yamanokubo','yn',
     // country subsections
     'aa-adventure','aa-pizza','aa-library','aa_paint_shack','aa-wof','aest-shop',
     'bm_paint_shack',
@@ -55,14 +55,19 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'yn_paint_shack',
     // regional shops
     'bm-market','cc-souq','esd-feather-flint','esl-olive-lamp','fom-lockside-shop',
-    'gc-plaza-kiosk','h-ledger-house','ie-canopy-relic','k-bazaar-tent',
+    'gc-plaza-kiosk','h-ledger-house','ie-canopy-relic','k-bazaar-tent','k-bazaar-goods',
     'ldk-tea-trinkets','nh-frostmarket','rsc-roadhouse','rt-winter-pantry',
     'sc-ice-cache','sie-sun-terrace','srl-spice-dock','stap-trading-blanket',
-    'urb-corner-mart','xm-flower-market','yn-keeping-place-shop',
+    'urb-corner-mart','stcr-shop','xm-flower-market','yn-keeping-place-shop',
 ];
 if(!in_array($pg,$allowed,true)) $pg = 'login';
 if($pg === 'petting' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require __DIR__.'/pages/petting.php';
+  exit;
+}
+if($pg === 'pet' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/pet.php';
   exit;
 }
 if(current_user()) {
@@ -92,6 +97,11 @@ if($pg === 'blackjack' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require __DIR__.'/pages/blackjack_action.php';
   exit;
 }
+if($pg === 'cups-and-balls' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/cups-and-balls.php';
+  exit;
+}
 if($pg === 'aa-pizza' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/aa-pizza.php';
@@ -105,6 +115,19 @@ if($pg === 'aest-shop' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if($pg === 'ynk-ramen' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/ynk-ramen.php';
+  exit;
+}
+$basket_shop_pages = [
+  'aa-library','rl-kiosk','pelagora-shop','pelagora-library',
+  'bm-market','cc-souq','esd-feather-flint','esl-olive-lamp','fom-lockside-shop',
+  'gc-plaza-kiosk','h-ledger-house','ie-canopy-relic','k-bazaar-goods',
+  'ldk-tea-trinkets','nh-frostmarket','rsc-roadhouse','rt-winter-pantry',
+  'sc-ice-cache','sie-sun-terrace','srl-spice-dock','stap-trading-blanket',
+  'urb-corner-mart','stcr-shop','xm-flower-market','yn-keeping-place-shop',
+];
+if(in_array($pg, $basket_shop_pages, true) && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/'.$pg.'.php';
   exit;
 }
 if($pg === 'dress' && $_SERVER['REQUEST_METHOD'] === 'POST') {

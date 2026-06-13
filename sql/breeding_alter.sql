@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS breeding (
   father_best_stat VARCHAR(16) NULL,
   mother_best_stat VARCHAR(16) NULL,
   PRIMARY KEY (breed_instance_id),
-  KEY ix_breeding_owner (owner_user_id),
+  UNIQUE KEY uq_breeding_owner (owner_user_id),
   CONSTRAINT fk_breeding_owner FOREIGN KEY (owner_user_id) REFERENCES users(user_id) ON DELETE CASCADE,
   CONSTRAINT fk_breeding_father FOREIGN KEY (father) REFERENCES pet_instances(pet_instance_id) ON DELETE SET NULL,
   CONSTRAINT fk_breeding_mother FOREIGN KEY (mother) REFERENCES pet_instances(pet_instance_id) ON DELETE CASCADE,

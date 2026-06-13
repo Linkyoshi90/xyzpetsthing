@@ -18,6 +18,24 @@ function temp_user_get_pets(): array {
     return array_values($store['pets']);
 }
 
+function temp_user_rename_pet(int $petId, string $name): bool {
+    if ($petId <= 0 || $name === '') {
+        return false;
+    }
+
+    $store = &temp_user_data();
+    foreach ($store['pets'] as &$pet) {
+        if ((int)($pet['pet_instance_id'] ?? 0) === $petId) {
+            $pet['nickname'] = $name;
+            unset($pet);
+            return true;
+        }
+    }
+    unset($pet);
+
+    return false;
+}
+
 function temp_user_add_inventory_item(int $itemId, int $quantity): void {
     if ($itemId <= 0 || $quantity === 0) {
         return;

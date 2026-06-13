@@ -25,6 +25,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $errors[] = $result['message'];
         }
+    } elseif ($action === 'return_pair') {
+        $pairId = input_int($_POST['breed_instance_id'] ?? 0, 1);
+        $result = breeding_return_pair($uid, $pairId);
+        if ($result['ok']) {
+            $messages[] = $result['message'];
+        } else {
+            $errors[] = $result['message'];
+        }
+    } elseif ($action === 'return_pet') {
+        $petId = input_int($_POST['pet_id'] ?? 0, 1);
+        $result = breeding_return_inactive_pet($uid, $petId);
+        if ($result['ok']) {
+            $messages[] = $result['message'];
+        } else {
+            $errors[] = $result['message'];
+        }
     } elseif ($action === 'hatch') {
         $hatchedNow = breeding_hatch_ready_eggs($uid);
         if ($hatchedNow) {
@@ -48,6 +64,7 @@ $inactivePets = array_values(array_filter($allPets, static function (array $pet)
     return (int)($pet['inactive'] ?? 0) === 1;
 }));
 $allPairs = breeding_active_pairs($uid);
+$hasBreedingSlot = count($allPairs) < BREEDING_MAX_ACTIVE_PAIRS_PER_USER;
 $pairedPetIds = [];
 foreach ($allPairs as $pair) {
     $motherId = (int)($pair['mother'] ?? 0);
@@ -71,7 +88,9 @@ foreach ($allPairs as $pair) {
 
 <div class="card glass">
   <h2>Begin a Breeding Session</h2>
-  <?php if (!$activePets): ?>
+  <?php if (!$hasBreedingSlot): ?>
+    <p><?= htmlspecialchars(breeding_limit_message()) ?></p>
+  <?php elseif (!$activePets): ?>
     <p>You need at least one active creature to start breeding.</p>
   <?php else: ?>
   <form method="post" class="form">
@@ -121,6 +140,7 @@ foreach ($allPairs as $pair) {
           <th>Father</th>
           <th>Eggs</th>
           <th>Time to hatch</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
@@ -136,6 +156,19 @@ foreach ($allPairs as $pair) {
                 Ready to hatch
               <?php else: ?>
                 <?= (int)$pair['time_to_hatch'] ?> day(s)
+              <?php endif; ?>
+            </td>
+            <td>
+              <?php if ((int)$pair['egg_count'] <= 0): ?>
+                <form method="post">
+                  <input type="hidden" name="action" value="return_pair">
+                  <input type="hidden" name="breed_instance_id" value="<?= (int)$pair['breed_instance_id'] ?>">
+                  <button type="submit" class="btn">Take back</button>
+                </form>
+              <?php elseif ((int)$pair['time_to_hatch'] <= 0): ?>
+                Collect egg first
+              <?php else: ?>
+                Egg in progress
               <?php endif; ?>
             </td>
           </tr>
@@ -155,6 +188,7 @@ foreach ($allPairs as $pair) {
             <th>Name</th>
             <th>Species</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -167,6 +201,17 @@ foreach ($allPairs as $pair) {
                   Part of a breeding pair
                 <?php else: ?>
                   Resting in daycare
+                <?php endif; ?>
+              </td>
+              <td>
+                <?php if (isset($pairedPetIds[(int)$pet['pet_instance_id']])): ?>
+                  Use pair action
+                <?php else: ?>
+                  <form method="post">
+                    <input type="hidden" name="action" value="return_pet">
+                    <input type="hidden" name="pet_id" value="<?= (int)$pet['pet_instance_id'] ?>">
+                    <button type="submit" class="btn">Take back</button>
+                  </form>
                 <?php endif; ?>
               </td>
             </tr>

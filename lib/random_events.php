@@ -8,6 +8,7 @@ require_once __DIR__.'/map_unlocks.php';
 const RANDOM_EVENT_FILE = __DIR__ . '/../data/random_events.json';
 const RANDOM_EVENT_CHANCE_DEFAULT = 6; // % chance on regular pages
 const RANDOM_EVENT_CHANCE_EXPLORING = 18; // % chance while exploring a nation page
+const RANDOM_EVENT_NOTIFICATION_LIMIT = 12;
 
 function random_event_catalog(): array
 {
@@ -67,6 +68,12 @@ function maybe_trigger_random_event(array $user, string $page = ''): ?array
         if (!empty($conditions['requires_locked_map']) && has_map_unlock($userId, (string)$conditions['requires_locked_map'])) {
             return false;
         }
+        if (random_event_has_effect_type($event, 'breeding_deposit') && !random_event_user_has_breeding_without_egg($userId)) {
+            return false;
+        }
+        if (random_event_has_effect_type($event, 'breeding_tick') && !random_event_user_has_breeding_egg_in_progress($userId)) {
+            return false;
+        }
         if (!empty($conditions['requires_region_battle']) || random_event_has_effect_type($event, 'battle')) {
             if (!$isExploring || $nation === '') {
                 return false;
@@ -89,11 +96,93 @@ function maybe_trigger_random_event(array $user, string $page = ''): ?array
     if (!$event) {
         return null;
     }
-    return apply_random_event_effects($event, $user, [
+    $result = apply_random_event_effects($event, $user, [
         'page' => $page,
         'location' => $location,
         'is_exploring' => $isExploring,
     ]);
+    if ($result) {
+        $notificationId = random_event_log_notification($result, $page);
+        if ($notificationId !== '') {
+            $result['notification_id'] = $notificationId;
+        }
+    }
+    return $result;
+}
+
+function random_event_notifications(): array
+{
+    $events = $_SESSION['random_event_notifications'] ?? [];
+    if (!is_array($events)) {
+        return [];
+    }
+    return array_values(array_filter($events, 'is_array'));
+}
+
+function random_event_dismiss_notification(string $id): int
+{
+    $id = trim($id);
+    $events = random_event_notifications();
+    if ($id === '') {
+        return count($events);
+    }
+
+    $events = array_values(array_filter($events, static function (array $event) use ($id): bool {
+        return (string)($event['id'] ?? '') !== $id;
+    }));
+    $_SESSION['random_event_notifications'] = $events;
+    return count($events);
+}
+
+function random_event_log_notification(array $event, string $page = ''): string
+{
+    $title = trim((string)($event['title'] ?? 'Random Encounter'));
+    $message = trim((string)($event['message'] ?? ''));
+    $variant = strtolower(trim((string)($event['variant'] ?? '')));
+    if (!preg_match('/^[a-z0-9_-]{1,40}$/', $variant)) {
+        $variant = '';
+    }
+    $details = array_values(array_filter(array_map(static function ($detail): string {
+        return trim((string)$detail);
+    }, is_array($event['details'] ?? null) ? $event['details'] : [])));
+    $actions = array_values(array_filter(array_map(static function ($action): ?array {
+        if (!is_array($action)) {
+            return null;
+        }
+        $label = trim((string)($action['label'] ?? 'Open'));
+        $url = trim((string)($action['url'] ?? '#'));
+        if ($label === '' || $url === '') {
+            return null;
+        }
+        $cleanAction = [
+            'label' => $label,
+            'url' => $url,
+        ];
+        if (!empty($action['dismiss_on_click'])) {
+            $cleanAction['dismiss_on_click'] = true;
+        }
+        return $cleanAction;
+    }, is_array($event['actions'] ?? null) ? $event['actions'] : [])));
+
+    $log = random_event_notifications();
+    $notification = [
+        'id' => bin2hex(random_bytes(6)),
+        'title' => $title !== '' ? $title : 'Random Encounter',
+        'message' => $message,
+        'details' => array_slice($details, 0, 6),
+        'actions' => array_slice($actions, 0, 4),
+        'page' => $page,
+        'occurred_at' => time(),
+        'time_label' => date('H:i'),
+    ];
+    if ($variant !== '') {
+        $notification['variant'] = $variant;
+    }
+
+    array_unshift($log, $notification);
+
+    $_SESSION['random_event_notifications'] = array_slice($log, 0, RANDOM_EVENT_NOTIFICATION_LIMIT);
+    return (string)$notification['id'];
 }
 
 function random_event_has_effect_type(array $event, string $type): bool
@@ -110,6 +199,34 @@ function random_event_has_effect_type(array $event, string $type): bool
     }
 
     return false;
+}
+
+function random_event_user_has_breeding_without_egg(int $userId): bool
+{
+    if ($userId <= 0) {
+        return false;
+    }
+
+    return (int)q(
+        "SELECT COUNT(*)
+           FROM breeding
+          WHERE owner_user_id = ? AND egg_count <= 0",
+        [$userId]
+    )->fetchColumn() > 0;
+}
+
+function random_event_user_has_breeding_egg_in_progress(int $userId): bool
+{
+    if ($userId <= 0) {
+        return false;
+    }
+
+    return (int)q(
+        "SELECT COUNT(*)
+           FROM breeding
+          WHERE owner_user_id = ? AND egg_count > 0 AND time_to_hatch > 0",
+        [$userId]
+    )->fetchColumn() > 0;
 }
 
 function pick_weighted_event(array $events): ?array
@@ -179,6 +296,9 @@ function apply_random_event_effects(array $event, array $user, array $context = 
                 break;
             case 'unlock_map':
                 $detail = handle_event_unlock_map_effect($user['id'], $effect);
+                if ($detail) {
+                    $result['variant'] = 'map_reveal';
+                }
                 break;
             case 'battle':
                 $detail = handle_event_battle_effect($effect, $context);
@@ -496,7 +616,7 @@ function handle_event_breeding_deposit_effect(int $user_id, array $effect): ?arr
     return [
         'details' => $details,
         'actions' => [
-            ['label' => 'Visit daycare', 'url' => '?pg=breeding'],
+            ['label' => 'Visit daycare', 'url' => '?pg=ldk_breeding'],
         ],
     ];
 }
@@ -544,7 +664,7 @@ function handle_event_breeding_tick_effect(int $user_id, array $effect): ?array
     return [
         'details' => $details,
         'actions' => [
-            ['label' => 'Visit daycare', 'url' => '?pg=breeding'],
+            ['label' => 'Visit daycare', 'url' => '?pg=ldk_breeding'],
             ['label' => 'View pets', 'url' => '?pg=pet'],
         ],
     ];
@@ -726,17 +846,24 @@ function handle_event_battle_effect(array $effect, array $context = []): ?array
 
     $detail = trim((string)($effect['detail'] ?? 'A wild creature is ready to battle.'));
     $actionLabel = trim((string)($effect['action_label'] ?? 'Start battle'));
+    $returnTo = (string)($_SERVER['REQUEST_URI'] ?? '');
+
+    $query = [
+        'pg' => 'battle_minigame',
+        'battle' => 'wild',
+        'region_id' => $regionId,
+    ];
+    if ($returnTo !== '') {
+        $query['return_to'] = $returnTo;
+    }
 
     return [
         'details' => [$detail],
         'actions' => [
             [
                 'label' => $actionLabel !== '' ? $actionLabel : 'Start battle',
-                'url' => 'index.php?' . http_build_query([
-                    'pg' => 'battle_minigame',
-                    'battle' => 'wild',
-                    'region_id' => $regionId,
-                ]),
+                'url' => 'index.php?' . http_build_query($query),
+                'dismiss_on_click' => true,
             ],
         ],
     ];

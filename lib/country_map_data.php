@@ -426,8 +426,27 @@ function get_country_map_config(string $slug): ?array {
             'back_href' => '?pg=saharene',
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Kemet-inspired patterns and paint.', 'action' => 'Explore', 'href' => '?pg=k_paint_shack', 'color' => '#eab308', 'points' => country_map_rect_points(250, 480, 250, 170, $w, $h)],
+                ['name' => 'Pet Shelter', 'description' => 'Give up a pet for adoption or rescue one waiting for a new home.', 'action' => 'Visit', 'href' => '?pg=k_shelter', 'color' => '#22c55e', 'points' => country_map_rect_points(80, 95, 280, 180, $w, $h)],
                 ['name' => 'Shelter Adventure', 'description' => 'Investigate strange happenings in the local shelter.', 'action' => 'Begin', 'href' => '?pg=k-adventure', 'color' => '#6366f1', 'points' => country_map_rect_points(720, 320, 250, 170, $w, $h)],
-                ['name' => 'Ankhmeru Bazaar Tent', 'description' => 'A desert market tent with lotus sweets, linen wraps, and oasis supplies.', 'action' => 'Shop', 'href' => '?pg=k-bazaar-tent', 'color' => '#f97316', 'points' => country_map_rect_points(1040, 470, 260, 165, $w, $h)],
+                ['name' => 'Ankhmeru Bazaar Tent', 'description' => 'A desert market tent with games, lotus sweets, linen wraps, and oasis supplies.', 'action' => 'Enter', 'href' => '?pg=k-bazaar-tent', 'color' => '#f97316', 'points' => country_map_rect_points(1040, 470, 260, 165, $w, $h)],
+            ],
+        ],
+        'k-bazaar-tent' => [
+            'title' => 'Kemet - Ankhmeru Bazaar Tent',
+            'subtitle' => 'Canvas shade, market calls, and quick hands',
+            'image' => is_file(__DIR__.'/../images/maps/k-bazaar-tent.webp') ? 'images/maps/k-bazaar-tent.webp' : 'images/maps/harmontide-k.webp',
+            'lore' => 'The Ankhmeru Bazaar Tent gathers market goods, street games, and cool shade under dyed canvas.',
+            'lore_sections' => [
+                [
+                    'title' => 'Under the Bazaar Canvas',
+                    'html' => '<p><strong>The Ankhmeru Bazaar Tent</strong> is pitched where the market lane widens and the river wind still reaches the awnings. Linen walls ripple in saffron and lapis stripes; bead curtains click at every entrance; brass lamps keep the shade golden even at noon. Traders sell lotus sweets and desert glass from low tables while performers work the passing crowd with jokes, quick hands, and polished cups.</p><p>This is the playful side of Kemet commerce: still measured, still watched by the Medjay, but loud enough that a little risk feels like part of the song. Count your coins, keep your smile, and watch the cup you think you are watching.</p>',
+                ],
+            ],
+            'back_label' => 'Back to Kemet',
+            'back_href' => '?pg=kemet',
+            'areas' => [
+                ['name' => 'Bazaar Goods', 'description' => 'Scarab charms, linen wraps, honey cakes, river reeds, desert glass, and miniatures.', 'action' => 'Shop', 'href' => '?pg=k-bazaar-goods', 'color' => '#f59e0b', 'points' => country_map_rect_points(455, 395, 300, 180, $w, $h)],
+                ['name' => 'Cups and Balls Table', 'description' => 'Bet your Cash-Dosh and follow the hidden ball through three escalating rounds.', 'action' => 'Play', 'href' => '?pg=cups-and-balls', 'color' => '#ef4444', 'points' => country_map_rect_points(845, 395, 320, 180, $w, $h)],
             ],
         ],
         'ldk' => [
@@ -858,6 +877,46 @@ function get_country_map_config(string $slug): ?array {
                 ['name' => 'Meridian Corner Mart', 'description' => 'A neat city-corner shop for everyday Borealian supplies.', 'action' => 'Shop', 'href' => '?pg=urb-corner-mart', 'color' => '#22c55e', 'points' => country_map_rect_points(1060, 500, 250, 160, $w, $h)],
             ],
         ],
+        'stillwater-hollow' => [
+            'title' => 'United free Republic of Borealia - Stillwater Hollow',
+            'subtitle' => 'Where the road stops keeping promises',
+            'image' => is_file(__DIR__.'/../images/maps/harmontide-stillwater-hollow.png') ? 'images/maps/harmontide-stillwater-hollow.png' : 'images/maps/harmontide-urb.webp',
+            'width' => 1672,
+            'height' => 941,
+            'hint' => 'Only one counter still keeps its light on.',
+            'lore' => 'Stillwater Hollow is a quiet, damaged town far outside Meridian Arc, known for still fields, sealed houses, and travelers who are not always seen leaving.',
+            'lore_sections' => [
+                [
+                    'title' => 'Overview',
+                    'html' => '<p><strong>Stillwater Hollow</strong> sits far from the bright arteries of the URB, beyond easy reach of the capital and well past the point where the roads stop being repaired on schedule. It is a quiet place of leaning barns, shuttered porches, church bells with cracked voices, and fields that seem too still even when the wind moves through them.</p><p>Travelers sometimes stop there for fuel, directions, or a night of rest. Not all of them are seen leaving. The locals still smile at strangers, still wave from porches, and still insist nothing is wrong. The hollow is patient enough to make that sound almost true.</p>',
+                ],
+                [
+                    'title' => 'Founders and Silence',
+                    'html' => '<p>The people of Stillwater Hollow speak softly and keep to themselves. Generations ago, their founders turned their backs on modern society, calling the outside world rotten, faithless, and unnatural. Over time, that rejection curdled into something more desperate.</p><p>Bloodlines folded inward, old taboos were buried under silence, and the boundary between household, livestock, and kin became something no one in town was willing to name. Those who suffered most from it learned early that shame was treated as a family heirloom.</p>',
+                ],
+                [
+                    'title' => 'Bad Ground',
+                    'html' => '<p>What made Stillwater Hollow truly infamous was not only what its people did, but what the land did in return. Forgotten toxic waste, military dumping, and nuclear tests in the surrounding hills seeped into the soil, the wells, and the bodies of anything born there.</p><p>Things that should never have survived began to breathe. Some were hidden in cellars and barns. Some were abandoned in the woods. Some grew clever enough to understand that they had been made from loneliness, cruelty, and denial.</p>',
+                ],
+                [
+                    'title' => 'Signs Around Town',
+                    'html' => '<ul><li><strong>Locked nursery doors</strong> with scratches low on the paint and lullabies that stop when someone enters the hall.</li><li><strong>Family portraits</strong> where faces have been scraped away, leaving only hands on shoulders and stiff Sunday clothes.</li><li><strong>Hoofprints outside bedroom windows</strong> even after dry weather, always facing the house and rarely leading away.</li><li><strong>Children who flinch</strong> when called by the wrong name, then correct themselves before an adult has to.</li><li><strong>Wells that taste flat</strong> no matter how cold the bucket comes up, as if the water has forgotten how to move.</li></ul>',
+                ],
+                [
+                    'title' => 'The Hollow Now',
+                    'html' => '<p>By the time the truth reaches the player, Stillwater Hollow is less a town than a wound pretending to be a home. Its horror is not loud at first. It waits in porch shadows, in the clean place on a dusty shelf where something was recently moved, in the way every local conversation bends around certain rooms and certain births.</p><p>Everyone in Stillwater Hollow knows that something bad is always going down, and that the water has been still for far too long. The town has survived by denial, but denial has learned to walk back out of the cellar.</p>',
+                ],
+                [
+                    'title' => "Traveler's Note",
+                    'html' => '<p>Do not drink from private wells. Do not accept directions that include a road with no sign. If a porch light turns on behind you, keep walking until the fields move again. The safest thing in Stillwater Hollow is the feeling that you should leave, because it may be the last honest warning the place gives you.</p>',
+                ],
+            ],
+            'back_label' => 'Back to Meridian Arc',
+            'back_href' => '?pg=urb',
+            'areas' => [
+                ['name' => 'Stillwater Crossroads Supply', 'description' => 'A last-lit counter for well filters, barn hardware, sealed tins, and paper warnings.', 'action' => 'Shop', 'href' => '?pg=stcr-shop', 'color' => '#a3e635', 'points' => country_map_rect_points(1225, 540, 260, 160, 1672, 941)],
+            ],
+        ],
         'xochimex' => [
             'title' => 'Xochimex - Xochival',
             'subtitle' => 'Festival Canals and Flowers',
@@ -1021,6 +1080,20 @@ function get_country_map_config(string $slug): ?array {
                     'points' => country_map_rect_points(1030, 250, 300, 190, $w, $h),
                 ];
             }
+        }
+    }
+
+    if ($slug === 'urb' && function_exists('current_user')) {
+        $user = current_user();
+        if ($user && has_map_unlock((int)$user['id'], 'stillwater_hollow')) {
+            $config['areas'][] = [
+                'name' => 'Stillwater Hollow',
+                'description' => 'A remote hollow beyond the repaired roads, where the fields stay too still.',
+                'action' => 'Travel',
+                'href' => '?pg=stillwater-hollow',
+                'color' => '#84cc16',
+                'points' => country_map_rect_points(1280, 225, 210, 150, $w, $h),
+            ];
         }
     }
 

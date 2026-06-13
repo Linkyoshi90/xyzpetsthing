@@ -1,0 +1,351 @@
+.container.cups-page-container {
+    max-width: min(1100px, calc(100% - 32px));
+}
+
+.cups-game {
+    --cup-gap: clamp(90px, 21vw, 180px);
+    --cup-width: clamp(78px, 15vw, 132px);
+    --cup-height: clamp(106px, 18vw, 158px);
+    --lift-height: clamp(-86px, -10vw, -64px);
+    display: grid;
+    gap: 18px;
+    padding-bottom: 18px;
+}
+
+.cups-hud {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.cups-hud > div {
+    padding: 12px 14px;
+    border: 1px solid rgba(14, 23, 38, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.42);
+}
+
+.cups-hud-label {
+    display: block;
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+}
+
+.cups-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+    gap: 18px;
+    align-items: start;
+}
+
+.cups-stage-wrap {
+    display: grid;
+    gap: 12px;
+}
+
+.cups-round-track {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cups-round-dot {
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 2px solid rgba(14, 23, 38, 0.18);
+    background: rgba(255, 255, 255, 0.55);
+    color: var(--muted);
+    font-weight: 800;
+}
+
+.cups-round-dot.is-active {
+    border-color: #1E86FF;
+    background: #1E86FF;
+    color: #fff;
+}
+
+.cups-round-dot.is-complete {
+    border-color: #1f9d67;
+    background: #1f9d67;
+    color: #fff;
+}
+
+.cups-stage {
+    position: relative;
+    min-height: clamp(300px, 43vw, 430px);
+    overflow: hidden;
+    border: 1px solid rgba(14, 23, 38, 0.14);
+    border-radius: 8px;
+    background:
+        linear-gradient(180deg, rgba(25, 34, 48, 0.78), rgba(34, 51, 70, 0.55) 46%, rgba(22, 88, 73, 0.36) 47%, rgba(22, 103, 77, 0.58)),
+        radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.2), transparent 25%),
+        linear-gradient(135deg, #20354c, #2a6a5f 55%, #7c2e43);
+    box-shadow: inset 0 12px 24px rgba(255, 255, 255, 0.08), inset 0 -24px 34px rgba(0, 0, 0, 0.17);
+}
+
+.cups-table {
+    position: absolute;
+    left: 5%;
+    right: 5%;
+    bottom: clamp(38px, 7vw, 58px);
+    height: clamp(58px, 11vw, 92px);
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(33, 125, 91, 0.92), rgba(11, 72, 62, 0.96) 62%, rgba(5, 35, 38, 0.85));
+    box-shadow: 0 22px 26px rgba(0, 0, 0, 0.28);
+}
+
+.cup-slot {
+    --slot-x: 0;
+    --lift-y: 0px;
+    --twist: 0deg;
+    position: absolute;
+    left: 50%;
+    bottom: clamp(66px, 11vw, 100px);
+    width: var(--cup-width);
+    height: var(--cup-height);
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    appearance: none;
+    background: transparent;
+    color: inherit;
+    display: block;
+    overflow: visible;
+    transform: translateX(calc(-50% + (var(--slot-x) * var(--cup-gap)))) translateY(var(--lift-y)) rotate(var(--twist));
+    transition: transform var(--move-ms, 430ms) cubic-bezier(.19, .9, .25, 1);
+    will-change: transform;
+    animation: none;
+}
+
+.cup-slot:not(:disabled) {
+    cursor: pointer;
+}
+
+.cup-slot:disabled {
+    pointer-events: none;
+}
+
+.cup-slot:hover,
+.cup-slot:focus,
+.cup-slot:focus-visible,
+.cup-slot:active {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+    outline: none;
+    transform: translateX(calc(-50% + (var(--slot-x) * var(--cup-gap)))) translateY(var(--lift-y)) rotate(var(--twist)) !important;
+    animation: none !important;
+}
+
+.cup-slot:not(:disabled):focus-visible .cup {
+    box-shadow: 0 0 0 4px rgba(30, 134, 255, 0.42), 0 18px 18px rgba(0, 0, 0, 0.2);
+}
+
+.cup-slot.is-lifted {
+    --lift-y: var(--lift-height);
+}
+
+.cup-slot.is-selected .cup {
+    box-shadow: 0 0 0 5px rgba(255, 214, 102, 0.52), 0 18px 20px rgba(0, 0, 0, 0.22);
+}
+
+.cup-slot.is-correct .cup {
+    box-shadow: 0 0 0 5px rgba(31, 157, 103, 0.62), 0 18px 20px rgba(0, 0, 0, 0.22);
+}
+
+.cup-slot.is-wrong .cup {
+    box-shadow: 0 0 0 5px rgba(197, 54, 70, 0.58), 0 18px 20px rgba(0, 0, 0, 0.22);
+}
+
+.cup {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    filter: drop-shadow(0 18px 12px rgba(0, 0, 0, 0.26));
+}
+
+.cup-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+}
+
+.cup-body {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    top: 13%;
+    bottom: 10%;
+    border-radius: 10px 10px 20px 20px;
+    clip-path: polygon(12% 0, 88% 0, 73% 100%, 27% 100%);
+    background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.36), transparent 18%, rgba(112, 57, 24, 0.12) 55%, rgba(0, 0, 0, 0.16)),
+        linear-gradient(180deg, #f0bd55 0%, #c8752b 46%, #8d382b 100%);
+}
+
+.cup-rim {
+    position: absolute;
+    left: 3%;
+    right: 3%;
+    top: 0;
+    height: 24%;
+    border-radius: 50%;
+    background:
+        radial-gradient(ellipse at center, #5e2c28 0 36%, #b25d30 37% 53%, #ffd86f 54% 74%, #8f3f2c 75%),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.42), transparent);
+    box-shadow: inset 0 4px 5px rgba(255, 255, 255, 0.25);
+}
+
+.cup-foot {
+    position: absolute;
+    left: 22%;
+    right: 22%;
+    bottom: 2%;
+    height: 16%;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #f1bd58, #8f3a2c);
+    box-shadow: inset 0 5px 5px rgba(255, 255, 255, 0.2);
+}
+
+.cups-ball {
+    --slot-x: 0;
+    position: absolute;
+    left: 50%;
+    bottom: clamp(72px, 12vw, 108px);
+    width: clamp(28px, 5vw, 42px);
+    height: clamp(28px, 5vw, 42px);
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.9) 0 10%, transparent 12%),
+        radial-gradient(circle at 64% 76%, #7f1428, #c61f3e 62%, #f1574f);
+    box-shadow: 0 10px 12px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    transform: translateX(calc(-50% + (var(--slot-x) * var(--cup-gap)))) translateY(18px) scale(0.94);
+    transition: transform var(--move-ms, 430ms) cubic-bezier(.19, .9, .25, 1), opacity 170ms ease;
+    z-index: 4;
+}
+
+.cups-ball.is-visible {
+    opacity: 1;
+    transform: translateX(calc(-50% + (var(--slot-x) * var(--cup-gap)))) translateY(0) scale(1);
+}
+
+.cups-status {
+    min-height: 1.5em;
+    margin: 0;
+    color: var(--ink);
+    font-weight: 700;
+    text-align: center;
+}
+
+.cups-controls {
+    display: grid;
+    gap: 14px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid rgba(14, 23, 38, 0.12);
+    background: rgba(255, 255, 255, 0.44);
+}
+
+.cups-bet-form {
+    display: grid;
+    gap: 10px;
+}
+
+.cups-bet-form label {
+    font-weight: 700;
+}
+
+.cups-bet-stepper {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 38px;
+    align-items: stretch;
+    gap: 6px;
+}
+
+.cups-bet-stepper input {
+    margin: 0;
+}
+
+.cups-step-buttons {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    gap: 4px;
+}
+
+.cups-step {
+    min-height: 0;
+    padding: 0;
+    border-radius: 8px;
+    line-height: 1;
+    font-size: 0.74rem;
+}
+
+.cups-action-row {
+    display: grid;
+    gap: 10px;
+}
+
+.cups-action-row [hidden] {
+    display: none;
+}
+
+.cups-game.is-busy button,
+.cups-game.is-busy input {
+    cursor: wait;
+}
+
+@media (max-width: 900px) {
+    .cups-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cups-controls {
+        max-width: 380px;
+        width: 100%;
+        justify-self: center;
+    }
+}
+
+@media (max-width: 620px) {
+    .container.cups-page-container {
+        max-width: calc(100% - 20px);
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .cups-game {
+        --cup-gap: clamp(76px, 29vw, 108px);
+        --cup-width: clamp(64px, 22vw, 86px);
+        --cup-height: clamp(88px, 28vw, 112px);
+    }
+
+    .cups-hud {
+        grid-template-columns: 1fr;
+    }
+
+    .cups-stage {
+        min-height: 310px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cup-slot,
+    .cups-ball {
+        transition-duration: 80ms;
+    }
+}
