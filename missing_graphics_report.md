@@ -4,185 +4,30 @@
 
 - Items source: `sql/items.sql`
 - Item graphics source: `images/items`
-- Item matching rule: mirrors `shop_find_item_image()` in `lib/shops.php`
-- Creature source: `database.sql` table `pet_species`
-- Creature graphics source: `images/creatures`
-- Creature matching rule: a species is considered to have graphics if any file starts with its slug, for example `lamia_f_blue.webp`
-- Note: `data-readonly/available_creatures.txt` currently has no species missing all creature graphics.
+- Item matching rule: mirrors `shop_find_item_image()` in `lib/shops.php`.
+- Creature source: `database.sql` table `pet_species`.
+- Creature graphics source: direct files in `images/creatures`.
+- A creature is missing all graphics when no direct file begins with its normalized species slug.
+- Default-color matching requires an exact `<species>_f_<color>` basename in a supported image extension; alternate styles such as `tblue`, `blue2`, or `realistic` do not satisfy a default color.
 
 ## Summary
 
-- Items missing resolvable graphics: 119 of 339
-- Creatures missing any graphics: 82 of 209
-- Creature with partial art but missing the default blue app image: Meloncollie has `meloncollie_f_green.webp`, but no `meloncollie_f_blue.webp`
-- `sql/pelagora_content.sql` defines item IDs 223-234 differently from `sql/items.sql`; the main item list below uses `sql/items.sql` as the current catalog source.
+- Items missing resolvable graphics: 0 of 339
+- Creatures missing any graphics: 41 of 209
+- Missing default-color creature graphics: 324 of 1045
+  - Purple: 70 of 209
+  - Red: 71 of 209
+  - Blue: 43 of 209
+  - Green: 69 of 209
+  - Yellow: 71 of 209
 
 ## Items Missing Graphics
 
-- 123 - 16-Bit Paint (near asset exists: `images/items/16bit Paint.webp`)
-- 223 - More Healing Potion
-- 224 - Full Heal
-- 225 - Of Explosions and other cool Stuff
-- 226 - Lotus Sweet
-- 227 - Sandalwood Charm
-- 228 - River Dye Phial
-- 229 - Brass Luck Lamp
-- 230 - Caravan Supply Bundle
-- 231 - Brass Moon Lantern
-- 232 - Date Honey Cakes
-- 233 - Rosemint Cooling Sherbet
-- 234 - Desert Travel Cloak
-- 235 - Blue Moon-Tile Trinket
-- 236 - Obsidian Edge Tool
-- 237 - Spiced Cacao Gourd
-- 238 - Quetzal Feather Charm
-- 239 - Maize Festival Cakes
-- 240 - Sunstone Ceremony Token
-- 241 - Pressed Olive Oil Flask
-- 242 - Cedar Scroll Case
-- 243 - Sesame Ring Bread
-- 244 - Little Brass Sabbath Lamp
-- 245 - Mountain Herb Tea Blend
-- 246 - Covenant Knot Charm
-- 247 - Canal Crisp Snack Cone
-- 248 - Waterproof Reed Satchel
-- 249 - Lockkeeper Fishing Bait
-- 250 - Dike-Warden Charm
-- 251 - Smoked Canal Fish
-- 252 - Waxed Rain Cape
-- 253 - Guava River Juice
-- 254 - Woven Plaza Bracelet
-- 255 - Arepa Plaza Snack
-- 256 - River-Map Postcard Set
-- 257 - Jungle-Flower Perfume
-- 258 - Clay Ledger Tablet
-- 259 - Reed Scribe Pens
-- 260 - Bronze Seal Stamp
-- 261 - Date Wine Cup
-- 262 - Lapis Market Beads
-- 263 - Lawgiver Token Set
-- 264 - Rainforest Bitter Herbs
-- 265 - Carved Jade Bead
-- 266 - Temple Map Scrap
-- 267 - Spiced Jungle Cacao
-- 268 - Braided Vine Rope
-- 269 - Canopy Survival Kit
-- 270 - Scarab Luck Charm
-- 271 - Linen Sun Wrap
-- 272 - Honeyed Fig Cake
-- 273 - River Reed Bundle
-- 274 - Desert Glass Shard
-- 275 - Painted Canopic Miniature
-- 276 - Steamed Peach Bun
-- 277 - Jade Comb
-- 278 - Dragon-Knot Charm
-- 279 - Calligrapher Ink Brush
-- 280 - Red Paper Lantern
-- 281 - Lucky Tea Tin
-- 282 - Smoked Fjord Fish
-- 283 - Wool Snowcloak
-- 284 - Carved Rune Stone
-- 285 - Aurora Glass Shard
-- 286 - Bone Button Set
-- 287 - Hot Berry Mead
-- 288 - Redwind Meat Pie
-- 289 - Sun-Bleached Hat
-- 290 - Enamel Road Mug
-- 291 - Outback Trail Map
-- 292 - Carnival Ticket Roll
-- 293 - Dusty Road Survival Kit
-- 294 - Black Rye Bread
-- 295 - Snowberry Preserves
-- 296 - Lacquer Keepsake Box
-- 297 - Fur-Lined Mitts
-- 298 - Painted Winter Egg
-- 299 - Samovar Tea Brick
-- 300 - Woven Sun Sash
-- 301 - Quinoa Honey Cake
-- 302 - Alpaca Wool Charm
-- 303 - Gold-Thread Sun Token
-- 304 - Mountain Mint Bundle
-- 305 - Seal-Oil Lamp
-- 306 - Carved Bone Charm
-- 307 - Snow Goggles
-- 308 - Dried Arctic Fish
-- 309 - Fur Warm Boots
-- 310 - Aurora Bead String
-- 311 - Prairie Beadwork Strip
-- 312 - Blue Corn Cake
-- 313 - Woven Seed Pouch
-- 314 - Prairie Sage Bundle
-- 315 - Story Circle Token
-- 316 - Trail Blessing Charm
-- 317 - Mixed Spice Packet
-- 318 - Reef Pearl
-- 319 - Banana Leaf Boat Snack
-- 320 - Shell Bracelet
-- 321 - Trade Flag Pennant
-- 322 - Tropical Tonic Bottle
-- 323 - Corner Mart Coffee
-- 324 - Commuter Snack Pack
-- 325 - Neon Keychain
-- 326 - City Sticker Sheet
-- 327 - Transit Day Card
-- 328 - Cheap Sunglasses
-- 329 - Marigold Garland
-- 330 - Lucha Mask
-- 331 - Canal Corn Snack
-- 332 - Spiced Hot Chocolate
-- 333 - Painted Clay Cup
-- 334 - City Luck Charm
-- 335 - Lemon Myrtle Bush Tea
-- 336 - Handwoven Reed Basket
-- 337 - River-Safe Gear Kit
-- 338 - Painted Meeting Token
-- 339 - Ranger Track Map
-- 340 - Maker Goods Bundle
+- None
 
 ## Creatures Missing Any Graphics
 
-- 313 - Marmotaur (`marmotaur`)
-- 314 - Strigowl (`strigowl`)
-- 315 - Skjoldram (`skjoldram`)
-- 316 - Pineskrell (`pineskrell`)
-- 317 - Boghare (`boghare`)
 - 318 - Rookmourn (`rookmourn`)
-- 319 - Clockhare (`clockhare`)
-- 320 - Stagel (`stagel`)
-- 321 - Sobolnik (`sobolnik`)
-- 322 - Gribboar (`gribboar`)
-- 323 - Pumpkingull (`pumpkingull`)
-- 324 - Snowloper (`snowloper`)
-- 325 - Prairhorn (`prairhorn`)
-- 326 - Dustbison (`dustbison`)
-- 327 - Silkcoon (`silkcoon`)
-- 328 - Bambadger (`bambadger`)
-- 329 - Peaflare (`peaflare`)
-- 330 - Palmyr (`palmyr`)
-- 331 - Shibari (`shibari`)
-- 332 - Momoshika (`momoshika`)
-- 333 - Coatimano (`coatimano`)
-- 334 - Axolume (`axolume`)
-- 335 - Jaglare (`jaglare`)
-- 336 - Macawtl (`macawtl`)
-- 337 - Ceibler (`ceibler`)
-- 338 - Motmora (`motmora`)
-- 339 - Dunefennec (`dunefennec`)
-- 340 - Caraviper (`caraviper`)
-- 341 - Reedbull (`reedbull`)
-- 342 - Ibisking (`ibisking`)
-- 343 - Rockhyrax (`rockhyrax`)
-- 344 - Datebat (`datebat`)
-- 345 - Ibiset (`ibiset`)
-- 346 - Crocora (`crocora`)
-- 347 - Moonseal (`moonseal`)
-- 348 - Terniq (`terniq`)
-- 349 - Emberu (`emberu`)
-- 350 - Wattlefox (`wattlefox`)
-- 351 - Cassowrath (`cassowrath`)
-- 352 - Gliderune (`gliderune`)
-- 353 - Slothren (`slothren`)
-- 354 - Riverdillo (`riverdillo`)
 - 355 - Vicuñero (`vicu_ero`)
 - 356 - Condorune (`condorune`)
 - 357 - Dodobold (`dodobold`)
@@ -224,52 +69,354 @@
 - 393 - Rust Otter (`rust_otter`)
 - 394 - Halberelk (`halberelk`)
 
+## Missing Default-Color Creature Graphics
+
+Each entry names the exact missing basename; any supported image extension can satisfy it.
+
+### Purple (70)
+
+- 312 - Meloncollie (`meloncollie_f_purple.*`)
+- 318 - Rookmourn (`rookmourn_f_purple.*`)
+- 322 - Gribboar (`gribboar_f_purple.*`)
+- 323 - Pumpkingull (`pumpkingull_f_purple.*`)
+- 324 - Snowloper (`snowloper_f_purple.*`)
+- 325 - Prairhorn (`prairhorn_f_purple.*`)
+- 326 - Dustbison (`dustbison_f_purple.*`)
+- 327 - Silkcoon (`silkcoon_f_purple.*`)
+- 328 - Bambadger (`bambadger_f_purple.*`)
+- 329 - Peaflare (`peaflare_f_purple.*`)
+- 330 - Palmyr (`palmyr_f_purple.*`)
+- 331 - Shibari (`shibari_f_purple.*`)
+- 332 - Momoshika (`momoshika_f_purple.*`)
+- 333 - Coatimano (`coatimano_f_purple.*`)
+- 334 - Axolume (`axolume_f_purple.*`)
+- 335 - Jaglare (`jaglare_f_purple.*`)
+- 336 - Macawtl (`macawtl_f_purple.*`)
+- 337 - Ceibler (`ceibler_f_purple.*`)
+- 338 - Motmora (`motmora_f_purple.*`)
+- 339 - Dunefennec (`dunefennec_f_purple.*`)
+- 340 - Caraviper (`caraviper_f_purple.*`)
+- 341 - Reedbull (`reedbull_f_purple.*`)
+- 342 - Ibisking (`ibisking_f_purple.*`)
+- 345 - Ibiset (`ibiset_f_purple.*`)
+- 349 - Emberu (`emberu_f_purple.*`)
+- 350 - Wattlefox (`wattlefox_f_purple.*`)
+- 351 - Cassowrath (`cassowrath_f_purple.*`)
+- 352 - Gliderune (`gliderune_f_purple.*`)
+- 353 - Slothren (`slothren_f_purple.*`)
+- 354 - Riverdillo (`riverdillo_f_purple.*`)
+- 355 - Vicuñero (`vicu_ero_f_purple.*`)
+- 356 - Condorune (`condorune_f_purple.*`)
+- 357 - Dodobold (`dodobold_f_purple.*`)
+- 358 - Squirricerat (`squirricerat_f_purple.*`)
+- 359 - Reeffin (`reeffin_f_purple.*`)
+- 360 - Mantarrow (`mantarrow_f_purple.*`)
+- 361 - Nenekea (`nenekea_f_purple.*`)
+- 362 - Cocoskink (`cocoskink_f_purple.*`)
+- 363 - Frondbat (`frondbat_f_purple.*`)
+- 364 - Talosling (`talosling_f_purple.*`)
+- 365 - Aegis Boar (`aegis_boar_f_purple.*`)
+- 366 - Tarnhelm (`tarnhelm_f_purple.*`)
+- 367 - Bellmare (`bellmare_f_purple.*`)
+- 368 - Reliquary Dove (`reliquary_dove_f_purple.*`)
+- 369 - Iron Kobold (`iron_kobold_f_purple.*`)
+- 370 - Koschei Chain (`koschei_chain_f_purple.*`)
+- 371 - Tin Jack (`tin_jack_f_purple.*`)
+- 372 - Peacepipe Bison (`peacepipe_bison_f_purple.*`)
+- 373 - Bronzejaw Ox (`bronzejaw_ox_f_purple.*`)
+- 374 - Ark Seraph (`ark_seraph_f_purple.*`)
+- 375 - Scarabronze (`scarabronze_f_purple.*`)
+- 376 - Aurorantler (`aurorantler_f_purple.*`)
+- 377 - Mirror Crane (`mirror_crane_f_purple.*`)
+- 378 - Sword Koi (`sword_koi_f_purple.*`)
+- 379 - Temple Mantis (`temple_mantis_f_purple.*`)
+- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound_f_purple.*`)
+- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent_f_purple.*`)
+- 382 - Censer Lion (`censer_lion_f_purple.*`)
+- 383 - Date Palm Beetle (`date_palm_beetle_f_purple.*`)
+- 384 - Conch Mail Turtle (`conch_mail_turtle_f_purple.*`)
+- 385 - Ironbeak (`ironbeak_f_purple.*`)
+- 386 - Tin Squirrel (`tin_squirrel_f_purple.*`)
+- 387 - Anvil Tortoise (`anvil_tortoise_f_purple.*`)
+- 388 - Needlehog (`needlehog_f_purple.*`)
+- 389 - Mailtoad (`mailtoad_f_purple.*`)
+- 390 - Sawfin (`sawfin_f_purple.*`)
+- 391 - Brasshorn Ram (`brasshorn_ram_f_purple.*`)
+- 392 - Coin Magpie (`coin_magpie_f_purple.*`)
+- 393 - Rust Otter (`rust_otter_f_purple.*`)
+- 394 - Halberelk (`halberelk_f_purple.*`)
+
+### Red (71)
+
+- 289 - Kachina (`kachina_f_red.*`)
+- 312 - Meloncollie (`meloncollie_f_red.*`)
+- 318 - Rookmourn (`rookmourn_f_red.*`)
+- 322 - Gribboar (`gribboar_f_red.*`)
+- 323 - Pumpkingull (`pumpkingull_f_red.*`)
+- 324 - Snowloper (`snowloper_f_red.*`)
+- 325 - Prairhorn (`prairhorn_f_red.*`)
+- 326 - Dustbison (`dustbison_f_red.*`)
+- 327 - Silkcoon (`silkcoon_f_red.*`)
+- 328 - Bambadger (`bambadger_f_red.*`)
+- 329 - Peaflare (`peaflare_f_red.*`)
+- 330 - Palmyr (`palmyr_f_red.*`)
+- 331 - Shibari (`shibari_f_red.*`)
+- 332 - Momoshika (`momoshika_f_red.*`)
+- 333 - Coatimano (`coatimano_f_red.*`)
+- 334 - Axolume (`axolume_f_red.*`)
+- 335 - Jaglare (`jaglare_f_red.*`)
+- 336 - Macawtl (`macawtl_f_red.*`)
+- 337 - Ceibler (`ceibler_f_red.*`)
+- 338 - Motmora (`motmora_f_red.*`)
+- 339 - Dunefennec (`dunefennec_f_red.*`)
+- 340 - Caraviper (`caraviper_f_red.*`)
+- 341 - Reedbull (`reedbull_f_red.*`)
+- 342 - Ibisking (`ibisking_f_red.*`)
+- 345 - Ibiset (`ibiset_f_red.*`)
+- 349 - Emberu (`emberu_f_red.*`)
+- 350 - Wattlefox (`wattlefox_f_red.*`)
+- 351 - Cassowrath (`cassowrath_f_red.*`)
+- 352 - Gliderune (`gliderune_f_red.*`)
+- 353 - Slothren (`slothren_f_red.*`)
+- 354 - Riverdillo (`riverdillo_f_red.*`)
+- 355 - Vicuñero (`vicu_ero_f_red.*`)
+- 356 - Condorune (`condorune_f_red.*`)
+- 357 - Dodobold (`dodobold_f_red.*`)
+- 358 - Squirricerat (`squirricerat_f_red.*`)
+- 359 - Reeffin (`reeffin_f_red.*`)
+- 360 - Mantarrow (`mantarrow_f_red.*`)
+- 361 - Nenekea (`nenekea_f_red.*`)
+- 362 - Cocoskink (`cocoskink_f_red.*`)
+- 363 - Frondbat (`frondbat_f_red.*`)
+- 364 - Talosling (`talosling_f_red.*`)
+- 365 - Aegis Boar (`aegis_boar_f_red.*`)
+- 366 - Tarnhelm (`tarnhelm_f_red.*`)
+- 367 - Bellmare (`bellmare_f_red.*`)
+- 368 - Reliquary Dove (`reliquary_dove_f_red.*`)
+- 369 - Iron Kobold (`iron_kobold_f_red.*`)
+- 370 - Koschei Chain (`koschei_chain_f_red.*`)
+- 371 - Tin Jack (`tin_jack_f_red.*`)
+- 372 - Peacepipe Bison (`peacepipe_bison_f_red.*`)
+- 373 - Bronzejaw Ox (`bronzejaw_ox_f_red.*`)
+- 374 - Ark Seraph (`ark_seraph_f_red.*`)
+- 375 - Scarabronze (`scarabronze_f_red.*`)
+- 376 - Aurorantler (`aurorantler_f_red.*`)
+- 377 - Mirror Crane (`mirror_crane_f_red.*`)
+- 378 - Sword Koi (`sword_koi_f_red.*`)
+- 379 - Temple Mantis (`temple_mantis_f_red.*`)
+- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound_f_red.*`)
+- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent_f_red.*`)
+- 382 - Censer Lion (`censer_lion_f_red.*`)
+- 383 - Date Palm Beetle (`date_palm_beetle_f_red.*`)
+- 384 - Conch Mail Turtle (`conch_mail_turtle_f_red.*`)
+- 385 - Ironbeak (`ironbeak_f_red.*`)
+- 386 - Tin Squirrel (`tin_squirrel_f_red.*`)
+- 387 - Anvil Tortoise (`anvil_tortoise_f_red.*`)
+- 388 - Needlehog (`needlehog_f_red.*`)
+- 389 - Mailtoad (`mailtoad_f_red.*`)
+- 390 - Sawfin (`sawfin_f_red.*`)
+- 391 - Brasshorn Ram (`brasshorn_ram_f_red.*`)
+- 392 - Coin Magpie (`coin_magpie_f_red.*`)
+- 393 - Rust Otter (`rust_otter_f_red.*`)
+- 394 - Halberelk (`halberelk_f_red.*`)
+
+### Blue (43)
+
+- 312 - Meloncollie (`meloncollie_f_blue.*`)
+- 318 - Rookmourn (`rookmourn_f_blue.*`)
+- 328 - Bambadger (`bambadger_f_blue.*`)
+- 355 - Vicuñero (`vicu_ero_f_blue.*`)
+- 356 - Condorune (`condorune_f_blue.*`)
+- 357 - Dodobold (`dodobold_f_blue.*`)
+- 358 - Squirricerat (`squirricerat_f_blue.*`)
+- 359 - Reeffin (`reeffin_f_blue.*`)
+- 360 - Mantarrow (`mantarrow_f_blue.*`)
+- 361 - Nenekea (`nenekea_f_blue.*`)
+- 362 - Cocoskink (`cocoskink_f_blue.*`)
+- 363 - Frondbat (`frondbat_f_blue.*`)
+- 364 - Talosling (`talosling_f_blue.*`)
+- 365 - Aegis Boar (`aegis_boar_f_blue.*`)
+- 366 - Tarnhelm (`tarnhelm_f_blue.*`)
+- 367 - Bellmare (`bellmare_f_blue.*`)
+- 368 - Reliquary Dove (`reliquary_dove_f_blue.*`)
+- 369 - Iron Kobold (`iron_kobold_f_blue.*`)
+- 370 - Koschei Chain (`koschei_chain_f_blue.*`)
+- 371 - Tin Jack (`tin_jack_f_blue.*`)
+- 372 - Peacepipe Bison (`peacepipe_bison_f_blue.*`)
+- 373 - Bronzejaw Ox (`bronzejaw_ox_f_blue.*`)
+- 374 - Ark Seraph (`ark_seraph_f_blue.*`)
+- 375 - Scarabronze (`scarabronze_f_blue.*`)
+- 376 - Aurorantler (`aurorantler_f_blue.*`)
+- 377 - Mirror Crane (`mirror_crane_f_blue.*`)
+- 378 - Sword Koi (`sword_koi_f_blue.*`)
+- 379 - Temple Mantis (`temple_mantis_f_blue.*`)
+- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound_f_blue.*`)
+- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent_f_blue.*`)
+- 382 - Censer Lion (`censer_lion_f_blue.*`)
+- 383 - Date Palm Beetle (`date_palm_beetle_f_blue.*`)
+- 384 - Conch Mail Turtle (`conch_mail_turtle_f_blue.*`)
+- 385 - Ironbeak (`ironbeak_f_blue.*`)
+- 386 - Tin Squirrel (`tin_squirrel_f_blue.*`)
+- 387 - Anvil Tortoise (`anvil_tortoise_f_blue.*`)
+- 388 - Needlehog (`needlehog_f_blue.*`)
+- 389 - Mailtoad (`mailtoad_f_blue.*`)
+- 390 - Sawfin (`sawfin_f_blue.*`)
+- 391 - Brasshorn Ram (`brasshorn_ram_f_blue.*`)
+- 392 - Coin Magpie (`coin_magpie_f_blue.*`)
+- 393 - Rust Otter (`rust_otter_f_blue.*`)
+- 394 - Halberelk (`halberelk_f_blue.*`)
+
+### Green (69)
+
+- 289 - Kachina (`kachina_f_green.*`)
+- 318 - Rookmourn (`rookmourn_f_green.*`)
+- 322 - Gribboar (`gribboar_f_green.*`)
+- 323 - Pumpkingull (`pumpkingull_f_green.*`)
+- 324 - Snowloper (`snowloper_f_green.*`)
+- 325 - Prairhorn (`prairhorn_f_green.*`)
+- 326 - Dustbison (`dustbison_f_green.*`)
+- 327 - Silkcoon (`silkcoon_f_green.*`)
+- 329 - Peaflare (`peaflare_f_green.*`)
+- 330 - Palmyr (`palmyr_f_green.*`)
+- 331 - Shibari (`shibari_f_green.*`)
+- 332 - Momoshika (`momoshika_f_green.*`)
+- 333 - Coatimano (`coatimano_f_green.*`)
+- 334 - Axolume (`axolume_f_green.*`)
+- 335 - Jaglare (`jaglare_f_green.*`)
+- 336 - Macawtl (`macawtl_f_green.*`)
+- 337 - Ceibler (`ceibler_f_green.*`)
+- 338 - Motmora (`motmora_f_green.*`)
+- 339 - Dunefennec (`dunefennec_f_green.*`)
+- 340 - Caraviper (`caraviper_f_green.*`)
+- 341 - Reedbull (`reedbull_f_green.*`)
+- 342 - Ibisking (`ibisking_f_green.*`)
+- 345 - Ibiset (`ibiset_f_green.*`)
+- 349 - Emberu (`emberu_f_green.*`)
+- 350 - Wattlefox (`wattlefox_f_green.*`)
+- 351 - Cassowrath (`cassowrath_f_green.*`)
+- 352 - Gliderune (`gliderune_f_green.*`)
+- 353 - Slothren (`slothren_f_green.*`)
+- 354 - Riverdillo (`riverdillo_f_green.*`)
+- 355 - Vicuñero (`vicu_ero_f_green.*`)
+- 356 - Condorune (`condorune_f_green.*`)
+- 357 - Dodobold (`dodobold_f_green.*`)
+- 358 - Squirricerat (`squirricerat_f_green.*`)
+- 359 - Reeffin (`reeffin_f_green.*`)
+- 360 - Mantarrow (`mantarrow_f_green.*`)
+- 361 - Nenekea (`nenekea_f_green.*`)
+- 362 - Cocoskink (`cocoskink_f_green.*`)
+- 363 - Frondbat (`frondbat_f_green.*`)
+- 364 - Talosling (`talosling_f_green.*`)
+- 365 - Aegis Boar (`aegis_boar_f_green.*`)
+- 366 - Tarnhelm (`tarnhelm_f_green.*`)
+- 367 - Bellmare (`bellmare_f_green.*`)
+- 368 - Reliquary Dove (`reliquary_dove_f_green.*`)
+- 369 - Iron Kobold (`iron_kobold_f_green.*`)
+- 370 - Koschei Chain (`koschei_chain_f_green.*`)
+- 371 - Tin Jack (`tin_jack_f_green.*`)
+- 372 - Peacepipe Bison (`peacepipe_bison_f_green.*`)
+- 373 - Bronzejaw Ox (`bronzejaw_ox_f_green.*`)
+- 374 - Ark Seraph (`ark_seraph_f_green.*`)
+- 375 - Scarabronze (`scarabronze_f_green.*`)
+- 376 - Aurorantler (`aurorantler_f_green.*`)
+- 377 - Mirror Crane (`mirror_crane_f_green.*`)
+- 378 - Sword Koi (`sword_koi_f_green.*`)
+- 379 - Temple Mantis (`temple_mantis_f_green.*`)
+- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound_f_green.*`)
+- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent_f_green.*`)
+- 382 - Censer Lion (`censer_lion_f_green.*`)
+- 383 - Date Palm Beetle (`date_palm_beetle_f_green.*`)
+- 384 - Conch Mail Turtle (`conch_mail_turtle_f_green.*`)
+- 385 - Ironbeak (`ironbeak_f_green.*`)
+- 386 - Tin Squirrel (`tin_squirrel_f_green.*`)
+- 387 - Anvil Tortoise (`anvil_tortoise_f_green.*`)
+- 388 - Needlehog (`needlehog_f_green.*`)
+- 389 - Mailtoad (`mailtoad_f_green.*`)
+- 390 - Sawfin (`sawfin_f_green.*`)
+- 391 - Brasshorn Ram (`brasshorn_ram_f_green.*`)
+- 392 - Coin Magpie (`coin_magpie_f_green.*`)
+- 393 - Rust Otter (`rust_otter_f_green.*`)
+- 394 - Halberelk (`halberelk_f_green.*`)
+
+### Yellow (71)
+
+- 289 - Kachina (`kachina_f_yellow.*`)
+- 312 - Meloncollie (`meloncollie_f_yellow.*`)
+- 318 - Rookmourn (`rookmourn_f_yellow.*`)
+- 322 - Gribboar (`gribboar_f_yellow.*`)
+- 323 - Pumpkingull (`pumpkingull_f_yellow.*`)
+- 324 - Snowloper (`snowloper_f_yellow.*`)
+- 325 - Prairhorn (`prairhorn_f_yellow.*`)
+- 326 - Dustbison (`dustbison_f_yellow.*`)
+- 327 - Silkcoon (`silkcoon_f_yellow.*`)
+- 328 - Bambadger (`bambadger_f_yellow.*`)
+- 329 - Peaflare (`peaflare_f_yellow.*`)
+- 330 - Palmyr (`palmyr_f_yellow.*`)
+- 331 - Shibari (`shibari_f_yellow.*`)
+- 332 - Momoshika (`momoshika_f_yellow.*`)
+- 333 - Coatimano (`coatimano_f_yellow.*`)
+- 334 - Axolume (`axolume_f_yellow.*`)
+- 335 - Jaglare (`jaglare_f_yellow.*`)
+- 336 - Macawtl (`macawtl_f_yellow.*`)
+- 337 - Ceibler (`ceibler_f_yellow.*`)
+- 338 - Motmora (`motmora_f_yellow.*`)
+- 339 - Dunefennec (`dunefennec_f_yellow.*`)
+- 340 - Caraviper (`caraviper_f_yellow.*`)
+- 341 - Reedbull (`reedbull_f_yellow.*`)
+- 342 - Ibisking (`ibisking_f_yellow.*`)
+- 345 - Ibiset (`ibiset_f_yellow.*`)
+- 349 - Emberu (`emberu_f_yellow.*`)
+- 350 - Wattlefox (`wattlefox_f_yellow.*`)
+- 351 - Cassowrath (`cassowrath_f_yellow.*`)
+- 352 - Gliderune (`gliderune_f_yellow.*`)
+- 353 - Slothren (`slothren_f_yellow.*`)
+- 354 - Riverdillo (`riverdillo_f_yellow.*`)
+- 355 - Vicuñero (`vicu_ero_f_yellow.*`)
+- 356 - Condorune (`condorune_f_yellow.*`)
+- 357 - Dodobold (`dodobold_f_yellow.*`)
+- 358 - Squirricerat (`squirricerat_f_yellow.*`)
+- 359 - Reeffin (`reeffin_f_yellow.*`)
+- 360 - Mantarrow (`mantarrow_f_yellow.*`)
+- 361 - Nenekea (`nenekea_f_yellow.*`)
+- 362 - Cocoskink (`cocoskink_f_yellow.*`)
+- 363 - Frondbat (`frondbat_f_yellow.*`)
+- 364 - Talosling (`talosling_f_yellow.*`)
+- 365 - Aegis Boar (`aegis_boar_f_yellow.*`)
+- 366 - Tarnhelm (`tarnhelm_f_yellow.*`)
+- 367 - Bellmare (`bellmare_f_yellow.*`)
+- 368 - Reliquary Dove (`reliquary_dove_f_yellow.*`)
+- 369 - Iron Kobold (`iron_kobold_f_yellow.*`)
+- 370 - Koschei Chain (`koschei_chain_f_yellow.*`)
+- 371 - Tin Jack (`tin_jack_f_yellow.*`)
+- 372 - Peacepipe Bison (`peacepipe_bison_f_yellow.*`)
+- 373 - Bronzejaw Ox (`bronzejaw_ox_f_yellow.*`)
+- 374 - Ark Seraph (`ark_seraph_f_yellow.*`)
+- 375 - Scarabronze (`scarabronze_f_yellow.*`)
+- 376 - Aurorantler (`aurorantler_f_yellow.*`)
+- 377 - Mirror Crane (`mirror_crane_f_yellow.*`)
+- 378 - Sword Koi (`sword_koi_f_yellow.*`)
+- 379 - Temple Mantis (`temple_mantis_f_yellow.*`)
+- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound_f_yellow.*`)
+- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent_f_yellow.*`)
+- 382 - Censer Lion (`censer_lion_f_yellow.*`)
+- 383 - Date Palm Beetle (`date_palm_beetle_f_yellow.*`)
+- 384 - Conch Mail Turtle (`conch_mail_turtle_f_yellow.*`)
+- 385 - Ironbeak (`ironbeak_f_yellow.*`)
+- 386 - Tin Squirrel (`tin_squirrel_f_yellow.*`)
+- 387 - Anvil Tortoise (`anvil_tortoise_f_yellow.*`)
+- 388 - Needlehog (`needlehog_f_yellow.*`)
+- 389 - Mailtoad (`mailtoad_f_yellow.*`)
+- 390 - Sawfin (`sawfin_f_yellow.*`)
+- 391 - Brasshorn Ram (`brasshorn_ram_f_yellow.*`)
+- 392 - Coin Magpie (`coin_magpie_f_yellow.*`)
+- 393 - Rust Otter (`rust_otter_f_yellow.*`)
+- 394 - Halberelk (`halberelk_f_yellow.*`)
+
 ## Creature Art Descriptions
 
-These are inferred starter descriptions for art direction, based on creature names, region IDs, and battle stat profiles. The current `pet_species` table does not include authored lore descriptions.
+These existing art-direction notes are retained only for creatures still missing all graphics.
 
-- 313 - Marmotaur (`marmotaur`) - A stocky alpine marmot-centaur with burrowing claws, small horns, hoofed forelegs, and Aegian bronze tack.
-- 314 - Strigowl (`strigowl`) - A lean, fast owl guardian with stern round eyes, barred feathers, and a classical laurel or bronze accent.
-- 315 - Skjoldram (`skjoldram`) - A Nornheim ram whose curled horns form shield-like discs, with runic trim and frost-worn wool.
-- 316 - Pineskrell (`pineskrell`) - A quick pine-forest imp or squirrel spirit with cone-like armor plates, needle tufts, and bright watchful eyes.
-- 317 - Boghare (`boghare`) - A marsh hare with reed-like ears, peat-dark paws, and damp mossy fur suited to Bretonreach wetlands.
 - 318 - Rookmourn (`rookmourn`) - A black rook or crow spirit with mourning-veil feathers, pale eyes, and a ghostly graveyard silhouette.
-- 319 - Clockhare (`clockhare`) - A brass-and-fur clockwork hare with exposed gears, a winding key, and nervous, spring-loaded posture.
-- 320 - Stagel (`stagel`) - A sturdy stag with stained-glass antlers, carved hooves, and old Rheinland chapel or guildhall motifs.
-- 321 - Sobolnik (`sobolnik`) - A sable-like Rodinian forest creature with sleek dark fur, a fur-cap silhouette, and lacquer-red accents.
-- 322 - Gribboar (`gribboar`) - A boar with mushroom growths across its back, thick tusks, and damp woodland earth tones.
-- 323 - Pumpkingull (`pumpkingull`) - A gull with a jack-o-lantern belly, ragged autumn wings, and a mischievous harvest-festival expression.
-- 324 - Snowloper (`snowloper`) - A pale snowshoe hare or foxlike runner with oversized winter feet, frost-blue markings, and soft Borealian fur.
-- 325 - Prairhorn (`prairhorn`) - A pronghorn-inspired plains creature with beadwork markings, swept horns, and a balanced runner's stance.
-- 326 - Dustbison (`dustbison`) - A heavy bison with a dust-cloud mane, cracked-earth hooves, and ochre plains coloring.
-- 327 - Silkcoon (`silkcoon`) - A silkworm or cocoon creature wrapped in glossy threads, with tassel antennae and soft Lotus-Dragon colors.
-- 328 - Bambadger (`bambadger`) - A bamboo-striped badger with leaf armor, sturdy claws, and a calm but stubborn defensive posture.
-- 329 - Peaflare (`peaflare`) - A peacock whose tail blooms like jeweled flame, with warm Baharamandal colors and bright eye-spots.
-- 330 - Palmyr (`palmyr`) - A small palm-crested animal spirit with frond ears, henna-like markings, and a light desert-garden palette.
-- 331 - Shibari (`shibari`) - A Yamanokubo creature wrapped in decorative knot-cords and charm tassels, agile and ceremonial rather than armored.
-- 332 - Momoshika (`momoshika`) - A peach-colored deer with blossom markings, soft antlers, and a gentle shrine-forest presence.
-- 333 - Coatimano (`coatimano`) - A coati-like Xochimex trickster with a ringed tail, painted mask markings, and nimble grasping paws.
-- 334 - Axolume (`axolume`) - A glowing axolotl with lantern-like gills, translucent fins, and soft waterlight colors.
-- 335 - Jaglare (`jaglare`) - A jaguar with sun-bright eyes, obsidian spots, and an aggressive low hunting posture.
-- 336 - Macawtl (`macawtl`) - A feathered macaw-serpent hybrid with vivid wings, a curling tail, and Eagle Serpent ceremonial color.
-- 337 - Ceibler (`ceibler`) - A ceiba-tree forest creature with bark plates, rootlike feet, and small leaves or flowers sprouting from its back.
-- 338 - Motmora (`motmora`) - A nocturnal moth or motmot spirit with long tail streamers, deep jungle colors, and quick evasive energy.
-- 339 - Dunefennec (`dunefennec`) - A fennec fox adapted to dunes, with oversized ears, sand-colored fur, and a scarf or bead accent.
-- 340 - Caraviper (`caraviper`) - A desert viper with saddlebag markings, caravan-bell details, and a patient coiled silhouette.
-- 341 - Reedbull (`reedbull`) - A marsh bull with reed mane, clay-dark hide, and strong defensive shoulders.
-- 342 - Ibisking (`ibisking`) - A regal ibis with a small crown, long curved beak, and blue-gold Hammurabian trim.
-- 343 - Rockhyrax (`rockhyrax`) - A compact rock hyrax with stone-like plates, cliff-clinging paws, and warm desert rock colors.
-- 344 - Datebat (`datebat`) - A bat with date-palm wing shapes, fruit-cluster accents, and a quick dusky silhouette.
-- 345 - Ibiset (`ibiset`) - A Kemet ibis avatar with lapis and gold markings, a poised stance, and sacred scribe energy.
-- 346 - Crocora (`crocora`) - A crocodile-cobra hybrid with a hooded neck, armored back, and heavy riverbank bulk.
-- 347 - Moonseal (`moonseal`) - A seal with crescent moon markings, pale blue-gray fur, and a calm arctic-water expression.
-- 348 - Terniq (`terniq`) - A swift white tern with ice-blue feather tips, dark eye markings, and an agile cold-coast profile.
-- 349 - Emberu (`emberu`) - An emu-like bird with ember-tipped feathers, ash-gray legs, and a hot red-gold crest.
-- 350 - Wattlefox (`wattlefox`) - A fox with golden wattle blossoms around its ears and tail, warm fur, and alert Red Sun posture.
-- 351 - Cassowrath (`cassowrath`) - A fierce cassowary spirit with a blade-like casque, heavy talons, and stormy rainforest colors.
-- 352 - Gliderune (`gliderune`) - A sugar-glider-like creature with rune-marked wing membranes and a light, airborne pose.
-- 353 - Slothren (`slothren`) - A moss-backed sloth with leafy fur, slow wise eyes, and humid Gran Columbia forest tones.
-- 354 - Riverdillo (`riverdillo`) - A river armadillo with a wet shell, paddle-like paws, and mud-brown armor bands.
 - 355 - Vicunero (`vicu_ero`) - A nimble highland vicuna-like creature with woven sash accents, soft wool, and mountain-step colors.
 - 356 - Condorune (`condorune`) - A condor with rune-patterned wings, broad gliding posture, and high Andes ceremonial markings.
 - 357 - Dodobold (`dodobold`) - A dodo-kobold hybrid with a stout beak, little tool belt, and plateau scavenger charm.
@@ -310,20 +457,3 @@ These are inferred starter descriptions for art direction, based on creature nam
 - 392 - Coin Magpie (`coin_magpie`) - A magpie with coin-bright wing speckles, a collector's stare, and small shiny trinkets tucked in its feathers.
 - 393 - Rust Otter (`rust_otter`) - A river otter with oxidized metal patches, tool-user paws, and Rodinian dockyard colors.
 - 394 - Halberelk (`halberelk`) - An elk with halberd-shaped antlers, winter hide, and a dignified Sila Council sentinel pose.
-
-## Pelagora Seed Names Also Missing Graphics
-
-These names come from `sql/pelagora_content.sql`, which conflicts with item IDs 223-234 in `sql/items.sql`.
-
-- 223 - Aquatic Breathing Kelp
-- 224 - Pelagoric Pearl Snack
-- 225 - Pelagora Tide Compass
-- 226 - Underwater Lantern Oil
-- 227 - Pelagoric Mirrorfish
-- 228 - Underwater Bellfish
-- 229 - Aquatic Shellcoin
-- 230 - Pelagora Ring Eel
-- 231 - Underwater Bells of Pelagora Book
-- 232 - Pelagoric Ring Ledger Book
-- 233 - Aquatic Oaths of the Heart Mirror Book
-- 234 - Pelagora Before the Sinking Book

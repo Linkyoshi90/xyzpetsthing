@@ -14,6 +14,7 @@ Argentowlis
 Armadillo
 Azureus
 Bahamut
+Bakeneko
 Banshee
 Bee
 Black Turtle

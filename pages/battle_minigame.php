@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../auth.php';
 require_once __DIR__ . '/../lib/pets.php';
+require_once __DIR__ . '/../lib/item_effects.php';
+require_once __DIR__ . '/../lib/abilities.php';
 
 require_login();
 
@@ -119,6 +121,117 @@ function battle_load_species_elements(array $species_ids): array {
     return $out;
 }
 
+function battle_color_compact_slug(string $slug): string {
+    return str_replace('_', '', pet_asset_slug($slug));
+}
+
+function battle_species_color_asset_exists(string $species_name, string $color_slug): bool {
+    $species_slug = pet_asset_slug($species_name);
+    $color_slug = pet_asset_slug($color_slug);
+    if ($species_slug === '' || $color_slug === '') {
+        return false;
+    }
+
+    foreach (['webp', 'png', 'jpg', 'jpeg'] as $extension) {
+        if (is_file(__DIR__ . "/../images/creatures/{$species_slug}_f_{$color_slug}.{$extension}")) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function battle_load_color_rows(): array {
+    static $colors = null;
+    if ($colors !== null) {
+        return $colors;
+    }
+
+    $colors = q(
+        "SELECT color_id, color_name
+           FROM pet_colors
+          ORDER BY color_id"
+    )->fetchAll(PDO::FETCH_ASSOC);
+
+    return $colors;
+}
+
+function battle_color_payload(array $row, string $color_slug): array {
+    return [
+        'color_id' => (int)($row['color_id'] ?? 0),
+        'color_name' => (string)($row['color_name'] ?? ''),
+        'color_slug' => pet_asset_slug($color_slug),
+    ];
+}
+
+function battle_pick_wild_color(array $encounter): array {
+    $species_name = (string)($encounter['species_name'] ?? '');
+    $requested_slug = pet_asset_slug((string)($encounter['default_color_slug'] ?? ''));
+    $requested_compact = battle_color_compact_slug($requested_slug);
+    $colors = battle_load_color_rows();
+
+    if ($requested_slug !== '') {
+        foreach ($colors as $row) {
+            $canonical_slug = pet_asset_slug((string)($row['color_name'] ?? ''));
+            if ($canonical_slug === '') {
+                continue;
+            }
+
+            $canonical_compact = battle_color_compact_slug($canonical_slug);
+            if ($requested_slug !== $canonical_slug && $requested_compact !== $canonical_compact) {
+                continue;
+            }
+
+            $candidate_slugs = array_values(array_unique(array_filter([
+                $requested_slug,
+                $canonical_slug,
+                $canonical_compact !== $canonical_slug ? $canonical_compact : '',
+            ])));
+
+            foreach ($candidate_slugs as $candidate_slug) {
+                if (battle_species_color_asset_exists($species_name, $candidate_slug)) {
+                    return battle_color_payload($row, $candidate_slug);
+                }
+            }
+        }
+    }
+
+    $usable_colors = [];
+    foreach ($colors as $row) {
+        $canonical_slug = pet_asset_slug((string)($row['color_name'] ?? ''));
+        if ($canonical_slug === '') {
+            continue;
+        }
+
+        $candidate_slugs = array_values(array_unique(array_filter([
+            $canonical_slug,
+            battle_color_compact_slug($canonical_slug),
+        ])));
+
+        foreach ($candidate_slugs as $candidate_slug) {
+            if (battle_species_color_asset_exists($species_name, $candidate_slug)) {
+                $usable_colors[] = battle_color_payload($row, $candidate_slug);
+                break;
+            }
+        }
+    }
+
+    if ($usable_colors) {
+        return $usable_colors[array_rand($usable_colors)];
+    }
+
+    if ($colors) {
+        $row = $colors[array_rand($colors)];
+        return battle_color_payload($row, (string)($row['color_name'] ?? ''));
+    }
+
+    return [
+        'color_id' => 2,
+        'color_name' => 'Blue',
+        'color_slug' => 'blue',
+    ];
+}
+
 function battle_trainer_graphic_url(int $trainer_id): string {
     $fallback = 'images/creatures/tengu_f_blue.webp';
     if ($trainer_id <= 0) {
@@ -133,7 +246,7 @@ function battle_trainer_graphic_url(int $trainer_id): string {
     return $fallback;
 }
 
-function battle_fetch_wild_encounter_rows(int $region_id, bool $active_only): array {
+function battle_fetch_wild_encounter_rows(int $region_id, bool $active_only, int $species_id = 0): array {
     if ($region_id <= 0) {
         return [];
     }
@@ -143,6 +256,11 @@ function battle_fetch_wild_encounter_rows(int $region_id, bool $active_only): ar
 
     $conditions[] = 're.region_id = ?';
     $params[] = $region_id;
+
+    if ($species_id > 0) {
+        $conditions[] = 're.species_id = ?';
+        $params[] = $species_id;
+    }
 
     if ($active_only) {
         $conditions[] = 'NOW() BETWEEN re.time_from AND re.time_until';
@@ -154,6 +272,7 @@ function battle_fetch_wild_encounter_rows(int $region_id, bool $active_only): ar
         "SELECT re.encounter_id,
                 re.region_id,
                 re.species_id,
+                NULL AS default_color_slug,
                 re.time_from,
                 re.time_until,
                 re.encounter_chance,
@@ -200,25 +319,27 @@ function battle_pick_weighted_encounter(array $rows): ?array {
     return $rows[array_key_last($rows)] ?? null;
 }
 
-function battle_load_random_wild_encounter(int $region_id = 0): ?array {
+function battle_load_random_wild_encounter(int $region_id = 0, int $species_id = 0): ?array {
     if ($region_id <= 0) {
         return null;
     }
 
-    return battle_pick_weighted_encounter(battle_fetch_wild_encounter_rows($region_id, true));
+    return battle_pick_weighted_encounter(battle_fetch_wild_encounter_rows($region_id, true, $species_id));
 }
 
-function battle_normalize_pet(array $pet, array $element_lookup): array {
+function battle_normalize_pet(array $pet, array $element_lookup, bool $restore_empty_hp = false): array {
     $level = max(1, (int)($pet['level'] ?? 1));
     $max_hp = (int)($pet['hp_max'] ?? 0);
     if ($max_hp <= 0) {
         $max_hp = max(16, ((int)($pet['base_hp'] ?? 10) * 5) + ($level * 4));
     }
 
-    $current_hp = (int)($pet['hp_current'] ?? 0);
-    if ($current_hp <= 0 || $current_hp > $max_hp) {
+    $has_current_hp = array_key_exists('hp_current', $pet) && $pet['hp_current'] !== null && $pet['hp_current'] !== '';
+    $current_hp = $has_current_hp ? (int)$pet['hp_current'] : $max_hp;
+    if ($restore_empty_hp && $current_hp <= 0) {
         $current_hp = $max_hp;
     }
+    $current_hp = max(0, min($max_hp, $current_hp));
 
     $name = trim((string)($pet['nickname'] ?? ''));
     if ($name === '') {
@@ -230,6 +351,7 @@ function battle_normalize_pet(array $pet, array $element_lookup): array {
         static fn(int $element_id): string => $element_lookup[$element_id] ?? ('Element ' . $element_id),
         $element_ids
     ));
+    $ability = ability_for_pet($pet);
 
     return [
         'id' => (int)($pet['pet_instance_id'] ?? 0),
@@ -237,6 +359,7 @@ function battle_normalize_pet(array $pet, array $element_lookup): array {
         'name' => $name,
         'species' => (string)($pet['species_name'] ?? 'Creature'),
         'level' => $level,
+        'experience' => max(0, (int)($pet['experience'] ?? 0)),
         'hp' => $current_hp,
         'maxHp' => $max_hp,
         'attack' => (int)($pet['atk'] ?? $pet['base_atk'] ?? 8),
@@ -244,7 +367,9 @@ function battle_normalize_pet(array $pet, array $element_lookup): array {
         'speed' => (int)($pet['initiative'] ?? $pet['base_init'] ?? 5),
         'elements' => $element_ids,
         'elementNames' => $element_names,
-        'image' => pet_image_url((string)($pet['species_name'] ?? ''), $pet['color_name'] ?? null),
+        'colorSlug' => (string)($pet['color_slug'] ?? ''),
+        'image' => pet_image_url((string)($pet['species_name'] ?? ''), $pet['color_name'] ?? null, $pet['color_slug'] ?? null),
+        'ability' => ability_battle_payload($ability),
         'moves' => [],
     ];
 }
@@ -256,32 +381,36 @@ function battle_normalize_wild_pet(array $encounter, array $element_lookup): arr
     $base_hp = (int)($encounter['base_hp'] ?? 10);
     $max_hp = max(20, ($base_hp * 5) + ($level * 4));
     $elements_by_species = battle_load_species_elements([$species_id]);
+    $color = battle_pick_wild_color($encounter);
 
     return battle_normalize_pet([
         'pet_instance_id' => 100000 + (int)($encounter['encounter_id'] ?? 0),
         'species_id' => $species_id,
         'nickname' => 'Wild ' . $species_name,
-        'color_id' => 2,
-        'color_name' => 'Blue',
+        'color_id' => $color['color_id'],
+        'color_name' => $color['color_name'],
+        'color_slug' => $color['color_slug'],
         'level' => $level,
+        'experience' => 0,
         'hp_current' => $max_hp,
         'hp_max' => $max_hp,
         'atk' => (int)($encounter['base_atk'] ?? 8) + $level,
         'def' => (int)($encounter['base_def'] ?? 5) + max(1, intdiv($level, 2)),
         'initiative' => (int)($encounter['base_init'] ?? 5) + max(1, intdiv($level, 2)),
+        'ability_id' => ability_id_for_species($species_id),
         'species_name' => $species_name,
         'base_hp' => $base_hp,
         'base_atk' => (int)($encounter['base_atk'] ?? 8),
         'base_def' => (int)($encounter['base_def'] ?? 5),
         'base_init' => (int)($encounter['base_init'] ?? 5),
         'elements' => $elements_by_species[$species_id] ?? [],
-    ], $element_lookup);
+    ], $element_lookup, true);
 }
 
 function battle_load_team_for_user(int $user_id, array $element_lookup): array {
     $rows = q(
         "SELECT pi.pet_instance_id, pi.species_id, pi.nickname, pi.color_id, pi.level,
-                pi.hp_current, pi.hp_max, pi.atk, pi.def, pi.initiative,
+                pi.experience, pi.hp_current, pi.hp_max, pi.atk, pi.def, pi.initiative, pi.ability_id,
                 ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init,
                 pc.color_name
            FROM pet_instances pi
@@ -302,19 +431,7 @@ function battle_load_team_for_user(int $user_id, array $element_lookup): array {
     }, $rows);
 }
 
-function battle_load_random_trainer(): ?array {
-    $trainer = q(
-        "SELECT trainer_id,
-                class_name,
-                trainer_name,
-                encounter_line,
-                defeat_line,
-                defeat_currency
-           FROM trainers
-          ORDER BY RAND()
-          LIMIT 1"
-    )->fetch(PDO::FETCH_ASSOC);
-
+function battle_trainer_payload(array $trainer): ?array {
     if (!$trainer) {
         return null;
     }
@@ -333,6 +450,43 @@ function battle_load_random_trainer(): ?array {
         'initials' => battle_name_initials(trim($class_name . ' ' . $trainer_name)),
         'graphic' => battle_trainer_graphic_url((int)$trainer['trainer_id']),
     ];
+}
+
+function battle_load_random_trainer(): ?array {
+    $trainer = q(
+        "SELECT trainer_id,
+                class_name,
+                trainer_name,
+                encounter_line,
+                defeat_line,
+                defeat_currency
+           FROM trainers
+          ORDER BY RAND()
+          LIMIT 1"
+    )->fetch(PDO::FETCH_ASSOC);
+
+    return $trainer ? battle_trainer_payload($trainer) : null;
+}
+
+function battle_load_trainer_by_id(int $trainer_id): ?array {
+    if ($trainer_id <= 0) {
+        return null;
+    }
+
+    $trainer = q(
+        "SELECT trainer_id,
+                class_name,
+                trainer_name,
+                encounter_line,
+                defeat_line,
+                defeat_currency
+           FROM trainers
+          WHERE trainer_id = ?
+          LIMIT 1",
+        [$trainer_id]
+    )->fetch(PDO::FETCH_ASSOC);
+
+    return $trainer ? battle_trainer_payload($trainer) : null;
 }
 
 function battle_wild_opponent_from_encounter(array $encounter, array $wild_pet): array {
@@ -358,7 +512,7 @@ function battle_wild_opponent_from_encounter(array $encounter, array $wild_pet):
 function battle_load_trainer_team(int $trainer_id, array $element_lookup): array {
     $rows = q(
         "SELECT pi.pet_instance_id, pi.species_id, pi.nickname, pi.color_id, pi.level,
-                pi.hp_current, pi.hp_max, pi.atk, pi.def, pi.initiative,
+                pi.experience, pi.hp_current, pi.hp_max, pi.atk, pi.def, pi.initiative, pi.ability_id,
                 ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init,
                 pc.color_name
            FROM trainer_roster tr
@@ -375,8 +529,18 @@ function battle_load_trainer_team(int $trainer_id, array $element_lookup): array
 
     return array_map(static function (array $row) use ($elements_by_species, $element_lookup): array {
         $row['elements'] = $elements_by_species[(int)$row['species_id']] ?? [];
-        return battle_normalize_pet($row, $element_lookup);
+        return battle_normalize_pet($row, $element_lookup, true);
     }, $rows);
+}
+
+function battle_team_has_living_pet(array $team): bool {
+    foreach ($team as $pet) {
+        if ((int)($pet['hp'] ?? 0) > 0) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 function battle_load_attack_pool(array $element_lookup): array {
@@ -520,6 +684,38 @@ function battle_load_battle_items(int $user_id): array {
         return [];
     }
 
+    $pdo = db();
+    if ($pdo && item_effect_table_exists($pdo)) {
+        $rows = q(
+            "SELECT ui.item_id,
+                    ui.quantity,
+                    i.item_name,
+                    i.item_description,
+                    ie.amount AS heal_amount
+               FROM user_inventory ui
+               JOIN items i ON i.item_id = ui.item_id
+               JOIN item_effects ie
+                 ON ie.item_id = i.item_id
+                AND ie.effect_type = 'increase'
+                AND ie.target_stat = 'hp_current'
+                AND ie.amount > 0
+              WHERE ui.user_id = ?
+                AND ui.quantity > 0
+              ORDER BY i.item_name",
+            [$user_id]
+        )->fetchAll(PDO::FETCH_ASSOC);
+
+        return array_map(static function (array $row): array {
+            return [
+                'id' => (int)$row['item_id'],
+                'name' => (string)$row['item_name'],
+                'description' => (string)($row['item_description'] ?? ''),
+                'quantity' => (int)$row['quantity'],
+                'heal' => max(1, (int)($row['heal_amount'] ?? 20)),
+            ];
+        }, $rows);
+    }
+
     $rows = q(
         "SELECT ui.item_id, ui.quantity, i.item_name, i.item_description, i.replenish
            FROM user_inventory ui
@@ -562,6 +758,279 @@ function battle_require_active_session(string $token, int $trainer_id = 0): arra
     return $battle;
 }
 
+function battle_parse_hp_snapshot($raw_snapshot): array {
+    if (is_string($raw_snapshot)) {
+        $decoded = json_decode($raw_snapshot, true);
+    } elseif (is_array($raw_snapshot)) {
+        $decoded = $raw_snapshot;
+    } else {
+        $decoded = [];
+    }
+
+    if (!is_array($decoded)) {
+        return [];
+    }
+
+    $snapshot = [];
+    foreach ($decoded as $row) {
+        if (!is_array($row)) {
+            continue;
+        }
+
+        $pet_id = max(0, (int)($row['id'] ?? 0));
+        if ($pet_id <= 0) {
+            continue;
+        }
+
+        $hp = (int)round((float)($row['hp'] ?? 0));
+        $max_hp = (int)round((float)($row['maxHp'] ?? 0));
+        $snapshot[$pet_id] = [
+            'hp' => max(0, $hp),
+            'max_hp' => max(0, $max_hp),
+        ];
+    }
+
+    return $snapshot;
+}
+
+function battle_sync_player_hp(int $user_id, string $token, $raw_snapshot, int $client_version = 0): array {
+    if ($user_id <= 0) {
+        return ['updated' => 0];
+    }
+
+    $session = $_SESSION['battle_minigame'] ?? null;
+    // HP sync only needs a valid session + token; it is called for both wild and
+    // trainer battles, so verify against the session's own trainer id rather than a
+    // default of 0 (which would spuriously fail every trainer battle).
+    $battle = battle_require_active_session($token, is_array($session) ? (int)($session['trainer_id'] ?? 0) : 0);
+    $client_version = max(0, $client_version);
+    $last_version = (int)($_SESSION['battle_minigame']['hp_sync_version'] ?? -1);
+    if ($client_version < $last_version) {
+        return ['updated' => 0, 'stale' => true, 'version' => $last_version];
+    }
+
+    $player_pet_ids = $battle['player_pet_ids'] ?? [];
+    if (!is_array($player_pet_ids) || !$player_pet_ids) {
+        return ['updated' => 0];
+    }
+
+    $allowed = array_fill_keys(array_map('intval', $player_pet_ids), true);
+    $snapshot = battle_parse_hp_snapshot($raw_snapshot);
+    $updates = [];
+    foreach ($snapshot as $pet_id => $row) {
+        if (!isset($allowed[$pet_id])) {
+            continue;
+        }
+        $updates[$pet_id] = $row;
+    }
+
+    if (!$updates) {
+        return ['updated' => 0];
+    }
+
+    $pdo = db();
+    if (!$pdo) {
+        return ['updated' => 0];
+    }
+
+    $updated = 0;
+    try {
+        $pdo->beginTransaction();
+
+        $select = $pdo->prepare(
+            "SELECT pet_instance_id, hp_max
+               FROM pet_instances
+              WHERE pet_instance_id = ?
+                AND owner_user_id = ?
+              FOR UPDATE"
+        );
+        $update = $pdo->prepare(
+            "UPDATE pet_instances
+                SET hp_current = ?,
+                    hp_max = COALESCE(hp_max, ?)
+              WHERE pet_instance_id = ?
+                AND owner_user_id = ?"
+        );
+
+        foreach ($updates as $pet_id => $row) {
+            $select->execute([$pet_id, $user_id]);
+            $pet = $select->fetch(PDO::FETCH_ASSOC);
+            if (!$pet) {
+                continue;
+            }
+
+            $cap = max(0, (int)($pet['hp_max'] ?? 0));
+            $snapshot_max = max(0, (int)($row['max_hp'] ?? 0));
+            if ($cap <= 0) {
+                $cap = $snapshot_max;
+            }
+
+            $hp = max(0, (int)($row['hp'] ?? 0));
+            if ($cap > 0) {
+                $hp = min($hp, $cap);
+            }
+
+            $update->execute([$hp, $snapshot_max > 0 ? $snapshot_max : null, $pet_id, $user_id]);
+            $updated += $update->rowCount();
+        }
+
+        $pdo->commit();
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        app_add_error_from_exception($e, 'Battle HP sync failed:');
+        return ['updated' => 0];
+    }
+
+    $_SESSION['battle_minigame']['hp_synced_at'] = time();
+    $_SESSION['battle_minigame']['hp_sync_version'] = max($last_version, $client_version);
+
+    return ['updated' => $updated, 'version' => (int)$_SESSION['battle_minigame']['hp_sync_version']];
+}
+
+function battle_xp_sources_from_team(array $team): array {
+    return array_map(static function (array $pet): array {
+        return [
+            'id' => (int)($pet['id'] ?? 0),
+            'name' => (string)($pet['name'] ?? $pet['species'] ?? 'Creature'),
+            'level' => max(1, (int)($pet['level'] ?? 1)),
+            'experience' => max(0, (int)($pet['experience'] ?? 0)),
+            'defense' => max(0, (int)($pet['defense'] ?? 0)),
+        ];
+    }, $team);
+}
+
+function battle_enemy_xp_source(array $battle, int $enemy_pet_id): ?array {
+    $sources = $battle['enemy_xp_sources'] ?? [];
+    if (!is_array($sources) || !$sources) {
+        return null;
+    }
+
+    if ($enemy_pet_id > 0) {
+        foreach ($sources as $source) {
+            if (is_array($source) && (int)($source['id'] ?? 0) === $enemy_pet_id) {
+                return $source;
+            }
+        }
+    }
+
+    $source = end($sources);
+    return is_array($source) ? $source : null;
+}
+
+function battle_experience_reward_for_enemy(array $enemy): int {
+    $level = max(1, (int)($enemy['level'] ?? 1));
+    $experience = max(0, (int)($enemy['experience'] ?? 0));
+    $defense = max(0, (int)($enemy['defense'] ?? 0));
+
+    return $level * ($experience + $defense);
+}
+
+function battle_experience_to_level_up(array $pet): int {
+    $level = max(1, (int)($pet['level'] ?? 1));
+    $stats = max(0, (int)($pet['hp_max'] ?? 0))
+        + max(0, (int)($pet['atk'] ?? 0))
+        + max(0, (int)($pet['def'] ?? 0))
+        + max(0, (int)($pet['initiative'] ?? 0));
+
+    return $level * $stats;
+}
+
+function battle_award_pet_experience(int $user_id, int $pet_id, array $battle, int $enemy_pet_id): ?array {
+    if ($user_id <= 0 || $pet_id <= 0) {
+        return null;
+    }
+
+    $playerPetIds = $battle['player_pet_ids'] ?? [];
+    if (is_array($playerPetIds) && $playerPetIds && !in_array($pet_id, array_map('intval', $playerPetIds), true)) {
+        return null;
+    }
+
+    $enemy = battle_enemy_xp_source($battle, $enemy_pet_id);
+    if (!$enemy) {
+        return null;
+    }
+
+    $xpGain = battle_experience_reward_for_enemy($enemy);
+    if ($xpGain <= 0) {
+        return null;
+    }
+
+    $pdo = db();
+    if (!$pdo) {
+        return null;
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        $stmt = $pdo->prepare(
+            "SELECT pi.pet_instance_id,
+                    pi.nickname,
+                    pi.level,
+                    pi.experience,
+                    pi.hp_max,
+                    pi.atk,
+                    pi.def,
+                    pi.initiative,
+                    ps.species_name
+               FROM pet_instances pi
+               JOIN pet_species ps ON ps.species_id = pi.species_id
+              WHERE pi.pet_instance_id = ?
+                AND pi.owner_user_id = ?
+              FOR UPDATE"
+        );
+        $stmt->execute([$pet_id, $user_id]);
+        $pet = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$pet) {
+            $pdo->rollBack();
+            return null;
+        }
+
+        $currentLevel = max(1, (int)($pet['level'] ?? 1));
+        $nextExperience = max(0, (int)($pet['experience'] ?? 0)) + $xpGain;
+        $needed = battle_experience_to_level_up($pet);
+        $leveledUp = $needed > 0 && $nextExperience >= $needed;
+        $nextLevel = $leveledUp ? ($currentLevel + 1) : $currentLevel;
+
+        if ($leveledUp) {
+            $nextExperience = 0;
+        }
+
+        $update = $pdo->prepare(
+            "UPDATE pet_instances
+                SET level = ?, experience = ?
+              WHERE pet_instance_id = ?
+                AND owner_user_id = ?"
+        );
+        $update->execute([$nextLevel, $nextExperience, $pet_id, $user_id]);
+
+        $pdo->commit();
+
+        $nextCurvePet = $pet;
+        $nextCurvePet['level'] = $nextLevel;
+
+        return [
+            'petId' => $pet_id,
+            'petName' => ($pet['nickname'] ?? '') !== '' ? (string)$pet['nickname'] : (string)$pet['species_name'],
+            'enemyName' => (string)($enemy['name'] ?? 'the opponent'),
+            'gained' => $xpGain,
+            'level' => $nextLevel,
+            'experience' => $nextExperience,
+            'nextLevelExperience' => battle_experience_to_level_up($nextCurvePet),
+            'leveledUp' => $leveledUp,
+        ];
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        app_add_error_from_exception($e, 'Battle experience award failed:');
+        return null;
+    }
+}
+
 function battle_consume_item(int $user_id, int $item_id, string $token): void {
     if ($user_id <= 0 || $item_id <= 0) {
         battle_json_response(['ok' => false, 'message' => 'That item could not be used.']);
@@ -569,18 +1038,44 @@ function battle_consume_item(int $user_id, int $item_id, string $token): void {
 
     battle_require_active_session($token);
 
-    $row = q(
-        "SELECT ui.quantity, i.item_name, i.item_description, i.replenish
-           FROM user_inventory ui
-           JOIN items i ON i.item_id = ui.item_id
-          WHERE ui.user_id = ?
-            AND ui.item_id = ?
-            AND ui.quantity > 0
-          LIMIT 1",
-        [$user_id, $item_id]
-    )->fetch(PDO::FETCH_ASSOC);
+    $pdo = db();
+    if ($pdo && item_effect_table_exists($pdo)) {
+        $row = q(
+            "SELECT ui.quantity,
+                    i.item_name,
+                    i.item_description,
+                    i.replenish,
+                    ie.amount AS heal_amount
+               FROM user_inventory ui
+               JOIN items i ON i.item_id = ui.item_id
+               JOIN item_effects ie
+                 ON ie.item_id = i.item_id
+                AND ie.effect_type = 'increase'
+                AND ie.target_stat = 'hp_current'
+                AND ie.amount > 0
+              WHERE ui.user_id = ?
+                AND ui.item_id = ?
+                AND ui.quantity > 0
+              LIMIT 1",
+            [$user_id, $item_id]
+        )->fetch(PDO::FETCH_ASSOC);
+    } else {
+        $row = q(
+            "SELECT ui.quantity, i.item_name, i.item_description, i.replenish
+               FROM user_inventory ui
+               JOIN items i ON i.item_id = ui.item_id
+              WHERE ui.user_id = ?
+                AND ui.item_id = ?
+                AND ui.quantity > 0
+              LIMIT 1",
+            [$user_id, $item_id]
+        )->fetch(PDO::FETCH_ASSOC);
+        if ($row && !battle_is_battle_item_row($row)) {
+            $row = false;
+        }
+    }
 
-    if (!$row || !battle_is_battle_item_row($row)) {
+    if (!$row) {
         battle_json_response(['ok' => false, 'message' => 'That battle item is no longer available.']);
     }
 
@@ -613,22 +1108,26 @@ function battle_consume_item(int $user_id, int $item_id, string $token): void {
         'ok' => true,
         'itemId' => $item_id,
         'quantity' => max(0, (int)$quantity),
-        'heal' => max(1, (int)($row['replenish'] ?? 20)),
+        'heal' => max(1, (int)($row['heal_amount'] ?? $row['replenish'] ?? 20)),
         'message' => 'Item used.',
     ]);
 }
 
-function battle_award_victory(int $user_id, int $trainer_id, string $token): void {
+function battle_award_victory(int $user_id, int $trainer_id, string $token, int $winning_pet_id, int $enemy_pet_id, $raw_hp_snapshot = null, int $hp_version = 0): void {
     $battle = battle_require_active_session($token, $trainer_id);
     $reward = max(0, (int)($battle['reward'] ?? 0));
+    $hp_sync = battle_sync_player_hp($user_id, $token, $raw_hp_snapshot, $hp_version);
 
     if (!empty($battle['awarded'])) {
         battle_json_response([
             'ok' => true,
             'message' => 'Reward already collected.',
             'cash' => (int)(current_user()['cash'] ?? 0),
+            'hp' => $hp_sync,
         ]);
     }
+
+    $experienceResult = battle_award_pet_experience($user_id, $winning_pet_id, $battle, $enemy_pet_id);
 
     if ($reward > 0 && $user_id > 0) {
         q(
@@ -657,6 +1156,8 @@ function battle_award_victory(int $user_id, int $trainer_id, string $token): voi
         'ok' => true,
         'message' => 'Reward collected.',
         'cash' => (int)($_SESSION['user']['cash'] ?? 0),
+        'experience' => $experienceResult,
+        'hp' => $hp_sync,
     ]);
 }
 
@@ -669,8 +1170,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         battle_award_victory(
             $user_id,
             (int)($_POST['trainer_id'] ?? 0),
-            (string)($_POST['battle_token'] ?? '')
+            (string)($_POST['battle_token'] ?? ''),
+            (int)($_POST['winning_pet_id'] ?? 0),
+            (int)($_POST['enemy_pet_id'] ?? 0),
+            $_POST['player_hp'] ?? null,
+            (int)($_POST['hp_version'] ?? 0)
         );
+    }
+
+    if ($action === 'sync_hp') {
+        $result = battle_sync_player_hp(
+            $user_id,
+            (string)($_POST['battle_token'] ?? ''),
+            $_POST['player_hp'] ?? null,
+            (int)($_POST['hp_version'] ?? 0)
+        );
+        battle_json_response(['ok' => true, 'hp' => $result]);
     }
 
     if ($action === 'use_item') {
@@ -685,19 +1200,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $element_lookup = battle_load_element_lookup();
 $battle_kind = ((string)($_GET['battle'] ?? '') === 'wild') ? 'wild' : 'trainer';
 $requested_region_id = max(0, (int)($_GET['region_id'] ?? 0));
+$requested_species_id = max(0, (int)($_GET['species_id'] ?? 0));
+$requested_trainer_id = max(0, (int)($_GET['trainer_id'] ?? 0));
 $return_url = battle_return_url_from_request($_GET['return_to'] ?? '');
 $trainer = null;
 $trainer_team = [];
 
 if ($battle_kind === 'wild') {
-    $wild_encounter = battle_load_random_wild_encounter($requested_region_id);
+    $wild_encounter = battle_load_random_wild_encounter($requested_region_id, $requested_species_id);
     if ($wild_encounter) {
         $wild_pet = battle_normalize_wild_pet($wild_encounter, $element_lookup);
         $trainer = battle_wild_opponent_from_encounter($wild_encounter, $wild_pet);
         $trainer_team = [$wild_pet];
     }
 } else {
-    $trainer = battle_load_random_trainer();
+    $trainer = $requested_trainer_id > 0 ? battle_load_trainer_by_id($requested_trainer_id) : battle_load_random_trainer();
     $trainer_team = $trainer ? battle_load_trainer_team($trainer['id'], $element_lookup) : [];
 }
 
@@ -707,7 +1224,7 @@ $player_team = battle_assign_moves($player_team, $attack_pool);
 $trainer_team = battle_assign_moves($trainer_team, $attack_pool);
 $items = battle_load_battle_items($user_id);
 $effectiveness = battle_load_effectiveness();
-$battle_ready = $trainer && $player_team && $trainer_team;
+$battle_ready = $trainer && battle_team_has_living_pet($player_team) && battle_team_has_living_pet($trainer_team);
 
 if ($battle_ready) {
     $battle_token = bin2hex(random_bytes(16));
@@ -716,6 +1233,9 @@ if ($battle_ready) {
         'trainer_id' => $trainer['id'],
         'reward' => $trainer['defeatCurrency'],
         'battle_kind' => $battle_kind,
+        'player_pet_ids' => array_map(static fn(array $pet): int => (int)($pet['id'] ?? 0), $player_team),
+        'enemy_xp_sources' => battle_xp_sources_from_team($trainer_team),
+        'hp_sync_version' => 0,
         'awarded' => false,
     ];
 } else {
@@ -741,8 +1261,8 @@ $battle_payload = [
   <h1><?= $battle_kind === 'wild' ? 'Wild Battle' : 'Trainer Battle' ?></h1>
   <p class="muted">
     <?= $battle_kind === 'wild'
-        ? 'This encounter needs one logged-in creature and at least one random wild encounter row before the battle can begin.'
-        : 'This encounter needs one logged-in creature, one trainer entry, and a trainer roster before the battle can begin.' ?>
+        ? 'This encounter needs one conscious logged-in creature and at least one random wild encounter row before the battle can begin.'
+        : 'This encounter needs one conscious logged-in creature, one trainer entry, and a trainer roster before the battle can begin.' ?>
   </p>
   <a class="btn" href="<?= htmlspecialchars($return_url) ?>">Go Back</a>
 </section>

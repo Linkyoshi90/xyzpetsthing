@@ -20,6 +20,10 @@ if (!$activeFriendId && $friends) {
 }
 $activeFriend = $activeFriendId ? $friends[$activeFriendId] : null;
 $messages = $activeFriendId ? get_conversation($uid, $activeFriendId, 200) : [];
+if ($activeFriendId) {
+    // Opening a conversation clears its unread notification.
+    mark_conversation_read($uid, (int)$activeFriendId);
+}
 $chatActionUrl = $GLOBALS['app_chat_action_path'] ?? 'user_chat_action.php';
 ?>
 <h1>Direct Messages</h1>
@@ -56,10 +60,15 @@ $chatActionUrl = $GLOBALS['app_chat_action_path'] ?? 'user_chat_action.php';
         <div class="chat-history" id="chat-history" aria-live="polite" data-empty="No messages yet. Say hello!">
             <?php if ($messages): ?>
                 <?php foreach ($messages as $msg): ?>
-                <article class="chat-message <?= htmlspecialchars($msg['direction']) ?>" data-message-id="<?= (int)$msg['id'] ?>">
-                    <p class="chat-message-body"><?= nl2br(htmlspecialchars($msg['body'])) ?></p>
-                    <span class="chat-message-time"><?= htmlspecialchars(date('M j, Y g:i A', strtotime($msg['created_at']))) ?></span>
+                <?php $view = chat_message_view($msg, (int)$uid); ?>
+                <?php if (($view['type'] ?? '') === 'gift'): ?>
+                <?= gift_chat_card_html((int)$view['id'], (string)$view['direction'], $view['gift'], (string)$view['timestamp']) ?>
+                <?php else: ?>
+                <article class="chat-message <?= htmlspecialchars($view['direction']) ?>" data-message-id="<?= (int)$view['id'] ?>">
+                    <p class="chat-message-body"><?= $view['body'] ?></p>
+                    <span class="chat-message-time"><?= htmlspecialchars($view['timestamp']) ?></span>
                 </article>
+                <?php endif; ?>
                 <?php endforeach; ?>
             <?php else: ?>
             <p class="chat-history-empty">No messages yet. Say hello!</p>
@@ -71,9 +80,27 @@ $chatActionUrl = $GLOBALS['app_chat_action_path'] ?? 'user_chat_action.php';
             <label for="chat-input" class="sr-only">Type your message</label>
             <textarea id="chat-input" name="message" rows="2" placeholder="Type your message" required></textarea>
             <div class="chat-actions">
+                <button class="btn btn-ghost" type="button" id="chat-gift-btn" data-gift-open>Gift</button>
                 <button class="btn" type="submit">Send</button>
             </div>
         </form>
+
+        <div class="gift-modal" id="gift-modal" hidden aria-hidden="true">
+          <div class="gift-modal__backdrop" data-gift-close></div>
+          <div class="gift-modal__dialog card glass" role="dialog" aria-modal="true" aria-labelledby="gift-modal-title">
+            <button type="button" class="gift-modal__close" data-gift-close aria-label="Close">&times;</button>
+            <h2 id="gift-modal-title">Send a gift</h2>
+            <p class="gift-modal__lead muted">Choose a tradable item to send to <strong data-gift-friend-name><?= htmlspecialchars($activeFriend['username']) ?></strong>.</p>
+            <p class="gift-modal__status" data-gift-status hidden></p>
+            <div class="gift-modal__list" data-gift-list>
+              <p class="muted">Loading your bag…</p>
+            </div>
+            <div class="gift-modal__actions">
+              <button type="button" class="btn btn-ghost" data-gift-close>Cancel</button>
+              <button type="button" class="btn" data-gift-send disabled>Send gift</button>
+            </div>
+          </div>
+        </div>
         <?php else: ?>
         <div class="chat-placeholder">
             <p>Select a friend from the list to start chatting.</p>

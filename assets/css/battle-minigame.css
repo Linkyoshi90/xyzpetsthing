@@ -177,6 +177,11 @@
   min-width: 180px;
 }
 
+.battle-combatant.player.is-awaiting-choice {
+  visibility: hidden;
+  opacity: 0;
+}
+
 .battle-encounter-banner {
   position: absolute;
   top: 18px;
@@ -630,6 +635,50 @@
   box-shadow: none;
 }
 
+.battle-creature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 12px;
+}
+
+.battle-option.battle-option-profile {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  min-height: 106px;
+  padding: 12px 14px 12px 20px;
+}
+
+.battle-profile-portrait {
+  display: grid;
+  place-items: center;
+  width: 78px;
+  height: 78px;
+  overflow: hidden;
+  border: 1px solid rgba(99, 145, 190, 0.24);
+  border-radius: 18px;
+  background: radial-gradient(circle at top, #ffffff, #ddecf8);
+}
+
+.battle-profile-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.battle-profile-copy {
+  min-width: 0;
+}
+
+.battle-profile-species {
+  display: block;
+  margin-top: 3px;
+  color: #385a79;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
 .battle-detail-card {
   padding: 16px;
   border-radius: 22px;
@@ -821,4 +870,14 @@
   .battle-menu-grid {
     grid-template-columns: 1fr;
   }
+
+  .battle-creature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.battle-detail-ability {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(30, 134, 255, 0.2);
+  line-height: 1.4;
 }

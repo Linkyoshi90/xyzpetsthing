@@ -1,6 +1,7 @@
 ﻿<?php
 require_login();
 require_once __DIR__ . '/../lib/input.php';
+require_once __DIR__ . '/../lib/user_settings.php';
 
 // Determine which species are enabled
 $allowedSpecies = [];
@@ -42,17 +43,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Build a list of available gender/variant combinations per creature
 $image_variants = [];
-foreach (glob(__DIR__ . '/../images/creatures/*_*_*.webp') as $file) {
-    $name = basename($file, '.webp');
-    if (preg_match('/^(.*)_([mf])_(.+)$/', $name, $m)) {
-        // Normalize the creature slug to lowercase so it matches the
-        // front‑end slug() helper which also lowercases names.
-        $slug = strtolower($m[1]);
-        if ($allowedSlugs && !in_array($slug, $allowedSlugs, true)) {
-            continue;
+$image_variant_seen = [];
+$image_sources = [
+    [
+        'dir' => __DIR__ . '/../images/creatures',
+        'url' => 'images/creatures',
+    ],
+];
+
+if (user_settings_nsfw_enabled()) {
+    $image_sources[] = [
+        'dir' => __DIR__ . '/../images/creatures/nsfw concepts',
+        'url' => 'images/creatures/nsfw concepts',
+    ];
+}
+
+foreach ($image_sources as $source) {
+    if (!is_dir($source['dir'])) {
+        continue;
+    }
+
+    foreach (['webp', 'png', 'jpg', 'jpeg'] as $extension) {
+        foreach (glob($source['dir'] . '/*_*_*.' . $extension) ?: [] as $file) {
+            $name = pathinfo($file, PATHINFO_FILENAME);
+            if (preg_match('/^(.*)_([mf])_(.+)$/', $name, $m)) {
+                // Normalize the creature slug to lowercase so it matches the
+                // front-end slug() helper which also lowercases names.
+                $slug = strtolower($m[1]);
+                if ($allowedSlugs && !in_array($slug, $allowedSlugs, true)) {
+                    continue;
+                }
+                $combo = $m[2] . '_' . $m[3];
+                $comboKey = strtolower($combo);
+                if (isset($image_variant_seen[$slug][$comboKey])) {
+                    continue;
+                }
+                $image_variant_seen[$slug][$comboKey] = true;
+                $image_variants[$slug][] = [
+                    'combo' => $combo,
+                    'src' => $source['url'] . '/' . basename($file),
+                ];
+            }
         }
-        $combo = $m[2] . '_' . $m[3];
-        $image_variants[$slug][] = $combo;
     }
 }
 ?>
@@ -389,12 +421,29 @@ Pishtaco: Pishtaxa, Cordillon, Nightprow, Andesly, Dusktrader
   const FALLBACK_IMAGE = 'images/not_available.webp';
   const IMAGE_VARIANTS = <?= json_encode($image_variants) ?>;
   const AVAILABLE_SPECIES = <?= json_encode($allowedSlugs) ?>;
+  const normalizeVariant = (sb, variant) => {
+    if (variant && typeof variant === 'object' && variant.src) {
+      return {
+        combo: String(variant.combo || ''),
+        src: String(variant.src)
+      };
+    }
+
+    const combo = typeof variant === 'string' && variant
+      ? variant
+      : `${DEFAULT_GENDER}_${DEFAULT_VARIANT}`;
+
+    return {
+      combo,
+      src: `${IMAGE_BASE}${sb}_${combo}${IMAGE_EXT}`
+    };
+  };
   const variantsFor = (base) => {
     const sb = slug(base);
     const opts = IMAGE_VARIANTS[sb];
     return {
       sb,
-      list: (opts && opts.length) ? opts : [`${DEFAULT_GENDER}_${DEFAULT_VARIANT}`]
+      list: (opts && opts.length ? opts : [`${DEFAULT_GENDER}_${DEFAULT_VARIANT}`]).map(variant => normalizeVariant(sb, variant))
     };
   };
 
@@ -506,20 +555,25 @@ Pishtaco: Pishtaxa, Cordillon, Nightprow, Andesly, Dusktrader
       next.textContent = '\u25B6'; // ▶
 
       const img = new Image();
-      img.src = `${IMAGE_BASE}${sb}_${variants[vIndex]}${IMAGE_EXT}`;
       img.alt = `${g.base} artwork`;
       img.className = 'art';
       img.loading = 'lazy';
       img.decoding = 'async';
-      img.onerror = () => { img.onerror = null; img.src = FALLBACK_IMAGE; };
+      const setArtwork = () => {
+        const variant = variants[vIndex] || normalizeVariant(sb, null);
+        img.onerror = () => { img.onerror = null; img.src = FALLBACK_IMAGE; };
+        img.src = variant.src;
+      };
+      setArtwork();
+
       prev.addEventListener('click', () => {
         vIndex = (vIndex - 1 + variants.length) % variants.length;
-        img.src = `${IMAGE_BASE}${sb}_${variants[vIndex]}${IMAGE_EXT}`;
+        setArtwork();
       });
 
       next.addEventListener('click', () => {
         vIndex = (vIndex + 1) % variants.length;
-        img.src = `${IMAGE_BASE}${sb}_${variants[vIndex]}${IMAGE_EXT}`;
+        setArtwork();
       });
 
       artWrap.appendChild(prev);

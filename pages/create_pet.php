@@ -2,6 +2,7 @@
 require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/temp_user.php';
 require_once __DIR__.'/../lib/input.php';
+require_once __DIR__.'/../lib/abilities.php';
 $uid = current_user()['id'];
 $maxPets = 4;
 $existingPets = get_user_pets($uid);
@@ -103,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $row = $speciesById[$sp] ?? null;
 
     if ($row && $name && isset($colors[$color])) {
+        $abilityId = ability_id_for_new_pet($sp);
         if ($uid === 0) {
             $pet = [
                 'owner_user_id' => 0,
@@ -119,6 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'atk' => $row['base_atk'],
                 'def' => $row['base_def'],
                 'initiative' => $row['base_init'],
+                'ability_id' => $abilityId,
                 'base_hp' => $row['base_hp'],
                 'base_atk' => $row['base_atk'],
                 'base_def' => $row['base_def'],
@@ -135,9 +138,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             temp_user_add_inventory_item(2, 2);
         } else {
             q(
-                "INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, gender, level, experience, hp_current, hp_max, atk, def, initiative)"
-                . " VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
-                [$uid, $sp, $name, $color, $gender, 1, 0, $row['base_hp'], $row['base_hp'], $row['base_atk'], $row['base_def'], $row['base_init']]
+                "INSERT INTO pet_instances (owner_user_id, species_id, nickname, color_id, gender, level, experience, hp_current, hp_max, atk, def, initiative, ability_id)"
+                . " VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                [$uid, $sp, $name, $color, $gender, 1, 0, $row['base_hp'], $row['base_hp'], $row['base_atk'], $row['base_def'], $row['base_init'], $abilityId]
             );
             // starter items
             q(

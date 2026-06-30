@@ -3,6 +3,7 @@ require_login();
 require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/input.php';
 require_once __DIR__.'/../lib/shops.php';
+require_once __DIR__.'/../lib/item_effects.php';
 
 $uid = current_user()['id'];
 $action = input_string($_POST['action'] ?? '', 32);
@@ -26,6 +27,9 @@ function petting_fetch_pet_row(PDO $pdo, int $userId, int $petId, bool $forUpdat
                    pi.intelligence,
                    pi.hp_current,
                    pi.hp_max,
+                   pi.atk,
+                   pi.def,
+                   pi.initiative,
                    ps.species_name
               FROM pet_instances pi
               JOIN pet_species ps ON ps.species_id = pi.species_id
@@ -48,6 +52,9 @@ function petting_build_pet_state(array $pet): array
         'hunger' => max(0, min((int)($pet['hunger'] ?? 0), 100)),
         'health' => $health,
         'maxHealth' => $maxHealth,
+        'attack' => max(0, (int)($pet['atk'] ?? 0)),
+        'defense' => max(0, (int)($pet['def'] ?? 0)),
+        'initiative' => max(0, (int)($pet['initiative'] ?? 0)),
         'happiness' => max(0, min((int)($pet['happiness'] ?? 0), 100)),
         'intelligence' => max(0, (int)($pet['intelligence'] ?? 0)),
     ];
@@ -223,52 +230,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    if ($action === 'heal') {
+    if ($action === 'heal' || $action === 'stat_item') {
         $petId = input_int($_POST['pet_id'] ?? 0, 1);
         $itemId = input_int($_POST['item_id'] ?? 0, 1);
 
         try {
-            $pet = petting_fetch_pet_row($pdo, $uid, $petId);
-            if (!$pet) {
-                petting_json_response(['ok' => false, 'message' => 'That pet is not available.'], 404);
+            $result = item_effect_apply_to_pet($pdo, $uid, $petId, $itemId);
+            if (!empty($result['pet']) && is_array($result['pet'])) {
+                $result['pet'] = petting_build_pet_state($result['pet']);
             }
 
-            $item = petting_fetch_inventory_item($pdo, $uid, $itemId, 'Potion');
-            if (!$item || (int)$item['quantity'] <= 0) {
-                petting_json_response(['ok' => false, 'message' => 'That healing item is no longer available.'], 409);
-            }
-
-            $currentState = petting_build_pet_state($pet);
-            if ($currentState['health'] >= $currentState['maxHealth']) {
-                petting_json_response([
-                    'ok' => false,
-                    'message' => $currentState['name'] . ' is already at full health.',
-                    'pet' => $currentState,
-                ]);
-            }
-
-            $healAmount = max(1, (int)$item['replenish']);
-            $nextHealth = min($currentState['maxHealth'], $currentState['health'] + $healAmount);
-
-            $updatePet = $pdo->prepare(
-                "UPDATE pet_instances
-                    SET hp_current = ?
-                  WHERE pet_instance_id = ? AND owner_user_id = ?"
-            );
-            $updatePet->execute([$nextHealth, $petId, $uid]);
-
-            $nextQuantity = petting_consume_inventory_item($pdo, $uid, $itemId, (int)$item['quantity']);
-
-            $pet['hp_current'] = $nextHealth;
-
-            petting_json_response([
-                'ok' => true,
-                'pet' => petting_build_pet_state($pet),
-                'item' => ['id' => $itemId, 'quantity' => $nextQuantity],
-            ]);
+            petting_json_response($result, !empty($result['ok']) ? 200 : 409);
         } catch (Throwable $e) {
-            app_add_error_from_exception($e, 'Petting heal action failed:');
-            petting_json_response(['ok' => false, 'message' => 'Healing failed. Please try again.'], 500);
+            app_add_error_from_exception($e, 'Petting stat item action failed:');
+            petting_json_response(['ok' => false, 'message' => 'That item could not be used. Please try again.'], 500);
         }
     }
 
@@ -330,13 +305,7 @@ $food = q(
     [$uid]
 )->fetchAll(PDO::FETCH_ASSOC);
 
-$healing = q(
-    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
-    . " JOIN items i ON i.item_id = ui.item_id"
-    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
-    . " WHERE ui.user_id = ? AND ic.category_name = 'Potion' AND ui.quantity > 0 ORDER BY i.item_name",
-    [$uid]
-)->fetchAll(PDO::FETCH_ASSOC);
+$stat_items = $pdo ? item_effect_inventory_for_user($pdo, $uid) : [];
 
 $books = q(
     "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
@@ -378,6 +347,9 @@ $pets_payload = array_map(static function (array $pet): array {
         'hunger' => (int)($pet['hunger'] ?? 0),
         'health' => (int)($pet['hp_current'] ?? 0),
         'maxHealth' => max(1, (int)($pet['hp_max'] ?? 100)),
+        'attack' => max(0, (int)($pet['atk'] ?? 0)),
+        'defense' => max(0, (int)($pet['def'] ?? 0)),
+        'initiative' => max(0, (int)($pet['initiative'] ?? 0)),
         'happiness' => (int)($pet['happiness'] ?? 0),
         'intelligence' => (int)($pet['intelligence'] ?? 0),
         'preferences' => new stdClass(),
@@ -396,7 +368,7 @@ $food_payload = array_map(static function (array $item) use ($pick_emoji): array
     ];
 }, $food);
 
-$healing_payload = array_map(static function (array $item) use ($pick_emoji): array {
+$stat_items_payload = array_map(static function (array $item) use ($pick_emoji): array {
     $imageFile = shop_find_item_image((string)$item['item_name']);
     return [
         'id' => (int)$item['item_id'],
@@ -404,9 +376,10 @@ $healing_payload = array_map(static function (array $item) use ($pick_emoji): ar
         'emoji' => $pick_emoji((string)$item['item_name'], '💊'),
         'image' => 'images/items/' . rawurlencode($imageFile),
         'quantity' => (int)$item['quantity'],
-        'heal' => max(1, (int)($item['replenish'] ?? 1)),
+        'effects' => $item['effects'],
+        'summary' => item_effect_format_effects($item['effects']),
     ];
-}, $healing);
+}, $stat_items);
 
 $book_payload = array_map(static function (array $item): array {
     $imageFile = shop_find_item_image((string)$item['item_name']);
@@ -427,7 +400,7 @@ window.pettingBlaData = {
     activePetId: <?= (int)$pets_payload[0]['id'] ?>,
     pets: <?= json_encode($pets_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
     food: <?= json_encode($food_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-    healing: <?= json_encode($healing_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
+    healing: <?= json_encode($stat_items_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
     books: <?= json_encode($book_payload, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
 };
 </script>
@@ -1532,7 +1505,7 @@ window.pettingBlaData = {
                 🍱
                 <span class="badge" id="foodBadge">8</span>
             </button>
-            <button class="control-btn" id="healBtn" title="Healing Items">
+            <button class="control-btn" id="healBtn" title="Stats">
                 🧪
                 <span class="badge" id="healBadge">3</span>
             </button>
@@ -1556,10 +1529,10 @@ window.pettingBlaData = {
             </div>
         </div>
 
-        <!-- Healing Panel -->
+        <!-- Stats Panel -->
         <div class="slide-panel slide-panel-top" id="healPanel">
             <div class="panel-header">
-                <span class="panel-title">🧪 Healing Items</span>
+                <span class="panel-title">Stats</span>
                 <button class="panel-close" id="healClose">✕</button>
             </div>
             <div class="item-grid" id="healGrid">
@@ -1809,7 +1782,7 @@ window.pettingBlaData = {
                 healGrid.innerHTML = `
                     <div class="empty-state" style="grid-column: 1 / -1;">
                         <div class="empty-icon">💊</div>
-                        <p>No healing items!</p>
+                        <p>No stat items!</p>
                     </div>
                 `;
                 return;
@@ -1823,7 +1796,7 @@ window.pettingBlaData = {
                 card.innerHTML = `
                     <img class="item-icon" src="${item.image}" alt="${item.name}">
                     <div class="item-name">${item.name}</div>
-                    <div class="item-quantity">x${item.quantity} • +${item.heal}💚</div>
+                    <div class="item-quantity">x${item.quantity} • ${item.summary || 'Stat effect'}</div>
                 `;
                 
                 card.addEventListener('pointerdown', (e) => startDrag(e, item, 'healing'));
@@ -1962,13 +1935,18 @@ window.pettingBlaData = {
             const pet = getActivePet();
             if (!pet) return;
 
-            if (pet.health >= pet.maxHealth) {
+            if (Array.isArray(item.effects) && item.effects.length === 1 && item.effects[0].target_stat === 'hp_current' && pet.health >= pet.maxHealth) {
                 showNotification('💚 Already at full health!');
                 return;
             }
 
             // Optimistic update
-            pet.health = clamp(pet.health + item.heal, 0, pet.maxHealth);
+            const hpEffect = Array.isArray(item.effects)
+                ? item.effects.find((effect) => effect.target_stat === 'hp_current')
+                : null;
+            if (hpEffect) {
+                pet.health = clamp(pet.health + Number(hpEffect.amount || 0), 0, pet.maxHealth);
+            }
             item.quantity = Math.max(0, item.quantity - 1);
 
             // Animations
@@ -2251,6 +2229,10 @@ window.pettingBlaData = {
     if (petPanelTitle) {
         petPanelTitle.textContent = 'Pets and Frisbee';
     }
+    const healPanelTitle = healPanel.querySelector('.panel-title');
+    if (healPanelTitle) {
+        healPanelTitle.textContent = 'Stats';
+    }
 
     let draggingItem = null;
     let dragProxy = null;
@@ -2302,6 +2284,15 @@ window.pettingBlaData = {
         }
         if (typeof serverPet.maxHealth === 'number' && serverPet.maxHealth > 0) {
             localPet.maxHealth = serverPet.maxHealth;
+        }
+        if (typeof serverPet.attack === 'number') {
+            localPet.attack = Math.max(0, serverPet.attack);
+        }
+        if (typeof serverPet.defense === 'number') {
+            localPet.defense = Math.max(0, serverPet.defense);
+        }
+        if (typeof serverPet.initiative === 'number') {
+            localPet.initiative = Math.max(0, serverPet.initiative);
         }
         if (typeof serverPet.happiness === 'number') {
             localPet.happiness = clamp(serverPet.happiness, 0, 100);
@@ -2593,8 +2584,8 @@ window.pettingBlaData = {
         if (availableHealing.length === 0) {
             healGrid.innerHTML = `
                 <div class="empty-state" style="grid-column: 1 / -1;">
-                    <div class="empty-icon">Heal</div>
-                    <p>No healing items.</p>
+                    <div class="empty-icon">Stats</div>
+                    <p>No stat items.</p>
                 </div>
             `;
             return;
@@ -2608,7 +2599,7 @@ window.pettingBlaData = {
             card.innerHTML = `
                 <img class="item-icon" src="${item.image}" alt="${item.name}">
                 <div class="item-name">${item.name}</div>
-                <div class="item-quantity">x${item.quantity} | +${item.heal} health</div>
+                <div class="item-quantity">x${item.quantity} | ${item.summary || 'Stat effect'}</div>
             `;
             card.addEventListener('pointerdown', (event) => startDrag(event, item, 'healing'));
             healGrid.appendChild(card);
@@ -2790,20 +2781,15 @@ window.pettingBlaData = {
         if (!pet || item.pending) {
             return;
         }
-        if (pet.health >= pet.maxHealth) {
-            showNotification(`${pet.name} is already at full health.`);
-            return;
-        }
-
         item.pending = true;
         try {
-            const data = await postAction('heal', { pet_id: pet.id, item_id: item.id });
+            const data = await postAction('stat_item', { pet_id: pet.id, item_id: item.id });
             if (!data.ok) {
                 if (data.pet) {
                     syncPetFromServer(data.pet);
                     updateStatusBars();
                 }
-                showNotification(data.message || 'Healing could not be completed.');
+                showNotification(data.message || 'That item could not be used.');
                 return;
             }
 
@@ -2817,8 +2803,11 @@ window.pettingBlaData = {
             petSprite.classList.add('happy');
             setTimeout(() => petSprite.classList.remove('happy'), 600);
             setTimeout(() => createHearts(2, '#81c784'), 180);
+            if (data.message) {
+                showNotification(data.message);
+            }
         } catch (error) {
-            showNotification('Healing failed. Please try again.');
+            showNotification('That item could not be used. Please try again.');
         } finally {
             item.pending = false;
             renderHealGrid();

@@ -4,17 +4,28 @@ require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/temp_user.php';
 require_once __DIR__.'/../lib/input.php';
 
+function fairy_fountain_image_web_path(string $filename, ?string $fallback = null): ?string
+{
+    $absolutePath = __DIR__.'/../images/creatures/'.$filename;
+    if (is_file($absolutePath)) {
+        return 'images/creatures/'.$filename;
+    }
+    return $fallback;
+}
+
 $uid = (int)current_user()['id'];
 $isTemp = is_temp_user();
 $today = date('Y-m-d');
 $appearanceChance = 68; // percent
 $messages = [];
 $rewardVisualKey = null;
-$defaultPoseImage = file_exists(__DIR__.'/../images/creatures/rlff.webp') ? '/images/creatures/rlff.webp' : '/images/creatures/rlff_f_default.webp';
-$happyPoseImage = '/images/creatures/rlff_f_given.webp';
-$contentPoseImage = file_exists(__DIR__.'/../images/creatures/rlff_f_content.webp') ? '/images/creatures/rlff_f_content.webp' : '/images/creatures/rlff_f_default.webp';
-$disappointedPoseImage = '/images/creatures/rlff_f_disappointed.webp';
-$sadPoseImage = '/images/creatures/rlff_f_mad.webp';
+$fallbackPoseImage = fairy_fountain_image_web_path('rlff_f_default.webp');
+$defaultPoseImage = fairy_fountain_image_web_path('rlff.webp', $fallbackPoseImage);
+$happyPoseImage = fairy_fountain_image_web_path('rlff_f_given.webp', $defaultPoseImage);
+$contentPoseImage = fairy_fountain_image_web_path('rlff_f_content.webp', $fallbackPoseImage);
+$disappointedPoseImage = fairy_fountain_image_web_path('rlff_f_disappointed.webp', $defaultPoseImage);
+$sadPoseImage = fairy_fountain_image_web_path('rlff_f_mad.webp', $defaultPoseImage);
+$shovelPoseImage = fairy_fountain_image_web_path('rlff_f_shovel.webp', $happyPoseImage);
 
 $rewardImages = [
     'heal_full_party' => 'Fairy mending every creature at once',
@@ -24,7 +35,7 @@ $rewardImages = [
     'heal_plus1_party' => 'Fairy giving a faint +1 HP blessing to the group',
     'heal_plus1_single' => 'Fairy whispering a +1 HP tip to one creature',
     'feed_party_full' => 'Fairy overflowing every food bowl',
-    'feed_single_full' => 'Fairy filling one creature’s food bowl',
+    'feed_single_full' => "Fairy filling one creature's food bowl",
     'give_magic_potion' => 'Fairy presenting a bottled magical potion',
     'give_golden_shovel' => 'Fairy offering a gleaming golden shovel',
     'shovel_event' => 'Fairy asking about a golden, silver, then normal shovel',
@@ -32,8 +43,18 @@ $rewardImages = [
 ];
 
 $rewardImageFiles = [
-    'give_golden_shovel' => file_exists(__DIR__.'/../images/creatures/rlff_f_shovel.webp') ? '/images/creatures/rlff_f_shovel.webp' : null,
-    'shovel_event' => file_exists(__DIR__.'/../images/creatures/rlff_f_shovel.webp') ? '/images/creatures/rlff_f_shovel.webp' : null,
+    'heal_full_party' => $happyPoseImage,
+    'heal_full_single' => $contentPoseImage,
+    'heal_plus5_single' => $contentPoseImage,
+    'heal_plus5_party' => $happyPoseImage,
+    'heal_plus1_party' => $defaultPoseImage,
+    'heal_plus1_single' => $defaultPoseImage,
+    'feed_party_full' => $happyPoseImage,
+    'feed_single_full' => $contentPoseImage,
+    'give_magic_potion' => $contentPoseImage,
+    'give_golden_shovel' => $shovelPoseImage,
+    'shovel_event' => $shovelPoseImage,
+    'nothing' => $sadPoseImage,
 ];
 
 function fairy_fountain_available_cash(int $uid): float
@@ -435,6 +456,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $todayVisit = fairy_fountain_visit_row($uid, $today, $isTemp);
+$storedRewardKey = (string)($todayVisit['reward_key'] ?? '');
+if ($storedRewardKey !== '' && isset($rewardImages[$storedRewardKey])) {
+    $rewardVisualKey = $storedRewardKey;
+}
 $currentPoseImage = $defaultPoseImage;
 $currentPoseLabel = 'Default pose';
 if ($todayVisit) {
@@ -498,12 +523,16 @@ if ($todayVisit) {
 
 <section class="card glass">
   <h2>Fairy rewards</h2>
-  <p class="muted">These placeholders mark where you can swap in illustrations later.</p>
+  <p class="muted">Each blessing now reuses one of the Rheinland fairy portraits already in the gallery.</p>
   <div class="fairy-reward-grid">
     <?php foreach ($rewardImages as $key => $desc): ?>
       <div class="fairy-reward">
         <div class="fairy-image-placeholder" data-reward="<?= htmlspecialchars($key) ?>">
+          <?php if (!empty($rewardImageFiles[$key])): ?>
+            <img src="<?= htmlspecialchars($rewardImageFiles[$key]) ?>" alt="<?= htmlspecialchars($desc) ?>" class="reward-image">
+          <?php else: ?>
             &#x1F9DA;&#x200D;&#x2640;&#xFE0F;
+          <?php endif; ?>
           <strong><?= htmlspecialchars(str_replace('_', ' ', ucfirst($key))) ?></strong>
           <div class="muted"><?= htmlspecialchars($desc) ?></div>
         </div>

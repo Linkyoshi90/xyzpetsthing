@@ -18,9 +18,13 @@ if ($u) {
     }
     if ((int)$u['id'] !== 0) {
         require_once __DIR__.'/../lib/random_events.php';
+        require_once __DIR__.'/../lib/chat.php';
+        require_once __DIR__.'/../lib/gifts.php';
         $random_event = maybe_trigger_random_event($u, (string)($pg ?? ''));
         $notification_events = array_merge(
             friendship_request_notifications((int)$u['id']),
+            gift_notifications((int)$u['id']),
+            chat_message_notifications((int)$u['id']),
             random_event_notifications()
         );
     }
@@ -44,34 +48,31 @@ if ($u) {
 <?php $battle_css_version = is_file(__DIR__.'/../assets/css/battle-minigame.css') ? filemtime(__DIR__.'/../assets/css/battle-minigame.css') : 1; ?>
 <link rel="stylesheet" href="assets/css/battle-minigame.css?v=<?= $battle_css_version ?>">
 <?php endif; ?>
+<?php if (($pg ?? '') === 'lineage'): ?>
+<?php $lineage_css_version = is_file(__DIR__.'/../assets/css/lineage.css') ? filemtime(__DIR__.'/../assets/css/lineage.css') : 1; ?>
+<link rel="stylesheet" href="assets/css/lineage.css?v=<?= $lineage_css_version ?>">
+<?php endif; ?>
 <script defer src="assets/js/theme.js"></script>
 <script defer src="assets/js/user-menu.js"></script>
 <script defer src="assets/js/currency.js"></script>
 <?php if (($pg ?? '') === 'battle_minigame'): ?>
+<?php $battle_abilities_js_version = is_file(__DIR__.'/../assets/js/battle-abilities.js') ? filemtime(__DIR__.'/../assets/js/battle-abilities.js') : 1; ?>
 <?php $battle_js_version = is_file(__DIR__.'/../assets/js/battle-minigame.js') ? filemtime(__DIR__.'/../assets/js/battle-minigame.js') : 1; ?>
+<script defer src="assets/js/battle-abilities.js?v=<?= $battle_abilities_js_version ?>"></script>
 <script defer src="assets/js/battle-minigame.js?v=<?= $battle_js_version ?>"></script>
 <?php endif; ?>
+<?php if (($pg ?? '') === 'lineage'): ?>
+<?php $lineage_js_version = is_file(__DIR__.'/../assets/js/lineage.js') ? filemtime(__DIR__.'/../assets/js/lineage.js') : 1; ?>
+<script defer src="assets/js/lineage.js?v=<?= $lineage_js_version ?>"></script>
+<?php endif; ?>
 <?php
-$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
-$appRoot = realpath(__DIR__.'/..');
-$basePath = '';
-if ($documentRoot && $appRoot) {
-    $normalizedRoot = str_replace('\\', '/', realpath($documentRoot));
-    $normalizedApp = str_replace('\\', '/', $appRoot);
-    if ($normalizedRoot && strncmp($normalizedApp, $normalizedRoot, strlen($normalizedRoot)) === 0) {
-        $relative = trim(substr($normalizedApp, strlen($normalizedRoot)), '/');
-        $basePath = $relative === '' ? '' : '/'.$relative;
-    }
-}
-if ($basePath === '') {
-    $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
-    $scriptDir = str_replace('\\', '/', rtrim(dirname($scriptName), '/'));
-    if ($scriptDir !== '' && $scriptDir !== '.' && $scriptDir !== '/') {
-        $basePath = $scriptDir;
-    }
-}
-$chatActionPath = ($basePath === '') ? '/user_chat_action.php' : $basePath.'/user_chat_action.php';
-$notificationActionPath = ($basePath === '') ? '/notification_action.php' : $basePath.'/notification_action.php';
+// The action endpoints live next to index.php in the app root, and every page is
+// served through index.php (query-string routing). A path relative to the current
+// document therefore resolves correctly whether the app sits at the web root or in
+// a subfolder. Absolute paths broke in subfolder installs: when the base-path
+// detection mis-fired the POST escaped the app directory and hit the domain root.
+$chatActionPath = 'user_chat_action.php';
+$notificationActionPath = 'notification_action.php';
 $GLOBALS['app_chat_action_path'] = $chatActionPath;
 $appJsonFlags = JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT;
 if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
@@ -100,7 +101,7 @@ if (defined('JSON_INVALID_UTF8_SUBSTITUTE')) {
 </script>
 <?php endif; ?>
 <?php
-$game_pages = ['fruitstack', 'harmonflap', 'kid-puzzle', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'cups-and-balls', 'wheel-of-fate', 'battle_minigame', 'drop_game'];
+$game_pages = ['fruitstack', 'harmonflap', 'harmontide-milking-minigame', 'kid-puzzle', 'garden-invaderz', 'runngunner', 'wanted-alive', 'paddle-panic', 'blackjack', 'cups-and-balls', 'wheel-of-fate', 'battle_minigame', 'drop_game'];
 $no_bubble_pages = array_merge($game_pages, ['encyclopedia']);
 if (!in_array($pg ?? '', $no_bubble_pages, true)):
 ?>
@@ -152,7 +153,7 @@ if (!in_array($pg ?? '', $no_bubble_pages, true)):
       <button id="user-menu-toggle" class="btn" type="button">🙂</button>
       <ul id="user-menu" class="user-menu-list">
         <a href="?pg=friends">👥 friends</a>
-        <a href="?pg=options">🔧 options</a>
+        <a href="?pg=settings">🔧 settings</a>
         <a href="?pg=logout">🚪 logout</a>
       </ul>
     </div>
@@ -160,7 +161,12 @@ if (!in_array($pg ?? '', $no_bubble_pages, true)):
     <button id="theme-toggle" class="btn" type="button">🌓</button>
   </div>
 </header>
-<?php $notification_count = count($notification_events); ?>
+<?php
+$notification_count = count($notification_events);
+$notification_clearable_count = count(array_filter($notification_events, static function (array $notification): bool {
+    return array_key_exists('dismissible', $notification) ? (bool)$notification['dismissible'] : true;
+}));
+?>
 <section id="notifications-panel" class="notifications-panel" aria-label="Notifications" aria-hidden="true">
   <div class="notifications-panel__header">
     <span class="notifications-panel__title">Notifications</span>
@@ -168,7 +174,14 @@ if (!in_array($pg ?? '', $no_bubble_pages, true)):
       <span class="notifications-panel__status <?= $notification_count > 0 ? 'notifications-panel__status--active' : '' ?>">
         <?= $notification_count > 0 ? htmlspecialchars($notification_count.' logged') : 'All clear' ?>
       </span>
-      <button id="notifications-close" class="notifications-panel__close" type="button" aria-label="Close notification panel">×</button>
+      <button
+        id="notifications-clear"
+        class="notifications-panel__clear"
+        type="button"
+        aria-label="Clear all notifications"
+        title="Clear all notifications"
+        <?= $notification_clearable_count > 0 ? '' : 'disabled' ?>
+      ><span aria-hidden="true">&#128465;</span></button>
     </span>
   </div>
   <div class="notifications-panel__body" role="list">
@@ -226,6 +239,7 @@ if (!in_array($pg ?? '', $no_bubble_pages, true)):
               type="button"
               data-notification-action="<?= htmlspecialchars((string)$action['post_action']) ?>"
               <?php if (!empty($action['request_id'])): ?>data-friend-request-id="<?= (int)$action['request_id'] ?>"<?php endif; ?>
+              <?php if (!empty($action['gift_id'])): ?>data-gift-id="<?= (int)$action['gift_id'] ?>"<?php endif; ?>
             ><?= htmlspecialchars($action['label'] ?? 'Open') ?></button>
             <?php else: ?>
             <a

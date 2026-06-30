@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harmontide Milking Minigame</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #1a1a2e;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
+  }
+  #gameWrapper {
+    position: relative;
+    width: min(56.25vh, 100vw);
+    height: min(100vh, 177.78vw);
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+</head>
+<body>
+<div id="gameWrapper">
+  <canvas id="gameCanvas"></canvas>
+</div>
+<script>
+// ============================================================
+//  HARMONTIDE MILKING MINIGAME
+//  A cartoony drag-to-milk game with multi-creature presets
+// ============================================================
+
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Internal resolution (9:16 portrait)
+const W = 450;
+const H = 800;
+canvas.width = W;
+canvas.height = H;
+
+// ---- CREATURE PRESETS ----
+const CREATURES = [
+  {
+    id: 'cow',
+    name: 'Cow',
+    family: 'Mammalian',
+    description: 'A classic dairy cow. Moo.',
+    milkColor: '#FEFEFA',
+    milkColorDark: '#E8E8D0',
+    udderColor: '#F5C6A8',
+    udderOutline: '#8B5E3C',
+    teatColor: '#E8A87C',
+    teatOutline: '#8B5E3C',
+    bodyColor: '#F5F5DC',
+    bodyAccent: '#3B2F2F',
+    numTeats: 4,
+    teatLength: 42,
+    teatWidth: 14,
+    udderWidth: 90,
+    udderHeight: 55,
+    milkPerPull: 0.04,
+    bucketLabel: 'Bucket of Cow Milk',
+    splashStyle: 'stream',
+  },
+  {
+    id: 'goat',
+    name: 'Goat',
+    family: 'Mammalian',
+    description: 'A feisty alpine goat. Premium cheese incoming.',
+    milkColor: '#FFF8F0',
+    milkColorDark: '#F0E6D2',
+    udderColor: '#EDCAA0',
+    udderOutline: '#7A5230',
+    teatColor: '#D4A574',
+    teatOutline: '#7A5230',
+    bodyColor: '#D2B48C',
+    bodyAccent: '#6B4226',
+    numTeats: 2,
+    teatLength: 38,
+    teatWidth: 12,
+    udderWidth: 65,
+    udderHeight: 40,
+    milkPerPull: 0.035,
+    bucketLabel: 'Bucket of Goat Milk',
+    splashStyle: 'stream',
+  },
+  {
+    id: 'dragon',
+    name: 'Dragon',
+    family: 'Reptilian',
+    description: 'A small lava dragon. Careful, it\'s warm.',
+    milkColor: '#FF6B35',
+    milkColorDark: '#CC4400',
+    udderColor: '#6B8F71',
+    udderOutline: '#2E4A32',
+    teatColor: '#5A7F5E',
+    teatOutline: '#2E4A32',
+    bodyColor: '#4A7C59',
+    bodyAccent: '#1B3A20',
+    numTeats: 2,
+    teatLength: 35,
+    teatWidth: 16,
+    udderWidth: 70,
+    udderHeight: 45,
+    milkPerPull: 0.03,
+    bucketLabel: 'Bucket of Dragon Milk',
+    splashStyle: 'gloppy',
+  },
+  {
+    id: 'snake',
+    name: 'Serpent',
+    family: 'Reptilian',
+    description: 'A plump milk snake. Ironically named.',
+    milkColor: '#D4EDDA',
+    milkColorDark: '#A8D5BA',
+    udderColor: '#8FBC8F',
+    udderOutline: '#2F5F2F',
+    teatColor: '#7BAF7B',
+    teatOutline: '#2F5F2F',
+    bodyColor: '#6B8E6B',
+    bodyAccent: '#CC4444',
+    numTeats: 1,
+    teatLength: 45,
+    teatWidth: 10,
+    udderWidth: 40,
+    udderHeight: 30,
+    milkPerPull: 0.025,
+    bucketLabel: 'Bucket of Serpent Milk',
+    splashStyle: 'drip',
+  },
+  {
+    id: 'platypus',
+    name: 'Platypus',
+    family: 'Monotreme',
+    description: 'Wait, they produce milk? ...Through their SKIN?',
+    milkColor: '#FFE4B5',
+    milkColorDark: '#DEC090',
+    udderColor: '#C4A882',
+    udderOutline: '#6B5435',
+    teatColor: '#B8976A',
+    teatOutline: '#6B5435',
+    bodyColor: '#8B7355',
+    bodyAccent: '#3B2F1E',
+    numTeats: 0,
+    teatLength: 0,
+    teatWidth: 0,
+    udderWidth: 80,
+    udderHeight: 55,
+    milkPerPull: 0.02,
+    bucketLabel: 'Bucket of Platypus Milk',
+    splashStyle: 'seep',
+    isPatchMilk: true,
+  },
+  {
+    id: 'phoenix',
+    name: 'Phoenix',
+    family: 'Avian',
+    description: 'Milk of rebirth. Glows faintly.',
+    milkColor: '#FFD700',
+    milkColorDark: '#FF8C00',
+    udderColor: '#FF7043',
+    udderOutline: '#8B2500',
+    teatColor: '#FF5722',
+    teatOutline: '#8B2500',
+    bodyColor: '#FF6F00',
+    bodyAccent: '#FFD54F',
+    numTeats: 1,
+    teatLength: 30,
+    teatWidth: 8,
+    udderWidth: 35,
+    udderHeight: 30,
+    milkPerPull: 0.022,
+    bucketLabel: 'Bucket of Phoenix Milk',
+    splashStyle: 'sparkle',
+  },
+  {
+    id: 'penguin',
+    name: 'Penguin',
+    family: 'Avian',
+    description: 'Crop milk. It\'s a real thing. Look it up.',
+    milkColor: '#F0E6FF',
+    milkColorDark: '#D1C4E9',
+    udderColor: '#37474F',
+    udderOutline: '#1A2327',
+    teatColor: '#455A64',
+    teatOutline: '#1A2327',
+    bodyColor: '#263238',
+    bodyAccent: '#ECEFF1',
+    numTeats: 1,
+    teatLength: 20,
+    teatWidth: 10,
+    udderWidth: 50,
+    udderHeight: 35,
+    milkPerPull: 0.025,
+    bucketLabel: 'Bucket of Penguin Crop Milk',
+    splashStyle: 'regurgitate',
+  },
+  {
+    id: 'frog',
+    name: 'Giant Frog',
+    family: 'Amphibian',
+    description: 'Tadpole nourishment. Slimy but nutritious.',
+    milkColor: '#B2FF59',
+    milkColorDark: '#76FF03',
+    udderColor: '#66BB6A',
+    udderOutline: '#1B5E20',
+    teatColor: '#4CAF50',
+    teatOutline: '#1B5E20',
+    bodyColor: '#388E3C',
+    bodyAccent: '#81C784',
+    numTeats: 2,
+    teatLength: 22,
+    teatWidth: 12,
+    udderWidth: 70,
+    udderHeight: 40,
+    milkPerPull: 0.032,
+    bucketLabel: 'Bucket of Frog Milk',
+    splashStyle: 'glop',
+  },
+  {
+    id: 'axolotl',
+    name: 'Axolotl',
+    family: 'Amphibian',
+    description: 'Regenerative milk! Side effects may include gills.',
+    milkColor: '#FFB6C1',
+    milkColorDark: '#FF69B4',
+    udderColor: '#F8BBD0',
+    udderOutline: '#AD1457',
+    teatColor: '#F48FB1',
+    teatOutline: '#AD1457',
+    bodyColor: '#EC407A',
+    bodyAccent: '#FCE4EC',
+    numTeats: 4,
+    teatLength: 18,
+    teatWidth: 10,
+    udderWidth: 75,
+    udderHeight: 38,
+    milkPerPull: 0.028,
+    bucketLabel: 'Bucket of Axolotl Milk',
+    splashStyle: 'glop',
+  },
+];
+
+// ---- GAME STATE ----
+let gameState = 'SELECT'; // SELECT, PLAYING, VICTORY
+let selectedCreature = null;
+let bucketFill = 0;
+let milkParticles = [];
+let splashParticles = [];
+let celebrationParticles = [];
+let dragState = { active: false, teatIdx: -1, startY: 0, currentY: 0, teatBaseY: 0, pullDist: 0 };
+let teatRestY = []; // rest positions
+let teatCurrentOffset = []; // spring offset
+let teatVelocity = [];
+let animTime = 0;
+let bucketWobble = 0;
+let milkStreamAlpha = 0;
+let handPos = { x: W/2, y: H/2 };
+let hoverTeat = -1;
+let victoryTimer = 0;
+let shakeAmount = 0;
+let BG_HUE = 0;
+
+// ---- HELPERS ----
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+function dist(x1, y1, x2, y2) { return Math.sqrt((x2-x1)**2 + (y2-y1)**2); }
+function rand(a, b) { return a + Math.random() * (b - a); }
+
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return {r, g, b};
+}
+
+// ---- TEAT POSITIONS ----
+function getTeatPositions(c) {
+  const udderCX = W / 2;
+  const udderCY = 360;
+  const positions = [];
+  if (c.numTeats === 0) return positions;
+  const spacing = c.udderWidth / (c.numTeats + 1);
+  for (let i = 0; i < c.numTeats; i++) {
+    positions.push({
+      x: udderCX - c.udderWidth/2 + spacing * (i + 1),
+      y: udderCY + c.udderHeight/2 + 2,
+    });
+  }
+  return positions;
+}
+
+// ---- INPUT HANDLING ----
+function getCanvasPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = W / rect.width;
+  const scaleY = H / rect.height;
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  return { x: (clientX - rect.left) * scaleX, y: (clientY - rect.top) * scaleY };
+}
+
+function findTeatAtPos(px, py) {
+  if (!selectedCreature || selectedCreature.isPatchMilk) return -1;
+  const positions = getTeatPositions(selectedCreature);
+  for (let i = 0; i < positions.length; i++) {
+    const tp = positions[i];
+    const hitR = selectedCreature.teatWidth * 1.8;
+    if (dist(px, py, tp.x, tp.y + teatCurrentOffset[i]) < hitR) return i;
+  }
+  return -1;
+}
+
+function findPatchAtPos(px, py) {
+  if (!selectedCreature || !selectedCreature.isPatchMilk) return false;
+  const udderCX = W/2;
+  const udderCY = 360;
+  return dist(px, py, udderCX, udderCY) < selectedCreature.udderWidth * 0.7;
+}
+
+function onPointerDown(e) {
+  e.preventDefault();
+  const pos = getCanvasPos(e);
+  handPos = pos;
+
+  if (gameState === 'SELECT') {
+    // Check creature card clicks
+    const cols = 2;
+    const cardW = 180;
+    const cardH = 110;
+    const gapX = 20;
+    const gapY = 12;
+    const startX = (W - (cols * cardW + (cols-1)*gapX)) / 2;
+    const startY = 140;
+
+    for (let i = 0; i < CREATURES.length; i++) {
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const cx = startX + col * (cardW + gapX);
+      const cy = startY + row * (cardH + gapY);
+      if (pos.x >= cx && pos.x <= cx + cardW && pos.y >= cy && pos.y <= cy + cardH) {
+        selectCreature(CREATURES[i]);
+        return;
+      }
+    }
+    return;
+  }
+
+  if (gameState === 'VICTORY') {
+    gameState = 'SELECT';
+    selectedCreature = null;
+    bucketFill = 0;
+    return;
+  }
+
+  if (gameState === 'PLAYING') {
+    if (selectedCreature.isPatchMilk) {
+      if (findPatchAtPos(pos.x, pos.y)) {
+        dragState.active = true;
+        dragState.teatIdx = 0;
+        dragState.startY = pos.y;
+        dragState.currentY = pos.y;
+        dragState.pullDist = 0;
+      }
+    } else {
+      const ti = findTeatAtPos(pos.x, pos.y);
+      if (ti >= 0) {
+        dragState.active = true;
+        dragState.teatIdx = ti;
+        dragState.startY = pos.y;
+        dragState.currentY = pos.y;
+        dragState.pullDist = 0;
+        dragState.teatBaseY = teatRestY[ti];
+      }
+    }
+  }
+}
+
+function onPointerMove(e) {
+  e.preventDefault();
+  const pos = getCanvasPos(e);
+  handPos = pos;
+
+  if (gameState === 'PLAYING') {
+    if (selectedCreature && !selectedCreature.isPatchMilk) {
+      hoverTeat = findTeatAtPos(pos.x, pos.y);
+    } else if (selectedCreature && selectedCreature.isPatchMilk) {
+      hoverTeat = findPatchAtPos(pos.x, pos.y) ? 0 : -1;
+    }
+
+    if (dragState.active) {
+      dragState.currentY = pos.y;
+      const rawPull = dragState.currentY - dragState.startY;
+      const maxPull = selectedCreature.teatLength > 0 ? selectedCreature.teatLength * 2.5 : 80;
+
+      if (!selectedCreature.isPatchMilk) {
+        // Teat pulling
+        if (rawPull > 0) {
+          dragState.pullDist = Math.min(rawPull, maxPull);
+          teatCurrentOffset[dragState.teatIdx] = dragState.pullDist;
+          teatVelocity[dragState.teatIdx] = 0;
+          // Milk while pulling
+          if (dragState.pullDist > 15) {
+            const milkAmount = selectedCreature.milkPerPull * (dragState.pullDist / maxPull);
+            bucketFill = Math.min(1, bucketFill + milkAmount * 0.1);
+            milkStreamAlpha = 1;
+            spawnMilkDrops();
+          }
+        } else {
+          dragState.pullDist = 0;
+          teatCurrentOffset[dragState.teatIdx] = 0;
+        }
+      } else {
+        // Patch milking (rubbing)
+        const rubDist = Math.abs(pos.x - W/2) + Math.abs(rawPull) * 0.3;
+        if (rubDist > 5) {
+          dragState.pullDist = rubDist;
+          bucketFill = Math.min(1, bucketFill + selectedCreature.milkPerPull * 0.05);
+          milkStreamAlpha = 0.7;
+          spawnMilkDrops();
+          shakeAmount = Math.min(3, shakeAmount + 0.3);
+        }
+      }
+    }
+  }
+}
+
+function onPointerUp(e) {
+  e.preventDefault();
+  if (dragState.active && !selectedCreature.isPatchMilk) {
+    // Release teat with spring
+    teatVelocity[dragState.teatIdx] = -8;
+    dragState.active = false;
+    dragState.teatIdx = -1;
+    milkStreamAlpha = 0;
+  } else if (dragState.active && selectedCreature.isPatchMilk) {
+    dragState.active = false;
+    dragState.pullDist = 0;
+    milkStreamAlpha = 0;
+  }
+}
+
+canvas.addEventListener('mousedown', onPointerDown);
+canvas.addEventListener('mousemove', onPointerMove);
+canvas.addEventListener('mouseup', onPointerUp);
+canvas.addEventListener('touchstart', onPointerDown, {passive: false});
+canvas.addEventListener('touchmove', onPointerMove, {passive: false});
+canvas.addEventListener('touchend', onPointerUp, {passive: false});
+
+// ---- CREATURE SELECTION ----
+function selectCreature(c) {
+  selectedCreature = c;
+  gameState = 'PLAYING';
+  bucketFill = 0;
+  milkParticles = [];
+  splashParticles = [];
+  celebrationParticles = [];
+  dragState = { active: false, teatIdx: -1, startY: 0, currentY: 0, teatBaseY: 0, pullDist: 0 };
+  teatRestY = [];
+  teatCurrentOffset = [];
+  teatVelocity = [];
+  const positions = getTeatPositions(c);
+  for (let i = 0; i < positions.length; i++) {
+    teatRestY.push(positions[i].y);
+    teatCurrentOffset.push(0);
+    teatVelocity.push(0);
+  }
+  hoverTeat = -1;
+  milkStreamAlpha = 0;
+  shakeAmount = 0;
+}
+
+// ---- PARTICLES ----
+function spawnMilkDrops() {
+  const c = selectedCreature;
+  if (!c) return;
+
+  if (c.isPatchMilk) {
+    // Seep from bottom of udder patch
+    const udderCX = W/2;
+    const udderBottom = 360 + c.udderHeight/2;
+    for (let i = 0; i < 2; i++) {
+      milkParticles.push({
+        x: udderCX + rand(-c.udderWidth*0.3, c.udderWidth*0.3),
+        y: udderBottom + rand(0, 10),
+        vx: rand(-1, 1),
+        vy: rand(1, 3),
+        size: rand(3, 6),
+        alpha: 1,
+        color: c.milkColor,
+      });
+    }
+    return;
+  }
+
+  const positions = getTeatPositions(c);
+  const ti = dragState.active ? dragState.teatIdx : -1;
+  if (ti < 0) return;
+  const tp = positions[ti];
+  const tipY = tp.y + c.teatLength + teatCurrentOffset[ti];
+
+  for (let i = 0; i < 3; i++) {
+    milkParticles.push({
+      x: tp.x + rand(-3, 3),
+      y: tipY + rand(0, 5),
+      vx: rand(-1.5, 1.5),
+      vy: rand(2, 5),
+      size: rand(3, 7),
+      alpha: 1,
+      color: Math.random() > 0.3 ? c.milkColor : c.milkColorDark,
+    });
+  }
+}
+
+function spawnSplash(x, y) {
+  const c = selectedCreature;
+  for (let i = 0; i < 4; i++) {
+    splashParticles.push({
+      x: x + rand(-15, 15),
+      y: y,
+      vx: rand(-3, 3),
+      vy: rand(-4, -1),
+      size: rand(2, 5),
+      alpha: 1,
+      color: c.milkColor,
+      gravity: 0.15,
+    });
+  }
+}
+
+function spawnCelebration() {
+  for (let i = 0; i < 60; i++) {
+    const angle = rand(0, Math.PI * 2);
+    const speed = rand(2, 8);
+    celebrationParticles.push({
+      x: W/2,
+      y: H/2,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 3,
+      size: rand(4, 10),
+      alpha: 1,
+      color: ['#FFD700','#FF6B6B','#4ECDC4','#45B7D1','#FF9FF3','#FFEAA7','#DFE6E9','#FFA07A'][Math.floor(rand(0,8))],
+      gravity: 0.1,
+      rotation: rand(0, Math.PI*2),
+      rotSpeed: rand(-0.1, 0.1),
+      shape: Math.random() > 0.5 ? 'circle' : 'rect',
+    });
+  }
+}
+
+// ---- UPDATE ----
+function update() {
+  animTime += 0.016;
+  shakeAmount *= 0.9;
+
+  // Spring physics for teats
+  if (selectedCreature && !selectedCreature.isPatchMilk) {
+    for (let i = 0; i < teatCurrentOffset.length; i++) {
+      if (dragState.active && dragState.teatIdx === i) continue;
+      const stiffness = 0.15;
+      const damping = 0.7;
+      const force = -stiffness * teatCurrentOffset[i];
+      teatVelocity[i] += force;
+      teatVelocity[i] *= damping;
+      teatCurrentOffset[i] += teatVelocity[i];
+      if (Math.abs(teatCurrentOffset[i]) < 0.1 && Math.abs(teatVelocity[i]) < 0.1) {
+        teatCurrentOffset[i] = 0;
+        teatVelocity[i] = 0;
+      }
+    }
+  }
+
+  // Update milk particles
+  const bucketTop = 600;
+  const bucketLeft = W/2 - 55;
+  const bucketRight = W/2 + 55;
+
+  for (let i = milkParticles.length - 1; i >= 0; i--) {
+    const p = milkParticles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.2;
+    p.alpha -= 0.008;
+
+    // Hit bucket?
+    if (p.y >= bucketTop && p.x >= bucketLeft && p.x <= bucketRight && p.alpha > 0) {
+      spawnSplash(p.x, bucketTop);
+      milkParticles.splice(i, 1);
+      continue;
+    }
+
+    if (p.alpha <= 0 || p.y > H + 20) {
+      milkParticles.splice(i, 1);
+    }
+  }
+
+  // Update splash particles
+  for (let i = splashParticles.length - 1; i >= 0; i--) {
+    const p = splashParticles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += p.gravity;
+    p.alpha -= 0.03;
+    if (p.alpha <= 0) splashParticles.splice(i, 1);
+  }
+
+  // Update celebration particles
+  for (let i = celebrationParticles.length - 1; i >= 0; i--) {
+    const p = celebrationParticles[i];
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += p.gravity;
+    p.alpha -= 0.008;
+    p.rotation += p.rotSpeed;
+    if (p.alpha <= 0) celebrationParticles.splice(i, 1);
+  }
+
+  // Bucket wobble when filling
+  if (dragState.active && dragState.pullDist > 10) {
+    bucketWobble = Math.sin(animTime * 15) * 2;
+  } else {
+    bucketWobble *= 0.9;
+  }
+
+  // Check victory
+  if (gameState === 'PLAYING' && bucketFill >= 1) {
+    bucketFill = 1;
+    gameState = 'VICTORY';
+    victoryTimer = 0;
+    spawnCelebration();
+  }
+
+  if (gameState === 'VICTORY') {
+    victoryTimer += 0.016;
+  }
+}
+
+// ---- DRAW: SELECTION SCREEN ----
+function drawSelectScreen() {
+  // Background
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#2C3E50');
+  grad.addColorStop(1, '#1a1a2e');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Title
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  // Title wobble
+  const titleY = 50 + Math.sin(animTime * 2) * 5;
+
+  ctx.font = 'bold 38px "Segoe UI", cursive';
+  ctx.strokeStyle = '#1a1a2e';
+  ctx.lineWidth = 6;
+  ctx.strokeText('MILKING BARN', W/2, titleY);
+  ctx.fillStyle = '#FFEAA7';
+  ctx.fillText('MILKING BARN', W/2, titleY);
+
+  ctx.font = '16px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#B2BEC3';
+  ctx.fillText('Choose your creature:', W/2, 90);
+
+  // Subtitle
+  ctx.font = 'italic 12px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#636E72';
+  ctx.fillText('Harmontide Inc. — Employee Milking Station', W/2, 115);
+
+  ctx.restore();
+
+  // Creature cards
+  const cols = 2;
+  const cardW = 180;
+  const cardH = 110;
+  const gapX = 20;
+  const gapY = 12;
+  const startX = (W - (cols * cardW + (cols-1)*gapX)) / 2;
+  const startY = 140;
+
+  for (let i = 0; i < CREATURES.length; i++) {
+    const c = CREATURES[i];
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+    const cx = startX + col * (cardW + gapX);
+    const cy = startY + row * (cardH + gapY);
+
+    // Card shadow
+    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+    roundRect(cx + 3, cy + 3, cardW, cardH, 12, true, false);
+
+    // Card bg
+    const cardGrad = ctx.createLinearGradient(cx, cy, cx, cy + cardH);
+    cardGrad.addColorStop(0, '#3D3D5C');
+    cardGrad.addColorStop(1, '#2A2A45');
+    ctx.fillStyle = cardGrad;
+    roundRect(cx, cy, cardW, cardH, 12, true, false);
+
+    // Card border
+    ctx.strokeStyle = '#5A5A8A';
+    ctx.lineWidth = 2;
+    roundRect(cx, cy, cardW, cardH, 12, false, true);
+
+    // Milk color dot
+    ctx.beginPath();
+    ctx.arc(cx + 25, cy + 30, 12, 0, Math.PI * 2);
+    ctx.fillStyle = c.milkColor;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Creature name
+    ctx.save();
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 17px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#ECF0F1';
+    ctx.fillText(c.name, cx + 45, cy + 25);
+
+    // Family tag
+    ctx.font = '11px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#A29BFE';
+    ctx.fillText(c.family, cx + 45, cy + 43);
+
+    // Description
+    ctx.font = '10px "Segoe UI", sans-serif';
+    ctx.fillStyle = '#B2BEC3';
+    wrapText(c.description, cx + 15, cy + 68, cardW - 30, 13);
+
+    ctx.restore();
+  }
+
+  // Footer
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.font = '11px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#636E72';
+  ctx.fillText('Tap a creature to begin milking!', W/2, H - 30);
+  ctx.restore();
+}
+
+// ---- DRAW: PLAYING SCREEN ----
+function drawPlayingScreen() {
+  const c = selectedCreature;
+  if (!c) return;
+
+  // Background with subtle pattern
+  const bgGrad = ctx.createLinearGradient(0, 0, 0, H);
+  bgGrad.addColorStop(0, '#4A6741');
+  bgGrad.addColorStop(0.4, '#5C8A4F');
+  bgGrad.addColorStop(1, '#3B5C32');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Barn wood planks background
+  ctx.globalAlpha = 0.08;
+  for (let y = 0; y < H; y += 40) {
+    ctx.fillStyle = y % 80 === 0 ? '#2C1810' : '#4A2F1E';
+    ctx.fillRect(0, y, W, 38);
+    // Wood grain line
+    ctx.strokeStyle = '#1A0F08';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, y + 19);
+    ctx.lineTo(W, y + 19);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Top UI bar
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.fillRect(0, 0, W, 65);
+
+  ctx.save();
+  ctx.textAlign = 'center';
+  ctx.font = 'bold 22px "Segoe UI", cursive';
+  ctx.fillStyle = c.milkColor;
+  ctx.fillText(c.name + ' Milking', W/2, 28);
+
+  // Progress text
+  ctx.font = '14px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ECF0F1';
+  ctx.fillText(Math.floor(bucketFill * 100) + '% filled', W/2, 50);
+  ctx.restore();
+
+  // Progress bar
+  const pbX = 40;
+  const pbY = 56;
+  const pbW = W - 80;
+  const pbH = 5;
+  ctx.fillStyle = 'rgba(0,0,0,0.3)';
+  roundRect(pbX, pbY, pbW, pbH, 3, true, false);
+  const fillW = pbW * bucketFill;
+  if (fillW > 0) {
+    const pbGrad = ctx.createLinearGradient(pbX, 0, pbX + fillW, 0);
+    pbGrad.addColorStop(0, c.milkColor);
+    pbGrad.addColorStop(1, c.milkColorDark);
+    ctx.fillStyle = pbGrad;
+    roundRect(pbX, pbY, Math.max(fillW, 6), pbH, 3, true, false);
+  }
+
+  // ---- CREATURE BODY (upper portion) ----
+  drawCreatureBody(c);
+
+  // ---- UDDER ----
+  drawUdder(c);
+
+  // ---- TEATS ----
+  if (!c.isPatchMilk) {
+    drawTeats(c);
+  }
+
+  // ---- MILK STREAM ----
+  if (dragState.active && dragState.pullDist > 10 && !c.isPatchMilk) {
+    drawMilkStream(c);
+  }
+
+  // ---- MILK PARTICLES ----
+  for (const p of milkParticles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // ---- SPLASH PARTICLES ----
+  for (const p of splashParticles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // ---- BUCKET ----
+  drawBucket(c);
+
+  // ---- HAND CURSOR ----
+  drawHand();
+
+  // Instruction hint
+  if (bucketFill < 0.05) {
+    ctx.save();
+    ctx.textAlign = 'center';
+    ctx.font = 'italic 13px "Segoe UI", sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    const hintText = c.isPatchMilk
+      ? 'Rub the udder patch to milk!'
+      : 'Drag a teat downward to milk!';
+    ctx.fillText(hintText, W/2, H - 20);
+    ctx.restore();
+  }
+}
+
+function drawCreatureBody(c) {
+  const udderCX = W / 2;
+  const bodyY = 160;
+
+  ctx.save();
+
+  // Large belly/body shape
+  ctx.beginPath();
+  ctx.ellipse(udderCX, bodyY + 60, 140, 100, 0, 0, Math.PI * 2);
+  ctx.fillStyle = c.bodyColor;
+  ctx.fill();
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 3.5;
+  ctx.stroke();
+
+  // Accent spots/patterns based on creature
+  if (c.id === 'cow') {
+    // Cow spots
+    drawSpot(udderCX - 50, bodyY + 30, 30, 22);
+    drawSpot(udderCX + 40, bodyY + 70, 25, 20);
+    drawSpot(udderCX - 20, bodyY + 90, 20, 15);
+  } else if (c.id === 'dragon') {
+    // Scale bumps
+    for (let i = 0; i < 6; i++) {
+      const sx = udderCX + Math.cos(i * 1.1) * 60;
+      const sy = bodyY + 50 + Math.sin(i * 1.3) * 30;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 8, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.fill();
+    }
+    // Small wing hint
+    ctx.beginPath();
+    ctx.moveTo(udderCX + 120, bodyY + 20);
+    ctx.quadraticCurveTo(udderCX + 170, bodyY - 10, udderCX + 160, bodyY + 50);
+    ctx.quadraticCurveTo(udderCX + 140, bodyY + 40, udderCX + 120, bodyY + 50);
+    ctx.fillStyle = c.bodyColor;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+  } else if (c.id === 'phoenix') {
+    // Flame feathers
+    for (let i = 0; i < 5; i++) {
+      const angle = -0.8 + i * 0.25;
+      const fx = udderCX + Math.cos(angle) * 110;
+      const fy = bodyY + Math.sin(angle) * 60;
+      ctx.beginPath();
+      ctx.ellipse(fx, fy, 25, 8, angle, 0, Math.PI * 2);
+      ctx.fillStyle = c.bodyAccent;
+      ctx.fill();
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+    // Glow
+    ctx.globalAlpha = 0.15 + Math.sin(animTime * 4) * 0.1;
+    ctx.beginPath();
+    ctx.ellipse(udderCX, bodyY + 60, 160, 120, 0, 0, Math.PI * 2);
+    ctx.fillStyle = '#FFD700';
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  } else if (c.id === 'penguin') {
+    // White belly
+    ctx.beginPath();
+    ctx.ellipse(udderCX, bodyY + 70, 80, 75, 0, 0, Math.PI * 2);
+    ctx.fillStyle = c.bodyAccent;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+  } else if (c.id === 'frog' || c.id === 'axolotl') {
+    // Spots
+    for (let i = 0; i < 4; i++) {
+      const sx = udderCX + rand_seed(i*3) * 80 - 40;
+      const sy = bodyY + 40 + rand_seed(i*3+1) * 50;
+      ctx.beginPath();
+      ctx.arc(sx, sy, 10, 0, Math.PI * 2);
+      ctx.fillStyle = c.bodyAccent;
+      ctx.globalAlpha = 0.4;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+  } else if (c.id === 'snake') {
+    // Scale pattern
+    for (let row = 0; row < 5; row++) {
+      for (let col = -3; col <= 3; col++) {
+        const sx = udderCX + col * 18 + (row % 2) * 9;
+        const sy = bodyY + 20 + row * 20;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 7, 0, Math.PI, false);
+        ctx.strokeStyle = c.bodyAccent;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+  }
+
+  ctx.restore();
+}
+
+function rand_seed(n) {
+  const x = Math.sin(n * 127.1) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+function drawSpot(x, y, rx, ry) {
+  ctx.beginPath();
+  ctx.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
+  ctx.fillStyle = selectedCreature.bodyAccent;
+  ctx.fill();
+}
+
+function drawUdder(c) {
+  const udderCX = W / 2;
+  const udderCY = 360;
+
+  ctx.save();
+
+  // Shake offset
+  const shakeX = (Math.random() - 0.5) * shakeAmount;
+  const shakeY = (Math.random() - 0.5) * shakeAmount;
+
+  // Udder shadow
+  ctx.beginPath();
+  ctx.ellipse(udderCX + 4 + shakeX, udderCY + 4 + shakeY, c.udderWidth/2 + 5, c.udderHeight/2 + 5, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fill();
+
+  // Udder main shape
+  ctx.beginPath();
+  ctx.ellipse(udderCX + shakeX, udderCY + shakeY, c.udderWidth/2, c.udderHeight/2, 0, 0, Math.PI * 2);
+  const udderGrad = ctx.createRadialGradient(
+    udderCX - c.udderWidth*0.15, udderCY - c.udderHeight*0.15, 5,
+    udderCX, udderCY, c.udderWidth/2
+  );
+  udderGrad.addColorStop(0, lightenColor(c.udderColor, 30));
+  udderGrad.addColorStop(1, c.udderColor);
+  ctx.fillStyle = udderGrad;
+  ctx.fill();
+  ctx.strokeStyle = c.udderOutline;
+  ctx.lineWidth = 3.5;
+  ctx.stroke();
+
+  // Highlight
+  ctx.beginPath();
+  ctx.ellipse(udderCX - c.udderWidth*0.2 + shakeX, udderCY - c.udderHeight*0.2 + shakeY, c.udderWidth*0.15, c.udderHeight*0.12, -0.3, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.25)';
+  ctx.fill();
+
+  // Patch milk indicator (for platypus)
+  if (c.isPatchMilk) {
+    ctx.beginPath();
+    ctx.ellipse(udderCX + shakeX, udderCY + shakeY, c.udderWidth*0.35, c.udderHeight*0.3, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,200,0.3)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,200,0.5)';
+    ctx.lineWidth = 1.5;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // "Rub here" pulsing
+    const pulseAlpha = 0.3 + Math.sin(animTime * 3) * 0.2;
+    ctx.globalAlpha = pulseAlpha;
+    ctx.beginPath();
+    ctx.ellipse(udderCX + shakeX, udderCY + shakeY, c.udderWidth*0.45, c.udderHeight*0.4, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = c.milkColor;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  ctx.restore();
+}
+
+function drawTeats(c) {
+  const positions = getTeatPositions(c);
+
+  ctx.save();
+
+  for (let i = 0; i < positions.length; i++) {
+    const tp = positions[i];
+    const offset = teatCurrentOffset[i] || 0;
+    const tipY = tp.y + c.teatLength + offset;
+    const baseY = tp.y;
+    const hw = c.teatWidth / 2;
+
+    // Teat shadow
+    ctx.beginPath();
+    ctx.moveTo(tp.x - hw + 2, baseY + 2);
+    ctx.quadraticCurveTo(tp.x - hw * 0.8 + 2, tipY + 2, tp.x + 2, tipY + 3);
+    ctx.quadraticCurveTo(tp.x + hw * 0.8 + 2, tipY + 2, tp.x + hw + 2, baseY + 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.15)';
+    ctx.fill();
+
+    // Teat shape (tapered cylinder)
+    ctx.beginPath();
+    ctx.moveTo(tp.x - hw, baseY);
+    ctx.quadraticCurveTo(tp.x - hw * 0.7, tipY - c.teatLength * 0.3, tp.x - hw * 0.45, tipY);
+    ctx.quadraticCurveTo(tp.x, tipY + 4, tp.x + hw * 0.45, tipY);
+    ctx.quadraticCurveTo(tp.x + hw * 0.7, tipY - c.teatLength * 0.3, tp.x + hw, baseY);
+
+    const teatGrad = ctx.createLinearGradient(tp.x - hw, 0, tp.x + hw, 0);
+    teatGrad.addColorStop(0, lightenColor(c.teatColor, 15));
+    teatGrad.addColorStop(0.4, c.teatColor);
+    teatGrad.addColorStop(1, darkenColor(c.teatColor, 15));
+    ctx.fillStyle = teatGrad;
+    ctx.fill();
+    ctx.strokeStyle = c.teatOutline;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Highlight on teat
+    ctx.beginPath();
+    ctx.ellipse(tp.x - hw * 0.25, baseY + c.teatLength * 0.3 + offset * 0.5, 2, c.teatLength * 0.25, -0.1, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.fill();
+
+    // Hover glow
+    if (hoverTeat === i && !dragState.active) {
+      ctx.beginPath();
+      ctx.arc(tp.x, tipY - c.teatLength/2, c.teatWidth * 1.2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255,255,255,0.15)';
+      ctx.fill();
+    }
+  }
+
+  ctx.restore();
+}
+
+function drawMilkStream(c) {
+  const positions = getTeatPositions(c);
+  const ti = dragState.teatIdx;
+  if (ti < 0 || ti >= positions.length) return;
+  const tp = positions[ti];
+  const offset = teatCurrentOffset[ti] || 0;
+  const tipY = tp.y + c.teatLength + offset;
+
+  const bucketTop = 600;
+
+  ctx.save();
+  ctx.globalAlpha = milkStreamAlpha * 0.6;
+
+  // Wavy stream
+  ctx.beginPath();
+  ctx.moveTo(tp.x - 2, tipY);
+  for (let y = tipY; y < bucketTop; y += 5) {
+    const waviness = Math.sin(y * 0.05 + animTime * 10) * 3 * (1 - (y - tipY) / (bucketTop - tipY));
+    ctx.lineTo(tp.x + waviness - 2, y);
+  }
+  ctx.lineTo(tp.x + 2, bucketTop);
+  for (let y = bucketTop; y > tipY; y -= 5) {
+    const waviness = Math.sin(y * 0.05 + animTime * 10) * 3 * (1 - (y - tipY) / (bucketTop - tipY));
+    ctx.lineTo(tp.x + waviness + 2, y);
+  }
+  ctx.closePath();
+
+  const streamGrad = ctx.createLinearGradient(0, tipY, 0, bucketTop);
+  streamGrad.addColorStop(0, c.milkColor);
+  streamGrad.addColorStop(1, c.milkColorDark);
+  ctx.fillStyle = streamGrad;
+  ctx.fill();
+
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function drawBucket(c) {
+  const bucketCX = W / 2;
+  const bucketTop = 600;
+  const bucketW = 110;
+  const bucketH = 90;
+  const rimH = 12;
+
+  ctx.save();
+
+  // Bucket shadow
+  ctx.beginPath();
+  ctx.ellipse(bucketCX + 3, bucketTop + bucketH + 5, bucketW/2 + 5, 10, 0, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(0,0,0,0.2)';
+  ctx.fill();
+
+  ctx.translate(bucketCX, bucketTop + bucketH/2);
+  ctx.rotate(bucketWobble * 0.01);
+  ctx.translate(-bucketCX, -(bucketTop + bucketH/2));
+
+  // Bucket body (slightly tapered)
+  const topW = bucketW;
+  const bottomW = bucketW * 0.75;
+
+  // Bucket body fill
+  ctx.beginPath();
+  ctx.moveTo(bucketCX - topW/2, bucketTop + rimH);
+  ctx.lineTo(bucketCX - bottomW/2, bucketTop + bucketH);
+  ctx.lineTo(bucketCX + bottomW/2, bucketTop + bucketH);
+  ctx.lineTo(bucketCX + topW/2, bucketTop + rimH);
+  ctx.closePath();
+
+  const bucketGrad = ctx.createLinearGradient(bucketCX - topW/2, 0, bucketCX + topW/2, 0);
+  bucketGrad.addColorStop(0, '#8B6914');
+  bucketGrad.addColorStop(0.3, '#C49A2A');
+  bucketGrad.addColorStop(0.5, '#D4AA3A');
+  bucketGrad.addColorStop(0.7, '#C49A2A');
+  bucketGrad.addColorStop(1, '#8B6914');
+  ctx.fillStyle = bucketGrad;
+  ctx.fill();
+  ctx.strokeStyle = '#5C4310';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // Metal bands
+  for (let b = 0; b < 2; b++) {
+    const by = bucketTop + rimH + 15 + b * 28;
+    const bw = lerp(topW, bottomW, (by - bucketTop) / bucketH);
+    ctx.beginPath();
+    ctx.moveTo(bucketCX - bw/2 + 2, by);
+    ctx.lineTo(bucketCX + bw/2 - 2, by);
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.strokeStyle = '#AAA';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  // Milk inside bucket
+  if (bucketFill > 0) {
+    const fillH = (bucketH - rimH - 5) * bucketFill;
+    const fillTop = bucketTop + bucketH - fillH;
+    const fillTopW = lerp(bottomW, topW, fillH / (bucketH - rimH));
+    const fillBottomW = bottomW;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(bucketCX - topW/2 + 3, bucketTop + rimH);
+    ctx.lineTo(bucketCX - bottomW/2 + 3, bucketTop + bucketH);
+    ctx.lineTo(bucketCX + bottomW/2 - 3, bucketTop + bucketH);
+    ctx.lineTo(bucketCX + topW/2 - 3, bucketTop + rimH);
+    ctx.closePath();
+    ctx.clip();
+
+    // Milk body
+    ctx.beginPath();
+    ctx.moveTo(bucketCX - fillTopW/2, fillTop);
+    // Wavy milk surface
+    for (let x = -fillTopW/2; x <= fillTopW/2; x += 5) {
+      const wave = Math.sin(x * 0.1 + animTime * 5) * 2 * (dragState.active ? 2 : 0.5);
+      ctx.lineTo(bucketCX + x, fillTop + wave);
+    }
+    ctx.lineTo(bucketCX + fillBottomW/2, bucketTop + bucketH);
+    ctx.lineTo(bucketCX - fillBottomW/2, bucketTop + bucketH);
+    ctx.closePath();
+
+    const milkGrad = ctx.createLinearGradient(0, fillTop, 0, bucketTop + bucketH);
+    milkGrad.addColorStop(0, c.milkColor);
+    milkGrad.addColorStop(1, c.milkColorDark);
+    ctx.fillStyle = milkGrad;
+    ctx.fill();
+
+    // Milk surface highlight
+    ctx.beginPath();
+    ctx.ellipse(bucketCX, fillTop, fillTopW * 0.3, 3, 0, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.4)';
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  // Bucket rim
+  ctx.beginPath();
+  ctx.moveTo(bucketCX - topW/2 - 4, bucketTop);
+  ctx.lineTo(bucketCX + topW/2 + 4, bucketTop);
+  ctx.lineTo(bucketCX + topW/2, bucketTop + rimH);
+  ctx.lineTo(bucketCX - topW/2, bucketTop + rimH);
+  ctx.closePath();
+  const rimGrad = ctx.createLinearGradient(0, bucketTop, 0, bucketTop + rimH);
+  rimGrad.addColorStop(0, '#D4AA3A');
+  rimGrad.addColorStop(0.5, '#C49A2A');
+  rimGrad.addColorStop(1, '#9A7B20');
+  ctx.fillStyle = rimGrad;
+  ctx.fill();
+  ctx.strokeStyle = '#5C4310';
+  ctx.lineWidth = 2.5;
+  ctx.stroke();
+
+  // Rim highlight
+  ctx.beginPath();
+  ctx.moveTo(bucketCX - topW/2 + 5, bucketTop + 3);
+  ctx.lineTo(bucketCX + topW/2 - 5, bucketTop + 3);
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Handle
+  ctx.beginPath();
+  ctx.arc(bucketCX, bucketTop - 15, 28, Math.PI * 1.15, Math.PI * 1.85);
+  ctx.strokeStyle = '#888';
+  ctx.lineWidth = 4;
+  ctx.stroke();
+  ctx.strokeStyle = '#AAA';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawHand() {
+  ctx.save();
+
+  const hx = handPos.x;
+  const hy = handPos.y;
+  const isGrabbing = dragState.active;
+  const scale = 0.9;
+
+  ctx.translate(hx, hy);
+  ctx.scale(scale, scale);
+
+  // Hand shadow
+  ctx.globalAlpha = 0.2;
+  ctx.translate(3, 3);
+  drawHandShape(isGrabbing, '#000');
+  ctx.translate(-3, -3);
+  ctx.globalAlpha = 1;
+
+  // Hand
+  drawHandShape(isGrabbing, '#FDBCB4', '#E8A090', '#000');
+
+  ctx.restore();
+}
+
+function drawHandShape(grabbing, skinColor, shadowColor, outlineColor) {
+  const outline = outlineColor !== undefined;
+
+  if (grabbing) {
+    // Closed grip hand
+    ctx.beginPath();
+    // Palm
+    ctx.ellipse(0, 5, 18, 22, 0, 0, Math.PI * 2);
+    if (outline) {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+      ctx.strokeStyle = outlineColor;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+    }
+
+    // Fingers curled
+    for (let i = 0; i < 4; i++) {
+      const fx = -10 + i * 7;
+      const fy = -14;
+      ctx.beginPath();
+      ctx.ellipse(fx, fy, 4, 6, 0.2 * (i - 1.5), 0, Math.PI * 2);
+      if (outline) {
+        ctx.fillStyle = shadowColor || skinColor;
+        ctx.fill();
+        ctx.strokeStyle = outlineColor;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = skinColor;
+        ctx.fill();
+      }
+    }
+
+    // Thumb
+    ctx.beginPath();
+    ctx.ellipse(-16, 0, 5, 8, -0.5, 0, Math.PI * 2);
+    if (outline) {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+      ctx.strokeStyle = outlineColor;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+    }
+  } else {
+    // Open hand
+    ctx.beginPath();
+    // Palm
+    ctx.ellipse(0, 8, 18, 20, 0, 0, Math.PI * 2);
+    if (outline) {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+      ctx.strokeStyle = outlineColor;
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+    }
+
+    // Fingers extended
+    for (let i = 0; i < 4; i++) {
+      const fx = -10 + i * 7;
+      const angle = -0.12 * (i - 1.5);
+      ctx.beginPath();
+      ctx.ellipse(fx, -18, 3.8, 10, angle, 0, Math.PI * 2);
+      if (outline) {
+        ctx.fillStyle = skinColor;
+        ctx.fill();
+        ctx.strokeStyle = outlineColor;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      } else {
+        ctx.fillStyle = skinColor;
+        ctx.fill();
+      }
+    }
+
+    // Thumb
+    ctx.beginPath();
+    ctx.ellipse(-18, 3, 5, 9, -0.6, 0, Math.PI * 2);
+    if (outline) {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+      ctx.strokeStyle = outlineColor;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = skinColor;
+      ctx.fill();
+    }
+  }
+}
+
+// ---- DRAW: VICTORY SCREEN ----
+function drawVictoryScreen() {
+  const c = selectedCreature;
+  if (!c) return;
+
+  // Keep the playing screen as backdrop, dimmed
+  drawPlayingScreen();
+
+  // Overlay
+  ctx.fillStyle = 'rgba(0,0,0,0.55)';
+  ctx.fillRect(0, 0, W, H);
+
+  // Celebration particles
+  for (const p of celebrationParticles) {
+    ctx.save();
+    ctx.globalAlpha = p.alpha;
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rotation);
+    ctx.fillStyle = p.color;
+    if (p.shape === 'circle') {
+      ctx.beginPath();
+      ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    } else {
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+    }
+    ctx.restore();
+  }
+
+  // Victory card
+  const cardW = 340;
+  const cardH = 320;
+  const cardX = (W - cardW) / 2;
+  const cardY = (H - cardH) / 2 - 30;
+  const bounce = Math.sin(victoryTimer * 3) * 5;
+
+  // Card shadow
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  roundRect(cardX + 5, cardY + 5 + bounce, cardW, cardH, 20, true, false);
+
+  // Card bg
+  const cardGrad = ctx.createLinearGradient(cardX, cardY, cardX, cardY + cardH);
+  cardGrad.addColorStop(0, '#3D3D5C');
+  cardGrad.addColorStop(1, '#2A2A45');
+  ctx.fillStyle = cardGrad;
+  roundRect(cardX, cardY + bounce, cardW, cardH, 20, true, false);
+
+  // Card border (gold)
+  ctx.strokeStyle = '#FFD700';
+  ctx.lineWidth = 3;
+  roundRect(cardX, cardY + bounce, cardW, cardH, 20, false, true);
+
+  // Inner border
+  ctx.strokeStyle = 'rgba(255,215,0,0.3)';
+  ctx.lineWidth = 1;
+  roundRect(cardX + 8, cardY + 8 + bounce, cardW - 16, cardH - 16, 14, false, true);
+
+  ctx.save();
+  ctx.textAlign = 'center';
+
+  // "COMPLETED!" text
+  ctx.font = 'bold 32px "Segoe UI", cursive';
+  ctx.strokeStyle = '#1a1a2e';
+  ctx.lineWidth = 4;
+  ctx.strokeText('MILKED!', W/2, cardY + 55 + bounce);
+  ctx.fillStyle = '#FFD700';
+  ctx.fillText('MILKED!', W/2, cardY + 55 + bounce);
+
+  // Bucket of milk icon
+  const iconY = cardY + 130 + bounce;
+  // Mini bucket
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 35, iconY - 20);
+  ctx.lineTo(W/2 - 25, iconY + 20);
+  ctx.lineTo(W/2 + 25, iconY + 20);
+  ctx.lineTo(W/2 + 35, iconY - 20);
+  ctx.closePath();
+  ctx.fillStyle = '#C49A2A';
+  ctx.fill();
+  ctx.strokeStyle = '#5C4310';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Milk in mini bucket
+  ctx.beginPath();
+  ctx.moveTo(W/2 - 32, iconY - 10);
+  ctx.lineTo(W/2 - 25, iconY + 18);
+  ctx.lineTo(W/2 + 25, iconY + 18);
+  ctx.lineTo(W/2 + 32, iconY - 10);
+  ctx.closePath();
+  ctx.fillStyle = c.milkColor;
+  ctx.fill();
+
+  // Milk surface wave
+  ctx.beginPath();
+  for (let x = -30; x <= 30; x += 3) {
+    const wave = Math.sin(x * 0.15 + animTime * 4) * 2;
+    ctx.lineTo(W/2 + x, iconY - 10 + wave);
+  }
+  ctx.strokeStyle = c.milkColorDark;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Item name
+  ctx.font = 'bold 20px "Segoe UI", cursive';
+  ctx.fillStyle = c.milkColor;
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 3;
+  ctx.strokeText(c.bucketLabel, W/2, iconY + 55);
+  ctx.fillText(c.bucketLabel, W/2, iconY + 55);
+
+  // Creature family
+  ctx.font = '14px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#A29BFE';
+  ctx.fillText(c.family + ' Dairy', W/2, iconY + 78);
+
+  // Tap to continue
+  const continueAlpha = 0.5 + Math.sin(animTime * 3) * 0.3;
+  ctx.globalAlpha = continueAlpha;
+  ctx.font = '15px "Segoe UI", sans-serif';
+  ctx.fillStyle = '#ECF0F1';
+  ctx.fillText('Tap anywhere to continue', W/2, cardY + cardH - 25 + bounce);
+  ctx.globalAlpha = 1;
+
+  ctx.restore();
+}
+
+// ---- UTILITY DRAWING ----
+function roundRect(x, y, w, h, r, fill, stroke) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+  if (fill) ctx.fill();
+  if (stroke) ctx.stroke();
+}
+
+function wrapText(text, x, y, maxWidth, lineHeight) {
+  const words = text.split(' ');
+  let line = '';
+  let testY = y;
+  for (let n = 0; n < words.length; n++) {
+    const testLine = line + words[n] + ' ';
+    const metrics = ctx.measureText(testLine);
+    if (metrics.width > maxWidth && n > 0) {
+      ctx.fillText(line, x, testY);
+      line = words[n] + ' ';
+      testY += lineHeight;
+    } else {
+      line = testLine;
+    }
+  }
+  ctx.fillText(line, x, testY);
+}
+
+function lightenColor(hex, amount) {
+  const rgb = hexToRgb(hex);
+  const r = Math.min(255, rgb.r + amount);
+  const g = Math.min(255, rgb.g + amount);
+  const b = Math.min(255, rgb.b + amount);
+  return `rgb(${r},${g},${b})`;
+}
+
+function darkenColor(hex, amount) {
+  const rgb = hexToRgb(hex);
+  const r = Math.max(0, rgb.r - amount);
+  const g = Math.max(0, rgb.g - amount);
+  const b = Math.max(0, rgb.b - amount);
+  return `rgb(${r},${g},${b})`;
+}
+
+// ---- MAIN LOOP ----
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  if (gameState === 'SELECT') {
+    drawSelectScreen();
+  } else if (gameState === 'PLAYING') {
+    drawPlayingScreen();
+  } else if (gameState === 'VICTORY') {
+    drawVictoryScreen();
+  }
+}
+
+function gameLoop() {
+  update();
+  draw();
+  updateCursor();
+  requestAnimationFrame(gameLoop);
+}
+
+// Toggle cursor: custom hand during gameplay, pointer on menus
+function updateCursor() {
+  canvas.style.cursor = gameState === 'PLAYING' ? 'none' : 'pointer';
+}
+canvas.style.cursor = 'pointer';
+
+// Start!
+gameLoop();
+</script>
+</body>
+</html>

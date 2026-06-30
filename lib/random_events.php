@@ -134,6 +134,12 @@ function random_event_dismiss_notification(string $id): int
     return count($events);
 }
 
+function random_event_dismiss_all_notifications(): int
+{
+    $_SESSION['random_event_notifications'] = [];
+    return 0;
+}
+
 function random_event_log_notification(array $event, string $page = ''): string
 {
     $title = trim((string)($event['title'] ?? 'Random Encounter'));

@@ -33,6 +33,11 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
     <a class="btn" href="?pg=garden-invaderz">Play</a>
   </div>
   <div class="card glass">
+    <h3>Bombertide</h3>
+    <p class="muted">Bomb-duel 3 rival creatures across four tile arenas — your lead party member fights for you.</p>
+    <a class="btn" href="?pg=bombertide">Play</a>
+  </div>
+  <div class="card glass">
     <h3>Run n Gunner</h3>
     <a class="btn" href="?pg=runngunner">Play</a>
   </div>

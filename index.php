@@ -4,18 +4,22 @@ require_once __DIR__.'/lib/polyfills.php';
 require_once __DIR__.'/auth.php';
 require_once __DIR__.'/lib/bank.php';
 require_once __DIR__.'/lib/input.php';
+require_once __DIR__.'/lib/user_settings.php';
 require_once __DIR__.'/lib/pets.php';
 $pg = input_string($_GET['pg'] ?? '', 50);
 if ($pg === '') {
   $pg = current_user() ? 'main' : 'login';
 }
-$allowed = ['login','register','logout','main','pet','create_pet','inventory','petting','dress',
+if ($pg === 'options') {
+  $pg = 'settings';
+}
+$allowed = ['login','register','logout','main','pet','lineage','create_pet','inventory','petting','dress',
     'petting2','map','vote','games','friends','bank','user-chat','paint_shack','gacha',
-    'user-guide','encyclopedia','petting_fullscreen','pettingBla',
+    'settings','user-guide','encyclopedia','petting_fullscreen','pettingBla',
     // Games
-    'wheel-of-fate','fruitstack','harmonflap','kid-puzzle','garden-invaderz','runngunner',
+    'wheel-of-fate','fruitstack','harmonflap','harmontide-milking-minigame','kid-puzzle','garden-invaderz','runngunner',
     'wanted-alive','blackjack','cups-and-balls','paddle-panic','sudoku',
-    'fishing','minigolf','battle_minigame','drop_game','harmonflap',
+    'fishing','minigolf','battle_minigame','drop_game','harmonflap','bombertide',
     // Continents
     'auronia','borealia','dawnmarch','gulfbelt','moana_crown',
     'orienthem','saharene','tundria','uluru','verdania',
@@ -27,11 +31,11 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'stap','srl',
     'urb','stillwater-hollow','xochimex','yamanokubo','yn',
     // country subsections
-    'aa-adventure','aa-pizza','aa-library','aa_paint_shack','aa-wof','aest-shop',
+    'aa-adventure','aa-pizza','aa-library','aa_paint_shack','aa-wof','aest-shop','aest-emberfen-grill',
     'bm_paint_shack',
     'bm_paint_shack','bm_pt',
     'br_paint_shack','br-everything-store',
-    'cc_paint_shack',
+    'cc_paint_shack','cc-apothecary',
     'esd_paint_shack',
     'esl_paint_shack',
     'gc_paint_shack',
@@ -46,10 +50,10 @@ $allowed = ['login','register','logout','main','pet','create_pet','inventory','p
     'rt_paint_shack',
     'sie_paint_shack',
     'sc_paint_shack',
-    'stap_paint_shack',
+    'stap_paint_shack','stap-starpath-gym',
     'srl_paint_shack',
     'urb_paint_shack','urb-adventure',
-    'urb_paint_shack','urb-adventure','urb-adventure2',
+    'urb_paint_shack','urb-adventure','urb-adventure2','stcr-adventure',
     'xm_paint_shack',
     'ynk_paint_shack','ynk-adventure','ynk-adventure2','ynk-ramen',
     'yn_paint_shack',
@@ -69,6 +73,15 @@ if($pg === 'pet' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/pet.php';
   exit;
+}
+if($pg === 'settings' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  user_settings_set_nsfw_enabled(isset($_POST['nsfw_mode']) && (string)$_POST['nsfw_mode'] === '1');
+  header('Location: index.php?pg=settings&saved=1');
+  exit;
+}
+if($pg === 'settings') {
+  require_login();
 }
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
@@ -102,6 +115,16 @@ if($pg === 'cups-and-balls' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require __DIR__.'/pages/cups-and-balls.php';
   exit;
 }
+if($pg === 'battle_minigame' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/battle_minigame.php';
+  exit;
+}
+if($pg === 'harmontide-milking-minigame' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/harmontide-milking-minigame.php';
+  exit;
+}
 if($pg === 'aa-pizza' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/aa-pizza.php';
@@ -112,6 +135,11 @@ if($pg === 'aest-shop' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require __DIR__.'/pages/aest-shop.php';
   exit;
 }
+if($pg === 'aest-emberfen-grill' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/aest-emberfen-grill.php';
+  exit;
+}
 if($pg === 'ynk-ramen' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/ynk-ramen.php';
@@ -119,7 +147,7 @@ if($pg === 'ynk-ramen' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 $basket_shop_pages = [
   'aa-library','rl-kiosk','pelagora-shop','pelagora-library',
-  'bm-market','cc-souq','esd-feather-flint','esl-olive-lamp','fom-lockside-shop',
+  'bm-market','cc-souq','cc-apothecary','esd-feather-flint','esl-olive-lamp','fom-lockside-shop',
   'gc-plaza-kiosk','h-ledger-house','ie-canopy-relic','k-bazaar-goods',
   'ldk-tea-trinkets','nh-frostmarket','rsc-roadhouse','rt-winter-pantry',
   'sc-ice-cache','sie-sun-terrace','srl-spice-dock','stap-trading-blanket',
@@ -137,6 +165,15 @@ if($pg === 'dress' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 if(current_user()) {
   apply_daily_interest(current_user()['id']);
+}
+if(current_user() && $pg === 'user-chat') {
+  // Clear a conversation's unread badge before the header builds its notifications,
+  // so opening a chat from a notification removes it on the same load.
+  require_once __DIR__.'/lib/chat.php';
+  $chatReadFriend = input_int($_GET['friend'] ?? 0, 1);
+  if ($chatReadFriend > 0) {
+    mark_conversation_read((int)current_user()['id'], $chatReadFriend);
+  }
 }
 include __DIR__.'/layout/header.php';
 

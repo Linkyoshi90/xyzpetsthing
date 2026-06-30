@@ -26,8 +26,17 @@
     elements: Array.isArray(pet.elements) ? pet.elements.map((value) => Number(value)) : [],
     elementNames: Array.isArray(pet.elementNames) ? pet.elementNames.slice() : [],
     moves: Array.isArray(pet.moves) ? pet.moves.map((move) => ({ ...move })) : [],
+    ability: pet.ability ? JSON.parse(JSON.stringify(pet.ability)) : null,
+    abilityRuntime: { used: Object.create(null) },
     fainted: false,
   }));
+
+  const abilityEngine = window.BattleAbilityEngine || {
+    prepareCreature: () => [],
+    priorityFor: (creature, move) => Number(move?.priority || 0),
+    modifyDamage: ({ damage }) => ({ damage, messages: [] }),
+    afterDamage: () => ({ healing: 0, messages: [] }),
+  };
 
   const state = {
     playerTeam: cloneTeam(data.playerTeam),
@@ -38,9 +47,16 @@
     locked: true,
     battleEnded: false,
     awarding: false,
+    hpSyncing: null,
+    hpSyncTimer: 0,
+    hpVersion: 0,
     menuKey: 'root',
     forceSwitch: false,
+    openingSelection: true,
   };
+
+  const abilityStartMessages = [...state.playerTeam, ...state.trainerTeam]
+    .flatMap((creature) => abilityEngine.prepareCreature(creature));
 
   const el = {
     intro: document.getElementById('battle-intro'),
@@ -74,10 +90,18 @@
   const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
   const currentPlayer = () => state.playerTeam[state.playerIndex] || null;
   const currentNpc = () => state.trainerTeam[state.trainerIndex] || null;
+  const markPlayerHpChanged = () => {
+    state.hpVersion += 1;
+  };
   const firstLivingIndex = (team) => team.findIndex((creature) => creature.hp > 0);
   const currencyLabel = typeof data.currencyLabel === 'string' && data.currencyLabel ? data.currencyLabel : 'Dosh';
   const fallbackMove = { id: 0, key: 'tackle', name: 'Tackle', category: 'physical', contact: true, power: 40, elementId: 1, elementName: 'Vulgaris' };
   const isWildBattle = data.battleKind === 'wild';
+  const battlePostUrl = window.location.href;
+
+  state.playerIndex = Math.max(0, firstLivingIndex(state.playerTeam));
+  state.trainerIndex = Math.max(0, firstLivingIndex(state.trainerTeam));
+
   const elementPalettes = {
     1: { core: '#f8fafc', glow: 'rgba(255, 255, 255, 0.56)' },
     2: { core: '#ff8a3d', glow: 'rgba(255, 116, 48, 0.58)' },
@@ -406,6 +430,10 @@
         `).join('')
       : '<span class="battle-detail-move">No moves assigned</span>';
 
+    const ability = creature.ability
+      ? `<div class="battle-detail-ability"><strong>${escapeHtml(creature.ability.name)}</strong><br>${escapeHtml(creature.ability.description || creature.ability.battle?.summary || '')}</div>`
+      : '<div class="battle-detail-ability"><strong>Ability</strong><br>None assigned</div>';
+
     return `
       <h3 class="battle-detail-title">${escapeHtml(creature.name)}${isActive ? ' <span class="battle-feed-label">Active</span>' : ''}</h3>
       <p class="battle-detail-empty">${escapeHtml(creature.species || 'Creature')} - ${escapeHtml((creature.elementNames || []).join(' / ') || 'Neutral')}</p>
@@ -416,13 +444,14 @@
         <div class="battle-detail-stat"><strong>Speed</strong><br>${creature.speed}</div>
       </div>
       <div class="battle-detail-moves">${moves}</div>
+      ${ability}
     `;
   }
 
   function moveDetailHtml(move) {
     const player = currentPlayer();
     const npc = currentNpc();
-    const breakdown = npc ? calculateDamage(move, npc) : { totalDamage: move.power, summary: '' };
+    const breakdown = npc ? calculateDamage(move, npc, player, true) : { totalDamage: move.power, summary: '' };
 
     return `
       <h3 class="battle-detail-title">${escapeHtml(move.name)}</h3>
@@ -551,7 +580,7 @@
     return Number(data.effectiveness[key] || 1);
   }
 
-  function calculateDamage(move, target) {
+  function calculateDamage(move, target, attacker, preview = false) {
     const targetElements = Array.isArray(target.elements) ? target.elements : [];
     let scaled = move.power;
     const applied = [];
@@ -572,7 +601,16 @@
       applied.push(1);
     }
 
-    const totalDamage = Math.max(0, Math.round(scaled - target.defense));
+    const attackContribution = Math.round(Number(attacker?.attack || 0) * 0.5);
+    const baseDamage = Math.max(0, Math.round(scaled + attackContribution - target.defense));
+    const abilityResult = abilityEngine.modifyDamage({
+      attacker,
+      target,
+      move,
+      damage: baseDamage,
+      preview,
+    });
+    const totalDamage = Math.max(0, Number(abilityResult.damage || 0));
     const factor = move.power > 0 ? scaled / move.power : 1;
 
     let summary = '';
@@ -584,7 +622,7 @@
       summary = 'The target resists that element matchup.';
     }
 
-    return { totalDamage, summary };
+    return { totalDamage, summary, abilityMessages: abilityResult.messages || [] };
   }
 
   function pickNpcMove() {
@@ -607,8 +645,14 @@
     await playAttackAnimation(attackerSide, targetSide, move);
     attackerEl.classList.remove('is-acting');
 
-    const result = calculateDamage(move, target);
+    const result = calculateDamage(move, target, attacker, false);
+    (result.abilityMessages || []).forEach((message) => addLog(message));
+    const hpBefore = target.hp;
     target.hp = Math.max(0, target.hp - result.totalDamage);
+    if (targetSide === 'player' && target.hp !== hpBefore) {
+      markPlayerHpChanged();
+      queuePlayerHpSync();
+    }
 
     spawnImpact(targetSide);
     spawnNumber(targetSide, result.totalDamage, result.totalDamage === 0 ? 'zero' : '');
@@ -618,6 +662,23 @@
     await blink;
     await wait(90);
     targetEl.classList.remove('is-hit');
+
+    const aftermath = abilityEngine.afterDamage({
+      attacker,
+      target,
+      move,
+      damage: result.totalDamage,
+      preview: false,
+    });
+    (aftermath.messages || []).forEach((message) => addLog(message));
+    if (aftermath.healing > 0) {
+      if (attackerSide === 'player') {
+        markPlayerHpChanged();
+        queuePlayerHpSync();
+      }
+      spawnNumber(attackerSide, aftermath.healing, 'heal');
+      await updateHpDisplay(attackerSide, attacker, true);
+    }
 
     if (result.summary) {
       addLog(result.summary);
@@ -639,6 +700,7 @@
       description,
       action,
       onFocus: extra && extra.onFocus ? extra.onFocus : null,
+      profile: extra && extra.profile ? extra.profile : null,
       quit: Boolean(extra && extra.quit),
       disabled: Boolean(extra && extra.disabled),
     };
@@ -660,16 +722,33 @@
     el.menu.innerHTML = '';
 
     const wrap = document.createElement('div');
-    wrap.className = config.layout === 'list' ? 'battle-menu-list' : 'battle-menu-grid';
+    wrap.className = config.layout === 'list'
+      ? 'battle-menu-list'
+      : config.layout === 'profiles'
+        ? 'battle-creature-grid'
+        : 'battle-menu-grid';
+
+    const firstFocusableIndex = options.findIndex((option) => !option.disabled);
 
     options.forEach((option, index) => {
       const button = document.createElement('button');
       button.type = 'button';
-      button.className = `battle-option${option.quit ? ' quit' : ''}${option.disabled ? ' is-disabled' : ''}`;
-      button.innerHTML = `
-        <span class="battle-option-title">${escapeHtml(option.label)}</span>
-        <span class="battle-option-desc">${escapeHtml(option.description || '')}</span>
-      `;
+      button.className = `battle-option${option.profile ? ' battle-option-profile' : ''}${option.quit ? ' quit' : ''}${option.disabled ? ' is-disabled' : ''}`;
+      button.innerHTML = option.profile
+        ? `
+          <span class="battle-profile-portrait">
+            <img src="${escapeHtml(option.profile.image || '')}" alt="">
+          </span>
+          <span class="battle-profile-copy">
+            <span class="battle-option-title">${escapeHtml(option.label)}</span>
+            <span class="battle-profile-species">${escapeHtml(option.profile.species || 'Creature')} · Lv. ${Number(option.profile.level || 1)}</span>
+            <span class="battle-option-desc">${escapeHtml(option.description || '')}</span>
+          </span>
+        `
+        : `
+          <span class="battle-option-title">${escapeHtml(option.label)}</span>
+          <span class="battle-option-desc">${escapeHtml(option.description || '')}</span>
+        `;
       if (option.disabled) {
         button.disabled = true;
       }
@@ -691,7 +770,7 @@
       });
 
       wrap.appendChild(button);
-      if (index === 0) {
+      if (index === firstFocusableIndex) {
         window.setTimeout(() => {
           button.focus();
           focusOption();
@@ -704,6 +783,7 @@
   }
 
   function renderRootMenu() {
+    state.openingSelection = false;
     state.forceSwitch = false;
     setDetail(defaultDetailHtml());
     renderMenu({
@@ -717,6 +797,52 @@
         menuOption('Flee', 'End the encounter and return to the games hall.', () => fleeBattle('You fled the encounter.')),
       ],
     });
+  }
+
+  function openOpeningCreatureMenu() {
+    const firstAvailable = state.playerTeam.find((creature) => creature.hp > 0);
+    if (firstAvailable) {
+      setDetail(creatureDetailHtml(firstAvailable, false));
+    }
+
+    renderMenu({
+      key: 'opening-creatures',
+      kicker: 'Your Party',
+      title: 'Who will you send out?',
+      layout: 'profiles',
+      options: state.playerTeam.map((creature, index) => {
+        const available = creature.hp > 0;
+        return menuOption(
+          creature.name,
+          available ? `${creature.hp}/${creature.maxHp} HP · SPD ${creature.speed}` : 'Unable to battle',
+          available ? () => sendOpeningCreature(index) : null,
+          {
+            disabled: !available,
+            profile: creature,
+            onFocus: () => setDetail(creatureDetailHtml(creature, false)),
+          }
+        );
+      }),
+    });
+  }
+
+  async function sendOpeningCreature(index) {
+    const creature = state.playerTeam[index];
+    if (!creature || creature.hp <= 0 || !state.openingSelection) {
+      return;
+    }
+
+    state.locked = true;
+    state.playerIndex = index;
+    syncField();
+    el.player.classList.remove('is-awaiting-choice');
+    setTurnIndicator(`Sending out ${creature.name}`);
+    playSummon('player');
+    await wait(240);
+    addLog(`Go, ${creature.name}!`);
+    abilityStartMessages.forEach((message) => addLog(message));
+    setDetail(defaultDetailHtml());
+    renderRootMenu();
   }
 
   function openFightMenu() {
@@ -849,13 +975,113 @@
     });
   }
 
-  async function postBattleAction(params) {
-    const response = await fetch(window.location.href, {
+  async function postBattleAction(params, options) {
+    const response = await fetch(battlePostUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams(params),
+      keepalive: Boolean(options && options.keepalive),
     });
     return response.json();
+  }
+
+  function playerHpSnapshot() {
+    return JSON.stringify(state.playerTeam
+      .map((creature) => ({
+        id: Number(creature && creature.id) || 0,
+        hp: clamp(Math.round(Number(creature && creature.hp) || 0), 0, Math.max(0, Number(creature && creature.maxHp) || 0)),
+        maxHp: Math.max(0, Math.round(Number(creature && creature.maxHp) || 0)),
+      }))
+      .filter((creature) => creature.id > 0));
+  }
+
+  function hpSyncParams() {
+    return {
+      battle_action: 'sync_hp',
+      battle_token: String(data.token || ''),
+      player_hp: playerHpSnapshot(),
+      hp_version: String(state.hpVersion),
+    };
+  }
+
+  function sendPlayerHpBeacon() {
+    const params = hpSyncParams();
+    if (navigator.sendBeacon) {
+      const form = new FormData();
+      Object.entries(params).forEach(([key, value]) => form.append(key, value));
+      if (navigator.sendBeacon(battlePostUrl, form)) {
+        return true;
+      }
+    }
+
+    try {
+      void postBattleAction(params, { keepalive: true }).catch(() => {});
+    } catch (error) {
+      // The normal exit sync still gets a chance when the page is not unloading.
+    }
+
+    return false;
+  }
+
+  async function syncPlayerHpForExit() {
+    if (state.hpSyncing) {
+      return state.hpSyncing;
+    }
+
+    state.hpSyncing = postBattleAction(hpSyncParams(), { keepalive: true }).then((result) => {
+      if (!result || !result.ok) {
+        throw new Error(result && result.message ? result.message : 'HP sync failed.');
+      }
+      return result;
+    }).finally(() => {
+      state.hpSyncing = null;
+    });
+
+    return state.hpSyncing;
+  }
+
+  async function syncPlayerHpQuietly(timeoutMs) {
+    try {
+      const sync = syncPlayerHpForExit();
+      const timeout = Number(timeoutMs || 0);
+      if (timeout > 0) {
+        let completed = false;
+        const trackedSync = sync.then((result) => {
+          completed = true;
+          return result;
+        }).catch((error) => {
+          completed = true;
+          throw error;
+        });
+        sync.catch(() => {});
+        await Promise.race([trackedSync, wait(timeout)]);
+        if (!completed) {
+          sendPlayerHpBeacon();
+        }
+        return;
+      }
+
+      await sync;
+    } catch (error) {
+      sendPlayerHpBeacon();
+    }
+  }
+
+  function returnUrl() {
+    return data.returnUrl || 'index.php?pg=games';
+  }
+
+  function leaveBattleNow() {
+    window.clearTimeout(state.hpSyncTimer);
+    sendPlayerHpBeacon();
+    window.location.href = returnUrl();
+  }
+
+  function queuePlayerHpSync() {
+    window.clearTimeout(state.hpSyncTimer);
+    state.hpSyncTimer = window.setTimeout(() => {
+      void postBattleAction(hpSyncParams()).catch(() => {});
+    }, 350);
   }
 
   async function useItem(item) {
@@ -892,10 +1118,17 @@
       return;
     }
 
+    const heal = Math.max(0, Number(result.heal || item.heal || 0));
     item.quantity = Number(result.quantity || 0);
-    target.hp = Math.min(target.maxHp, target.hp + item.heal);
+    item.heal = heal || item.heal;
+    const hpBefore = target.hp;
+    target.hp = Math.min(target.maxHp, target.hp + heal);
+    if (target.hp !== hpBefore) {
+      markPlayerHpChanged();
+      queuePlayerHpSync();
+    }
     addLog(`You used ${item.name} on ${target.name}.`);
-    spawnNumber('player', item.heal, 'heal');
+    spawnNumber('player', heal, 'heal');
     await updateHpDisplay('player', target, true);
     await wait(120);
 
@@ -997,7 +1230,11 @@
 
     state.locked = true;
     const npcMove = pickNpcMove();
-    const playerActsFirst = player.speed >= npc.speed;
+    const playerPriority = abilityEngine.priorityFor(player, playerMove);
+    const npcPriority = abilityEngine.priorityFor(npc, npcMove);
+    const playerActsFirst = playerPriority === npcPriority
+      ? player.speed >= npc.speed
+      : playerPriority > npcPriority;
     const turnOrder = playerActsFirst
       ? [
           { side: 'player', move: playerMove },
@@ -1041,8 +1278,9 @@
     setTurnIndicator('Retreating');
     addLog(message || 'You fled the encounter.');
     showAnnouncer('Battle over');
+    await syncPlayerHpQuietly(900);
     await wait(900);
-    window.location.href = data.returnUrl || 'index.php?pg=games';
+    leaveBattleNow();
   }
 
   async function loseBattle() {
@@ -1054,8 +1292,9 @@
     setTurnIndicator('Defeat');
     addLog(isWildBattle ? 'Your team has fallen. The wild encounter is over.' : 'Your team has fallen. The trainer battle is over.');
     showAnnouncer('Defeat');
+    await syncPlayerHpQuietly(900);
     await wait(1500);
-    window.location.href = data.returnUrl || 'index.php?pg=games';
+    leaveBattleNow();
   }
 
   async function winBattle() {
@@ -1074,16 +1313,33 @@
 
     if (!state.awarding) {
       state.awarding = true;
+      const winningCreature = currentPlayer();
+      const defeatedCreature = currentNpc();
       try {
         const result = await postBattleAction({
           battle_action: 'award_victory',
           trainer_id: String(data.trainer.id),
           battle_token: String(data.token || ''),
+          winning_pet_id: String((winningCreature && winningCreature.id) || 0),
+          enemy_pet_id: String((defeatedCreature && defeatedCreature.id) || 0),
+          player_hp: playerHpSnapshot(),
+          hp_version: String(state.hpVersion),
         });
         if (result && result.ok && typeof window.updateCurrencyDisplay === 'function') {
           window.updateCurrencyDisplay({ cash: Number(result.cash || 0) });
         }
+        if (!result || !result.ok) {
+          sendPlayerHpBeacon();
+          addLog(result && result.message ? result.message : 'The reward sync failed. Refresh if the wallet did not update.');
+        }
+        if (result && result.ok && result.experience && Number(result.experience.gained || 0) > 0) {
+          addLog(`${result.experience.petName} gained ${result.experience.gained} XP.`);
+          if (result.experience.leveledUp) {
+            addLog(`${result.experience.petName} reached level ${result.experience.level}!`);
+          }
+        }
       } catch (error) {
+        sendPlayerHpBeacon();
         addLog('The reward sync failed. Refresh if the wallet did not update.');
       }
     }
@@ -1103,18 +1359,30 @@
       layout: 'list',
       options: [
         menuOption('Return to Games', 'Leave the battlefield now.', () => {
-          window.location.href = data.returnUrl || 'index.php?pg=games';
+          leaveBattleNow();
         }),
       ],
     });
 
     window.setTimeout(() => {
-      window.location.href = data.returnUrl || 'index.php?pg=games';
+      leaveBattleNow();
     }, 2400);
   }
 
+  window.addEventListener('pagehide', sendPlayerHpBeacon);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      sendPlayerHpBeacon();
+    }
+  });
+
   function bindKeyboardNavigation() {
     document.addEventListener('keydown', (event) => {
+      if (state.menuKey === 'opening-creatures' && event.key === 'Escape') {
+        event.preventDefault();
+        return;
+      }
+
       if (!root.contains(document.activeElement) && !el.menu.contains(document.activeElement)) {
         return;
       }
@@ -1174,20 +1442,15 @@
       addLog(isWildBattle ? `${currentNpc().name} takes the field.` : `${data.trainer.name} sent out ${currentNpc().name}.`);
     }
 
-    playSummon('player');
-    await wait(240);
-    if (currentPlayer()) {
-      addLog(`Go, ${currentPlayer().name}!`);
-    }
-
-    setDetail(defaultDetailHtml());
-    renderRootMenu();
+    setTurnIndicator('Choose your creature');
+    openOpeningCreatureMenu();
   }
 
   function boot() {
     syncField();
+    el.player.classList.add('is-awaiting-choice');
     setTurnIndicator('Awaiting clash');
-    setDetail(defaultDetailHtml());
+    setDetail('<p class="battle-detail-empty">Start the battle, then choose which creature you want to send out first.</p>');
     addLog(isWildBattle ? 'A wild creature battle is about to begin.' : 'A trainer battle is about to begin.');
     el.start.addEventListener('click', startEncounter);
     bindKeyboardNavigation();

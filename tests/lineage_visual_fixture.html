@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lineage visual fixture</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/lineage.css">
+  <script defer src="../assets/js/lineage.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Pet Lineage</h1>
+    <div class="card glass lineage-panel">
+      <div id="lineage-tree" class="lineage-tree"></div>
+    </div>
+  </main>
+  <script id="lineage-data" type="application/json">
+  {
+    "rootId": 100,
+    "pets": [
+      {"id":100,"name":"Loopling","species":"Tengu","color":"Blue","image":"../images/creatures/tengu_f_blue.webp","motherId":1,"fatherId":2,"parentageRecorded":true},
+      {"id":1,"name":"Mother Branch","species":"Tengu","color":"Green","image":"../images/creatures/tengu_f_blue.webp","motherId":10,"fatherId":11,"parentageRecorded":true},
+      {"id":2,"name":"Father Branch","species":"Tengu","color":"Red","image":"../images/creatures/tengu_f_blue.webp","motherId":10,"fatherId":11,"parentageRecorded":true},
+      {"id":10,"name":"Shared Grandmother","species":"Tengu","color":"Purple","image":"../images/creatures/tengu_f_blue.webp","motherId":20,"fatherId":null,"parentageRecorded":true},
+      {"id":11,"name":"Shared Grandfather","species":"Tengu","color":"Yellow","image":"../images/creatures/tengu_f_blue.webp","motherId":null,"fatherId":null,"parentageRecorded":false},
+      {"id":20,"name":"Older Mother","species":"Tengu","color":"Blue","image":"../images/creatures/tengu_f_blue.webp","motherId":null,"fatherId":null,"parentageRecorded":false}
+    ]
+  }
+  </script>
+</body>
+</html>

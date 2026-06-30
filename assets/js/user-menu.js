@@ -3,7 +3,7 @@
     const userMenu = document.getElementById('user-menu');
     const notificationsToggle = document.getElementById('notifications-toggle');
     const notificationsPanel = document.getElementById('notifications-panel');
-    const notificationsClose = document.getElementById('notifications-close');
+    const notificationsClear = document.getElementById('notifications-clear');
     const notificationsBody = notificationsPanel ? notificationsPanel.querySelector('.notifications-panel__body') : null;
     const notificationsStatus = notificationsPanel ? notificationsPanel.querySelector('.notifications-panel__status') : null;
 
@@ -52,11 +52,18 @@
         }
     };
 
+    const updateNotificationsClearState = () => {
+        if (!notificationsClear || !notificationsBody) return;
+        notificationsClear.disabled = !notificationsBody.querySelector('[data-notification-dismiss]');
+    };
+
     const ensureNotificationEmptyState = () => {
         if (!notificationsBody || notificationsBody.querySelector('.notification-item:not(.notification-item--empty)')) {
+            updateNotificationsClearState();
             return;
         }
         if (notificationsBody.querySelector('.notification-item--empty')) {
+            updateNotificationsClearState();
             return;
         }
         const item = document.createElement('article');
@@ -70,6 +77,7 @@
             '</div>'
         ].join('');
         notificationsBody.appendChild(item);
+        updateNotificationsClearState();
     };
 
     const removeNotificationItem = (item, count) => {
@@ -78,6 +86,7 @@
             item.remove();
             setNotificationCount(count);
             ensureNotificationEmptyState();
+            updateNotificationsClearState();
         }, 180);
     };
 
@@ -120,6 +129,10 @@
         id
     }), 'Notification could not be dismissed.');
 
+    const sendDismissAllNotifications = () => postNotificationAction(new URLSearchParams({
+        action: 'dismiss_all'
+    }), 'Notifications could not be cleared.');
+
     window.appDismissNotification = async (id) => {
         const notificationId = String(id || '');
         if (!notificationId) return null;
@@ -146,6 +159,39 @@
         }
     };
 
+    const dismissAllNotifications = async () => {
+        if (!notificationsClear || notificationsClear.disabled || !notificationsBody) return;
+        const items = Array.from(notificationsBody.querySelectorAll('.notification-item')).filter((item) => (
+            item.querySelector('[data-notification-dismiss]')
+        ));
+        if (!items.length) {
+            updateNotificationsClearState();
+            return;
+        }
+
+        notificationsClear.disabled = true;
+        try {
+            const data = await sendDismissAllNotifications();
+            items.forEach((item) => {
+                item.classList.add('is-dismissing');
+            });
+            window.setTimeout(() => {
+                items.forEach((item) => {
+                    item.remove();
+                });
+                setNotificationCount(data.count);
+                ensureNotificationEmptyState();
+                updateNotificationsClearState();
+            }, 180);
+        } catch (error) {
+            notificationsClear.disabled = false;
+            updateNotificationsClearState();
+            if (typeof window.reportAppError === 'function') {
+                window.reportAppError(error && error.message ? error.message : 'Notifications could not be cleared.');
+            }
+        }
+    };
+
     const runNotificationAction = async (button) => {
         if (!button || button.disabled) return;
         const item = button.closest('.notification-item');
@@ -157,6 +203,10 @@
             const requestId = button.getAttribute('data-friend-request-id');
             if (!requestId) return;
             body.set('request_id', requestId);
+        } else if (action === 'accept_gift' || action === 'decline_gift') {
+            const giftId = button.getAttribute('data-gift-id');
+            if (!giftId) return;
+            body.set('gift_id', giftId);
         }
 
         const controls = item.querySelectorAll('button');
@@ -244,15 +294,14 @@
         });
     }
 
-    if (notificationsClose) {
-        notificationsClose.addEventListener('click', (e) => {
+    if (notificationsClear) {
+        notificationsClear.addEventListener('click', (e) => {
             e.stopPropagation();
-            closeNotifications();
-            if (notificationsToggle) {
-                notificationsToggle.focus();
-            }
+            dismissAllNotifications();
         });
     }
+
+    updateNotificationsClearState();
 
     document.addEventListener('click', (e) => {
         if (userMenu && userToggle && !userMenu.contains(e.target) && !userToggle.contains(e.target)) {

@@ -2,6 +2,7 @@
 require_once __DIR__.'/../db.php';
 require_once __DIR__.'/temp_user.php';
 require_once __DIR__.'/shops.php';
+require_once __DIR__.'/user_settings.php';
 
 function get_user_pets(int $user_id, bool $include_inactive = false): array {
     if ($user_id === 0) {
@@ -24,6 +25,7 @@ function get_user_pets(int $user_id, bool $include_inactive = false): array {
                 pi.atk,
                 pi.def,
                 pi.initiative,
+                pi.ability_id,
                 pi.gender,
                 pi.hunger,
                 pi.happiness,
@@ -48,14 +50,53 @@ function get_user_pets(int $user_id, bool $include_inactive = false): array {
     )->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function pet_image_url(string $species_name, ?string $color_name): string {
-    $species_slug = strtolower(preg_replace('/[^a-z0-9]+/i', '_', $species_name));
-    $color_slug = $color_name ? strtolower(preg_replace('/[^a-z0-9]+/i', '_', $color_name)) : '';
-    $path = "images/creatures/{$species_slug}_f_{$color_slug}.webp";
-    if (!file_exists(__DIR__ . '/../' . $path)) {
-        return 'images/creatures/tengu_f_blue.webp';
+function pet_asset_slug(string $value): string {
+    return trim(strtolower(preg_replace('/[^a-z0-9]+/i', '_', $value)), '_');
+}
+
+function pet_creature_image_dirs(): array {
+    $dirs = ['images/creatures'];
+
+    if (user_settings_nsfw_enabled()) {
+        $dirs[] = 'images/creatures/nsfw concepts';
     }
-    return $path;
+
+    return $dirs;
+}
+
+function pet_image_url(string $species_name, ?string $color_name, ?string $color_slug = null): string {
+    $species_slug = pet_asset_slug($species_name);
+    $color_candidates = [];
+
+    foreach ([$color_slug, $color_name] as $candidate) {
+        $candidate = is_string($candidate) ? pet_asset_slug($candidate) : '';
+        if ($candidate === '') {
+            continue;
+        }
+
+        $color_candidates[] = $candidate;
+        $compact = str_replace('_', '', $candidate);
+        if ($compact !== $candidate) {
+            $color_candidates[] = $compact;
+        }
+    }
+
+    if (!$color_candidates) {
+        $color_candidates[] = '';
+    }
+
+    foreach (array_values(array_unique($color_candidates)) as $candidate) {
+        foreach (pet_creature_image_dirs() as $dir) {
+            foreach (['webp', 'png', 'jpg', 'jpeg'] as $extension) {
+                $path = "{$dir}/{$species_slug}_f_{$candidate}.{$extension}";
+                if (file_exists(__DIR__ . '/../' . $path)) {
+                    return $path;
+                }
+            }
+        }
+    }
+
+    return 'images/creatures/tengu_f_blue.webp';
 }
 
 function get_pet_cosmetics(int $pet_id): array {
@@ -77,7 +118,7 @@ function get_pet_cosmetics(int $pet_id): array {
         $items[] = [
             'item_id' => (int) $row['item_id'],
             'name' => $row['item_name'],
-            'image' => 'images/creatures/items/'.rawurlencode($imageFile),
+            'image' => 'images/items/'.rawurlencode($imageFile),
             'x' => (int) $row['xcoord'],
             'y' => (int) $row['ycoord'],
             'size' => (int) $row['size'],

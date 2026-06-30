@@ -1,6 +1,8 @@
 ﻿<?php require_login();
 require_once __DIR__.'/../lib/pets.php';
 require_once __DIR__.'/../lib/input.php';
+require_once __DIR__.'/../lib/item_effects.php';
+require_once __DIR__.'/../lib/abilities.php';
 $uid = current_user()['id'];
 $action = input_string($_POST['action'] ?? '', 20);
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'rename') {
@@ -99,27 +101,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'feed') {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'heal') {
     $pet_id = input_int($_POST['pet_id'] ?? 0, 1);
     $item_id = input_int($_POST['item_id'] ?? 0, 1);
-    $row = q(
-        "SELECT ui.quantity, i.replenish FROM user_inventory ui"
-        . " JOIN items i ON i.item_id = ui.item_id"
-        . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
-        . " WHERE ui.user_id = ? AND ui.item_id = ? AND ic.category_name = 'Potion'",
-        [$uid, $item_id]
-    )->fetch(PDO::FETCH_ASSOC);
-    if ($row && (int)$row['quantity'] > 0) {
-        $healing = max(0, (int)$row['replenish']);
-        if ($healing > 0) {
-            q(
-                "UPDATE pet_instances SET hp_current = IF(hp_max IS NULL, hp_current + ?, LEAST(hp_max, hp_current + ?)) WHERE pet_instance_id = ? AND owner_user_id = ?",
-                [$healing, $healing, $pet_id, $uid]
-            );
-        }
-        if ((int)$row['quantity'] > 1) {
-            q("UPDATE user_inventory SET quantity = quantity - 1 WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-        } else {
-            q("DELETE FROM user_inventory WHERE user_id = ? AND item_id = ?", [$uid, $item_id]);
-        }
+
+    $pdo = db();
+    if ($pdo) {
+        item_effect_apply_to_pet($pdo, (int)$uid, $pet_id, $item_id);
     }
+
     header('Location: ?pg=pet&id=' . $pet_id);
     exit;
 }
@@ -148,6 +135,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'read') {
     exit;
 }
 $pets = get_user_pets($uid);
+$sickness_names = q(
+    "SELECT sick_id, sick_name FROM sickness ORDER BY sick_id"
+)->fetchAll(PDO::FETCH_KEY_PAIR);
 $food_items = q(
     "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui"
     . " JOIN items i ON i.item_id = ui.item_id"
@@ -155,13 +145,8 @@ $food_items = q(
     . " WHERE ui.user_id = ? AND ic.category_name = 'Food'",
     [$uid]
 )->fetchAll(PDO::FETCH_ASSOC);
-$healing_items = q(
-    "SELECT ui.item_id, i.item_name, ui.quantity, i.replenish FROM user_inventory ui"
-    . " JOIN items i ON i.item_id = ui.item_id"
-    . " LEFT JOIN item_categories ic ON ic.category_id = i.category_id"
-    . " WHERE ui.user_id = ? AND ic.category_name = 'Potion'",
-    [$uid]
-)->fetchAll(PDO::FETCH_ASSOC);
+$pdo = db();
+$healing_items = $pdo ? item_effect_inventory_for_user($pdo, (int)$uid) : [];
 $book_items = q(
     "SELECT ui.item_id, i.item_name, ui.quantity FROM user_inventory ui"
     . " JOIN items i ON i.item_id = ui.item_id"
@@ -212,6 +197,26 @@ function pet_stat_value(array $pet, string $key): string {
         return 'Not set';
     }
     return (string)(int)$pet[$key];
+}
+
+function pet_level_up_value(array $pet): string {
+    foreach (['level', 'hp_max', 'atk', 'def', 'initiative'] as $key) {
+        if (!array_key_exists($key, $pet) || $pet[$key] === null || $pet[$key] === '') {
+            return 'Not set';
+        }
+    }
+
+    $stat_total = (int)$pet['hp_max'] + (int)$pet['atk'] + (int)$pet['def'] + (int)$pet['initiative'];
+    return (string)((int)$pet['level'] * $stat_total);
+}
+
+function pet_sickness_name(array $pet, array $sickness_names): string {
+    $sickness_id = (int)($pet['sickness'] ?? 0);
+    if ($sickness_id === 0) {
+        return 'Healthy';
+    }
+
+    return $sickness_names[$sickness_id] ?? 'Unknown sickness';
 }
 ?>
 <style>
@@ -278,6 +283,49 @@ function pet_stat_value(array $pet, string $key): string {
     min-width: 110px;
   }
 
+  .ability-info {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-left: 4px;
+    border: 1px solid rgba(30, 134, 255, 0.45);
+    border-radius: 50%;
+    font-family: cursive;
+    font-style: italic;
+    cursor: help;
+  }
+
+  .ability-tooltip {
+    position: absolute;
+    z-index: 20;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    width: min(280px, 75vw);
+    padding: 9px 11px;
+    border: 1px solid rgba(30, 134, 255, 0.35);
+    border-radius: 10px;
+    background: var(--glass-bg);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-style: normal;
+    line-height: 1.35;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 4px);
+    transition: opacity 140ms ease, transform 140ms ease;
+  }
+
+  .ability-info:hover .ability-tooltip,
+  .ability-info:focus .ability-tooltip,
+  .ability-info:focus-within .ability-tooltip {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
   .smiley-pop {
     position: absolute;
     font-size: 1.6rem;
@@ -308,7 +356,10 @@ function pet_stat_value(array $pet, string $key): string {
 <a class="btn" href="?pg=create_pet">Create pet</a>
 <p></p>
 <div class="pets-grid">
-<?php foreach ($pets as $pet): $pet_name = $pet['nickname'] ?: $pet['species_name']; ?>
+<?php foreach ($pets as $pet):
+  $pet_name = $pet['nickname'] ?: $pet['species_name'];
+  $pet_ability = ability_for_pet($pet);
+?>
   <div class="card glass pet-card">
     <?= render_pet_thumbnail($pet, 'thumb', $pet_name) ?>
     <div class="pet-name-editor" data-pet-id="<?= (int)$pet['pet_instance_id'] ?>" data-name="<?= htmlspecialchars($pet_name, ENT_QUOTES, 'UTF-8') ?>">
@@ -329,20 +380,37 @@ function pet_stat_value(array $pet, string $key): string {
         <p><strong>Gender:</strong> <?= htmlspecialchars($pet['gender']) ?></p>
         <p><strong>Level:</strong> <?= (int)$pet['level'] ?></p>
         <p><strong>Experience:</strong> <?= pet_stat_value($pet, 'experience') ?></p>
+        <p><strong>Level up:</strong> <?= pet_level_up_value($pet) ?></p>
         <p><strong>Current HP:</strong> <?= pet_stat_compare($pet, 'hp_current', 'base_hp') ?></p>
         <p><strong>Max HP:</strong> <?= pet_stat_value($pet, 'hp_max') ?></p>
         <p><strong>Attack:</strong> <?= pet_stat_compare($pet, 'atk', 'base_atk') ?></p>
         <p><strong>Defense:</strong> <?= pet_stat_compare($pet, 'def', 'base_def') ?></p>
         <p><strong>Initiative:</strong> <?= pet_stat_compare($pet, 'initiative', 'base_init') ?></p>
+        <p>
+          <strong>Ability:</strong>
+          <?= htmlspecialchars($pet_ability['name'] ?? 'None') ?>
+          <?php if ($pet_ability): ?>
+            <span class="ability-info" tabindex="0" title="<?= htmlspecialchars((string)$pet_ability['description'], ENT_QUOTES, 'UTF-8') ?>" aria-label="<?= htmlspecialchars((string)$pet_ability['description'], ENT_QUOTES, 'UTF-8') ?>">
+              <span aria-hidden="true">i</span>
+              <span class="ability-tooltip" role="tooltip"><?= htmlspecialchars((string)$pet_ability['description']) ?></span>
+            </span>
+          <?php endif; ?>
+        </p>
         <p><strong>Hunger:</strong> <?= (int)$pet['hunger'] ?></p>
         <p><strong>Happiness:</strong> <span class="happiness-value"><?= (int)$pet['happiness'] ?></span></p>
         <p><strong>Intelligence:</strong> <?= (int)($pet['intelligence'] ?? 0) ?></p>
-        <p><strong>Sickness:</strong> <?= !empty($pet['sickness']) ? '😷 Unwell' : '✅ Healthy' ?></p>
+        <p>
+          <strong>Sickness:</strong>
+          <?= !empty($pet['sickness']) ? '😷' : '✅' ?>
+          <?= htmlspecialchars(pet_sickness_name($pet, $sickness_names)) ?>
+        </p>
       </div>
       <div class="actions">
         <button class="play">Play</button>
         <button class="read">Read</button>
+        <button class="heal">Use Item</button>
         <button class="dress">Dress up</button>
+        <a class="btn lineage" href="?pg=lineage&amp;id=<?= (int)$pet['pet_instance_id'] ?>">Lineage</a>
         <button class="close">Close</button>
       </div>
       <div class="feed-form" style="display:none;">
@@ -368,13 +436,13 @@ function pet_stat_value(array $pet, string $key): string {
           <input type="hidden" name="pet_id" value="<?= (int)$pet['pet_instance_id'] ?>">
           <select name="item_id">
             <?php foreach ($healing_items as $item): ?>
-              <option value="<?= (int)$item['item_id'] ?>"><?= htmlspecialchars($item['item_name']) ?> (heals <?= (int)$item['replenish'] ?> HP, x<?= (int)$item['quantity'] ?>)</option>
+              <option value="<?= (int)$item['item_id'] ?>"><?= htmlspecialchars($item['item_name']) ?> (<?= htmlspecialchars(item_effect_format_effects($item['effects'])) ?>, x<?= (int)$item['quantity'] ?>)</option>
             <?php endforeach; ?>
           </select>
-          <button type="submit" data-pet-name-template="Heal %s">Heal <?= htmlspecialchars($pet_name) ?></button>
+          <button type="submit" data-pet-name-template="Use item on %s">Use Item on <?= htmlspecialchars($pet_name) ?></button>
         </form>
         <?php else: ?>
-          <p>No healing items available.</p>
+          <p>No usable pet items available.</p>
         <?php endif; ?>
       </div>
       <div class="read-form" style="display:none;">

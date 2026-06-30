@@ -73,7 +73,7 @@
     "frost-road": {
       "title": "Outskirts of Skeldgard",
       "body": [
-        "<!-- Prompt: Cinematic Norse-inspired village at dusk near Skeldgard, deserted wooden homes, windblown snow, blue-gray light, ominous atmosphere, ultra-detailed digital painting. --><img src=\"images/nh-adv1.webp\" alt=\"A deserted village road near Skeldgard at dusk\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Cinematic Norse-inspired village at dusk near Skeldgard, deserted wooden homes, windblown snow, blue-gray light, ominous atmosphere, ultra-detailed digital painting. --><img src=\"images/adventure/nh-adventure/nh-adv1.webp\" alt=\"A deserted village road near Skeldgard at dusk\" loading=\"lazy\" decoding=\"async\">",
         "A village lies just beyond Skeldgard's outer watchfires. No chatter, no hearth-song-only the ghostly howl of winter wind threading through empty eaves.",
         "One alley stands out. Fresh drag marks score the snow."
       ],
@@ -85,7 +85,7 @@
     "first-body": {
       "title": "The Torn Dead",
       "body": [
-        "<!-- Prompt: Dark narrow alley in Nordic settlement, snowfall, a mangled corpse in snow with torn clothing, implied gore, tense horror mood, painterly realism. --><img src=\"images/nh-adv2.webp\" alt=\"A mangled body in a snow-packed alley\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Dark narrow alley in Nordic settlement, snowfall, a mangled corpse in snow with torn clothing, implied gore, tense horror mood, painterly realism. --><img src=\"images/adventure/nh-adventure/nh-adv2.webp\" alt=\"A mangled body in a snow-packed alley\" loading=\"lazy\" decoding=\"async\">",
         "A body lies collapsed against a barrel. Clothes are soaked black-red. Flesh has been stripped in ragged patches, as though by starving beasts.",
         "At first it looks like an animal attack-until you notice handprints in blood climbing the wall beside it."
       ],
@@ -97,7 +97,7 @@
     "second-alley": {
       "title": "The Sobbing Woman",
       "body": [
-        "<!-- Prompt: Horror close-mid shot of hunched woman in torn furs in snowy Norse alley, half-face injured/gnawed, tears, moonlit fog, cinematic horror fantasy. --><img src=\"images/nh-adv3.webp\" alt=\"A hunched woman sobbing in a frozen alley\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Horror close-mid shot of hunched woman in torn furs in snowy Norse alley, half-face injured/gnawed, tears, moonlit fog, cinematic horror fantasy. --><img src=\"images/adventure/nh-adventure/nh-adv3.webp\" alt=\"A hunched woman sobbing in a frozen alley\" loading=\"lazy\" decoding=\"async\">",
         "In the next lane, someone is alive-a hunched woman rocking and mumbling through sobs.",
         "The air around her burns your nose: ammonia and iron, like blood and rot left in winter hides.",
         "She turns. Half her face is gone. One eye locks on yours as she whispers, \"Help me.\""
@@ -110,7 +110,7 @@
     "street-flood": {
       "title": "Crying in Every Doorway",
       "body": [
-        "<!-- Prompt: Wide shot of Norse village street suddenly filling with weeping infected townsfolk in varied decay, snowstorm, torchlight, dread, dark fantasy horror illustration. --><img src=\"images/nh-adv4.webp\" alt=\"Weeping figures emerging from homes into the snowy street\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Wide shot of Norse village street suddenly filling with weeping infected townsfolk in varied decay, snowstorm, torchlight, dread, dark fantasy horror illustration. --><img src=\"images/adventure/nh-adventure/nh-adv4.webp\" alt=\"Weeping figures emerging from homes into the snowy street\" loading=\"lazy\" decoding=\"async\">",
         "A door creaks. Then another. Then ten. The street fills with crying figures, each in a different state of ruin: torn cheeks, blood-caked mouths, frostbitten fingers reaching.",
         "They do not roar. They plead, sob, and call for warmth as they close in."
       ],
@@ -122,7 +122,7 @@
     "safehouse-entry": {
       "title": "Shelter with No Salvation",
       "body": [
-        "<!-- Prompt: Interior of dark wooden Norse house, lone adventurer at doorway, hand on oil lamp, shadows in corners, suspenseful horror mood, cinematic lighting. --><img src=\"images/nh-adv5.webp\" alt=\"A dark house interior as the player lights a lamp\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Interior of dark wooden Norse house, lone adventurer at doorway, hand on oil lamp, shadows in corners, suspenseful horror mood, cinematic lighting. --><img src=\"images/adventure/nh-adventure/nh-adv5.webp\" alt=\"A dark house interior as the player lights a lamp\" loading=\"lazy\" decoding=\"async\">",
         "You slam the door, brace it, and fumble for an oil lamp. Light crawls over carved beams and hanging winter cloaks.",
         "From behind chests, under tables, and inside curtained bed-niches, residents unfold themselves from hiding. Too many. Too close."
       ],
@@ -134,7 +134,7 @@
     "bite-1": {
       "title": "Dream-Bite I",
       "body": [
-        "<!-- Prompt: Stylized horror moment of desperate rescue turning into bite, snowy alley motion blur, PG-13 gore, dramatic composition. --><img src=\"images/nh-adv6.webp\" alt=\"The woman lunging forward as the player is bitten\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Stylized horror moment of desperate rescue turning into bite, snowy alley motion blur, PG-13 gore, dramatic composition. --><img src=\"images/adventure/nh-adventure/nh-adv6.webp\" alt=\"The woman lunging forward as the player is bitten\" loading=\"lazy\" decoding=\"async\">",
         "You touch her shoulder. She surges upward with impossible speed and buries broken teeth into your forearm.",
         "The alley spins white-then black."
       ],
@@ -145,7 +145,7 @@
     "bite-2": {
       "title": "Dream-Bite II",
       "body": [
-        "<!-- Prompt: Snowy street chaos with crying undead-like villagers swarming, one biting adventurer's shoulder, dramatic Nordic horror art, high detail. --><img src=\"images/nh-adv7.webp\" alt=\"The crowd swarming and biting as snow whips through the street\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Snowy street chaos with crying undead-like villagers swarming, one biting adventurer's shoulder, dramatic Nordic horror art, high detail. --><img src=\"images/adventure/nh-adventure/nh-adv7.webp\" alt=\"The crowd swarming and biting as snow whips through the street\" loading=\"lazy\" decoding=\"async\">",
         "The small body on the ground snaps upright and clamps onto your hand. Others pile in, sobbing apologies as they tear and bite.",
         "Your scream is swallowed by storm wind."
       ],
@@ -156,7 +156,7 @@
     "bite-3": {
       "title": "Dream-Bite III",
       "body": [
-        "<!-- Prompt: Claustrophobic Norse longhouse horror, dozens of decayed crying villagers overwhelming lone adventurer, lamp light and shadows, intense dark fantasy scene. --><img src=\"images/nh-adv8.webp\" alt=\"The house residents overwhelming the player in lamplight\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Claustrophobic Norse longhouse horror, dozens of decayed crying villagers overwhelming lone adventurer, lamp light and shadows, intense dark fantasy scene. --><img src=\"images/adventure/nh-adventure/nh-adv8.webp\" alt=\"The house residents overwhelming the player in lamplight\" loading=\"lazy\" decoding=\"async\">",
         "You are dragged down in splintered lamplight. Hands clutch, mouths tear, and the room becomes a blur of wet breath, blood, and crying voices begging forgiveness.",
         "Bite after bite after bite-and then nothing."
       ],
@@ -167,7 +167,7 @@
     "inn-wakeup": {
       "title": "Three Looms Inn, Morning",
       "body": [
-        "<!-- Prompt: Warm Norse inn interior at dawn, shaken adventurer waking in bed, kind innkeeper offering small gift, cozy contrast after nightmare, painterly style. --><img src=\"images/nh-adv9.webp\" alt=\"A warm inn room where the innkeeper offers a small item\" loading=\"lazy\" decoding=\"async\">",
+        "<!-- Prompt: Warm Norse inn interior at dawn, shaken adventurer waking in bed, kind innkeeper offering small gift, cozy contrast after nightmare, painterly style. --><img src=\"images/adventure/nh-adventure/nh-adv9.webp\" alt=\"A warm inn room where the innkeeper offers a small item\" loading=\"lazy\" decoding=\"async\">",
         "You bolt upright in a bed at the Three Looms Inn in Skeldgard. No wounds. Only sweat and the echo of weeping wind.",
         "The innkeeper presses a small gift into your palm and says, \"Bad dreams roam in cold seasons. Keep this on you.\""
       ],

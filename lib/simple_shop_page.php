@@ -120,8 +120,70 @@ function simple_shop_handle_checkout(int $shopId, array $inventory, array $label
     exit;
 }
 
+/**
+ * Handle one round of haggling (action=haggle). Responds with JSON and exits.
+ *
+ * On an accepted deal it performs the real checkout (grants items, decrements
+ * stock) so the negotiation and the purchase are atomic and server-authoritative
+ * - the client never gets to name the final price on its own.
+ */
+function simple_shop_handle_haggle(int $shopId, array $inventory, array $labels = []): void
+{
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST' || input_string($_POST['action'] ?? '', 20) !== 'haggle') {
+        return;
+    }
+
+    header('Content-Type: application/json');
+
+    if (!$inventory) {
+        echo json_encode(['result' => 'error', 'message' => $labels['empty_shop'] ?? 'This shop has no stock available.']);
+        exit;
+    }
+
+    $cartPayload = shop_normalize_cart_payload($_POST['cart'] ?? []);
+    $resolved = shop_resolve_cart($inventory, $cartPayload);
+    if ($resolved['error'] !== null) {
+        echo json_encode(['result' => 'error', 'message' => $resolved['error']]);
+        exit;
+    }
+
+    $offer = (float) ($_POST['offer'] ?? 0);
+    $round = (int) ($_POST['round'] ?? 1);
+    $outcome = shop_haggle_round($resolved['total'], $offer, $round);
+
+    $outcome['required'] = $resolved['total'];
+    $outcome['offer'] = round(max(0.0, $offer), 2);
+    $outcome['round'] = max(1, $round);
+
+    if ($outcome['result'] === 'accept') {
+        $user = current_user();
+        $uid = isset($user['id']) ? (int) $user['id'] : 0;
+        try {
+            $checkout = shop_checkout($shopId, $uid, $resolved['items']);
+        } catch (Throwable $err) {
+            echo json_encode([
+                'result' => 'error',
+                'message' => $err instanceof RuntimeException
+                    ? $err->getMessage()
+                    : ($labels['checkout_failed'] ?? 'The deal fell through at the counter. Please try again.'),
+            ]);
+            exit;
+        }
+
+        $charged = round((float) ($outcome['charged'] ?? $resolved['total']), 2);
+        $outcome['charged'] = $charged;
+        $outcome['saved'] = round($resolved['total'] - $charged, 2);
+        $outcome['stock'] = $checkout['stock'];
+        $outcome['items'] = $checkout['items'];
+    }
+
+    echo json_encode($outcome);
+    exit;
+}
+
 function simple_shop_handle_purchase(int $shopId, array $inventory, array $labels = []): ?array
 {
+    simple_shop_handle_haggle($shopId, $inventory, $labels);
     simple_shop_handle_checkout($shopId, $inventory, $labels);
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST' || input_string($_POST['action'] ?? '', 20) !== 'buy') {
@@ -228,6 +290,7 @@ function render_simple_shop_page(array $config): void
     $itemSoldOutText = (string) ($config['sold_out_text'] ?? '%s is sold out today.');
     $stockLimitText = (string) ($config['client_stock_limit'] ?? '%s only has %s remaining.');
     $currencyLong = APP_CURRENCY_LONG_NAME;
+    $currencyShort = APP_CURRENCY_SHORT_NAME;
     $rootId = 'simple-shop-'.preg_replace('/[^a-z0-9_-]+/i', '-', strtolower((string) ($shop['shop_id'] ?? $title)));
     $itemJson = array_map(static function (array $item): array {
         return [
@@ -237,6 +300,11 @@ function render_simple_shop_page(array $config): void
             'stock' => $item['stock'],
         ];
     }, $inventory);
+
+    // Pick a shop clerk portrait for this region (null => emoji fallback).
+    $clerk = isset($shop['region_id']) ? shop_pick_clerk((int) $shop['region_id']) : null;
+    $clerkImage = $clerk['image'] ?? '';
+    $clerkGender = $clerk['gender'] ?? '';
     ?>
 <section
   id="<?= htmlspecialchars($rootId, ENT_QUOTES, 'UTF-8') ?>"
@@ -246,6 +314,9 @@ function render_simple_shop_page(array $config): void
   data-sold-out-text="<?= htmlspecialchars($itemSoldOutText, ENT_QUOTES, 'UTF-8') ?>"
   data-stock-limit-text="<?= htmlspecialchars($stockLimitText, ENT_QUOTES, 'UTF-8') ?>"
   data-currency-long="<?= htmlspecialchars($currencyLong, ENT_QUOTES, 'UTF-8') ?>"
+  data-currency-short="<?= htmlspecialchars($currencyShort, ENT_QUOTES, 'UTF-8') ?>"
+  data-clerk-image="<?= htmlspecialchars($clerkImage, ENT_QUOTES, 'UTF-8') ?>"
+  data-clerk-gender="<?= htmlspecialchars($clerkGender, ENT_QUOTES, 'UTF-8') ?>"
 >
   <header class="pizza-shop__header">
     <h1><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
@@ -336,11 +407,42 @@ function render_simple_shop_page(array $config): void
         </div>
         <div class="pizza-cart__actions">
           <button type="button" class="btn ghost" data-shop-cart-clear><?= htmlspecialchars($clearLabel, ENT_QUOTES, 'UTF-8') ?></button>
-          <button type="button" class="btn" data-shop-cart-buy disabled><?= htmlspecialchars($submitLabel, ENT_QUOTES, 'UTF-8') ?></button>
+          <button type="button" class="btn" data-shop-cart-buy disabled>Haggle &#129309;</button>
         </div>
         <p class="pizza-cart__status muted" data-shop-cart-status role="status" aria-live="polite"></p>
       </footer>
     </aside>
+  </div>
+
+  <!-- Haggle modal: the clerk negotiation runs entirely over fetch(); no reload. -->
+  <div class="haggle-overlay" data-haggle-overlay hidden>
+    <div class="haggle-box card glass" role="dialog" aria-modal="true" aria-label="Haggle with the shop clerk">
+      <div class="haggle-keeper">
+        <div class="haggle-keeper__face" data-haggle-face>
+          <?php if ($clerkImage !== ''): ?>
+            <img src="<?= htmlspecialchars($clerkImage, ENT_QUOTES, 'UTF-8') ?>" alt="Shop clerk" loading="lazy" decoding="async">
+          <?php else: ?>
+            <span class="haggle-keeper__emoji">&#129333;</span>
+          <?php endif; ?>
+        </div>
+        <div class="haggle-keeper__line">
+          <p class="haggle-keeper__who">The Shop Clerk</p>
+          <p class="haggle-keeper__bubble" data-haggle-bubble>So, what's your offer for this little pile?</p>
+        </div>
+      </div>
+      <div class="haggle-figures">
+        <span>Asking: <strong data-haggle-asking>0.00</strong> <?= htmlspecialchars($currencyShort, ENT_QUOTES, 'UTF-8') ?></span>
+        <span class="muted" data-haggle-hint></span>
+      </div>
+      <div class="haggle-offer-row">
+        <input type="number" min="0" step="1" inputmode="numeric" placeholder="Your offer..." data-haggle-input>
+        <button type="button" class="btn" data-haggle-offer>Offer</button>
+      </div>
+      <div class="haggle-actions">
+        <button type="button" class="btn ghost" data-haggle-walk>Walk away</button>
+      </div>
+      <p class="haggle-round muted" data-haggle-round>Round 1</p>
+    </div>
   </div>
 </section>
 <script>
@@ -593,64 +695,151 @@ function render_simple_shop_page(array $config): void
     updateCartUI();
   });
 
-  cartBuyBtn.addEventListener('click', async () => {
-    if (cart.size === 0) return;
+  // ---- Haggling -------------------------------------------------------
+  // The "Buy" button opens a negotiation modal instead of an instant sale.
+  // Each offer is a fetch() round; the clerk accepts, counters, or boots you.
+  const currencyShortName = root.dataset.currencyShort || currencyLongName;
+  const overlay = root.querySelector('[data-haggle-overlay]');
+  const haggleBubble = root.querySelector('[data-haggle-bubble]');
+  const haggleFace = root.querySelector('[data-haggle-face]');
+  const haggleAsking = root.querySelector('[data-haggle-asking]');
+  const haggleHint = root.querySelector('[data-haggle-hint]');
+  const haggleInput = root.querySelector('[data-haggle-input]');
+  const haggleOfferBtn = root.querySelector('[data-haggle-offer]');
+  const haggleRoundEl = root.querySelector('[data-haggle-round]');
+  const haggleWalkBtn = root.querySelector('[data-haggle-walk]');
+
+  let haggleRound = 1;
+  let haggleAskingTotal = 0;
+  let haggleBusy = false;
+
+  function cartTotalValue() {
+    let total = 0;
+    for (const entry of cart.values()) {
+      total += Number(entry.price || 0) * entry.quantity;
+    }
+    return total;
+  }
+
+  function setBubble(state, text) {
+    if (!haggleBubble) return;
+    haggleBubble.className = 'haggle-keeper__bubble' + (state ? ' ' + state : '');
+    haggleBubble.textContent = text;
+  }
+
+  function setFaceMood(mood) {
+    if (!haggleFace) return;
+    haggleFace.dataset.mood = mood || '';
+  }
+
+  function openHaggle() {
+    if (cart.size === 0 || !overlay) return;
+    haggleRound = 1;
+    haggleAskingTotal = cartTotalValue();
+    haggleAsking.textContent = formatPrice(haggleAskingTotal);
+    haggleHint.textContent = '';
+    setBubble('', "So, what's your offer for this little pile?");
+    setFaceMood('');
+    haggleRoundEl.textContent = 'Round 1';
+    haggleInput.value = '';
+    haggleInput.disabled = false;
+    haggleOfferBtn.disabled = false;
+    overlay.hidden = false;
+    setTimeout(() => haggleInput.focus(), 50);
+  }
+
+  function closeHaggle() {
+    if (overlay) overlay.hidden = true;
+  }
+
+  async function sendOffer() {
+    if (haggleBusy) return;
+    const offer = Number(haggleInput.value);
+    if (haggleInput.value === '' || Number.isNaN(offer) || offer < 0) {
+      setBubble('counter', 'Give me a real number, friend.');
+      return;
+    }
+
+    haggleBusy = true;
+    haggleOfferBtn.disabled = true;
+    setBubble('', '...');
 
     const payload = Array.from(cart.entries()).map(([itemId, entry]) => ({
       item_id: Number(itemId),
       quantity: entry.quantity
     }));
 
-    cartBuyBtn.disabled = true;
-    setStatus(root.dataset.sendingText || 'Sending your order to the counter...');
-
+    let data;
     try {
       const formData = new FormData();
-      formData.append('action', 'checkout');
+      formData.append('action', 'haggle');
+      formData.append('offer', String(offer));
+      formData.append('round', String(haggleRound));
       payload.forEach((entry, index) => {
         formData.append('cart[' + index + '][item_id]', String(entry.item_id));
         formData.append('cart[' + index + '][quantity]', String(entry.quantity));
       });
 
-      const response = await fetch(window.location.href, {
-        method: 'POST',
-        body: formData
-      });
-
+      const response = await fetch(window.location.href, { method: 'POST', body: formData });
       if (!response.ok) {
         throw new Error('Unexpected response: ' + response.status);
       }
+      data = await response.json();
+    } catch (err) {
+      console.error('Haggle request failed', { error: err, payload });
+      setBubble('critfail', 'The clerk got distracted. Try that again.');
+      haggleBusy = false;
+      haggleOfferBtn.disabled = false;
+      return;
+    }
 
-      const data = await response.json();
-      if (!data.ok) {
-        console.error('Checkout error', {
-          message: data.error,
-          context: data.context || null,
-          payload
-        });
-        setStatus(data.error || 'Could not process your order.', data.context || null);
-        cartBuyBtn.disabled = false;
-        return;
-      }
+    haggleBusy = false;
+    setBubble(data.result === 'error' ? 'counter' : data.result, data.message || '...');
 
+    if (data.result === 'accept') {
+      setFaceMood('happy');
+      haggleHint.textContent = '';
+      haggleInput.disabled = true;
+      haggleOfferBtn.disabled = true;
       if (data.stock && typeof data.stock === 'object') {
-        Object.entries(data.stock).forEach(([itemId, stockValue]) => {
-          updateMenuButtonStock(itemId, stockValue);
-        });
+        Object.entries(data.stock).forEach(([itemId, stockValue]) => updateMenuButtonStock(itemId, stockValue));
       }
-
+      const saved = Number(data.saved || 0);
+      haggleRoundEl.textContent = 'Deal struck for ' + formatPrice(data.charged) + ' ' + currencyShortName +
+        (saved > 0 ? ' — saved ' + formatPrice(saved) + '!' : '');
+      setStatus('Deal struck! You paid ' + formatPrice(data.charged) + ' ' + currencyShortName + ' for your basket.');
       cart.clear();
       updateCartUI();
-      setStatus((data.message || 'Order prepared!') + ' Total: ' + formatPrice(data.total) + ' ' + currencyLongName + '.');
-    } catch (err) {
-      console.error('Checkout request failed', {
-        error: err,
-        payload
-      });
-      setStatus(err instanceof Error && err.message ? err.message : 'The order could not be sent. Please try again.', { payload });
-      cartBuyBtn.disabled = false;
+      setTimeout(closeHaggle, 2600);
+    } else if (data.result === 'critfail') {
+      setFaceMood('angry');
+      haggleInput.disabled = true;
+      haggleOfferBtn.disabled = true;
+      haggleRoundEl.textContent = 'Booted from the shop!';
+      setStatus('The clerk threw you out. Cool off and come back later.');
+      cart.clear();
+      updateCartUI();
+      setTimeout(closeHaggle, 2600);
+    } else if (data.result === 'counter') {
+      setFaceMood('cross');
+      haggleRound += 1;
+      haggleRoundEl.textContent = 'Round ' + haggleRound;
+      if (data.npc_min) {
+        haggleHint.textContent = 'Hint: try ≥ ' + formatPrice(data.npc_min) + ' ' + currencyShortName;
+      }
+      haggleOfferBtn.disabled = false;
+      haggleInput.focus();
+      haggleInput.select();
+    } else {
+      haggleOfferBtn.disabled = false;
     }
-  });
+  }
+
+  cartBuyBtn.addEventListener('click', openHaggle);
+  if (haggleOfferBtn) haggleOfferBtn.addEventListener('click', sendOffer);
+  if (haggleInput) haggleInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendOffer(); });
+  if (haggleWalkBtn) haggleWalkBtn.addEventListener('click', closeHaggle);
+  if (overlay) overlay.addEventListener('click', (e) => { if (e.target === overlay) closeHaggle(); });
 
   updateCartUI();
 })();

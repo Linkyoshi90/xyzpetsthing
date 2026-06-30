@@ -133,6 +133,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Caliphate-inspired pigments and motifs.', 'action' => 'Explore', 'href' => '?pg=cc_paint_shack', 'color' => '#06b6d4', 'points' => country_map_rect_points(260, 500, 250, 180, $w, $h)],
                 ['name' => 'Souq al-Hilal Provisions', 'description' => 'Canvas-shaded shelves of caravan goods, sweets, and market trinkets.', 'action' => 'Shop', 'href' => '?pg=cc-souq', 'color' => '#f59e0b', 'points' => country_map_rect_points(720, 390, 280, 175, $w, $h)],
+                ['name' => 'Moon-and-Mortar Apothecary', 'description' => 'A crescent-lit dispensary of measured draughts, fragrant remedies, and cures for pet sickness.', 'action' => 'Browse Remedies', 'href' => '?pg=cc-apothecary', 'color' => '#a78bfa', 'points' => country_map_rect_points(1080, 235, 285, 175, $w, $h)],
             ],
         ],
         'esd' => [
@@ -831,6 +832,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Ancestral Plains region paints.', 'action' => 'Explore', 'href' => '?pg=stap_paint_shack', 'color' => '#f97316', 'points' => country_map_rect_points(250, 510, 250, 165, $w, $h)],
                 ['name' => 'Turtlestar Trading Blanket', 'description' => 'A blanket market for plains staples, beadwork, and camp comforts.', 'action' => 'Shop', 'href' => '?pg=stap-trading-blanket', 'color' => '#22c55e', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
+                ['name' => 'Starpath Proving Ring', 'description' => 'A council-ring gym where challengers walk the Star Walk, face guardian matches, and challenge Keeper Sahana.', 'action' => 'Challenge', 'href' => '?pg=stap-starpath-gym', 'color' => '#d59c43', 'points' => country_map_rect_points(1080, 245, 280, 185, $w, $h)],
             ],
         ],
         'urb' => [
@@ -880,7 +882,7 @@ function get_country_map_config(string $slug): ?array {
         'stillwater-hollow' => [
             'title' => 'United free Republic of Borealia - Stillwater Hollow',
             'subtitle' => 'Where the road stops keeping promises',
-            'image' => is_file(__DIR__.'/../images/maps/harmontide-stillwater-hollow.png') ? 'images/maps/harmontide-stillwater-hollow.png' : 'images/maps/harmontide-urb.webp',
+            'image' => is_file(__DIR__.'/../images/maps/harmontide-stillwatercreek.webp') ? 'images/maps/harmontide-stillwatercreek.webp' : (is_file(__DIR__.'/../images/maps/harmontide-stillwater-hollow.png') ? 'images/maps/harmontide-stillwater-hollow.png' : 'images/maps/harmontide-urb.webp'),
             'width' => 1672,
             'height' => 941,
             'hint' => 'Only one counter still keeps its light on.',
@@ -914,7 +916,9 @@ function get_country_map_config(string $slug): ?array {
             'back_label' => 'Back to Meridian Arc',
             'back_href' => '?pg=urb',
             'areas' => [
+                ['name' => 'Town Well Descent', 'description' => 'A checkpoint descent beneath the poisoned town well, ending at the thing the hollow calls Mary.', 'action' => 'Descend', 'href' => '?pg=stcr-adventure', 'color' => '#64748b', 'points' => country_map_rect_points(560, 390, 270, 175, 1672, 941)],
                 ['name' => 'Stillwater Crossroads Supply', 'description' => 'A last-lit counter for well filters, barn hardware, sealed tins, and paper warnings.', 'action' => 'Shop', 'href' => '?pg=stcr-shop', 'color' => '#a3e635', 'points' => country_map_rect_points(1225, 540, 260, 160, 1672, 941)],
+                ['name' => 'Stillwater Creek Milking Station', 'description' => 'A questionable little shed where URB-local creatures can fill a bucket for the brave.', 'action' => 'Milk', 'href' => '?pg=harmontide-milking-minigame', 'color' => '#f97316', 'points' => country_map_rect_points(845, 612, 240, 150, 1672, 941)],
             ],
         ],
         'xochimex' => [
@@ -999,6 +1003,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Here you can paint your Yamanokubo creatures.', 'action' => 'Explore', 'href' => '?pg=ynk_paint_shack', 'color' => '#8b5cf6', 'points' => country_map_rect_points(250, 500, 250, 170, $w, $h)],
                 ['name' => 'Lotus Terrace Shrine Visit', 'description' => 'A daily shrine stop in Amatera that stacks luck when you keep your visits going.', 'action' => 'Begin', 'href' => '?pg=ynk-adventure', 'color' => '#22c55e', 'points' => country_map_rect_points(700, 350, 230, 170, $w, $h)],
+                ['name' => 'Hanako Mayoi\'s Night School', 'description' => 'Visit the abandoned hillside school after dark and follow the bell that rings without a hand.', 'action' => 'Enter at Night', 'href' => '?pg=ynk-adventure2', 'color' => '#6366f1', 'points' => country_map_rect_points(430, 185, 245, 155, $w, $h)],
                 ['name' => 'Yumenoki Ramen', 'description' => 'Noodle counter with simmered broths, late-night tea, and quick stools under warm cedar.', 'action' => 'Order', 'href' => '?pg=ynk-ramen', 'color' => '#f97316', 'points' => country_map_rect_points(980, 260, 220, 150, $w, $h)],
                 ['name' => 'Gacha Machines', 'description' => 'A bunch of machines, giving you something strange for your Dosh.', 'action' => 'Gamble', 'href' => '?pg=gacha', 'color' => '#ec4899', 'points' => country_map_rect_points(1180, 430, 220, 150, $w, $h)],
             ],
