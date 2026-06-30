@@ -5468,7 +5468,7 @@
     },
     {
       "species_id": 355,
-      "name": "Vicuñero",
+      "name": "Vicunero",
       "slug": "vicunero",
       "region_id": 20,
       "region": "Sapa Inti Empire",
@@ -5484,11 +5484,11 @@
         "chance_percent": null
       },
       "lore": {
-        "summary": "Vicuñero is a local wonder of Sapa Inti Empire, tied to regional memory, household rumor, and the Harmontide's odd sense of humor.",
+        "summary": "Vicunero is a local wonder of Sapa Inti Empire, tied to regional memory, household rumor, and the Harmontide's odd sense of humor.",
         "origin": "Local lore says the species first appeared when thin mountain air caught sunlight and carried it through stone highways; since then, messengers and shepherds honor them as companions of endurance and height.",
         "habitat": "It is most often associated with Andean terraces, sun temples, high roads, and condor-shadowed valleys, and appears wherever local roads, weather, and gossip make room for mystery.",
         "temperament": "Its recorded base stats make it quick and alert; it needs games, routes, and signals before it offers full trust. Its elemental nature is considered unclassified in the current battle records.",
-        "keeper_notes": "Field keepers are taught to approach Vicuñero as a piece of living regional history: observe the local custom first, offer space, and let the creature decide whether the meeting is a challenge, a bargain, or a friendship. It is not currently listed in the random wild-battle seed."
+        "keeper_notes": "Field keepers are taught to approach Vicunero as a piece of living regional history: observe the local custom first, offer space, and let the creature decide whether the meeting is a challenge, a bargain, or a friendship. It is not currently listed in the random wild-battle seed."
       },
       "source_sql": [
         "database.sql",

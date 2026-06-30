@@ -8466,13 +8466,13 @@
     },
     {
       "id": 3551,
-      "key": "vicu_ero_vicu_ero_s_native_instinct",
-      "name": "Vicuñero's Native Instinct",
+      "key": "vicunero_vicunero_s_native_instinct",
+      "name": "Vicunero's Native Instinct",
       "species": {
         "id": 355,
-        "name": "Vicuñero"
+        "name": "Vicunero"
       },
-      "description": "Vicuñero leans into the strongest part of its natural build, raising speed by 12% when it enters battle.",
+      "description": "Vicunero leans into the strongest part of its natural build, raising speed by 12% when it enters battle.",
       "battle": {
         "summary": "Raises speed by 12% at battle start.",
         "instructions": [
@@ -8489,13 +8489,13 @@
     },
     {
       "id": 3552,
-      "key": "vicu_ero_vicu_ero_fieldcraft",
-      "name": "Vicuñero Fieldcraft",
+      "key": "vicunero_vicunero_fieldcraft",
+      "name": "Vicunero Fieldcraft",
       "species": {
         "id": 355,
-        "name": "Vicuñero"
+        "name": "Vicunero"
       },
-      "description": "Vicuñero turns practical survival habits into close-quarters technique, making contact attacks deal 15% more damage.",
+      "description": "Vicunero turns practical survival habits into close-quarters technique, making contact attacks deal 15% more damage.",
       "battle": {
         "summary": "Contact attacks deal 15% more damage.",
         "instructions": [

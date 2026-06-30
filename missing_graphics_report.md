@@ -13,13 +13,13 @@
 ## Summary
 
 - Items missing resolvable graphics: 0 of 339
-- Creatures missing any graphics: 41 of 209
-- Missing default-color creature graphics: 324 of 1045
-  - Purple: 70 of 209
-  - Red: 71 of 209
-  - Blue: 43 of 209
-  - Green: 69 of 209
-  - Yellow: 71 of 209
+- Creatures missing any graphics: 38 of 209
+- Missing default-color creature graphics: 317 of 1045
+  - Purple: 69 of 209
+  - Red: 70 of 209
+  - Blue: 40 of 209
+  - Green: 68 of 209
+  - Yellow: 70 of 209
 
 ## Items Missing Graphics
 
@@ -27,9 +27,6 @@
 
 ## Creatures Missing Any Graphics
 
-- 318 - Rookmourn (`rookmourn`)
-- 355 - Vicuñero (`vicu_ero`)
-- 356 - Condorune (`condorune`)
 - 357 - Dodobold (`dodobold`)
 - 358 - Squirricerat (`squirricerat`)
 - 359 - Reeffin (`reeffin`)
@@ -73,10 +70,9 @@
 
 Each entry names the exact missing basename; any supported image extension can satisfy it.
 
-### Purple (70)
+### Purple (69)
 
 - 312 - Meloncollie (`meloncollie_f_purple.*`)
-- 318 - Rookmourn (`rookmourn_f_purple.*`)
 - 322 - Gribboar (`gribboar_f_purple.*`)
 - 323 - Pumpkingull (`pumpkingull_f_purple.*`)
 - 324 - Snowloper (`snowloper_f_purple.*`)
@@ -105,7 +101,7 @@ Each entry names the exact missing basename; any supported image extension can s
 - 352 - Gliderune (`gliderune_f_purple.*`)
 - 353 - Slothren (`slothren_f_purple.*`)
 - 354 - Riverdillo (`riverdillo_f_purple.*`)
-- 355 - Vicuñero (`vicu_ero_f_purple.*`)
+- 355 - Vicunero (`vicunero_f_purple.*`)
 - 356 - Condorune (`condorune_f_purple.*`)
 - 357 - Dodobold (`dodobold_f_purple.*`)
 - 358 - Squirricerat (`squirricerat_f_purple.*`)
@@ -146,11 +142,10 @@ Each entry names the exact missing basename; any supported image extension can s
 - 393 - Rust Otter (`rust_otter_f_purple.*`)
 - 394 - Halberelk (`halberelk_f_purple.*`)
 
-### Red (71)
+### Red (70)
 
 - 289 - Kachina (`kachina_f_red.*`)
 - 312 - Meloncollie (`meloncollie_f_red.*`)
-- 318 - Rookmourn (`rookmourn_f_red.*`)
 - 322 - Gribboar (`gribboar_f_red.*`)
 - 323 - Pumpkingull (`pumpkingull_f_red.*`)
 - 324 - Snowloper (`snowloper_f_red.*`)
@@ -179,7 +174,7 @@ Each entry names the exact missing basename; any supported image extension can s
 - 352 - Gliderune (`gliderune_f_red.*`)
 - 353 - Slothren (`slothren_f_red.*`)
 - 354 - Riverdillo (`riverdillo_f_red.*`)
-- 355 - Vicuñero (`vicu_ero_f_red.*`)
+- 355 - Vicunero (`vicunero_f_red.*`)
 - 356 - Condorune (`condorune_f_red.*`)
 - 357 - Dodobold (`dodobold_f_red.*`)
 - 358 - Squirricerat (`squirricerat_f_red.*`)
@@ -220,13 +215,10 @@ Each entry names the exact missing basename; any supported image extension can s
 - 393 - Rust Otter (`rust_otter_f_red.*`)
 - 394 - Halberelk (`halberelk_f_red.*`)
 
-### Blue (43)
+### Blue (40)
 
 - 312 - Meloncollie (`meloncollie_f_blue.*`)
-- 318 - Rookmourn (`rookmourn_f_blue.*`)
 - 328 - Bambadger (`bambadger_f_blue.*`)
-- 355 - Vicuñero (`vicu_ero_f_blue.*`)
-- 356 - Condorune (`condorune_f_blue.*`)
 - 357 - Dodobold (`dodobold_f_blue.*`)
 - 358 - Squirricerat (`squirricerat_f_blue.*`)
 - 359 - Reeffin (`reeffin_f_blue.*`)
@@ -266,10 +258,9 @@ Each entry names the exact missing basename; any supported image extension can s
 - 393 - Rust Otter (`rust_otter_f_blue.*`)
 - 394 - Halberelk (`halberelk_f_blue.*`)
 
-### Green (69)
+### Green (68)
 
 - 289 - Kachina (`kachina_f_green.*`)
-- 318 - Rookmourn (`rookmourn_f_green.*`)
 - 322 - Gribboar (`gribboar_f_green.*`)
 - 323 - Pumpkingull (`pumpkingull_f_green.*`)
 - 324 - Snowloper (`snowloper_f_green.*`)
@@ -297,7 +288,7 @@ Each entry names the exact missing basename; any supported image extension can s
 - 352 - Gliderune (`gliderune_f_green.*`)
 - 353 - Slothren (`slothren_f_green.*`)
 - 354 - Riverdillo (`riverdillo_f_green.*`)
-- 355 - Vicuñero (`vicu_ero_f_green.*`)
+- 355 - Vicunero (`vicunero_f_green.*`)
 - 356 - Condorune (`condorune_f_green.*`)
 - 357 - Dodobold (`dodobold_f_green.*`)
 - 358 - Squirricerat (`squirricerat_f_green.*`)
@@ -338,11 +329,10 @@ Each entry names the exact missing basename; any supported image extension can s
 - 393 - Rust Otter (`rust_otter_f_green.*`)
 - 394 - Halberelk (`halberelk_f_green.*`)
 
-### Yellow (71)
+### Yellow (70)
 
 - 289 - Kachina (`kachina_f_yellow.*`)
 - 312 - Meloncollie (`meloncollie_f_yellow.*`)
-- 318 - Rookmourn (`rookmourn_f_yellow.*`)
 - 322 - Gribboar (`gribboar_f_yellow.*`)
 - 323 - Pumpkingull (`pumpkingull_f_yellow.*`)
 - 324 - Snowloper (`snowloper_f_yellow.*`)
@@ -371,7 +361,7 @@ Each entry names the exact missing basename; any supported image extension can s
 - 352 - Gliderune (`gliderune_f_yellow.*`)
 - 353 - Slothren (`slothren_f_yellow.*`)
 - 354 - Riverdillo (`riverdillo_f_yellow.*`)
-- 355 - Vicuñero (`vicu_ero_f_yellow.*`)
+- 355 - Vicunero (`vicunero_f_yellow.*`)
 - 356 - Condorune (`condorune_f_yellow.*`)
 - 357 - Dodobold (`dodobold_f_yellow.*`)
 - 358 - Squirricerat (`squirricerat_f_yellow.*`)
@@ -416,9 +406,6 @@ Each entry names the exact missing basename; any supported image extension can s
 
 These existing art-direction notes are retained only for creatures still missing all graphics.
 
-- 318 - Rookmourn (`rookmourn`) - A black rook or crow spirit with mourning-veil feathers, pale eyes, and a ghostly graveyard silhouette.
-- 355 - Vicunero (`vicu_ero`) - A nimble highland vicuna-like creature with woven sash accents, soft wool, and mountain-step colors.
-- 356 - Condorune (`condorune`) - A condor with rune-patterned wings, broad gliding posture, and high Andes ceremonial markings.
 - 357 - Dodobold (`dodobold`) - A dodo-kobold hybrid with a stout beak, little tool belt, and plateau scavenger charm.
 - 358 - Squirricerat (`squirricerat`) - A horned squirrel with a tiny ceratops frill, nut-hoarding cheeks, and sturdy little claws.
 - 359 - Reeffin (`reeffin`) - A reef fish or dolphin creature with coral-like fins, bright tropical markings, and sleek aquatic motion.
