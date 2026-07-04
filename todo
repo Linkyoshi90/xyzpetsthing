@@ -1,20 +1,3 @@
-1. breeding
-	1.1. Incest (Table edit: Mother and Father)
-		1.1.1. Massive defects after second generation
-		1.1.2. Trait fixation (targeted breeding)
-		1.1.3. Stat synergy
-		1.1.4. Pure bloodline (+50% Int)
-	1.2. Abilities
-2. battle system
-	2.1. Pokémon style effectiveness (a bit simpler, based on Chinese elements)
-	2.2. Random battles
-	2.3. Arena
-	2.4. PvP against friends
-	2.5. Leaderboards?
-3. pet interactions in petting screen
-	3.1. petting (zoom, holding the mouse button)
-	3.2. playing (frisbee, cat toy, etc)
-	3.3. reading
 4. deeper health system
 	4.1. more varied healing items
 	4.2. effects of healing items
@@ -29,11 +12,10 @@
 	6.3. At least one adventure per country
 	6.4. Secret events that let the player unlock map parts
 		6.4.2. Tomb of Xyz Pharaoh (Kemet)
-		6.4.3. Incest hillbilly county (URB)
 		6.4.4. Island of topless cucumber farmers (Mesopotamia)
 		6.4.5. Dracula's Castle (Rodinian Tsardom)
 		6.4.6. Fairy cloud (Rheinland)
-		6.4.7. Wild west (Not URB, the other one... The native american one)
+		6.4.7. Wild west (STAP)
 		6.4.8. El Dorado (Aztecs)
 		6.4.9. Abandoned school (Yamanokubo)
 		6.4.10. Abandoned cabaret district (China)
@@ -41,8 +23,6 @@
 	7.1. Rail shooter
 	7.2. Fruit gathering (fruit falls from tree, basket catches them, bombs fall too)
 	7.3. Minigolf (9 holes)
-	7.4. Flappy Bird
-	7.5. Autoscroll avoid walls game
 	7.6. More puzzle games
 	7.7. Wordle
 	7.8. Angry Birds
