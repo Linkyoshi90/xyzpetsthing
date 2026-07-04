@@ -13,13 +13,13 @@
 ## Summary
 
 - Items missing resolvable graphics: 0 of 339
-- Creatures missing any graphics: 38 of 209
-- Missing default-color creature graphics: 317 of 1045
-  - Purple: 69 of 209
-  - Red: 70 of 209
-  - Blue: 40 of 209
-  - Green: 68 of 209
-  - Yellow: 70 of 209
+- Creatures missing any graphics: 2 of 209
+- Missing default-color creature graphics: 278 of 1045
+  - Purple: 68 of 209
+  - Red: 69 of 209
+  - Blue: 5 of 209
+  - Green: 67 of 209
+  - Yellow: 69 of 209
 
 ## Items Missing Graphics
 
@@ -27,50 +27,14 @@
 
 ## Creatures Missing Any Graphics
 
-- 357 - Dodobold (`dodobold`)
-- 358 - Squirricerat (`squirricerat`)
-- 359 - Reeffin (`reeffin`)
-- 360 - Mantarrow (`mantarrow`)
-- 361 - Nenekea (`nenekea`)
-- 362 - Cocoskink (`cocoskink`)
-- 363 - Frondbat (`frondbat`)
-- 364 - Talosling (`talosling`)
-- 365 - Aegis Boar (`aegis_boar`)
-- 366 - Tarnhelm (`tarnhelm`)
-- 367 - Bellmare (`bellmare`)
-- 368 - Reliquary Dove (`reliquary_dove`)
-- 369 - Iron Kobold (`iron_kobold`)
-- 370 - Koschei Chain (`koschei_chain`)
-- 371 - Tin Jack (`tin_jack`)
 - 372 - Peacepipe Bison (`peacepipe_bison`)
-- 373 - Bronzejaw Ox (`bronzejaw_ox`)
-- 374 - Ark Seraph (`ark_seraph`)
-- 375 - Scarabronze (`scarabronze`)
-- 376 - Aurorantler (`aurorantler`)
-- 377 - Mirror Crane (`mirror_crane`)
-- 378 - Sword Koi (`sword_koi`)
-- 379 - Temple Mantis (`temple_mantis`)
-- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound`)
-- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent`)
-- 382 - Censer Lion (`censer_lion`)
-- 383 - Date Palm Beetle (`date_palm_beetle`)
-- 384 - Conch Mail Turtle (`conch_mail_turtle`)
-- 385 - Ironbeak (`ironbeak`)
-- 386 - Tin Squirrel (`tin_squirrel`)
-- 387 - Anvil Tortoise (`anvil_tortoise`)
-- 388 - Needlehog (`needlehog`)
-- 389 - Mailtoad (`mailtoad`)
-- 390 - Sawfin (`sawfin`)
-- 391 - Brasshorn Ram (`brasshorn_ram`)
-- 392 - Coin Magpie (`coin_magpie`)
-- 393 - Rust Otter (`rust_otter`)
 - 394 - Halberelk (`halberelk`)
 
 ## Missing Default-Color Creature Graphics
 
 Each entry names the exact missing basename; any supported image extension can satisfy it.
 
-### Purple (69)
+### Purple (68)
 
 - 312 - Meloncollie (`meloncollie_f_purple.*`)
 - 322 - Gribboar (`gribboar_f_purple.*`)
@@ -139,10 +103,9 @@ Each entry names the exact missing basename; any supported image extension can s
 - 390 - Sawfin (`sawfin_f_purple.*`)
 - 391 - Brasshorn Ram (`brasshorn_ram_f_purple.*`)
 - 392 - Coin Magpie (`coin_magpie_f_purple.*`)
-- 393 - Rust Otter (`rust_otter_f_purple.*`)
 - 394 - Halberelk (`halberelk_f_purple.*`)
 
-### Red (70)
+### Red (69)
 
 - 289 - Kachina (`kachina_f_red.*`)
 - 312 - Meloncollie (`meloncollie_f_red.*`)
@@ -212,53 +175,17 @@ Each entry names the exact missing basename; any supported image extension can s
 - 390 - Sawfin (`sawfin_f_red.*`)
 - 391 - Brasshorn Ram (`brasshorn_ram_f_red.*`)
 - 392 - Coin Magpie (`coin_magpie_f_red.*`)
-- 393 - Rust Otter (`rust_otter_f_red.*`)
 - 394 - Halberelk (`halberelk_f_red.*`)
 
-### Blue (40)
+### Blue (5)
 
 - 312 - Meloncollie (`meloncollie_f_blue.*`)
 - 328 - Bambadger (`bambadger_f_blue.*`)
-- 357 - Dodobold (`dodobold_f_blue.*`)
-- 358 - Squirricerat (`squirricerat_f_blue.*`)
-- 359 - Reeffin (`reeffin_f_blue.*`)
-- 360 - Mantarrow (`mantarrow_f_blue.*`)
-- 361 - Nenekea (`nenekea_f_blue.*`)
-- 362 - Cocoskink (`cocoskink_f_blue.*`)
-- 363 - Frondbat (`frondbat_f_blue.*`)
-- 364 - Talosling (`talosling_f_blue.*`)
-- 365 - Aegis Boar (`aegis_boar_f_blue.*`)
-- 366 - Tarnhelm (`tarnhelm_f_blue.*`)
-- 367 - Bellmare (`bellmare_f_blue.*`)
-- 368 - Reliquary Dove (`reliquary_dove_f_blue.*`)
-- 369 - Iron Kobold (`iron_kobold_f_blue.*`)
-- 370 - Koschei Chain (`koschei_chain_f_blue.*`)
-- 371 - Tin Jack (`tin_jack_f_blue.*`)
 - 372 - Peacepipe Bison (`peacepipe_bison_f_blue.*`)
-- 373 - Bronzejaw Ox (`bronzejaw_ox_f_blue.*`)
 - 374 - Ark Seraph (`ark_seraph_f_blue.*`)
-- 375 - Scarabronze (`scarabronze_f_blue.*`)
-- 376 - Aurorantler (`aurorantler_f_blue.*`)
-- 377 - Mirror Crane (`mirror_crane_f_blue.*`)
-- 378 - Sword Koi (`sword_koi_f_blue.*`)
-- 379 - Temple Mantis (`temple_mantis_f_blue.*`)
-- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound_f_blue.*`)
-- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent_f_blue.*`)
-- 382 - Censer Lion (`censer_lion_f_blue.*`)
-- 383 - Date Palm Beetle (`date_palm_beetle_f_blue.*`)
-- 384 - Conch Mail Turtle (`conch_mail_turtle_f_blue.*`)
-- 385 - Ironbeak (`ironbeak_f_blue.*`)
-- 386 - Tin Squirrel (`tin_squirrel_f_blue.*`)
-- 387 - Anvil Tortoise (`anvil_tortoise_f_blue.*`)
-- 388 - Needlehog (`needlehog_f_blue.*`)
-- 389 - Mailtoad (`mailtoad_f_blue.*`)
-- 390 - Sawfin (`sawfin_f_blue.*`)
-- 391 - Brasshorn Ram (`brasshorn_ram_f_blue.*`)
-- 392 - Coin Magpie (`coin_magpie_f_blue.*`)
-- 393 - Rust Otter (`rust_otter_f_blue.*`)
 - 394 - Halberelk (`halberelk_f_blue.*`)
 
-### Green (68)
+### Green (67)
 
 - 289 - Kachina (`kachina_f_green.*`)
 - 322 - Gribboar (`gribboar_f_green.*`)
@@ -326,10 +253,9 @@ Each entry names the exact missing basename; any supported image extension can s
 - 390 - Sawfin (`sawfin_f_green.*`)
 - 391 - Brasshorn Ram (`brasshorn_ram_f_green.*`)
 - 392 - Coin Magpie (`coin_magpie_f_green.*`)
-- 393 - Rust Otter (`rust_otter_f_green.*`)
 - 394 - Halberelk (`halberelk_f_green.*`)
 
-### Yellow (70)
+### Yellow (69)
 
 - 289 - Kachina (`kachina_f_yellow.*`)
 - 312 - Meloncollie (`meloncollie_f_yellow.*`)
@@ -399,48 +325,11 @@ Each entry names the exact missing basename; any supported image extension can s
 - 390 - Sawfin (`sawfin_f_yellow.*`)
 - 391 - Brasshorn Ram (`brasshorn_ram_f_yellow.*`)
 - 392 - Coin Magpie (`coin_magpie_f_yellow.*`)
-- 393 - Rust Otter (`rust_otter_f_yellow.*`)
 - 394 - Halberelk (`halberelk_f_yellow.*`)
 
 ## Creature Art Descriptions
 
 These existing art-direction notes are retained only for creatures still missing all graphics.
 
-- 357 - Dodobold (`dodobold`) - A dodo-kobold hybrid with a stout beak, little tool belt, and plateau scavenger charm.
-- 358 - Squirricerat (`squirricerat`) - A horned squirrel with a tiny ceratops frill, nut-hoarding cheeks, and sturdy little claws.
-- 359 - Reeffin (`reeffin`) - A reef fish or dolphin creature with coral-like fins, bright tropical markings, and sleek aquatic motion.
-- 360 - Mantarrow (`mantarrow`) - A manta ray with an arrowhead body shape, long trailing tail, and gliding Pelagora silhouette.
-- 361 - Nenekea (`nenekea`) - A bright island bird blending goose and parrot traits, with a hooked beak and spice-market colors.
-- 362 - Cocoskink (`cocoskink`) - A skink with coconut-shell armor, glossy scales, and a low sunning posture.
-- 363 - Frondbat (`frondbat`) - A bat with palm-frond wings, fruit-dark fur, and a quick darting tropical profile.
-- 364 - Talosling (`talosling`) - A small bronze automaton inspired by Talos, with riveted limbs and a warm inner glow.
-- 365 - Aegis Boar (`aegis_boar`) - A heavily armored boar with shield-like shoulder plates, bronze tusk guards, and a defensive charge pose.
-- 366 - Tarnhelm (`tarnhelm`) - A helmeted Nornheim tarn spirit with lake-dark metal, misty eye slits, and mirrored water highlights.
-- 367 - Bellmare (`bellmare`) - A ghostly mare with bell harnesses, pale mane ribbons, and a solemn Bretonreach folklore mood.
-- 368 - Reliquary Dove (`reliquary_dove`) - A dove with a gold reliquary breastplate, white wings, and sacred Rheinland church ornament.
-- 369 - Iron Kobold (`iron_kobold`) - A compact kobold in riveted iron armor, carrying miner or smith tools and a stubborn stance.
-- 370 - Koschei Chain (`koschei_chain`) - A chain-bound skeletal charm creature with iron links, old magic, and Rodinian winter colors.
-- 371 - Tin Jack (`tin_jack`) - A tin toy jack-in-the-box creature with spring limbs, painted panels, and a playful Borealian oddness.
 - 372 - Peacepipe Bison (`peacepipe_bison`) - A ceremonial bison with pipe-smoke motifs, beadwork bands, and a calm protective mass.
-- 373 - Bronzejaw Ox (`bronzejaw_ox`) - An ox with a bronze jawplate, heavy shoulders, and engraved Hammurabian metalwork.
-- 374 - Ark Seraph (`ark_seraph`) - A winged ark guardian with gold trim, folded cherub-like wings, and a solemn covenant presence.
-- 375 - Scarabronze (`scarabronze`) - A bronze scarab beetle with engraved shell plates, turquoise insets, and compact guardian energy.
-- 376 - Aurorantler (`aurorantler`) - A caribou or deer whose antlers glow like aurora ribbons over pale winter fur.
-- 377 - Mirror Crane (`mirror_crane`) - A crane with reflective feathers, lacquered red accents, and a poised water-garden stance.
-- 378 - Sword Koi (`sword_koi`) - A koi with blade-like fins, polished scales, and a disciplined duelist's motion.
-- 379 - Temple Mantis (`temple_mantis`) - A mantis with temple-guardian posture, carved-stone forearms, and saffron-green markings.
-- 380 - Obsidian Macuahuitl Hound (`obsidian_macuahuitl_hound`) - A black stone war hound with blade-edged back plates and bright volcanic eyes.
-- 381 - Turquoise Scale Serpent (`turquoise_scale_serpent`) - A serpent covered in turquoise mosaic scales, with jade eyes and a coiled temple-guardian stance.
-- 382 - Censer Lion (`censer_lion`) - A lion with an incense-smoke mane, brass censer ornaments, and a dignified desert shrine profile.
-- 383 - Date Palm Beetle (`date_palm_beetle`) - A beetle with palm-frond shell ridges, date-cluster markings, and glossy rainforest-brown armor.
-- 384 - Conch Mail Turtle (`conch_mail_turtle`) - A turtle armored in conch-shell mail, with coral trim and slow Pelagora guardian weight.
-- 385 - Ironbeak (`ironbeak`) - A strong Red Sun bird with an iron beak, dark metal casque, and bold red field markings.
-- 386 - Tin Squirrel (`tin_squirrel`) - A tinplate squirrel with a pinecone tail, tiny rivets, and quick mechanical paws.
-- 387 - Anvil Tortoise (`anvil_tortoise`) - A tortoise with an anvil-shaped shell, forge-dark skin, and a low immovable stance.
-- 388 - Needlehog (`needlehog`) - A hedgehog with sewing-needle quills, patchwork cloth accents, and a careful defensive curl.
-- 389 - Mailtoad (`mailtoad`) - A toad with chainmail-like warts, heavy throat pouch, and a squat armored guard pose.
-- 390 - Sawfin (`sawfin`) - A Pelagora fish or shark with a saw-blade dorsal fin, armored snout, and decisive cutting silhouette.
-- 391 - Brasshorn Ram (`brasshorn_ram`) - A Bretonreach ram with polished brass spiral horns, woolly bulk, and bell-metal ornament.
-- 392 - Coin Magpie (`coin_magpie`) - A magpie with coin-bright wing speckles, a collector's stare, and small shiny trinkets tucked in its feathers.
-- 393 - Rust Otter (`rust_otter`) - A river otter with oxidized metal patches, tool-user paws, and Rodinian dockyard colors.
 - 394 - Halberelk (`halberelk`) - An elk with halberd-shaped antlers, winter hide, and a dignified Sila Council sentinel pose.

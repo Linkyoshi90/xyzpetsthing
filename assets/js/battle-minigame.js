@@ -28,6 +28,8 @@
     moves: Array.isArray(pet.moves) ? pet.moves.map((move) => ({ ...move })) : [],
     ability: pet.ability ? JSON.parse(JSON.stringify(pet.ability)) : null,
     abilityRuntime: { used: Object.create(null) },
+    stages: { attack: 0, defense: 0, speed: 0, accuracy: 0 },
+    status: null,
     fainted: false,
   }));
 
@@ -95,7 +97,7 @@
   };
   const firstLivingIndex = (team) => team.findIndex((creature) => creature.hp > 0);
   const currencyLabel = typeof data.currencyLabel === 'string' && data.currencyLabel ? data.currencyLabel : 'Dosh';
-  const fallbackMove = { id: 0, key: 'tackle', name: 'Tackle', category: 'physical', contact: true, power: 40, elementId: 1, elementName: 'Vulgaris' };
+  const fallbackMove = { id: 0, key: 'tackle', name: 'Tackle', category: 'physical', contact: true, power: 40, elementId: 1, elementName: 'Vulgaris', accuracy: 100, effect: null, effectChance: 0 };
   const isWildBattle = data.battleKind === 'wild';
   const battlePostUrl = window.location.href;
 
@@ -125,6 +127,209 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  const statusInfo = {
+    poison: { label: 'PSN', displayName: 'Poison', adjective: 'poisoned', color: '#a855f7', inflictMsg: '{name} was poisoned!' },
+    venom: { label: 'VNM', displayName: 'Venom', adjective: 'envenomed', color: '#7c3aed', inflictMsg: '{name} was injected with venom!' },
+    burn: { label: 'BRN', displayName: 'Burn', adjective: 'burned', color: '#f97316', inflictMsg: '{name} was burned!' },
+    paralysis: { label: 'PAR', displayName: 'Paralysis', adjective: 'paralyzed', color: '#eab308', inflictMsg: '{name} is paralyzed! It may be unable to move!' },
+    freeze: { label: 'FRZ', displayName: 'Freeze', adjective: 'frozen', color: '#38bdf8', inflictMsg: '{name} was frozen solid!' },
+    sleep: { label: 'SLP', displayName: 'Sleep', adjective: 'asleep', color: '#94a3b8', inflictMsg: '{name} fell asleep!' },
+    rage: { label: 'RGE', displayName: 'Rage', adjective: 'enraged', color: '#ef4444', inflictMsg: '{name} flew into a rage!' },
+  };
+
+  const statLabels = { attack: 'Attack', defense: 'Defense', speed: 'Speed', accuracy: 'accuracy' };
+
+  const ailmentAliases = {
+    poison: 'poison',
+    venom: 'venom',
+    burn: 'burn',
+    paralyze: 'paralysis',
+    paralysis: 'paralysis',
+    freeze: 'freeze',
+    sleep: 'sleep',
+    rage: 'rage',
+  };
+
+  function creatureStages(creature) {
+    if (!creature.stages || typeof creature.stages !== 'object') {
+      creature.stages = { attack: 0, defense: 0, speed: 0, accuracy: 0 };
+    }
+    return creature.stages;
+  }
+
+  // Parses the moves.effect_key column into an actionable effect. Supported:
+  // "curse", "<atk|def|spd|acc>_<up|down>_<stages>", and ailment names with an
+  // optional legacy "_<percent>" suffix ("burn_10"). Chance comes from
+  // effect_chance_percent; keys this build cannot act on return null.
+  function parseMoveEffect(move) {
+    const raw = String((move && move.effect) || '').trim().toLowerCase();
+    if (!raw) {
+      return null;
+    }
+
+    const chance = clamp(Number(move.effectChance || 0) || 100, 1, 100);
+    if (raw === 'curse') {
+      return {
+        kind: 'stages',
+        target: 'self',
+        chance,
+        changes: [
+          { stat: 'attack', delta: 1 },
+          { stat: 'defense', delta: 1 },
+          { stat: 'speed', delta: -1 },
+        ],
+      };
+    }
+
+    const statMatch = raw.match(/^(atk|attack|def|defense|spd|speed|init|acc|accuracy)_(up|down)_(\d+)$/);
+    if (statMatch) {
+      const statNames = {
+        atk: 'attack', attack: 'attack',
+        def: 'defense', defense: 'defense',
+        spd: 'speed', speed: 'speed', init: 'speed',
+        acc: 'accuracy', accuracy: 'accuracy',
+      };
+      // Legacy keys encode the proc chance here ("speed_down_10"): anything
+      // above 2 is not a stage count, so fall back to a single stage.
+      const digits = Number(statMatch[3]);
+      const magnitude = digits >= 1 && digits <= 2 ? digits : 1;
+      return {
+        kind: 'stages',
+        target: statMatch[2] === 'down' ? 'enemy' : 'self',
+        chance,
+        changes: [{ stat: statNames[statMatch[1]], delta: statMatch[2] === 'down' ? -magnitude : magnitude }],
+      };
+    }
+
+    const ailment = ailmentAliases[raw.replace(/_\d+$/, '')];
+    if (ailment) {
+      return { kind: 'ailment', target: 'enemy', chance, ailment };
+    }
+
+    return null;
+  }
+
+  function isStatusMove(move) {
+    return String((move && move.category) || '') === 'status' || Number((move && move.power) || 0) <= 0;
+  }
+
+  function stageMultiplier(stage) {
+    return stage >= 0 ? (2 + stage) / 2 : 2 / (2 - stage);
+  }
+
+  function accuracyStageMultiplier(stage) {
+    return stage >= 0 ? (3 + stage) / 3 : 3 / (3 - stage);
+  }
+
+  // Battle-only view of a stat: base value scaled by stat stages plus status
+  // modifiers. The underlying creature stats are never mutated, so nothing
+  // here can leak out of the battle.
+  function effectiveStat(creature, stat) {
+    if (!creature) {
+      return 0;
+    }
+
+    let value = Number(creature[stat] || 0) * stageMultiplier(Number(creatureStages(creature)[stat] || 0));
+    const status = creature.status ? creature.status.key : null;
+    if (stat === 'attack' && status === 'burn') {
+      value *= 0.5;
+    }
+    if (stat === 'attack' && status === 'rage') {
+      value *= 1.5;
+    }
+    if (stat === 'speed' && status === 'paralysis') {
+      value *= 0.75;
+    }
+
+    return Math.max(1, Math.round(value));
+  }
+
+  function moveAccuracyFor(attacker, move) {
+    const base = Number(move && move.accuracy) > 0 ? Number(move.accuracy) : 100;
+    let chance = base * accuracyStageMultiplier(Number(creatureStages(attacker).accuracy || 0));
+    if (attacker.status && attacker.status.key === 'rage') {
+      chance *= 0.5;
+    }
+    return clamp(chance, 5, 100);
+  }
+
+  function applyStatStages(creature, changes) {
+    const messages = [];
+    const stages = creatureStages(creature);
+    changes.forEach(({ stat, delta }) => {
+      const before = Number(stages[stat] || 0);
+      const after = clamp(before + delta, -6, 6);
+      stages[stat] = after;
+      const label = statLabels[stat] || stat;
+      if (after === before) {
+        messages.push(`${creature.name}'s ${label} can't go any ${delta > 0 ? 'higher' : 'lower'}!`);
+      } else {
+        messages.push(`${creature.name}'s ${label} ${delta > 0 ? 'rose' : 'fell'}${Math.abs(after - before) >= 2 ? ' sharply' : ''}!`);
+      }
+    });
+    return messages;
+  }
+
+  function describeMoveEffect(move) {
+    const effect = parseMoveEffect(move);
+    if (!effect) {
+      return '';
+    }
+
+    if (effect.kind === 'ailment') {
+      const name = statusInfo[effect.ailment].displayName;
+      return effect.chance >= 100 ? `Inflicts ${name}.` : `${Math.round(effect.chance)}% chance to inflict ${name}.`;
+    }
+
+    const parts = effect.changes.map(({ stat, delta }) => `${statLabels[stat] || stat} ${delta > 0 ? '+' : ''}${delta}`);
+    return `${effect.target === 'self' ? 'User' : 'Target'}: ${parts.join(', ')}.`;
+  }
+
+  function ensureStatusBadge(side) {
+    const levelEl = side === 'player' ? el.playerLevel : el.npcLevel;
+    let badge = levelEl.parentElement.querySelector('.battle-status-tag');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'battle-status-tag';
+      Object.assign(badge.style, {
+        marginLeft: '8px',
+        padding: '1px 7px',
+        borderRadius: '999px',
+        fontSize: '11px',
+        fontWeight: '700',
+        letterSpacing: '0.08em',
+        display: 'none',
+        color: '#0b1120',
+      });
+      levelEl.parentElement.appendChild(badge);
+    }
+    return badge;
+  }
+
+  function updateStatusBadge(side, creature) {
+    const badge = ensureStatusBadge(side);
+    const key = creature && creature.status ? creature.status.key : null;
+    if (!key || creature.hp <= 0) {
+      badge.style.display = 'none';
+      return;
+    }
+    badge.textContent = statusInfo[key].label;
+    badge.style.background = statusInfo[key].color;
+    badge.style.display = 'inline-block';
+  }
+
+  // Stat stages and rage do not survive leaving the field; persistent
+  // ailments (poison, burn, sleep, ...) stay on the creature.
+  function resetVolatileState(creature) {
+    if (!creature) {
+      return;
+    }
+    creature.stages = { attack: 0, defense: 0, speed: 0, accuracy: 0 };
+    if (creature.status && creature.status.key === 'rage') {
+      creature.status = null;
+    }
   }
 
   function setTurnIndicator(text) {
@@ -423,10 +628,19 @@
     `;
   }
 
+  function statWithStage(creature, stat) {
+    const effective = effectiveStat(creature, stat);
+    const base = Number(creature[stat] || 0);
+    if (effective === base) {
+      return String(base);
+    }
+    return `${effective} <span class="battle-feed-label">(${base})</span>`;
+  }
+
   function creatureDetailHtml(creature, isActive) {
     const moves = Array.isArray(creature.moves) && creature.moves.length
       ? creature.moves.map((move) => `
-          <span class="battle-detail-move">${escapeHtml(move.name)} - ${escapeHtml(move.elementName || 'Neutral')} - ${move.power} power</span>
+          <span class="battle-detail-move">${escapeHtml(move.name)} - ${escapeHtml(move.elementName || 'Neutral')} - ${isStatusMove(move) ? 'Status' : `${move.power} power`}</span>
         `).join('')
       : '<span class="battle-detail-move">No moves assigned</span>';
 
@@ -434,16 +648,21 @@
       ? `<div class="battle-detail-ability"><strong>${escapeHtml(creature.ability.name)}</strong><br>${escapeHtml(creature.ability.description || creature.ability.battle?.summary || '')}</div>`
       : '<div class="battle-detail-ability"><strong>Ability</strong><br>None assigned</div>';
 
+    const status = creature.status
+      ? `<div class="battle-detail-ability"><strong>Status</strong><br>${escapeHtml(statusInfo[creature.status.key].displayName)}</div>`
+      : '';
+
     return `
       <h3 class="battle-detail-title">${escapeHtml(creature.name)}${isActive ? ' <span class="battle-feed-label">Active</span>' : ''}</h3>
       <p class="battle-detail-empty">${escapeHtml(creature.species || 'Creature')} - ${escapeHtml((creature.elementNames || []).join(' / ') || 'Neutral')}</p>
       <div class="battle-detail-stats">
         <div class="battle-detail-stat"><strong>HP</strong><br>${creature.hp}/${creature.maxHp}</div>
-        <div class="battle-detail-stat"><strong>Attack</strong><br>${creature.attack}</div>
-        <div class="battle-detail-stat"><strong>Defense</strong><br>${creature.defense}</div>
-        <div class="battle-detail-stat"><strong>Speed</strong><br>${creature.speed}</div>
+        <div class="battle-detail-stat"><strong>Attack</strong><br>${statWithStage(creature, 'attack')}</div>
+        <div class="battle-detail-stat"><strong>Defense</strong><br>${statWithStage(creature, 'defense')}</div>
+        <div class="battle-detail-stat"><strong>Speed</strong><br>${statWithStage(creature, 'speed')}</div>
       </div>
       <div class="battle-detail-moves">${moves}</div>
+      ${status}
       ${ability}
     `;
   }
@@ -451,17 +670,20 @@
   function moveDetailHtml(move) {
     const player = currentPlayer();
     const npc = currentNpc();
-    const breakdown = npc ? calculateDamage(move, npc, player, true) : { totalDamage: move.power, summary: '' };
+    const statusMove = isStatusMove(move);
+    const breakdown = !statusMove && npc ? calculateDamage(move, npc, player, true) : { totalDamage: statusMove ? 0 : move.power, summary: '' };
+    const effectText = describeMoveEffect(move);
 
     return `
       <h3 class="battle-detail-title">${escapeHtml(move.name)}</h3>
       <p class="battle-detail-empty">
-        ${escapeHtml(move.elementName || 'Neutral')} move. Base power ${move.power}.
+        ${escapeHtml(move.elementName || 'Neutral')} ${statusMove ? 'status move.' : `move. Base power ${move.power}.`}
+        ${effectText ? escapeHtml(effectText) : ''}
         ${breakdown.summary ? escapeHtml(breakdown.summary) : ''}
       </p>
       <div class="battle-detail-stats">
-        <div class="battle-detail-stat"><strong>Projected damage</strong><br>${breakdown.totalDamage}</div>
-        <div class="battle-detail-stat"><strong>Your speed</strong><br>${player ? player.speed : 0}</div>
+        <div class="battle-detail-stat"><strong>Projected damage</strong><br>${statusMove ? '—' : breakdown.totalDamage}</div>
+        <div class="battle-detail-stat"><strong>Your speed</strong><br>${player ? effectiveStat(player, 'speed') : 0}</div>
       </div>
     `;
   }
@@ -544,6 +766,8 @@
     syncCreatureCard('npc', npc);
     updateHpDisplay('player', player, false);
     updateHpDisplay('npc', npc, false);
+    updateStatusBadge('player', player);
+    updateStatusBadge('npc', npc);
   }
 
   function playSummon(side) {
@@ -601,8 +825,8 @@
       applied.push(1);
     }
 
-    const attackContribution = Math.round(Number(attacker?.attack || 0) * 0.5);
-    const baseDamage = Math.max(0, Math.round(scaled + attackContribution - target.defense));
+    const attackContribution = Math.round((attacker ? effectiveStat(attacker, 'attack') : 0) * 0.5);
+    const baseDamage = Math.max(0, Math.round(scaled + attackContribution - effectiveStat(target, 'defense')));
     const abilityResult = abilityEngine.modifyDamage({
       attacker,
       target,
@@ -631,19 +855,139 @@
     return moves[Math.floor(Math.random() * moves.length)] || fallbackMove;
   }
 
+  // Returns true when the attacker's status stopped it from acting this turn.
+  async function statusPreventsAction(attacker, attackerSide) {
+    const status = attacker.status;
+    if (!status) {
+      return false;
+    }
+
+    if (status.key === 'paralysis') {
+      if (Math.random() * 100 < 25) {
+        setTurnIndicator(`${attacker.name} is paralyzed`);
+        showAnnouncer(`${attacker.name} can't move!`);
+        addLog(`${attacker.name} is paralyzed and can't move!`);
+        await wait(420);
+        return true;
+      }
+      return false;
+    }
+
+    if (status.key === 'freeze') {
+      if (Math.random() * 100 < status.recoverChance) {
+        attacker.status = null;
+        updateStatusBadge(attackerSide, attacker);
+        addLog(`${attacker.name} thawed out!`);
+        return false;
+      }
+      status.recoverChance += 10;
+      setTurnIndicator(`${attacker.name} is frozen`);
+      showAnnouncer(`${attacker.name} is frozen solid!`);
+      addLog(`${attacker.name} is frozen solid and can't move!`);
+      await wait(420);
+      return true;
+    }
+
+    if (status.key === 'sleep') {
+      if (Math.random() * 100 < status.recoverChance) {
+        attacker.status = null;
+        updateStatusBadge(attackerSide, attacker);
+        addLog(`${attacker.name} woke up!`);
+        return false;
+      }
+      status.recoverChance += 10;
+      setTurnIndicator(`${attacker.name} is asleep`);
+      addLog(`${attacker.name} is fast asleep.`);
+      const healing = Math.min(
+        Math.max(0, attacker.maxHp - attacker.hp),
+        Math.max(1, Math.round(attacker.maxHp * 0.05))
+      );
+      if (healing > 0) {
+        attacker.hp += healing;
+        if (attackerSide === 'player') {
+          markPlayerHpChanged();
+          queuePlayerHpSync();
+        }
+        addLog(`${attacker.name} recovers ${healing} HP in its sleep.`);
+        spawnNumber(attackerSide, healing, 'heal');
+        await updateHpDisplay(attackerSide, attacker, true);
+      }
+      await wait(300);
+      return true;
+    }
+
+    return false;
+  }
+
+  async function applyMoveEffect(attacker, target, effect, attackerSide, targetSide, verbose) {
+    const recipient = effect.target === 'self' ? attacker : target;
+    const recipientSide = effect.target === 'self' ? attackerSide : targetSide;
+    if (!recipient || recipient.hp <= 0) {
+      return false;
+    }
+
+    if (effect.kind === 'stages') {
+      applyStatStages(recipient, effect.changes).forEach((message) => addLog(message));
+      await wait(260);
+      return true;
+    }
+
+    if (effect.kind === 'ailment') {
+      if (recipient.status) {
+        if (verbose) {
+          addLog(`${recipient.name} is already ${statusInfo[recipient.status.key].adjective}.`);
+        }
+        return false;
+      }
+      recipient.status = { key: effect.ailment, recoverChance: 10 };
+      updateStatusBadge(recipientSide, recipient);
+      addLog(statusInfo[effect.ailment].inflictMsg.replace('{name}', recipient.name));
+      await wait(260);
+      return true;
+    }
+
+    return false;
+  }
+
   async function performAttack(attacker, target, move, attackerSide) {
     const attackerEl = attackerSide === 'player' ? el.player : el.npc;
     const targetSide = attackerSide === 'player' ? 'npc' : 'player';
     const targetEl = targetSide === 'player' ? el.player : el.npc;
 
+    if (await statusPreventsAction(attacker, attackerSide)) {
+      return false;
+    }
+
     setTurnIndicator(`${attacker.name} attacks`);
     showAnnouncer(`${attacker.name} uses ${move.name}`);
     addLog(`${attacker.name} used ${move.name}.`);
+
+    const effect = parseMoveEffect(move);
+    const selfTargeted = isStatusMove(move) && effect && effect.target === 'self';
+
+    if (!selfTargeted && Math.random() * 100 >= moveAccuracyFor(attacker, move)) {
+      attackerEl.classList.add('is-acting');
+      await wait(220);
+      attackerEl.classList.remove('is-acting');
+      addLog(`${attacker.name}'s attack missed!`);
+      await wait(260);
+      return false;
+    }
 
     attackerEl.classList.add('is-acting');
     await wait(110);
     await playAttackAnimation(attackerSide, targetSide, move);
     attackerEl.classList.remove('is-acting');
+
+    if (isStatusMove(move)) {
+      const applied = effect
+        ? await applyMoveEffect(attacker, target, effect, attackerSide, targetSide, true)
+        : false;
+      if (!applied) {
+        addLog('But it failed!');
+      }
+      return false;
+    }
 
     const result = calculateDamage(move, target, attacker, false);
     (result.abilityMessages || []).forEach((message) => addLog(message));
@@ -684,11 +1028,21 @@
       addLog(result.summary);
     }
 
+    // Burning moves loosen the ice: +50% thaw rate.
+    if (target.status && target.status.key === 'freeze' && Number(move.elementId) === 2 && target.hp > 0) {
+      target.status.recoverChance += 50;
+      addLog(`The heat softens the ice around ${target.name}!`);
+    }
+
     if (target.hp <= 0) {
       target.fainted = true;
       addLog(`${target.name} dropped to 0 HP.`);
       await handleFaint(targetSide);
       return true;
+    }
+
+    if (effect && Math.random() * 100 < effect.chance) {
+      await applyMoveEffect(attacker, target, effect, attackerSide, targetSide, false);
     }
 
     return false;
@@ -856,7 +1210,7 @@
       options: [
         ...moves.slice(0, 4).map((move) => menuOption(
           move.name,
-          `${move.elementName || 'Neutral'} - ${move.power} power`,
+          `${move.elementName || 'Neutral'} - ${isStatusMove(move) ? (describeMoveEffect(move) || 'Status') : `${move.power} power`}`,
           () => resolveRound(move),
           { onFocus: () => setDetail(moveDetailHtml(move)) }
         )),
@@ -1137,6 +1491,10 @@
       await performAttack(currentNpc(), target, npcMove, 'npc');
     }
 
+    if (!state.battleEnded && !state.forceSwitch) {
+      await endOfRoundPhase();
+    }
+
     if (!state.battleEnded && !state.forceSwitch && currentPlayer() && currentPlayer().hp > 0 && currentNpc() && currentNpc().hp > 0) {
       renderRootMenu();
     }
@@ -1152,6 +1510,7 @@
 
     state.locked = true;
     state.forceSwitch = false;
+    resetVolatileState(currentPlayer());
     state.playerIndex = index;
     syncField();
     playSummon('player');
@@ -1169,6 +1528,10 @@
       await performAttack(currentNpc(), creature, npcMove, 'npc');
     }
 
+    if (!state.battleEnded && !state.forceSwitch) {
+      await endOfRoundPhase();
+    }
+
     if (!state.battleEnded && currentPlayer() && currentPlayer().hp > 0 && currentNpc() && currentNpc().hp > 0 && !state.forceSwitch) {
       renderRootMenu();
     }
@@ -1176,6 +1539,7 @@
 
   async function handleFaint(side) {
     const host = side === 'player' ? el.player : el.npc;
+    updateStatusBadge(side, side === 'player' ? currentPlayer() : currentNpc());
     host.classList.add('is-fainted');
     await wait(220);
 
@@ -1221,6 +1585,54 @@
     );
   }
 
+  async function applyEndOfTurnStatus(creature, side) {
+    if (!creature || creature.hp <= 0 || !creature.status || state.battleEnded || state.forceSwitch) {
+      return;
+    }
+
+    const key = creature.status.key;
+    let fraction = 0;
+    let floorHp = 0;
+    if (key === 'poison' || key === 'burn') {
+      fraction = 0.125;
+      floorHp = 1; // poison and burn gnaw the creature down to 1 HP, never past it
+    } else if (key === 'venom') {
+      fraction = 0.25; // venom can finish the job
+    } else {
+      return;
+    }
+
+    const damage = Math.max(1, Math.round(creature.maxHp * fraction));
+    const newHp = Math.max(floorHp, creature.hp - damage);
+    const dealt = creature.hp - newHp;
+    if (dealt <= 0) {
+      addLog(`${creature.name} clings on at 1 HP despite the ${statusInfo[key].displayName.toLowerCase()}.`);
+      return;
+    }
+
+    creature.hp = newHp;
+    addLog(key === 'burn'
+      ? `${creature.name} is hurt by its burn!`
+      : `${creature.name} is hurt by ${key === 'venom' ? 'the venom' : 'poison'}!`);
+    if (side === 'player') {
+      markPlayerHpChanged();
+      queuePlayerHpSync();
+    }
+    spawnNumber(side, dealt, '');
+    await updateHpDisplay(side, creature, true);
+
+    if (creature.hp <= 0) {
+      creature.fainted = true;
+      addLog(`${creature.name} dropped to 0 HP.`);
+      await handleFaint(side);
+    }
+  }
+
+  async function endOfRoundPhase() {
+    await applyEndOfTurnStatus(currentPlayer(), 'player');
+    await applyEndOfTurnStatus(currentNpc(), 'npc');
+  }
+
   async function resolveRound(playerMove) {
     const player = currentPlayer();
     const npc = currentNpc();
@@ -1233,7 +1645,7 @@
     const playerPriority = abilityEngine.priorityFor(player, playerMove);
     const npcPriority = abilityEngine.priorityFor(npc, npcMove);
     const playerActsFirst = playerPriority === npcPriority
-      ? player.speed >= npc.speed
+      ? effectiveStat(player, 'speed') >= effectiveStat(npc, 'speed')
       : playerPriority > npcPriority;
     const turnOrder = playerActsFirst
       ? [
@@ -1263,6 +1675,8 @@
         return;
       }
     }
+
+    await endOfRoundPhase();
 
     if (!state.battleEnded && !state.forceSwitch && currentPlayer() && currentPlayer().hp > 0 && currentNpc() && currentNpc().hp > 0) {
       renderRootMenu();

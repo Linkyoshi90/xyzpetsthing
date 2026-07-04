@@ -543,6 +543,27 @@ function battle_team_has_living_pet(array $team): bool {
     return false;
 }
 
+function battle_normalize_move_row(array $row, array $element_lookup): array {
+    $element_id = (int)($row['element_id'] ?? 1);
+    $category = (string)($row['category'] ?? 'physical');
+    $effect_key = trim((string)($row['effect_key'] ?? ''));
+
+    return [
+        'id' => (int)($row['id'] ?? 0),
+        'key' => (string)($row['move_key'] ?? ''),
+        'name' => (string)($row['name'] ?? 'Strike'),
+        'category' => $category,
+        'power' => $category === 'status' ? 0 : max(1, (int)($row['power'] ?? 1)),
+        'elementId' => $element_id,
+        'elementName' => $element_lookup[$element_id] ?? ('Element ' . $element_id),
+        'accuracy' => (float)($row['accuracy_percent'] ?? 100),
+        'priority' => (int)($row['priority'] ?? 0),
+        'contact' => !empty($row['contact']),
+        'effect' => $effect_key !== '' ? $effect_key : null,
+        'effectChance' => (float)($row['effect_chance_percent'] ?? 0),
+    ];
+}
+
 function battle_load_attack_pool(array $element_lookup): array {
     $rows = q(
         "SELECT move_id AS id,
@@ -553,7 +574,9 @@ function battle_load_attack_pool(array $element_lookup): array {
                 element_id,
                 accuracy_percent,
                 priority,
-                contact
+                contact,
+                effect_key,
+                effect_chance_percent
            FROM moves
           WHERE power IS NOT NULL
             AND category <> 'status'
@@ -585,21 +608,50 @@ function battle_load_attack_pool(array $element_lookup): array {
         ];
     }
 
-    return array_map(static function (array $row) use ($element_lookup): array {
-        $element_id = (int)($row['element_id'] ?? 1);
-        return [
-            'id' => (int)($row['id'] ?? 0),
-            'key' => (string)($row['move_key'] ?? ''),
-            'name' => (string)($row['name'] ?? 'Strike'),
-            'category' => (string)($row['category'] ?? 'physical'),
-            'power' => max(1, (int)($row['power'] ?? 1)),
-            'elementId' => $element_id,
-            'elementName' => $element_lookup[$element_id] ?? ('Element ' . $element_id),
-            'accuracy' => (float)($row['accuracy_percent'] ?? 100),
-            'priority' => (int)($row['priority'] ?? 0),
-            'contact' => !empty($row['contact']),
-        ];
-    }, $rows);
+    return array_map(static fn(array $row): array => battle_normalize_move_row($row, $element_lookup), $rows);
+}
+
+function battle_load_species_move_map(array $element_lookup): array {
+    try {
+        $rows = q(
+            "SELECT sm.species_id,
+                    m.move_id AS id,
+                    m.move_key,
+                    m.move_name AS name,
+                    m.category,
+                    m.power,
+                    m.element_id,
+                    m.accuracy_percent,
+                    m.priority,
+                    m.contact,
+                    m.effect_key,
+                    m.effect_chance_percent
+               FROM species_moves sm
+               JOIN moves m ON m.move_id = sm.move_id
+              ORDER BY sm.species_id, m.move_id"
+        )->fetchAll(PDO::FETCH_ASSOC);
+    } catch (Throwable $error) {
+        // The species_moves table has not been applied to this database yet.
+        return [];
+    }
+
+    $map = [];
+    foreach ($rows as $row) {
+        $map[(int)$row['species_id']][] = battle_normalize_move_row($row, $element_lookup);
+    }
+
+    return $map;
+}
+
+function battle_reserved_move_ids(array $species_move_map): array {
+    $reserved = [];
+    foreach ($species_move_map as $moves) {
+        foreach ($moves as $move) {
+            $reserved[(int)$move['id']] = true;
+        }
+    }
+
+    return $reserved;
 }
 
 function battle_pick_moves_for_pet(array $pet, array $attack_pool): array {
@@ -646,9 +698,24 @@ function battle_pick_moves_for_pet(array $pet, array $attack_pool): array {
     return $picked ?: array_slice($attack_pool, 0, 4);
 }
 
-function battle_assign_moves(array $team, array $attack_pool): array {
+function battle_assign_moves(array $team, array $attack_pool, array $species_move_map = []): array {
     foreach ($team as &$pet) {
-        $pet['moves'] = battle_pick_moves_for_pet($pet, $attack_pool);
+        // Up to two signature moves from species_moves, rest from the shared pool.
+        $moves = array_slice($species_move_map[(int)($pet['speciesId'] ?? 0)] ?? [], 0, 2);
+        $seen = [];
+        foreach ($moves as $move) {
+            $seen[(int)$move['id']] = true;
+        }
+
+        foreach (battle_pick_moves_for_pet($pet, $attack_pool) as $move) {
+            if (isset($seen[(int)$move['id']]) || count($moves) >= 4) {
+                continue;
+            }
+            $seen[(int)$move['id']] = true;
+            $moves[] = $move;
+        }
+
+        $pet['moves'] = $moves;
     }
     unset($pet);
 
@@ -1218,10 +1285,15 @@ if ($battle_kind === 'wild') {
     $trainer_team = $trainer ? battle_load_trainer_team($trainer['id'], $element_lookup) : [];
 }
 
-$attack_pool = battle_load_attack_pool($element_lookup);
+$species_move_map = battle_load_species_move_map($element_lookup);
+$reserved_move_ids = battle_reserved_move_ids($species_move_map);
+$attack_pool = array_values(array_filter(
+    battle_load_attack_pool($element_lookup),
+    static fn(array $move): bool => !isset($reserved_move_ids[(int)$move['id']])
+));
 $player_team = battle_load_team_for_user($user_id, $element_lookup);
-$player_team = battle_assign_moves($player_team, $attack_pool);
-$trainer_team = battle_assign_moves($trainer_team, $attack_pool);
+$player_team = battle_assign_moves($player_team, $attack_pool, $species_move_map);
+$trainer_team = battle_assign_moves($trainer_team, $attack_pool, $species_move_map);
 $items = battle_load_battle_items($user_id);
 $effectiveness = battle_load_effectiveness();
 $battle_ready = $trainer && battle_team_has_living_pet($player_team) && battle_team_has_living_pet($trainer_team);
