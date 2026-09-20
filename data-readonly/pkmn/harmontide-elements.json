@@ -1,0 +1,131 @@
+{
+    "_help": [
+        "Example of a custom quiz config for the Creature Quiz (index.php?pg=pkmn-quiz).",
+        "Same format as harmontide-gen.json: categories with entries.",
+        "An entry is either a plain string (\"Kraken\") or an object for extras:",
+        "  { \"en\": \"Polar Bear\", \"de\": \"Eisbär\", \"aliases\": [\"bear\"], \"sprite\": \"custom_name\" }",
+        "The file name prefix decides the sprite path: harmontide-* uses images/creatures/,",
+        "any other prefix uses images/games/<prefix>/<en name, lowercased, only a-z0-9>.png (shown at 50x50)."
+    ],
+    "meta": {
+        "title": {
+            "en": "Creatures by Element",
+            "de": "Wesen nach Element"
+        },
+        "languages": [
+            "en",
+            "de"
+        ]
+    },
+    "categories": [
+        {
+            "name": {
+                "en": "Heat",
+                "de": "Heat"
+            },
+            "entries": [
+                "Blaze Cat",
+                "Fire Giant",
+                {
+                    "en": "Jack-o-lantern",
+                    "aliases": ["pumpkin"]
+                },
+                {
+                    "en": "Will-o-Wisp",
+                    "aliases": ["wisp"]
+                }
+            ]
+        },
+        {
+            "name": {
+                "en": "Vai",
+                "de": "Vai"
+            },
+            "entries": [
+                "Adaro",
+                "Bunyip",
+                {
+                    "en": "Dolphin",
+                    "de": "Delfin"
+                },
+                "Kelpie",
+                "Kraken",
+                {
+                    "en": "Sea Turtle",
+                    "de": "Meeresschildkröte"
+                },
+                "Taniwha",
+                "Vodyanoy"
+            ]
+        },
+        {
+            "name": {
+                "en": "Cold",
+                "de": "Cold"
+            },
+            "entries": [
+                "Frost Giant",
+                "Keelut",
+                {
+                    "en": "Penguin",
+                    "de": "Pinguin"
+                },
+                {
+                    "en": "Polar Bear",
+                    "de": "Eisbär"
+                },
+                "Yuki-Onna"
+            ]
+        },
+        {
+            "name": {
+                "en": "Flora",
+                "de": "Flora"
+            },
+            "entries": [
+                "Curupira",
+                "Fernstalker",
+                "Leshy",
+                "Meloncollie",
+                "Waterlil"
+            ]
+        },
+        {
+            "name": {
+                "en": "Ethereal",
+                "de": "Ethereal"
+            },
+            "entries": [
+                "Banshee",
+                "Dullahan",
+                "La Llorona",
+                "Lich",
+                "Min-Min Lights",
+                "Nightmarcher"
+            ]
+        },
+        {
+            "name": {
+                "en": "Vulgaris",
+                "de": "Vulgaris"
+            },
+            "entries": [
+                "Armadillo",
+                {
+                    "en": "Camel",
+                    "de": "Kamel"
+                },
+                "Capybara",
+                {
+                    "en": "Doggo",
+                    "aliases": ["dog"]
+                },
+                {
+                    "en": "Moo",
+                    "aliases": ["cow"]
+                },
+                "Tapir"
+            ]
+        }
+    ]
+}

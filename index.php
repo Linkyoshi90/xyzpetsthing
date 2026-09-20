@@ -19,7 +19,8 @@ $allowed = ['login','register','logout','main','pet','lineage','create_pet','inv
     // Games
     'wheel-of-fate','fruitstack','harmonflap','harmontide-milking-minigame','kid-puzzle','garden-invaderz','runngunner',
     'wanted-alive','blackjack','cups-and-balls','paddle-panic','sudoku',
-    'fishing','minigolf','battle_minigame','drop_game','harmonflap','bombertide',
+    'fishing','minigolf','battle_minigame','drop_game','harmonflap','bombertide','pkmn-quiz',
+    'element-royale',
     // Continents
     'auronia','borealia','dawnmarch','gulfbelt','moana_crown',
     'orienthem','saharene','tundria','uluru','verdania',
@@ -56,7 +57,7 @@ $allowed = ['login','register','logout','main','pet','lineage','create_pet','inv
     'urb_paint_shack','urb-adventure','urb-adventure2','stcr-adventure',
     'xm_paint_shack',
     'ynk_paint_shack','ynk-adventure','ynk-adventure2','ynk-ramen',
-    'yn_paint_shack',
+    'yn_paint_shack','yn-dojo',
     // regional shops
     'bm-market','cc-souq','esd-feather-flint','esl-olive-lamp','fom-lockside-shop',
     'gc-plaza-kiosk','h-ledger-house','ie-canopy-relic','k-bazaar-tent','k-bazaar-goods',
@@ -120,6 +121,11 @@ if($pg === 'battle_minigame' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require __DIR__.'/pages/battle_minigame.php';
   exit;
 }
+if($pg === 'pkmn-quiz' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require_login();
+  require __DIR__.'/pages/pkmn-quiz.php';
+  exit;
+}
 if($pg === 'harmontide-milking-minigame' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/harmontide-milking-minigame.php';
@@ -138,6 +144,10 @@ if($pg === 'aest-shop' && $_SERVER['REQUEST_METHOD'] === 'POST') {
 if($pg === 'aest-emberfen-grill' && $_SERVER['REQUEST_METHOD'] === 'POST') {
   require_login();
   require __DIR__.'/pages/aest-emberfen-grill.php';
+  exit;
+}
+if($pg === 'yn-dojo' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+  require __DIR__.'/pages/yn-dojo.php';
   exit;
 }
 if($pg === 'ynk-ramen' && $_SERVER['REQUEST_METHOD'] === 'POST') {

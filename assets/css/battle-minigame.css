@@ -339,12 +339,26 @@
 }
 
 .battle-element-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   padding: 5px 10px;
   border-radius: 999px;
   background: linear-gradient(135deg, rgba(56, 98, 160, 0.14), rgba(72, 191, 149, 0.16));
   color: #25415d;
   font-size: 0.78rem;
   font-weight: 700;
+}
+
+.element-icon-wrap {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 1px 1px rgba(12, 26, 44, 0.35));
+}
+
+.element-icon {
+  display: block;
 }
 
 .battle-hp-text {
@@ -603,7 +617,9 @@
 }
 
 .battle-option-title {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-weight: 800;
 }
 
@@ -693,6 +709,9 @@
 }
 
 .battle-detail-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 10px;
 }
 

@@ -1048,6 +1048,7 @@ function get_country_map_config(string $slug): ?array {
             'areas' => [
                 ['name' => 'Paint Shack', 'description' => 'Here you can paint your Yara Nations creatures.', 'action' => 'Explore', 'href' => '?pg=yn_paint_shack', 'color' => '#06b6d4', 'points' => country_map_rect_points(250, 500, 250, 170, $w, $h)],
                 ['name' => 'Warraluma Keeping Place Shop', 'description' => 'A respectful market counter for local provisions, craft, and Country-led goods.', 'action' => 'Shop', 'href' => '?pg=yn-keeping-place-shop', 'color' => '#f59e0b', 'points' => country_map_rect_points(690, 360, 280, 175, $w, $h)],
+                ['name' => 'Yara Dojo', 'description' => 'A river-bend training ground where creatures learn and unlearn battle techniques for a fee.', 'action' => 'Train', 'href' => '?pg=yn-dojo', 'color' => '#ef4444', 'points' => country_map_rect_points(1080, 480, 280, 175, $w, $h)],
             ],
         ],
     ];

@@ -29,7 +29,12 @@
     ability: pet.ability ? JSON.parse(JSON.stringify(pet.ability)) : null,
     abilityRuntime: { used: Object.create(null) },
     stages: { attack: 0, defense: 0, speed: 0, accuracy: 0 },
-    status: null,
+    // Persisted ailments arrive as a plain key; keep the list in sync with
+    // battle_status_allowed_keys() in the PHP (rage never persists).
+    status: typeof pet.status === 'string'
+      && ['poison', 'venom', 'burn', 'paralysis', 'freeze', 'sleep'].indexOf(pet.status) !== -1
+      ? { key: pet.status, recoverChance: 10 }
+      : null,
     fainted: false,
   }));
 
@@ -119,6 +124,14 @@
     15: { core: '#8388a8', glow: 'rgba(131, 136, 168, 0.55)' },
     17: { core: '#9ad0ff', glow: 'rgba(154, 208, 255, 0.56)' },
   };
+
+  // Element glyphs live in assets/js/element-icons.js; degrade to no icon if it did not load.
+  function elementIcon(elementId, size) {
+    if (!window.ElementIcons) {
+      return '';
+    }
+    return `<span class="element-icon-wrap" style="color:${window.ElementIcons.color(elementId)}">${window.ElementIcons.svg(elementId, size || 16)}</span>`;
+  }
 
   function escapeHtml(value) {
     return String(value)
@@ -581,13 +594,14 @@
     }
   }
 
-  function renderElementChips(container, names) {
+  function renderElementChips(container, names, ids) {
     container.innerHTML = '';
     const list = Array.isArray(names) && names.length ? names : ['Neutral'];
-    list.forEach((name) => {
+    const idList = Array.isArray(ids) ? ids : [];
+    list.forEach((name, index) => {
       const chip = document.createElement('span');
       chip.className = 'battle-element-chip';
-      chip.textContent = name;
+      chip.innerHTML = `${idList[index] ? elementIcon(idList[index], 15) : ''}<span>${escapeHtml(name)}</span>`;
       container.appendChild(chip);
     });
   }
@@ -675,7 +689,7 @@
     const effectText = describeMoveEffect(move);
 
     return `
-      <h3 class="battle-detail-title">${escapeHtml(move.name)}</h3>
+      <h3 class="battle-detail-title">${elementIcon(move.elementId, 18)}${escapeHtml(move.name)}</h3>
       <p class="battle-detail-empty">
         ${escapeHtml(move.elementName || 'Neutral')} ${statusMove ? 'status move.' : `move. Base power ${move.power}.`}
         ${effectText ? escapeHtml(effectText) : ''}
@@ -688,12 +702,38 @@
     `;
   }
 
+  function itemCures(item) {
+    return Array.isArray(item && item.cures) ? item.cures : [];
+  }
+
+  function itemCureMatches(item, creature) {
+    if (!creature || !creature.status) {
+      return false;
+    }
+    const cures = itemCures(item);
+    return cures.includes('all') || cures.includes(creature.status.key);
+  }
+
+  function itemEffectSummary(item) {
+    const parts = [];
+    if (Number(item.heal || 0) > 0) {
+      parts.push(`heals ${item.heal} HP`);
+    }
+    const cureNames = itemCures(item).map((key) => (
+      key === 'all' ? 'any ailment' : (statusInfo[key] ? statusInfo[key].displayName : key)
+    ));
+    if (cureNames.length) {
+      parts.push(`cures ${cureNames.join(', ')}`);
+    }
+    return parts.join(' - ') || 'Battle item';
+  }
+
   function itemDetailHtml(item) {
     return `
       <h3 class="battle-detail-title">${escapeHtml(item.name)}</h3>
       <p class="battle-detail-empty">${escapeHtml(item.description || 'Battle item')}</p>
       <div class="battle-detail-stats">
-        <div class="battle-detail-stat"><strong>Healing</strong><br>${item.heal} HP</div>
+        <div class="battle-detail-stat"><strong>Effect</strong><br>${escapeHtml(itemEffectSummary(item))}</div>
         <div class="battle-detail-stat"><strong>Remaining</strong><br>${item.quantity}</div>
       </div>
     `;
@@ -709,7 +749,7 @@
     levelEl.textContent = `Lv. ${creature.level}`;
     imageEl.src = creature.image;
     imageEl.alt = creature.name;
-    renderElementChips(elementsEl, creature.elementNames || []);
+    renderElementChips(elementsEl, creature.elementNames || [], creature.elements || []);
   }
 
   function updateHpDisplay(side, creature, animate) {
@@ -1055,6 +1095,7 @@
       action,
       onFocus: extra && extra.onFocus ? extra.onFocus : null,
       profile: extra && extra.profile ? extra.profile : null,
+      elementId: extra && extra.elementId ? Number(extra.elementId) : 0,
       quit: Boolean(extra && extra.quit),
       disabled: Boolean(extra && extra.disabled),
     };
@@ -1100,7 +1141,7 @@
           </span>
         `
         : `
-          <span class="battle-option-title">${escapeHtml(option.label)}</span>
+          <span class="battle-option-title">${option.elementId ? elementIcon(option.elementId, 18) : ''}${escapeHtml(option.label)}</span>
           <span class="battle-option-desc">${escapeHtml(option.description || '')}</span>
         `;
       if (option.disabled) {
@@ -1212,7 +1253,7 @@
           move.name,
           `${move.elementName || 'Neutral'} - ${isStatusMove(move) ? (describeMoveEffect(move) || 'Status') : `${move.power} power`}`,
           () => resolveRound(move),
-          { onFocus: () => setDetail(moveDetailHtml(move)) }
+          { onFocus: () => setDetail(moveDetailHtml(move)), elementId: move.elementId }
         )),
         menuOption('Quit', 'Return to the main battle menu.', renderRootMenu, { quit: true }),
       ],
@@ -1245,7 +1286,7 @@
       options: [
         ...usableItems.map((item) => menuOption(
           item.name,
-          `${item.quantity} left - heals ${item.heal} HP`,
+          `${item.quantity} left - ${itemEffectSummary(item)}`,
           () => useItem(item),
           { onFocus: () => setDetail(itemDetailHtml(item)) }
         )),
@@ -1339,12 +1380,17 @@
     return response.json();
   }
 
+  const persistableStatuses = ['poison', 'venom', 'burn', 'paralysis', 'freeze', 'sleep'];
+
   function playerHpSnapshot() {
     return JSON.stringify(state.playerTeam
       .map((creature) => ({
         id: Number(creature && creature.id) || 0,
         hp: clamp(Math.round(Number(creature && creature.hp) || 0), 0, Math.max(0, Number(creature && creature.maxHp) || 0)),
         maxHp: Math.max(0, Math.round(Number(creature && creature.maxHp) || 0)),
+        status: creature && creature.hp > 0 && creature.status && persistableStatuses.indexOf(creature.status.key) !== -1
+          ? creature.status.key
+          : '',
       }))
       .filter((creature) => creature.id > 0));
   }
@@ -1443,8 +1489,11 @@
     if (!target) {
       return;
     }
-    if (target.hp >= target.maxHp) {
-      addLog(`${target.name} already has full HP.`);
+
+    const canHeal = Number(item.heal || 0) > 0 && target.hp < target.maxHp;
+    const canCure = itemCureMatches(item, target);
+    if (!canHeal && !canCure) {
+      addLog(`${item.name} would have no effect on ${target.name} right now.`);
       openItemsMenu();
       return;
     }
@@ -1475,15 +1524,25 @@
     const heal = Math.max(0, Number(result.heal || item.heal || 0));
     item.quantity = Number(result.quantity || 0);
     item.heal = heal || item.heal;
+    addLog(`You used ${item.name} on ${target.name}.`);
+
     const hpBefore = target.hp;
     target.hp = Math.min(target.maxHp, target.hp + heal);
     if (target.hp !== hpBefore) {
       markPlayerHpChanged();
       queuePlayerHpSync();
+      spawnNumber('player', target.hp - hpBefore, 'heal');
+      await updateHpDisplay('player', target, true);
     }
-    addLog(`You used ${item.name} on ${target.name}.`);
-    spawnNumber('player', heal, 'heal');
-    await updateHpDisplay('player', target, true);
+
+    const serverCures = Array.isArray(result.cures) ? result.cures : itemCures(item);
+    if (target.status && (serverCures.includes('all') || serverCures.includes(target.status.key))) {
+      const curedName = statusInfo[target.status.key].displayName;
+      target.status = null;
+      updateStatusBadge('player', target);
+      addLog(`${target.name} was cured of ${curedName}!`);
+      await wait(200);
+    }
     await wait(120);
 
     if (!state.battleEnded && currentNpc() && currentNpc().hp > 0) {
@@ -1539,7 +1598,15 @@
 
   async function handleFaint(side) {
     const host = side === 'player' ? el.player : el.npc;
-    updateStatusBadge(side, side === 'player' ? currentPlayer() : currentNpc());
+    const downed = side === 'player' ? currentPlayer() : currentNpc();
+    if (downed) {
+      // Fainting shakes off any ailment, so nothing persists on a downed creature.
+      downed.status = null;
+      if (side === 'player') {
+        queuePlayerHpSync();
+      }
+    }
+    updateStatusBadge(side, downed);
     host.classList.add('is-fainted');
     await wait(220);
 

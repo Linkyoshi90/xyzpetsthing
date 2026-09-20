@@ -3,6 +3,7 @@ require_once __DIR__ . '/../auth.php';
 require_once __DIR__ . '/../lib/pets.php';
 require_once __DIR__ . '/../lib/item_effects.php';
 require_once __DIR__ . '/../lib/abilities.php';
+require_once __DIR__ . '/../lib/creature_moves.php';
 
 require_login();
 
@@ -84,20 +85,8 @@ function battle_name_initials(string $value): string {
     return substr($letters, 0, 2);
 }
 
-function battle_load_element_lookup(): array {
-    $rows = q(
-        "SELECT element_id, element_name
-           FROM elements
-          ORDER BY element_id"
-    )->fetchAll(PDO::FETCH_ASSOC);
-
-    $lookup = [];
-    foreach ($rows as $row) {
-        $lookup[(int)$row['element_id']] = (string)$row['element_name'];
-    }
-
-    return $lookup;
-}
+// battle_load_element_lookup() and the move pool/moveset functions live in
+// lib/creature_moves.php, shared with the Yara Dojo.
 
 function battle_load_species_elements(array $species_ids): array {
     if (!$species_ids) {
@@ -371,6 +360,7 @@ function battle_normalize_pet(array $pet, array $element_lookup, bool $restore_e
         'image' => pet_image_url((string)($pet['species_name'] ?? ''), $pet['color_name'] ?? null, $pet['color_slug'] ?? null),
         'ability' => ability_battle_payload($ability),
         'moves' => [],
+        'status' => battle_valid_status_key((string)($pet['battle_status'] ?? '')) ?: null,
     ];
 }
 
@@ -408,14 +398,22 @@ function battle_normalize_wild_pet(array $encounter, array $element_lookup): arr
 }
 
 function battle_load_team_for_user(int $user_id, array $element_lookup): array {
+    $status_column = '';
+    $status_join = '';
+    if (battle_status_table_exists()) {
+        $status_column = ', pbs.status_key AS battle_status';
+        $status_join = 'LEFT JOIN pet_battle_status pbs ON pbs.pet_instance_id = pi.pet_instance_id';
+    }
+
     $rows = q(
         "SELECT pi.pet_instance_id, pi.species_id, pi.nickname, pi.color_id, pi.level,
                 pi.experience, pi.hp_current, pi.hp_max, pi.atk, pi.def, pi.initiative, pi.ability_id,
                 ps.species_name, ps.base_hp, ps.base_atk, ps.base_def, ps.base_init,
-                pc.color_name
+                pc.color_name{$status_column}
            FROM pet_instances pi
            JOIN pet_species ps ON ps.species_id = pi.species_id
            LEFT JOIN pet_colors pc ON pc.color_id = pi.color_id
+           {$status_join}
           WHERE pi.owner_user_id = ?
             AND COALESCE(pi.inactive, 0) = 0
           ORDER BY pi.pet_instance_id",
@@ -543,185 +541,6 @@ function battle_team_has_living_pet(array $team): bool {
     return false;
 }
 
-function battle_normalize_move_row(array $row, array $element_lookup): array {
-    $element_id = (int)($row['element_id'] ?? 1);
-    $category = (string)($row['category'] ?? 'physical');
-    $effect_key = trim((string)($row['effect_key'] ?? ''));
-
-    return [
-        'id' => (int)($row['id'] ?? 0),
-        'key' => (string)($row['move_key'] ?? ''),
-        'name' => (string)($row['name'] ?? 'Strike'),
-        'category' => $category,
-        'power' => $category === 'status' ? 0 : max(1, (int)($row['power'] ?? 1)),
-        'elementId' => $element_id,
-        'elementName' => $element_lookup[$element_id] ?? ('Element ' . $element_id),
-        'accuracy' => (float)($row['accuracy_percent'] ?? 100),
-        'priority' => (int)($row['priority'] ?? 0),
-        'contact' => !empty($row['contact']),
-        'effect' => $effect_key !== '' ? $effect_key : null,
-        'effectChance' => (float)($row['effect_chance_percent'] ?? 0),
-    ];
-}
-
-function battle_load_attack_pool(array $element_lookup): array {
-    $rows = q(
-        "SELECT move_id AS id,
-                move_key,
-                move_name AS name,
-                category,
-                power,
-                element_id,
-                accuracy_percent,
-                priority,
-                contact,
-                effect_key,
-                effect_chance_percent
-           FROM moves
-          WHERE power IS NOT NULL
-            AND category <> 'status'
-          ORDER BY power, move_id"
-    )->fetchAll(PDO::FETCH_ASSOC);
-
-    if (!$rows) {
-        $rows = q(
-            "SELECT attack_id AS id,
-                    LOWER(REPLACE(attack_name, ' ', '_')) AS move_key,
-                    attack_name AS name,
-                    'physical' AS category,
-                    base_damage AS power,
-                    element_id,
-                    100.00 AS accuracy_percent,
-                    0 AS priority,
-                    1 AS contact
-               FROM attacks
-              ORDER BY base_damage, attack_id"
-        )->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    if (!$rows) {
-        $rows = [
-            ['id' => 1, 'move_key' => 'tackle', 'name' => 'Tackle', 'category' => 'physical', 'power' => 40, 'element_id' => 1, 'accuracy_percent' => 100, 'priority' => 0, 'contact' => 1],
-            ['id' => 2, 'move_key' => 'quick_attack', 'name' => 'Quick Attack', 'category' => 'physical', 'power' => 40, 'element_id' => 1, 'accuracy_percent' => 100, 'priority' => 1, 'contact' => 1],
-            ['id' => 3, 'move_key' => 'ember', 'name' => 'Ember', 'category' => 'special', 'power' => 40, 'element_id' => 2, 'accuracy_percent' => 100, 'priority' => 0, 'contact' => 0],
-            ['id' => 4, 'move_key' => 'water_gun', 'name' => 'Water Gun', 'category' => 'special', 'power' => 40, 'element_id' => 3, 'accuracy_percent' => 100, 'priority' => 0, 'contact' => 0],
-        ];
-    }
-
-    return array_map(static fn(array $row): array => battle_normalize_move_row($row, $element_lookup), $rows);
-}
-
-function battle_load_species_move_map(array $element_lookup): array {
-    try {
-        $rows = q(
-            "SELECT sm.species_id,
-                    m.move_id AS id,
-                    m.move_key,
-                    m.move_name AS name,
-                    m.category,
-                    m.power,
-                    m.element_id,
-                    m.accuracy_percent,
-                    m.priority,
-                    m.contact,
-                    m.effect_key,
-                    m.effect_chance_percent
-               FROM species_moves sm
-               JOIN moves m ON m.move_id = sm.move_id
-              ORDER BY sm.species_id, m.move_id"
-        )->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Throwable $error) {
-        // The species_moves table has not been applied to this database yet.
-        return [];
-    }
-
-    $map = [];
-    foreach ($rows as $row) {
-        $map[(int)$row['species_id']][] = battle_normalize_move_row($row, $element_lookup);
-    }
-
-    return $map;
-}
-
-function battle_reserved_move_ids(array $species_move_map): array {
-    $reserved = [];
-    foreach ($species_move_map as $moves) {
-        foreach ($moves as $move) {
-            $reserved[(int)$move['id']] = true;
-        }
-    }
-
-    return $reserved;
-}
-
-function battle_pick_moves_for_pet(array $pet, array $attack_pool): array {
-    if (!$attack_pool) {
-        return [];
-    }
-
-    $matching = [];
-    $neutral = [];
-    $other = [];
-    foreach ($attack_pool as $move) {
-        if (in_array((int)$move['elementId'], $pet['elements'], true)) {
-            $matching[] = $move;
-        } elseif ((int)$move['elementId'] === 1) {
-            $neutral[] = $move;
-        } else {
-            $other[] = $move;
-        }
-    }
-
-    $pool = array_merge($matching, $neutral, $other);
-    $count = count($pool);
-    if ($count === 0) {
-        return [];
-    }
-
-    $offset = (($pet['id'] ?? 0) + ($pet['speciesId'] ?? 0) + ($pet['level'] ?? 1)) % $count;
-    $rotated = array_merge(array_slice($pool, $offset), array_slice($pool, 0, $offset));
-
-    $picked = [];
-    $seen = [];
-    foreach ($rotated as $move) {
-        $move_id = (int)$move['id'];
-        if (isset($seen[$move_id])) {
-            continue;
-        }
-        $seen[$move_id] = true;
-        $picked[] = $move;
-        if (count($picked) === 4) {
-            break;
-        }
-    }
-
-    return $picked ?: array_slice($attack_pool, 0, 4);
-}
-
-function battle_assign_moves(array $team, array $attack_pool, array $species_move_map = []): array {
-    foreach ($team as &$pet) {
-        // Up to two signature moves from species_moves, rest from the shared pool.
-        $moves = array_slice($species_move_map[(int)($pet['speciesId'] ?? 0)] ?? [], 0, 2);
-        $seen = [];
-        foreach ($moves as $move) {
-            $seen[(int)$move['id']] = true;
-        }
-
-        foreach (battle_pick_moves_for_pet($pet, $attack_pool) as $move) {
-            if (isset($seen[(int)$move['id']]) || count($moves) >= 4) {
-                continue;
-            }
-            $seen[(int)$move['id']] = true;
-            $moves[] = $move;
-        }
-
-        $pet['moves'] = $moves;
-    }
-    unset($pet);
-
-    return $team;
-}
-
 function battle_load_effectiveness(): array {
     $rows = q(
         "SELECT element_id, target_element_id, effectiveness
@@ -753,34 +572,50 @@ function battle_load_battle_items(int $user_id): array {
 
     $pdo = db();
     if ($pdo && item_effect_table_exists($pdo)) {
+        // HP-restoring items plus battle ailment cures ('cure' / 'status_*').
         $rows = q(
             "SELECT ui.item_id,
                     ui.quantity,
                     i.item_name,
                     i.item_description,
-                    ie.amount AS heal_amount
+                    ie.effect_type,
+                    ie.target_stat,
+                    ie.amount
                FROM user_inventory ui
                JOIN items i ON i.item_id = ui.item_id
                JOIN item_effects ie
                  ON ie.item_id = i.item_id
-                AND ie.effect_type = 'increase'
-                AND ie.target_stat = 'hp_current'
-                AND ie.amount > 0
+                AND (
+                     (ie.effect_type = 'increase' AND ie.target_stat = 'hp_current' AND ie.amount > 0)
+                  OR (ie.effect_type = 'cure' AND ie.target_stat LIKE 'status\\_%')
+                )
               WHERE ui.user_id = ?
                 AND ui.quantity > 0
-              ORDER BY i.item_name",
+              ORDER BY i.item_name, ie.item_effect_id",
             [$user_id]
         )->fetchAll(PDO::FETCH_ASSOC);
 
-        return array_map(static function (array $row): array {
-            return [
-                'id' => (int)$row['item_id'],
-                'name' => (string)$row['item_name'],
-                'description' => (string)($row['item_description'] ?? ''),
-                'quantity' => (int)$row['quantity'],
-                'heal' => max(1, (int)($row['heal_amount'] ?? 20)),
-            ];
-        }, $rows);
+        $items = [];
+        foreach ($rows as $row) {
+            $item_id = (int)$row['item_id'];
+            if (!isset($items[$item_id])) {
+                $items[$item_id] = [
+                    'id' => $item_id,
+                    'name' => (string)$row['item_name'],
+                    'description' => (string)($row['item_description'] ?? ''),
+                    'quantity' => (int)$row['quantity'],
+                    'heal' => 0,
+                    'cures' => [],
+                ];
+            }
+            if ((string)$row['effect_type'] === 'increase') {
+                $items[$item_id]['heal'] = max(1, (int)$row['amount']);
+            } else {
+                $items[$item_id]['cures'][] = substr((string)$row['target_stat'], strlen('status_'));
+            }
+        }
+
+        return array_values($items);
     }
 
     $rows = q(
@@ -805,6 +640,7 @@ function battle_load_battle_items(int $user_id): array {
             'description' => (string)($row['item_description'] ?? ''),
             'quantity' => (int)$row['quantity'],
             'heal' => max(1, (int)($row['replenish'] ?? 20)),
+            'cures' => [],
         ];
     }
 
@@ -823,6 +659,33 @@ function battle_require_active_session(string $token, int $trainer_id = 0): arra
     }
 
     return $battle;
+}
+
+// Ailments that survive the end of a battle. Rage is volatile and fainting
+// clears everything, so those never persist.
+function battle_status_allowed_keys(): array {
+    return ['poison', 'venom', 'burn', 'paralysis', 'freeze', 'sleep'];
+}
+
+function battle_valid_status_key(string $key): string {
+    $key = strtolower(trim($key));
+    return in_array($key, battle_status_allowed_keys(), true) ? $key : '';
+}
+
+function battle_status_table_exists(): bool {
+    static $exists = null;
+    if ($exists !== null) {
+        return $exists;
+    }
+
+    try {
+        q("SELECT 1 FROM pet_battle_status LIMIT 1");
+        $exists = true;
+    } catch (Throwable $error) {
+        $exists = false;
+    }
+
+    return $exists;
 }
 
 function battle_parse_hp_snapshot($raw_snapshot): array {
@@ -854,6 +717,7 @@ function battle_parse_hp_snapshot($raw_snapshot): array {
         $snapshot[$pet_id] = [
             'hp' => max(0, $hp),
             'max_hp' => max(0, $max_hp),
+            'status' => battle_valid_status_key((string)($row['status'] ?? '')),
         ];
     }
 
@@ -939,6 +803,24 @@ function battle_sync_player_hp(int $user_id, string $token, $raw_snapshot, int $
 
             $update->execute([$hp, $snapshot_max > 0 ? $snapshot_max : null, $pet_id, $user_id]);
             $updated += $update->rowCount();
+        }
+
+        if (battle_status_table_exists()) {
+            $status_delete = $pdo->prepare(
+                "DELETE FROM pet_battle_status WHERE pet_instance_id = ?"
+            );
+            $status_upsert = $pdo->prepare(
+                "INSERT INTO pet_battle_status (pet_instance_id, status_key) VALUES (?, ?)
+                 ON DUPLICATE KEY UPDATE status_key = VALUES(status_key)"
+            );
+            foreach ($updates as $pet_id => $row) {
+                $status = (string)($row['status'] ?? '');
+                if ($status === '') {
+                    $status_delete->execute([$pet_id]);
+                } else {
+                    $status_upsert->execute([$pet_id, $status]);
+                }
+            }
         }
 
         $pdo->commit();
@@ -1106,26 +988,39 @@ function battle_consume_item(int $user_id, int $item_id, string $token): void {
     battle_require_active_session($token);
 
     $pdo = db();
+    $heal = 0;
+    $cures = [];
     if ($pdo && item_effect_table_exists($pdo)) {
-        $row = q(
+        $rows = q(
             "SELECT ui.quantity,
                     i.item_name,
                     i.item_description,
                     i.replenish,
-                    ie.amount AS heal_amount
+                    ie.effect_type,
+                    ie.target_stat,
+                    ie.amount
                FROM user_inventory ui
                JOIN items i ON i.item_id = ui.item_id
                JOIN item_effects ie
                  ON ie.item_id = i.item_id
-                AND ie.effect_type = 'increase'
-                AND ie.target_stat = 'hp_current'
-                AND ie.amount > 0
+                AND (
+                     (ie.effect_type = 'increase' AND ie.target_stat = 'hp_current' AND ie.amount > 0)
+                  OR (ie.effect_type = 'cure' AND ie.target_stat LIKE 'status\\_%')
+                )
               WHERE ui.user_id = ?
                 AND ui.item_id = ?
-                AND ui.quantity > 0
-              LIMIT 1",
+                AND ui.quantity > 0",
             [$user_id, $item_id]
-        )->fetch(PDO::FETCH_ASSOC);
+        )->fetchAll(PDO::FETCH_ASSOC);
+
+        $row = $rows ? $rows[0] : false;
+        foreach ($rows as $effect_row) {
+            if ((string)$effect_row['effect_type'] === 'increase') {
+                $heal = max(1, (int)$effect_row['amount']);
+            } else {
+                $cures[] = substr((string)$effect_row['target_stat'], strlen('status_'));
+            }
+        }
     } else {
         $row = q(
             "SELECT ui.quantity, i.item_name, i.item_description, i.replenish
@@ -1139,6 +1034,9 @@ function battle_consume_item(int $user_id, int $item_id, string $token): void {
         )->fetch(PDO::FETCH_ASSOC);
         if ($row && !battle_is_battle_item_row($row)) {
             $row = false;
+        }
+        if ($row) {
+            $heal = max(1, (int)($row['replenish'] ?? 20));
         }
     }
 
@@ -1175,7 +1073,8 @@ function battle_consume_item(int $user_id, int $item_id, string $token): void {
         'ok' => true,
         'itemId' => $item_id,
         'quantity' => max(0, (int)$quantity),
-        'heal' => max(1, (int)($row['heal_amount'] ?? $row['replenish'] ?? 20)),
+        'heal' => max(0, $heal),
+        'cures' => array_values($cures),
         'message' => 'Item used.',
     ]);
 }
@@ -1292,8 +1191,12 @@ $attack_pool = array_values(array_filter(
     static fn(array $move): bool => !isset($reserved_move_ids[(int)$move['id']])
 ));
 $player_team = battle_load_team_for_user($user_id, $element_lookup);
-$player_team = battle_assign_moves($player_team, $attack_pool, $species_move_map);
-$trainer_team = battle_assign_moves($trainer_team, $attack_pool, $species_move_map);
+$instance_move_map = battle_load_instance_move_map(
+    array_map(static fn(array $pet): int => (int)($pet['id'] ?? 0), array_merge($player_team, $trainer_team)),
+    $element_lookup
+);
+$player_team = battle_assign_moves($player_team, $attack_pool, $species_move_map, $instance_move_map);
+$trainer_team = battle_assign_moves($trainer_team, $attack_pool, $species_move_map, $instance_move_map);
 $items = battle_load_battle_items($user_id);
 $effectiveness = battle_load_effectiveness();
 $battle_ready = $trainer && battle_team_has_living_pet($player_team) && battle_team_has_living_pet($trainer_team);

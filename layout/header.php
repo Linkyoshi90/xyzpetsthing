@@ -57,8 +57,10 @@ if ($u) {
 <script defer src="assets/js/currency.js"></script>
 <?php if (($pg ?? '') === 'battle_minigame'): ?>
 <?php $battle_abilities_js_version = is_file(__DIR__.'/../assets/js/battle-abilities.js') ? filemtime(__DIR__.'/../assets/js/battle-abilities.js') : 1; ?>
+<?php $element_icons_js_version = is_file(__DIR__.'/../assets/js/element-icons.js') ? filemtime(__DIR__.'/../assets/js/element-icons.js') : 1; ?>
 <?php $battle_js_version = is_file(__DIR__.'/../assets/js/battle-minigame.js') ? filemtime(__DIR__.'/../assets/js/battle-minigame.js') : 1; ?>
 <script defer src="assets/js/battle-abilities.js?v=<?= $battle_abilities_js_version ?>"></script>
+<script defer src="assets/js/element-icons.js?v=<?= $element_icons_js_version ?>"></script>
 <script defer src="assets/js/battle-minigame.js?v=<?= $battle_js_version ?>"></script>
 <?php endif; ?>
 <?php if (($pg ?? '') === 'lineage'): ?>

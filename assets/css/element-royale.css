@@ -1,0 +1,219 @@
+.er-app {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.er-setup h2 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+}
+
+.er-setup-hint {
+  margin: 0 0 10px;
+}
+
+.er-element-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.er-element-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid rgba(120, 150, 190, 0.35);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+
+.er-element-option:hover {
+  border-color: currentColor;
+}
+
+.er-element-option.is-selected {
+  border-color: currentColor;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.er-element-name {
+  color: inherit;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.er-setup-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.er-hud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-bottom: 10px;
+}
+
+.er-hud div {
+  display: flex;
+  flex-direction: column;
+}
+
+.er-hud strong {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+.er-hud span {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.er-board-wrap {
+  position: relative;
+  overflow: auto;
+}
+
+.er-board {
+  --er-cols: 32;
+  --er-rows: 22;
+  --er-tile: 22px;
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--er-cols), var(--er-tile));
+  grid-template-rows: repeat(var(--er-rows), var(--er-tile));
+  gap: 1px;
+  width: max-content;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(16, 32, 52, 0.45);
+}
+
+.er-tile {
+  border-radius: 3px;
+  background: rgba(226, 236, 246, 0.14);
+}
+
+.er-tile-1 {
+  background: rgba(96, 110, 128, 0.85);
+}
+
+.er-tile-2 {
+  background: rgba(58, 104, 74, 0.85);
+}
+
+.er-tile-3 {
+  background: rgba(104, 176, 116, 0.5);
+}
+
+.er-tile-4 {
+  background: rgba(64, 132, 190, 0.65);
+}
+
+.er-board.is-picking .er-tile.is-open {
+  cursor: pointer;
+}
+
+.er-board.is-picking .er-tile.is-open:hover {
+  outline: 2px solid #7de2ff;
+  outline-offset: -2px;
+}
+
+.er-tile.is-spawn {
+  outline: 2px solid #ffe066;
+  outline-offset: -2px;
+}
+
+.er-entity {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: var(--er-tile);
+  height: var(--er-tile);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  border-radius: 50%;
+  border: 2px solid currentColor;
+  background: rgba(12, 24, 40, 0.92);
+  font-size: 0.62rem;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  transition: transform 90ms linear;
+}
+
+.er-entity svg {
+  flex: 0 0 auto;
+}
+
+.er-entity-points {
+  color: #f4f8ff;
+  font-variant-numeric: tabular-nums;
+}
+
+.er-entity.is-player {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 10px rgba(255, 255, 255, 0.45);
+}
+
+.er-entity.is-hidden {
+  opacity: 0.45;
+}
+
+/* display:flex below outranks the browser default [hidden] rule, so say it explicitly. */
+.er-overlay[hidden] {
+  display: none;
+}
+
+.er-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(8, 18, 32, 0.88);
+  text-align: center;
+}
+
+.er-overlay h2 {
+  margin: 0;
+}
+
+.er-overlay p {
+  margin: 0;
+  max-width: 42ch;
+}
+
+.er-feed {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+@media (max-width: 720px) {
+  .er-board {
+    --er-tile: 16px;
+  }
+}

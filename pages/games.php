@@ -74,8 +74,18 @@ $exchanges = $_SESSION['exchange_counter'] ?? 0;
     <a class="btn" href="?pg=minigolf">Play</a>
   </div>
   <div class="card glass">
+    <h3>Creature Quiz</h3>
+    <p class="muted">Name every creature from memory before the timer runs out.</p>
+    <a class="btn" href="?pg=pkmn-quiz">Play</a>
+  </div>
+  <div class="card glass">
     <h3>Trainer Battle</h3>
     <p class="muted">Trigger a random trainer encounter and throw your creature team into a fast elemental duel.</p>
     <a class="btn" href="?pg=battle_minigame">Trigger Encounter</a>
+  </div>
+  <div class="card glass">
+    <h3>Element Royale</h3>
+    <p class="muted">Roam a generated map as a walking number, collide with rivals and absorb whoever loses the matchup.</p>
+    <a class="btn" href="?pg=element-royale">Play</a>
   </div>
 </div>

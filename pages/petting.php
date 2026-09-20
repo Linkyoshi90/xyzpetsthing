@@ -338,11 +338,12 @@ $pick_emoji = static function (string $name, string $default) use ($emoji_map): 
 };
 
 $pets_payload = array_map(static function (array $pet): array {
-    return [
+    $image = pet_image_url((string)$pet['species_name'], $pet['color_name'] ?? null);
+    $payload = [
         'id' => (int)$pet['pet_instance_id'],
         'name' => $pet['nickname'] ?: $pet['species_name'],
         'species' => strtolower((string)$pet['species_name']),
-        'image' => pet_image_url((string)$pet['species_name'], $pet['color_name'] ?? null),
+        'image' => $image,
         'level' => (int)($pet['level'] ?? 1),
         'hunger' => (int)($pet['hunger'] ?? 0),
         'health' => (int)($pet['hp_current'] ?? 0),
@@ -354,6 +355,31 @@ $pets_payload = array_map(static function (array $pet): array {
         'intelligence' => (int)($pet['intelligence'] ?? 0),
         'preferences' => new stdClass(),
     ];
+
+    $speciesSlug = pet_asset_slug((string)$pet['species_name']);
+    if ($speciesSlug !== '') {
+        $spriteManifest = [];
+        $spriteDirectory = 'images/games/petting/creatures/' . $speciesSlug;
+        foreach (['eating', 'healing', 'petting', 'fetching', 'idle', 'wandering', 'sky'] as $animationName) {
+            $spriteUrl = $spriteDirectory . '/' . $animationName . '.png';
+            $spriteFile = dirname(__DIR__) . DIRECTORY_SEPARATOR
+                . str_replace('/', DIRECTORY_SEPARATOR, $spriteUrl);
+            if (is_file($spriteFile)) {
+                $spriteManifest[$animationName] = [
+                    'src' => $spriteUrl,
+                    'frameCount' => 20,
+                    'columns' => 5,
+                    'rows' => 4,
+                    'fps' => 20,
+                ];
+            }
+        }
+        if ($spriteManifest !== []) {
+            $payload['spriteAnimations'] = $spriteManifest;
+        }
+    }
+
+    return $payload;
 }, $pets);
 
 $food_payload = array_map(static function (array $item) use ($pick_emoji): array {
@@ -2164,6 +2190,7 @@ window.pettingBlaData = {
         });
     
 </script>
+<script src="assets/js/petting-sprites.js"></script>
 <script>
 (() => {
     const originalContainer = document.getElementById('pettingContainer');
@@ -2254,6 +2281,335 @@ window.pettingBlaData = {
     const PET_GAIN_RETRY_DELAY_MS = 1600;
     const PET_GAIN_MAX_CHUNK = 24;
     const PET_GAIN_MAX_RETRIES = 3;
+    let creatureSpritePlayer = null;
+    let ambientGeneration = 0;
+    let movementGeneration = 0;
+    let ambientResumeTimer = null;
+    let ambientMovementTimer = null;
+    let ambientMode = 'static';
+    let ambientBound = false;
+    let ambientMovementActive = false;
+    let explicitCreatureAnimation = null;
+    const AMBIENT_MOVEMENT_SETTLE_MS = 850;
+    const reducedMotionQuery = typeof window.matchMedia === 'function'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : null;
+    let prefersReducedMotion = Boolean(reducedMotionQuery?.matches);
+
+    function clearAmbientResumeTimer() {
+        if (ambientResumeTimer !== null) {
+            clearTimeout(ambientResumeTimer);
+            ambientResumeTimer = null;
+        }
+    }
+
+    function clearAmbientMovementTimer() {
+        if (ambientMovementTimer !== null) {
+            clearTimeout(ambientMovementTimer);
+            ambientMovementTimer = null;
+        }
+    }
+
+    function invalidateAmbientDirector() {
+        ambientGeneration += 1;
+        movementGeneration += 1;
+        clearAmbientResumeTimer();
+        clearAmbientMovementTimer();
+        ambientBound = false;
+        ambientMovementActive = false;
+        ambientMode = 'static';
+        explicitCreatureAnimation = null;
+    }
+
+    function guardedPreloadIdle(player = creatureSpritePlayer) {
+        if (!player || !player.has('idle')) {
+            return;
+        }
+
+        const token = ++ambientGeneration;
+        void player.preload('idle').then((ready) => {
+            if (!ready
+                || token !== ambientGeneration
+                || player !== creatureSpritePlayer
+                || !ambientBound
+                || prefersReducedMotion
+                || explicitCreatureAnimation
+                || ambientMovementActive) {
+                return;
+            }
+            startAmbientLoop('idle');
+        });
+    }
+
+    function startAmbientLoop(name) {
+        const player = creatureSpritePlayer;
+        if (!player || !ambientBound || prefersReducedMotion || explicitCreatureAnimation) {
+            return false;
+        }
+        if (name === 'idle' && ambientMovementActive) {
+            return false;
+        }
+        if (ambientMode === name && player.isPlaying(name)) {
+            return true;
+        }
+        if (name === 'idle' && !player.isReady('idle')) {
+            ambientMode = 'static';
+            guardedPreloadIdle(player);
+            return false;
+        }
+
+        const token = ++ambientGeneration;
+        ambientMode = name;
+        const started = player.play(name, {
+            loop: true,
+            restart: false,
+            onError: () => {
+                if (token !== ambientGeneration || player !== creatureSpritePlayer) {
+                    return;
+                }
+                ambientMode = 'static';
+                if (name !== 'idle' && !ambientMovementActive) {
+                    resumeAmbientAnimation();
+                }
+            },
+        });
+        if (!started && token === ambientGeneration && player === creatureSpritePlayer) {
+            ambientMode = 'static';
+            if (name === 'idle') {
+                guardedPreloadIdle(player);
+            }
+        }
+        return started;
+    }
+
+    function resumeAmbientAnimation() {
+        clearAmbientResumeTimer();
+        if (!creatureSpritePlayer
+            || !ambientBound
+            || prefersReducedMotion
+            || explicitCreatureAnimation) {
+            ambientMode = 'static';
+            return;
+        }
+        if (ambientMovementActive) {
+            startAmbientLoop('wandering');
+        } else {
+            startAmbientLoop('idle');
+        }
+    }
+
+    function scheduleAmbientResume(delay = 700) {
+        clearAmbientResumeTimer();
+        const token = ambientGeneration;
+        const player = creatureSpritePlayer;
+        ambientResumeTimer = setTimeout(() => {
+            ambientResumeTimer = null;
+            if (token !== ambientGeneration || player !== creatureSpritePlayer) {
+                return;
+            }
+            resumeAmbientAnimation();
+        }, delay);
+    }
+
+    function scheduleAmbientMovementEnd(delay = AMBIENT_MOVEMENT_SETTLE_MS) {
+        clearAmbientMovementTimer();
+        if (!creatureSpritePlayer || !ambientBound) {
+            return;
+        }
+        const token = ++movementGeneration;
+        const player = creatureSpritePlayer;
+        ambientMovementTimer = setTimeout(() => {
+            ambientMovementTimer = null;
+            if (token !== movementGeneration
+                || player !== creatureSpritePlayer
+                || !ambientBound) {
+                return;
+            }
+            ambientMovementActive = false;
+            if (!explicitCreatureAnimation) {
+                resumeAmbientAnimation();
+            }
+        }, delay);
+    }
+
+    function noteAmbientMovement() {
+        if (!creatureSpritePlayer || !ambientBound) {
+            return;
+        }
+        ambientMovementActive = true;
+        scheduleAmbientMovementEnd();
+        if (!prefersReducedMotion && !explicitCreatureAnimation) {
+            startAmbientLoop('wandering');
+        }
+    }
+
+    function maybePlaySkyAnimation() {
+        const player = creatureSpritePlayer;
+        if (!player
+            || !ambientBound
+            || prefersReducedMotion
+            || explicitCreatureAnimation
+            || ambientMovementActive
+            || ambientMode !== 'idle'
+            || !player.isPlaying('idle')
+            || Math.random() >= 0.1
+            || !player.isReady('sky')) {
+            return false;
+        }
+
+        const token = ++ambientGeneration;
+        ambientMode = 'sky';
+        const returnToIdle = () => {
+            if (token !== ambientGeneration || player !== creatureSpritePlayer) {
+                return;
+            }
+            ambientMode = 'static';
+            resumeAmbientAnimation();
+        };
+        const started = player.play('sky', {
+            onFinish: returnToIdle,
+            onError: returnToIdle,
+        });
+        if (!started && token === ambientGeneration && player === creatureSpritePlayer) {
+            ambientMode = 'static';
+            startAmbientLoop('idle');
+        }
+        return started;
+    }
+
+    function handleReducedMotionChange(event) {
+        prefersReducedMotion = Boolean(event.matches);
+        ambientGeneration += 1;
+        clearAmbientResumeTimer();
+        if (prefersReducedMotion) {
+            if (creatureSpritePlayer && !explicitCreatureAnimation) {
+                ambientMode = 'static';
+                creatureSpritePlayer.cancel('reduced-motion');
+            }
+            return;
+        }
+        resumeAmbientAnimation();
+    }
+
+    function unbindCreatureSprites(reason = 'rebind') {
+        const player = creatureSpritePlayer;
+        invalidateAmbientDirector();
+        if (!player) {
+            return;
+        }
+        player.cancel(reason);
+        player.destroy();
+        if (creatureSpritePlayer === player) {
+            creatureSpritePlayer = null;
+        }
+    }
+
+    function bindCreatureSprites(pet) {
+        const spriteApi = window.HarmontidePettingSprites;
+        const visual = petSprite.querySelector('.pet-visual');
+        const image = visual?.querySelector('img');
+        if (!spriteApi || !visual || !image || !pet?.spriteAnimations) {
+            return;
+        }
+
+        invalidateAmbientDirector();
+        creatureSpritePlayer = new spriteApi.SpritePlayer({
+            image,
+            container: visual,
+            manifest: pet.spriteAnimations,
+        });
+        ambientBound = true;
+        const player = creatureSpritePlayer;
+        ['eating', 'healing', 'petting', 'fetching', 'wandering', 'sky'].forEach((name) => {
+            if (player.has(name)) {
+                void player.preload(name);
+            }
+        });
+        guardedPreloadIdle(player);
+    }
+
+    function startCreatureAnimation(name, options = {}) {
+        const player = creatureSpritePlayer;
+        if (!player) {
+            return false;
+        }
+        if (options.restart === false
+            && explicitCreatureAnimation?.name === name
+            && player.isPlaying(name)) {
+            return true;
+        }
+
+        clearAmbientResumeTimer();
+        const marker = { name, generation: ++ambientGeneration };
+        explicitCreatureAnimation = marker;
+        ambientMode = 'explicit';
+        const fallbackDuration = Number.isFinite(Number(options.fallbackDuration))
+            ? Math.max(0, Number(options.fallbackDuration))
+            : 700;
+        const playbackOptions = { ...options };
+        delete playbackOptions.fallbackDuration;
+
+        const finishExplicit = (callback, event, delayed = false) => {
+            if (typeof callback === 'function') {
+                callback(event);
+            }
+            if (explicitCreatureAnimation !== marker || player !== creatureSpritePlayer) {
+                return;
+            }
+            explicitCreatureAnimation = null;
+            ambientMode = 'static';
+            if (delayed) {
+                scheduleAmbientResume(fallbackDuration);
+            } else {
+                resumeAmbientAnimation();
+            }
+        };
+
+        const onStart = options.onStart;
+        const onFinish = options.onFinish;
+        const onCancel = options.onCancel;
+        const onError = options.onError;
+        playbackOptions.onStart = (event) => {
+            if (typeof onStart === 'function') {
+                onStart(event);
+            }
+        };
+        playbackOptions.onFinish = (event) => finishExplicit(onFinish, event);
+        playbackOptions.onCancel = (event) => finishExplicit(onCancel, event);
+        playbackOptions.onError = (event) => finishExplicit(onError, event, true);
+
+        const started = player.play(name, playbackOptions);
+        if (!started && explicitCreatureAnimation === marker) {
+            explicitCreatureAnimation = null;
+            ambientMode = 'static';
+            scheduleAmbientResume(fallbackDuration);
+        }
+        return started;
+    }
+
+    function startCreatureAnimationUntilDone(name) {
+        let settle;
+        const finished = new Promise((resolve) => {
+            settle = resolve;
+        });
+        const started = startCreatureAnimation(name, {
+            onFinish: () => settle(true),
+            onCancel: () => settle(false),
+            onError: () => settle(false),
+        });
+        if (!started) {
+            settle(false);
+        }
+        return { started, finished };
+    }
+
+    if (reducedMotionQuery) {
+        if (typeof reducedMotionQuery.addEventListener === 'function') {
+            reducedMotionQuery.addEventListener('change', handleReducedMotionChange);
+        } else if (typeof reducedMotionQuery.addListener === 'function') {
+            reducedMotionQuery.addListener(handleReducedMotionChange);
+        }
+    }
 
     function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
@@ -2509,6 +2865,7 @@ window.pettingBlaData = {
     }
 
     function updatePetDisplay() {
+        unbindCreatureSprites('pet-display-update');
         const pet = getActivePet();
         if (!pet) {
             return;
@@ -2521,6 +2878,7 @@ window.pettingBlaData = {
                 <div class="pet-dirt-layer"></div>
             </div>
         `;
+        bindCreatureSprites(pet);
         petNameEl.textContent = pet.name;
         petLevelEl.textContent = `Lv. ${pet.level}`;
         updateStatusBars();
@@ -2749,15 +3107,29 @@ window.pettingBlaData = {
                 return;
             }
 
+            if (pet.id !== gameData.activePetId) {
+                syncPetFromServer(data.pet);
+                syncInventoryQuantity(gameData.food, data.item);
+                updateBadges();
+                renderFoodGrid();
+                if (data.message) {
+                    showNotification(data.message);
+                }
+                return;
+            }
+
             syncPetFromServer(data.pet);
             syncInventoryQuantity(gameData.food, data.item);
             updatePetDisplay();
             updateBadges();
             renderFoodGrid();
 
-            createEatingAnimation(item, clientX, clientY);
-            petSprite.classList.add('eating');
-            setTimeout(() => petSprite.classList.remove('eating'), 500);
+            const usingEatingSprite = startCreatureAnimation('eating');
+            if (!usingEatingSprite) {
+                createEatingAnimation(item, clientX, clientY);
+                petSprite.classList.add('eating');
+                setTimeout(() => petSprite.classList.remove('eating'), 500);
+            }
             setTimeout(() => {
                 const heartCount = Math.max(1, Math.ceil(Number(data.effects?.happinessGain || 3) / 3));
                 createHearts(heartCount);
@@ -2793,15 +3165,33 @@ window.pettingBlaData = {
                 return;
             }
 
+            if (pet.id !== gameData.activePetId) {
+                syncPetFromServer(data.pet);
+                syncInventoryQuantity(gameData.healing, data.item);
+                updateBadges();
+                renderHealGrid();
+                if (data.message) {
+                    showNotification(data.message);
+                }
+                return;
+            }
+
             syncPetFromServer(data.pet);
             syncInventoryQuantity(gameData.healing, data.item);
             updatePetDisplay();
             updateBadges();
             renderHealGrid();
 
-            createEatingAnimation(item, clientX, clientY);
-            petSprite.classList.add('happy');
-            setTimeout(() => petSprite.classList.remove('happy'), 600);
+            const itemEffects = Array.isArray(item.effects)
+                ? item.effects
+                : (item.effect ? [item.effect] : []);
+            const restoresHealth = itemEffects.some((effect) => effect?.target_stat === 'hp_current');
+            const usingHealingSprite = restoresHealth && startCreatureAnimation('healing');
+            if (!usingHealingSprite) {
+                createEatingAnimation(item, clientX, clientY);
+                petSprite.classList.add('happy');
+                setTimeout(() => petSprite.classList.remove('happy'), 600);
+            }
             setTimeout(() => createHearts(2, '#81c784'), 180);
             if (data.message) {
                 showNotification(data.message);
@@ -2830,6 +3220,20 @@ window.pettingBlaData = {
                     renderPetGrid();
                 }
                 showNotification(data.message || 'Reading could not be completed.');
+                return;
+            }
+
+            if (pet.id !== gameData.activePetId) {
+                syncPetFromServer(data.pet);
+                if (data.item) {
+                    syncInventoryQuantity(gameData.books, data.item);
+                }
+                updateBadges();
+                renderBookGrid();
+                renderPetGrid();
+                if (data.message) {
+                    showNotification(data.message);
+                }
                 return;
             }
 
@@ -2987,8 +3391,16 @@ window.pettingBlaData = {
                 hopTo(target.x, stageRect.height - target.y);
                 await animateFrisbee(frisbee, start, target, 720, 92);
                 frisbee.remove();
-                petSprite.classList.add('happy');
-                setTimeout(() => petSprite.classList.remove('happy'), 600);
+                const fetchingAnimation = startCreatureAnimationUntilDone('fetching');
+                if (fetchingAnimation.started) {
+                    const completed = await fetchingAnimation.finished;
+                    if (!completed) {
+                        return;
+                    }
+                } else {
+                    petSprite.classList.add('happy');
+                    setTimeout(() => petSprite.classList.remove('happy'), 600);
+                }
                 createSparkles(4);
                 if (grantFrisbeeHappiness(pet, 3) > 0) {
                     createHearts(1);
@@ -3003,8 +3415,17 @@ window.pettingBlaData = {
             hopTo(target.x, stageRect.height - target.y);
             await delay(520);
             createDustPuff(target.x, target.y);
-            await animateFrisbee(frisbee, target, home, 620, 38);
-            frisbee.remove();
+            const fetchingAnimation = startCreatureAnimationUntilDone('fetching');
+            if (fetchingAnimation.started) {
+                frisbee.remove();
+                const completed = await fetchingAnimation.finished;
+                if (!completed) {
+                    return;
+                }
+            } else {
+                await animateFrisbee(frisbee, target, home, 620, 38);
+                frisbee.remove();
+            }
             hopTo(originalLeft, originalBottom);
             if (grantFrisbeeHappiness(pet, 2) > 0) {
                 createHearts(1, '#4fc3f7');
@@ -3148,7 +3569,10 @@ window.pettingBlaData = {
         lastPetGainAt = now;
         pet.happiness = clamp(pet.happiness + 1, 0, 100);
         updateStatusBars();
-        createPetIndicator(clientX, clientY);
+        const usingPettingSprite = startCreatureAnimation('petting', { restart: false });
+        if (!usingPettingSprite) {
+            createPetIndicator(clientX, clientY);
+        }
         if (Math.random() < 0.4) {
             createSparkles(1);
         }
@@ -3374,6 +3798,7 @@ window.pettingBlaData = {
 
         const stageRect = petStage.getBoundingClientRect();
         const currentBottom = parseFloat(getComputedStyle(petSprite).bottom) || stageRect.height * 0.2;
+        unbindCreatureSprites('pet-switch');
         exitPettingMode();
         setPetPosition(-150, currentBottom);
         petSprite.style.opacity = '0.5';
@@ -3396,6 +3821,20 @@ window.pettingBlaData = {
 
         closeAllPanels();
     }
+
+    const hopToWithoutAmbientAnimation = hopTo;
+    hopTo = function (...args) {
+        noteAmbientMovement();
+        return hopToWithoutAmbientAnimation.apply(this, args);
+    };
+
+    const idleBehaviorWithoutSkyAnimation = idleBehavior;
+    idleBehavior = function (...args) {
+        if (maybePlaySkyAnimation()) {
+            return undefined;
+        }
+        return idleBehaviorWithoutSkyAnimation.apply(this, args);
+    };
 
     foodBtn.addEventListener('click', () => togglePanel(foodPanel, foodBtn));
     healBtn.addEventListener('click', () => togglePanel(healPanel, healBtn));

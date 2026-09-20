@@ -32,6 +32,23 @@ function item_effect_table_exists(PDO $pdo): bool
     return $exists;
 }
 
+function item_effect_battle_status_table_exists(PDO $pdo): bool
+{
+    static $exists = null;
+    if ($exists !== null) {
+        return $exists;
+    }
+
+    try {
+        $stmt = $pdo->query("SHOW TABLES LIKE 'pet_battle_status'");
+        $exists = (bool)$stmt->fetchColumn();
+    } catch (Throwable $e) {
+        $exists = false;
+    }
+
+    return $exists;
+}
+
 function item_effect_stat_label(string $target_stat): string
 {
     $allowed = item_effect_allowed_pet_stats();
@@ -47,6 +64,13 @@ function item_effect_format_effect(array $effect): string
     if ($type === 'cure' && (string)($effect['target_stat'] ?? '') === 'sickness') {
         $sickness_name = trim((string)($effect['sickness_name'] ?? ''));
         return $sickness_name !== '' ? 'Cures ' . $sickness_name : 'Cures sickness';
+    }
+
+    if ($type === 'cure' && strpos((string)($effect['target_stat'] ?? ''), 'status_') === 0) {
+        $ailment = substr((string)$effect['target_stat'], strlen('status_'));
+        return $ailment === 'all'
+            ? 'Cures any battle ailment'
+            : 'Cures ' . ucfirst($ailment) . ' in battle';
     }
 
     if ($type === 'increase') {
@@ -197,6 +221,11 @@ function item_effect_apply_to_pet(PDO $pdo, int $user_id, int $pet_id, int $item
     try {
         $pdo->beginTransaction();
 
+        $has_battle_status = item_effect_battle_status_table_exists($pdo);
+        $battle_status_column = $has_battle_status ? ', pbs.status_key AS battle_status' : '';
+        $battle_status_join = $has_battle_status
+            ? 'LEFT JOIN pet_battle_status pbs ON pbs.pet_instance_id = pi.pet_instance_id'
+            : '';
         $pet_stmt = $pdo->prepare(
             "SELECT pi.pet_instance_id,
                     pi.owner_user_id,
@@ -211,10 +240,11 @@ function item_effect_apply_to_pet(PDO $pdo, int $user_id, int $pet_id, int $item
                     pi.initiative,
                     pi.sickness,
                     s.sick_name AS sickness_name,
-                    ps.species_name
+                    ps.species_name{$battle_status_column}
                FROM pet_instances pi
                JOIN pet_species ps ON ps.species_id = pi.species_id
                LEFT JOIN sickness s ON s.sick_id = pi.sickness
+               {$battle_status_join}
               WHERE pi.pet_instance_id = ?
                 AND pi.owner_user_id = ?
               FOR UPDATE"
@@ -234,10 +264,28 @@ function item_effect_apply_to_pet(PDO $pdo, int $user_id, int $pet_id, int $item
 
         $applied = [];
         $next_values = [];
+        $cured_battle_status = null;
         foreach (($item['effects'] ?? []) as $effect) {
             $effect_type = strtolower((string)($effect['effect_type'] ?? ''));
             $target_stat = (string)($effect['target_stat'] ?? '');
             $amount = max(0, (int)($effect['amount'] ?? 0));
+
+            if ($effect_type === 'cure' && strpos($target_stat, 'status_') === 0) {
+                $ailment = substr($target_stat, strlen('status_'));
+                $current = strtolower(trim((string)($pet['battle_status'] ?? '')));
+                if ($current === '' || ($ailment !== 'all' && $ailment !== $current)) {
+                    continue;
+                }
+
+                $pet['battle_status'] = '';
+                $cured_battle_status = $current;
+                $applied[] = [
+                    'effect_type' => 'cure',
+                    'target_stat' => $target_stat,
+                    'ailment' => $current,
+                ];
+                continue;
+            }
 
             if ($effect_type === 'cure' && $target_stat === 'sickness' && $amount > 0) {
                 $before = max(0, (int)($pet['sickness'] ?? 0));
@@ -299,22 +347,30 @@ function item_effect_apply_to_pet(PDO $pdo, int $user_id, int $pet_id, int $item
             ];
         }
 
-        $set_parts = [];
-        $params = [];
-        foreach ($next_values as $column => $value) {
-            $set_parts[] = "{$column} = ?";
-            $params[] = $value;
-        }
-        $params[] = $pet_id;
-        $params[] = $user_id;
+        if ($next_values) {
+            $set_parts = [];
+            $params = [];
+            foreach ($next_values as $column => $value) {
+                $set_parts[] = "{$column} = ?";
+                $params[] = $value;
+            }
+            $params[] = $pet_id;
+            $params[] = $user_id;
 
-        $update = $pdo->prepare(
-            "UPDATE pet_instances
-                SET " . implode(', ', $set_parts) . "
-              WHERE pet_instance_id = ?
-                AND owner_user_id = ?"
-        );
-        $update->execute($params);
+            $update = $pdo->prepare(
+                "UPDATE pet_instances
+                    SET " . implode(', ', $set_parts) . "
+                  WHERE pet_instance_id = ?
+                    AND owner_user_id = ?"
+            );
+            $update->execute($params);
+        }
+
+        if ($cured_battle_status !== null) {
+            $pdo->prepare(
+                "DELETE FROM pet_battle_status WHERE pet_instance_id = ?"
+            )->execute([$pet_id]);
+        }
 
         $next_quantity = item_effect_consume_inventory_item($pdo, $user_id, $item_id, (int)$item['quantity']);
 
@@ -330,6 +386,10 @@ function item_effect_apply_to_pet(PDO $pdo, int $user_id, int $pet_id, int $item
             $message = $cured_name !== ''
                 ? $pet_name . ' was cured of ' . $cured_name . '.'
                 : $pet_name . ' was cured.';
+        } elseif (count($applied) === 1
+            && ($applied[0]['effect_type'] ?? '') === 'cure'
+            && strpos((string)($applied[0]['target_stat'] ?? ''), 'status_') === 0) {
+            $message = $pet_name . ' was cured of ' . ucfirst((string)($applied[0]['ailment'] ?? 'its ailment')) . '.';
         }
 
         return [

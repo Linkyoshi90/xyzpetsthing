@@ -1,0 +1,277 @@
+{
+    "_help": [
+        "This file feeds the Creature Quiz (index.php?pg=pkmn-quiz).",
+        "An entry is either a plain string (\"Adaro\") or an object for extras:",
+        "  { \"en\": \"Polar Bear\", \"de\": \"Eisbär\", \"aliases\": [\"bear\"], \"sprite\": \"custom_name\" }",
+        "Every language name and every alias counts as a correct guess.",
+        "Guess matching ignores case, spaces and punctuation.",
+        "The file name prefix (before the first '-') decides where sprites come from:",
+        "  harmontide-*.json -> the real creature art in images/creatures/",
+        "  any other prefix, e.g. pkmn-*.json -> images/games/<prefix>/<en name, lowercased, only a-z0-9>.png",
+        "  e.g. \"Will-o-Wisp\" in pkmn-gen.json -> images/games/pkmn/willowisp.png. Use \"sprite\" to override.",
+        "Sprites are shown at 50x50.",
+        "Copy this file, change categories/entries, and it appears in the settings dropdown."
+    ],
+    "meta": {
+        "title": {
+            "en": "Creatures by Generation",
+            "de": "Wesen nach Generation"
+        },
+        "languages": [
+            "en",
+            "de"
+        ]
+    },
+    "categories": [
+        {
+            "name": {
+                "en": "Generation I",
+                "de": "Generation I"
+            },
+            "entries": [
+                "Alisnapor",
+                "Anomalocaris",
+                "Archelon",
+                "Argentowlis",
+                "Black Turtle",
+                "Chupacabra",
+                "Cipactli",
+                {
+                    "en": "Demon",
+                    "de": "Dämon"
+                },
+                "Elf",
+                "Fernstalker",
+                "Gandharva",
+                "Harpy",
+                "Kachina",
+                "Kappa",
+                "Kelpie",
+                "Meloncollie",
+                "Oryx",
+                {
+                    "en": "Penguin",
+                    "de": "Pinguin"
+                },
+                {
+                    "en": "Polar Bear",
+                    "de": "Eisbär"
+                },
+                "Quetzalcoatl",
+                "Sabre",
+                {
+                    "en": "Sea Turtle",
+                    "de": "Meeresschildkröte"
+                },
+                "Smilodon",
+                {
+                    "en": "Spider-Crab",
+                    "de": "Spinnenkrabbe"
+                },
+                "Wadjet",
+                "Wayob"
+            ]
+        },
+        {
+            "name": {
+                "en": "Generation II",
+                "de": "Generation II"
+            },
+            "entries": [
+                "Bakeneko",
+                "Bunyip",
+                "Charro Negro",
+                "Daeodon",
+                {
+                    "en": "Fire Giant",
+                    "de": "Feuerriese"
+                },
+                "Fury",
+                "Gaitress",
+                {
+                    "en": "Genie",
+                    "de": "Dschinn"
+                },
+                "Golem",
+                "Hairypterix",
+                "Jiang-Shi",
+                "Klabuster",
+                "La Mano Peluda",
+                "Leshy",
+                "Lich",
+                "Min-Min Lights",
+                {
+                    "en": "Moo",
+                    "aliases": [
+                        "cow"
+                    ]
+                },
+                "Naga",
+                "Nightmarcher",
+                "Pishtaco",
+                "Rainbow Serpent",
+                "Spinosaur",
+                "Succubus",
+                "Tapir",
+                "Turtworld",
+                "Yuki-Onna"
+            ]
+        },
+        {
+            "name": {
+                "en": "Generation III",
+                "de": "Generation III"
+            },
+            "entries": [
+                "Adaro",
+                "Amaru",
+                "Apsara",
+                "Argentinosaurus",
+                "Armadillo",
+                "Bahamut",
+                "Banshee",
+                "Bee",
+                "Capybara",
+                "Centaur",
+                "Crab man",
+                "Curupira",
+                {
+                    "en": "Death",
+                    "de": "Tod"
+                },
+                "Dugong",
+                "Dullahan",
+                "Girtablilu",
+                {
+                    "en": "Kangaroo",
+                    "de": "Känguru"
+                },
+                "La Llorona",
+                "Landharpy",
+                "Papillon",
+                "Spoodr",
+                "Tengu",
+                "Tiddalik",
+                {
+                    "en": "Toucan",
+                    "de": "Tukan"
+                },
+                {
+                    "en": "War",
+                    "de": "Krieg"
+                },
+                {
+                    "en": "Will-o-Wisp",
+                    "aliases": [
+                        "wisp"
+                    ]
+                }
+            ]
+        },
+        {
+            "name": {
+                "en": "Generation IV",
+                "de": "Generation IV"
+            },
+            "entries": [
+                "Akaname",
+                {
+                    "en": "Angel",
+                    "de": "Engel"
+                },
+                "Anubis",
+                "Azureus",
+                "Brownie",
+                {
+                    "en": "Dolphin",
+                    "de": "Delfin"
+                },
+                "Drop Bear",
+                "Fishman",
+                {
+                    "en": "Horned Serpent Uktena",
+                    "aliases": [
+                        "uktena",
+                        "horned serpent"
+                    ]
+                },
+                {
+                    "en": "Jack-o-lantern",
+                    "aliases": [
+                        "pumpkin"
+                    ]
+                },
+                "Kasurenijimi",
+                "Kitsune",
+                "Lamia",
+                "Lilith",
+                "Mooskuh",
+                {
+                    "en": "Pestilence",
+                    "de": "Pestilenz"
+                },
+                "Rhiwool",
+                "Slidred",
+                {
+                    "en": "Sunwukong",
+                    "aliases": [
+                        "monkey king",
+                        "sun wukong"
+                    ]
+                },
+                "Taniwha",
+                "Thunderbird",
+                "Turtfolk",
+                "Tuskin",
+                "Tusktaur",
+                "Vodyanoy",
+                "Ziz"
+            ]
+        },
+        {
+            "name": {
+                "en": "Generation V",
+                "de": "Generation V"
+            },
+            "entries": [
+                "Ahuizotl",
+                "Amarok",
+                "Blaze Cat",
+                "Bullywug",
+                {
+                    "en": "Camel",
+                    "de": "Kamel"
+                },
+                {
+                    "en": "Doggo",
+                    "aliases": [
+                        "dog"
+                    ]
+                },
+                {
+                    "en": "Famine",
+                    "de": "Hungersnot"
+                },
+                {
+                    "en": "Frost Giant",
+                    "de": "Frostriese"
+                },
+                "Gigantopithecus",
+                "Keelut",
+                "Kraken",
+                "Lamassu",
+                "Manticore",
+                "Mimic",
+                "Moopie",
+                "Ocelot",
+                "Pegasus",
+                "Ratatoskr",
+                "Rheintalensis",
+                "Urchskin",
+                "Vermillion Bird",
+                "Waterlil",
+                "Yatagarasu"
+            ]
+        }
+    ]
+}
